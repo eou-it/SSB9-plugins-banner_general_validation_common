@@ -28,8 +28,8 @@ import org.hibernate.annotations.GenericGenerator
 class MedicalEquipment  implements Serializable {
 
 	@Id
-	@GeneratedValue(generator = "triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "STVMDEQ_SEQ_GEN", allocationSize = 1, sequenceName = "STVMDEQ_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVMDEQ_SEQ_GEN")
     @Column(name="STVMDEQ_SURROGATE_ID")
 	Long id
 

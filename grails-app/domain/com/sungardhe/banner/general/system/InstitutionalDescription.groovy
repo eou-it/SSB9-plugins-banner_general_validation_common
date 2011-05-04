@@ -17,7 +17,9 @@ import javax.persistence.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery;
+import javax.persistence.NamedQuery
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator;
 
 /**
  * Institutional Description Table
@@ -37,8 +39,8 @@ class InstitutionalDescription implements Serializable {
 	 */
 	@Id
 	@Column(name="GUBINST_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "GUBINST_SEQ_GEN", allocationSize = 1, sequenceName = "GUBINST_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GUBINST_SEQ_GEN")
 	Long id
 	
 	/**

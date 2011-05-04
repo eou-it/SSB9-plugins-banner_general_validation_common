@@ -20,9 +20,9 @@ import javax.persistence.Version
 import javax.persistence.JoinColumn
 import javax.persistence.JoinColumns
 import javax.persistence.ManyToOne
-import org.hibernate.annotations.GenericGenerator
 import com.sungardhe.banner.general.system.Nation
-
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
 
 /**
  * Site Validation Table
@@ -37,8 +37,8 @@ class Site implements Serializable {
 	 */
 	@Id
 	@Column(name="STVSITE_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "STVSITE_SEQ_GEN", allocationSize = 1, sequenceName = "STVSITE_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVSITE_SEQ_GEN")
 	Long id
 
 	/**
@@ -150,7 +150,7 @@ class Site implements Serializable {
 					description=$description, 
 					streetAddress1=$streetAddress1, 
 					streetAddress2=$streetAddress2, 
-					streetAddr3=$streetAddr3, 
+					streetAddr3=$streetAddress3, 
 					city=$city, 
 					state=$state, 
 					foreignCountry=$foreignCountry, 

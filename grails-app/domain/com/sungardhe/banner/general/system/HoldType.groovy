@@ -17,8 +17,9 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
-import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Type
+import javax.persistence.SequenceGenerator
+import javax.persistence.GenerationType
 
 /**
  * Person Hold Type Validation Table
@@ -33,8 +34,8 @@ class HoldType implements Serializable {
 	 */
 	@Id
 	@Column(name="STVHLDD_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "STVHLDD_SEQ_GEN", allocationSize = 1, sequenceName = "STVHLDD_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVHLDD_SEQ_GEN")
 	Integer id
 
     /**

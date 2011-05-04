@@ -20,12 +20,14 @@ import javax.persistence.Version;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import org.hibernate.annotations.GenericGenerator;
+
 /**
  * Import Related Entities if they are external to this package
  */
 
 import com.sungardhe.banner.general.system.AdmissionRequest
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
 
 /**
  * Visa Type Code Validation Table
@@ -40,8 +42,8 @@ class VisaType implements Serializable {
 	 */
 	@Id
 	@Column(name="STVVTYP_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "STVVTYP_SEQ_GEN", allocationSize = 1, sequenceName = "STVVTYP_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVVTYP_SEQ_GEN")
 	Long id
 
 	/**

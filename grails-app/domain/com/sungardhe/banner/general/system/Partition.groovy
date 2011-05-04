@@ -1,5 +1,5 @@
 /** *****************************************************************************
- © 2010 SunGard Higher Education.  All Rights Reserved.
+ ï¿½ 2010 SunGard Higher Education.  All Rights Reserved.
  CONFIDENTIAL BUSINESS INFORMATION
  THIS PROGRAM IS PROPRIETARY INFORMATION OF SUNGARD HIGHER EDUCATION
  AND IS NOT TO BE COPIED, REPRODUCED, LENT, OR DISPOSED OF,
@@ -25,8 +25,8 @@ class Partition implements Serializable {
      */
     @Id
     @Column(name="gtvpars_surrogate_id")
-    @GeneratedValue(generator ="triggerAssigned")
-    @GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "GTVPARS_SEQ_GEN", allocationSize = 1, sequenceName = "GTVPARS_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVPARS_SEQ_GEN")
     Long id
 
     /**

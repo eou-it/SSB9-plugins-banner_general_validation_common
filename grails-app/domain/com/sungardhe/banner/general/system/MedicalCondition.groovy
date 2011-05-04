@@ -10,7 +10,6 @@
  ****************************************************************************** */
 package com.sungardhe.banner.general.system
 
-import org.hibernate.annotations.GenericGenerator
 import javax.persistence.*
 
 /**
@@ -23,8 +22,8 @@ class MedicalCondition implements Serializable {
     
 	@Id
 	@Column(name="STVMEDI_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "STVMEDI_SEQ_GEN", allocationSize = 1, sequenceName = "STVMEDI_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVMEDI_SEQ_GEN")
 	Long id
 
     @Column (name="STVMEDI_ACTIVITY_DATE", nullable = true)

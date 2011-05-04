@@ -1,5 +1,5 @@
 /** *****************************************************************************
- © 2010 SunGard Higher Education.  All Rights Reserved.
+ Â© 2010 SunGard Higher Education.  All Rights Reserved.
 
  CONFIDENTIAL BUSINESS INFORMATION
 
@@ -8,106 +8,120 @@
  NOR USED FOR ANY PURPOSE OTHER THAN THAT WHICH IT IS SPECIFICALLY PROVIDED
  WITHOUT THE WRITTEN PERMISSION OF THE SAID COMPANY
  ****************************************************************************** */
+/**
+ Banner Automator Version: 0.1.1
+ Generated: Mon Jan 03 15:56:54 CST 2011
+ */
 package com.sungardhe.banner.general.system
 
 import javax.persistence.*
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.GenericGenerator
 
 /**
  * Duration Unit Code Validation Table
  */
 @Entity
-@Table(name="GTVDUNT")  
+@Table(name = "GTVDUNT")
 class DurationUnit implements Serializable {
-	
-	@Id
-	@Column(name="gtvdunt_surrogate_id")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
-	Long id
 
-	/**
-	 * Duration Unit Code: The Duration Unit Code
-	 */
-	@Column(name="GTVDUNT_CODE", nullable = false, length=4)
-	String code
+  @Id
+  @Column(name = "GTVDUNT_SURROGATE_ID")
+  @SequenceGenerator(name = "GTVDUNT_SEQ_GEN", allocationSize = 1, sequenceName = "GTVDUNT_SURROGATE_ID_SEQUENCE")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVDUNT_SEQ_GEN")
+  Long id
 
-	@Column(name="GTVDUNT_DESC", nullable = false, length=30)
-	String description
+  /**
+   * Duration Unit Code: The Duration Unit Code
+   */
+  @Column(name = "GTVDUNT_CODE", nullable = false, length = 4)
+  String code
 
-	/**
-	 * Represents the number of days that one duration unit would equate to (ie 1 week equals 7 days)
-	 */
-	@Column(name="GTVDUNT_NUMBER_OF_DAYS", nullable = false, length=22)
-	BigDecimal numberOfDays
+  @Column(name = "GTVDUNT_DESC", nullable = false, length = 30)
+  String description
 
-	@Column(name="GTVDUNT_activity_date")
-	Date lastModified
+  /**
+   * Represents the number of days that one duration unit would equate to (ie 1 week equals 7 days)
+   */
+  @Column(name = "GTVDUNT_NUMBER_OF_DAYS", nullable = false, precision = 7, scale = 2)
+  Double numberOfDays
 
-	@Column(name="GTVDUNT_USER_ID" )
-	String lastModifiedBy
+  @Column(name = "GTVDUNT_ACTIVITY_DATE")
+  Date lastModified
 
-	/**
-	 * Voice Response Message Number
-	 */
-	@Column(name="GTVDUNT_VR_MSG_NO", length=22)
-	BigDecimal vrMsgNo
+  @Column(name = "GTVDUNT_USER_ID")
+  String lastModifiedBy
 
-	@Version
-	@Column(name="GTVDUNT_VERSION", nullable = false, length=19)
-	Long version
+  /**
+   * Voice Response Message Number
+   */
+  @Column(name = "GTVDUNT_VR_MSG_NO", precision = 6)
+  Integer vrMsgNo
 
-	@Column(name="gtvdunt_data_origin", length=30)
-	String dataOrigin
+  @Version
+  @Column(name = "GTVDUNT_VERSION", nullable = false, precision = 19)
+  Long version
 
-	
-	
-	public String toString() {
-		"DurationUnitCode[id=$id, code=$code, description=$description, numberOfDays=$numberOfDays, lastModified=$lastModified, lastModifiedBy=$lastModifiedBy, vrMsgNo=$vrMsgNo, version=$version, dataOrigin=$dataOrigin]"
-	}
-
-	static constraints = {
-		code(nullable:false, maxSize:4)
-		description(nullable:false, maxSize:30)
-		numberOfDays(nullable:false, maxSize:22)
-		vrMsgNo(nullable:true, maxSize:22)
-	}
+  @Column(name = "GTVDUNT_DATA_ORIGIN", length = 30)
+  String dataOrigin
 
 
-    boolean equals(o) {
-        if (this.is(o)) return true;
 
-        if (!(o instanceof DurationUnit)) return false;
+  public String toString() {
+    "DurationUnitCode[id=$id, code=$code, description=$description, numberOfDays=$numberOfDays, lastModified=$lastModified, lastModifiedBy=$lastModifiedBy, vrMsgNo=$vrMsgNo, version=$version, dataOrigin=$dataOrigin]"
+  }
 
-        DurationUnit that = (DurationUnit) o;
-
-        if (code != that.code) return false;
-        if (dataOrigin != that.dataOrigin) return false;
-        if (description != that.description) return false;
-        if (id != that.id) return false;
-        if (lastModified != that.lastModified) return false;
-        if (lastModifiedBy != that.lastModifiedBy) return false;
-        if (numberOfDays != that.numberOfDays) return false;
-        if (version != that.version) return false;
-        if (vrMsgNo != that.vrMsgNo) return false;
-
-        return true;
-    }
+  static constraints = {
+    code(nullable: false, maxSize: 4)
+    description(nullable: false, maxSize: 30)
+    numberOfDays(nullable: false)
+    vrMsgNo(nullable: true)
+  }
 
 
-    int hashCode() {
-        int result;
+  boolean equals(o) {
+    if (this.is(o)) return true
 
-        result = (id != null ? id.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (numberOfDays != null ? numberOfDays.hashCode() : 0);
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0);
-        result = 31 * result + (vrMsgNo != null ? vrMsgNo.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
-        return result;
-    }
+    if (!(o instanceof DurationUnit)) return false
+
+    DurationUnit that = (DurationUnit) o
+
+    if (code != that.code) return false
+    if (dataOrigin != that.dataOrigin) return false
+    if (description != that.description) return false
+    if (id != that.id) return false
+    if (lastModified != that.lastModified) return false
+    if (lastModifiedBy != that.lastModifiedBy) return false
+    if (numberOfDays != that.numberOfDays) return false
+    if (version != that.version) return false
+    if (vrMsgNo != that.vrMsgNo) return false
+
+    return true
+  }
+
+
+  int hashCode() {
+    int result
+
+    result = (id != null ? id.hashCode() : 0)
+    result = 31 * result + (code != null ? code.hashCode() : 0)
+    result = 31 * result + (description != null ? description.hashCode() : 0)
+    result = 31 * result + (numberOfDays != null ? numberOfDays.hashCode() : 0)
+    result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
+    result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
+    result = 31 * result + (vrMsgNo != null ? vrMsgNo.hashCode() : 0)
+    result = 31 * result + (version != null ? version.hashCode() : 0)
+    result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
+    return result
+  }
+
+  //Read Only fields that should be protected against update
+  public static readonlyProperties = ['code']
+  /**
+   * Please put all the custom methods/code in this protected section to protect the code
+   * from being overwritten on re-generation
+   */
+  /*PROTECTED REGION ID(durationunit_custom_methods) ENABLED START*/
+
+  /*PROTECTED REGION END*/
 }

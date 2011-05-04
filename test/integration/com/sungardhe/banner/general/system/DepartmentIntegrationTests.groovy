@@ -123,6 +123,41 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchBySomeAttribute() {
+      def department = Department.fetchBySomeAttribute()
+      def departmentList = department.get("list")
+
+      def departmentObj1 = Department.findWhere(code : "ACCT")
+      def departmentObj2 = Department.findWhere(code : "BIOL")
+      def departmentObj3 = Department.findWhere(code : "ECON")
+      def departmentObj4 = Department.findWhere(code : "MGMT")
+      def departmentObj5 = newDepartment()
+
+      assertTrue departmentList.contains(departmentObj1)
+      assertTrue departmentList.contains(departmentObj2)
+      assertTrue departmentList.contains(departmentObj3)
+      assertTrue departmentList.contains(departmentObj4)
+      assertFalse departmentList.contains(departmentObj5)
+
+      def filter = "ENG"
+      department = Department.fetchBySomeAttribute(filter)
+      departmentList = department.get("list")
+
+      departmentObj1 = Department.findWhere(code : "ENGE")
+      departmentObj2 = Department.findWhere(code : "ENGL")
+      departmentObj3 = Department.findWhere(code : "ENGR")
+      departmentObj4 = Department.findWhere(code : "ENGT")
+      departmentObj5 = Department.findWhere(code : "ANSC")
+
+      assertTrue departmentList.contains(departmentObj1)
+      assertTrue departmentList.contains(departmentObj2)
+      assertTrue departmentList.contains(departmentObj3)
+      assertTrue departmentList.contains(departmentObj4)
+      assertFalse departmentList.contains(departmentObj5)
+
+  }
+
+
     private def newDepartment() {
        new Department(code: "TT", description: "TT", systemRequiredIndicator: "N", voiceResponseMessageNumber: 1, lastModified: new Date(),
 		   lastModifiedBy: "test", dataOrigin: "Banner" )

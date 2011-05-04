@@ -105,7 +105,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
 		//Try to update the entity
 		holdType.code="UU"
 		holdType.registrationHoldIndicator="Y"
-		holdType.transactionHoldIndicator="Y"
+	/*	holdType.transactionHoldIndicator="Y"
 		holdType.gradHoldIndicator="Y"
 		holdType.gradeHoldIndicator="Y"
 		holdType.description="UUUUU"
@@ -117,7 +117,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
 		holdType.complianceHoldIndicator=true
 		holdType.lastModified= new Date()
 		holdType.lastModifiedBy="test"
-		holdType.dataOrigin= "Banner" 
+		holdType.dataOrigin= "Banner"   */
         shouldFail( HibernateOptimisticLockingFailureException ) {
             holdType.save( flush: true )
         }

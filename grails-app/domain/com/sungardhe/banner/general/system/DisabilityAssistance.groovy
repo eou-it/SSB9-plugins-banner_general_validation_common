@@ -18,8 +18,8 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 
-import org.hibernate.annotations.GenericGenerator
-
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
 
 /**
  * Represents a service that could be provided to a disabled student.
@@ -32,8 +32,8 @@ class DisabilityAssistance  implements Serializable {
 	 * The unique identifier for this domain object.
 	 */
 	@Id
-	@GeneratedValue(generator = "triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "STVSPSR_SEQ_GEN", allocationSize = 1, sequenceName = "STVSPSR_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVSPSR_SEQ_GEN")
     @Column(name="STVSPSR_SURROGATE_ID")
 	Long id
 	

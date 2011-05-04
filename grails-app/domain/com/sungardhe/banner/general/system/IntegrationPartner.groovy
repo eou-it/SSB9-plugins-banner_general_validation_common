@@ -17,7 +17,8 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
-import org.hibernate.annotations.GenericGenerator
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
 
 /**
  * Integration Partner System Code Validation Table.
@@ -32,9 +33,9 @@ class IntegrationPartner implements Serializable {
 	 */
 	@Id
 	@Column(name="GTVINTP_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
-	Long id
+    @SequenceGenerator(name = "GTVINTP_SEQ_GEN", allocationSize = 1, sequenceName = "GTVINTP_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVINTP_SEQ_GEN")
+    Long id
 
 	/**
 	 * PARTNER SYSTEM CODE: Used to define an external Integration Partner System. Valid Codes are 'WEBCT' for WebCT Integration or 'BB' for Blackboard Integration.

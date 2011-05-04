@@ -30,8 +30,10 @@ grails.project.dependency.resolution = {
     }
 
       plugins {
-        compile 'com.sungardhe:banner-core:0.2.3'   // Note: Also update version within 'application.properties'
-        compile 'com.sungardhe:spring-security-cas:1.0.2'
+       compile 'com.sungardhe:banner-core:0.2.32'   // Note: Also update version within 'application.properties'
+       compile 'com.sungardhe:spring-security-core:1.0.1'
+       compile 'com.sungardhe:spring-security-cas:1.0.2'
+
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.

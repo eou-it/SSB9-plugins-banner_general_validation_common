@@ -1,5 +1,5 @@
 /** *****************************************************************************
- © 2010 SunGard Higher Education.  All Rights Reserved.
+ Â© 2010 SunGard Higher Education.  All Rights Reserved.
 
  CONFIDENTIAL BUSINESS INFORMATION
 
@@ -8,22 +8,14 @@
  NOR USED FOR ANY PURPOSE OTHER THAN THAT WHICH IT IS SPECIFICALLY PROVIDED
  WITHOUT THE WRITTEN PERMISSION OF THE SAID COMPANY
  ****************************************************************************** */
+/**
+ Banner Automator Version: 0.1.1
+ Generated: Mon Jan 03 15:56:54 CST 2011
+ */
 package com.sungardhe.banner.general.system
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type
-import javax.persistence.NamedQuery
-import javax.persistence.NamedQueries;
+import javax.persistence.*
 
 /**
  * Term Code Validation Table
@@ -45,14 +37,14 @@ class Term implements Serializable {
      */
     @Id
     @Column(name = "STVTERM_SURROGATE_ID")
-    @GeneratedValue(generator = "triggerAssigned")
-    @GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "STVTERM_SEQ_GEN", allocationSize = 1, sequenceName = "STVTERM_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVTERM_SEQ_GEN")
     Long id
 
     /**
      * This field identifies the term code referenced in the Catalog, Recruiting, Admissions, Gen. Student, Registration, Student Billing and Acad. Hist. Modules. Reqd. value: 999999 - End of Time.
      */
-    @Column(name = "STVTERM_CODE", nullable = false, length = 6)
+    @Column(name = "STVTERM_CODE", nullable = false, unique = true, length = 6)
     String code
 
     /**
@@ -82,7 +74,7 @@ class Term implements Serializable {
     /**
      * This field identifies the most recent date a record was created or updated.
      */
-    @Column(name = "STVTERM_activity_date")
+    @Column(name = "STVTERM_ACTIVITY_DATE")
     Date lastModified
 
     /**
@@ -94,14 +86,14 @@ class Term implements Serializable {
     /**
      * This field identifies the financial aid award beginning period.
      */
-    @Column(name = "STVTERM_FA_PERIOD", length = 22)
-    BigDecimal financialAidPeriod
+    @Column(name = "STVTERM_FA_PERIOD", precision = 2)
+    Integer financialAidPeriod
 
     /**
      * This field identifies the financial aid award ending period.
      */
-    @Column(name = "STVTERM_FA_END_PERIOD", length = 22)
-    BigDecimal financialEndPeriod
+    @Column(name = "STVTERM_FA_END_PERIOD", precision = 2)
+    Integer financialEndPeriod
 
     /**
      * Housing Start Date.
@@ -123,25 +115,31 @@ class Term implements Serializable {
     Boolean systemReqInd
 
     /**
+     * SUMMER INDICATOR: Indicates a summer term to financial aid.
+     */
+    @Type(type = "yes_no")
+    @Column(name = "STVTERM_FA_SUMMER_IND")
+    Boolean financeSummerIndicator
+
+    /**
      * Column for storing last modified by for STVTERM
      */
-    @Column(name = "STVTERM_USER_ID" )
+    @Column(name = "STVTERM_USER_ID", length = 30)
     String lastModifiedBy
 
     /**
      * Optimistic Lock Token for STVTERM
      */
     @Version
-    @Column(name = "STVTERM_VERSION", nullable = false, length = 19)
+    @Column(name = "STVTERM_VERSION", nullable = false, precision = 19)
     Long version
 
     /**
      * Column for storing data origin for STVTERM
      */
-    @Column(name = "STVTERM_DATA_ORIGIN" )
+    @Column(name = "STVTERM_DATA_ORIGIN", length = 30)
     String dataOrigin
 
-    // TODO:  Determine the appropriate name for acyr_code
     /**
      * Foreign Key : FK1_STVTERM_INV_STVACYR_CODE
      */
@@ -151,7 +149,6 @@ class Term implements Serializable {
     ])
     AcademicYear acyr_code
 
-    // TODO:  Determine the appropriate name for trmt_code
     /**
      * Foreign Key : FK1_STVTERM_INV_STVTRMT_CODE
      */
@@ -163,8 +160,9 @@ class Term implements Serializable {
 
 
     public String toString() {
-        "Term[id=$id, code=$code, description=$description, startDate=$startDate, endDate=$endDate, financialAidProcessingYear=$financialAidProcessingYear, lastModified=$lastModified, financialAidTerm=$financialAidTerm, financialAidPeriod=$financialAidPeriod, financialEndPeriod=$financialEndPeriod, housingStartDate=$housingStartDate, housingEndDate=$housingEndDate, systemReqInd=$systemReqInd, lastModifiedBy=$lastModifiedBy, version=$version, dataOrigin=$dataOrigin]"
+        "Term[id=$id, code=$code, description=$description, startDate=$startDate, endDate=$endDate, financialAidProcessingYear=$financialAidProcessingYear, lastModified=$lastModified, financialAidTerm=$financialAidTerm, financialAidPeriod=$financialAidPeriod, financialEndPeriod=$financialEndPeriod, housingStartDate=$housingStartDate, housingEndDate=$housingEndDate, systemReqInd=$systemReqInd, financeSummerIndicator=$financeSummerIndicator, lastModifiedBy=$lastModifiedBy, version=$version, dataOrigin=$dataOrigin]"
     }
+
 
     static constraints = {
         code(nullable: false, maxSize: 6)
@@ -179,7 +177,12 @@ class Term implements Serializable {
         housingStartDate(nullable: false, maxSize: 7)
         housingEndDate(nullable: false, maxSize: 7)
         systemReqInd(nullable: true, maxSize: 1)
+        financeSummerIndicator(nullable: true, maxsize: 1)
+        lastModified(nullable: true)
+        lastModifiedBy(nullable: true, maxSize: 30)
+        dataOrigin(nullable: true, maxSize: 30)
     }
+
 
     public static Object fetchBySomeAttribute() {
         def returnObj = [list: Term.list(sort: "code", order: "desc")]
@@ -188,7 +191,7 @@ class Term implements Serializable {
 
 
     public static Object fetchBySomeAttribute(filter) {
-        def returnObj = [list: Term.findAllByCodeIlikeOrDescriptionIlike( "%" + filter + "%", "%" + filter + "%", [sort: "code", order: "desc"] )]
+        def returnObj = [list: Term.findAllByCodeIlikeOrDescriptionIlike("%" + filter + "%", "%" + filter + "%", [sort: "code", order: "desc"])]
         return returnObj
     }
 
@@ -205,56 +208,68 @@ class Term implements Serializable {
 
 
     boolean equals(o) {
-        if (this.is(o)) return true;
+        if (this.is(o)) return true
 
-        if (!(o instanceof Term)) return false;
+        if (!(o instanceof Term)) return false
 
-        Term term = (Term) o;
+        Term term = (Term) o
 
-        if (acyr_code != term.acyr_code) return false;
-        if (code != term.code) return false;
-        if (dataOrigin != term.dataOrigin) return false;
-        if (description != term.description) return false;
-        if (endDate != term.endDate) return false;
-        if (financialAidPeriod != term.financialAidPeriod) return false;
-        if (financialAidProcessingYear != term.financialAidProcessingYear) return false;
-        if (financialAidTerm != term.financialAidTerm) return false;
-        if (financialEndPeriod != term.financialEndPeriod) return false;
-        if (housingEndDate != term.housingEndDate) return false;
-        if (housingStartDate != term.housingStartDate) return false;
-        if (id != term.id) return false;
-        if (lastModified != term.lastModified) return false;
-        if (lastModifiedBy != term.lastModifiedBy) return false;
-        if (startDate != term.startDate) return false;
-        if (systemReqInd != term.systemReqInd) return false;
-        if (trmt_code != term.trmt_code) return false;
-        if (version != term.version) return false;
+        if (acyr_code != term.acyr_code) return false
+        if (code != term.code) return false
+        if (dataOrigin != term.dataOrigin) return false
+        if (description != term.description) return false
+        if (endDate != term.endDate) return false
+        if (financialAidPeriod != term.financialAidPeriod) return false
+        if (financialAidProcessingYear != term.financialAidProcessingYear) return false
+        if (financialAidTerm != term.financialAidTerm) return false
+        if (financialEndPeriod != term.financialEndPeriod) return false
+        if (housingEndDate != term.housingEndDate) return false
+        if (housingStartDate != term.housingStartDate) return false
+        if (id != term.id) return false
+        if (lastModified != term.lastModified) return false
+        if (lastModifiedBy != term.lastModifiedBy) return false
+        if (startDate != term.startDate) return false
+        if (systemReqInd != term.systemReqInd) return false
+        if (financeSummerIndicator != term.financeSummerIndicator) return false
+        if (trmt_code != term.trmt_code) return false
+        if (version != term.version) return false
 
-        return true;
+        return true
     }
 
 
     int hashCode() {
-        int result;
+        int result
 
-        result = (id != null ? id.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
-        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
-        result = 31 * result + (financialAidProcessingYear != null ? financialAidProcessingYear.hashCode() : 0);
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
-        result = 31 * result + (financialAidTerm != null ? financialAidTerm.hashCode() : 0);
-        result = 31 * result + (financialAidPeriod != null ? financialAidPeriod.hashCode() : 0);
-        result = 31 * result + (financialEndPeriod != null ? financialEndPeriod.hashCode() : 0);
-        result = 31 * result + (housingStartDate != null ? housingStartDate.hashCode() : 0);
-        result = 31 * result + (housingEndDate != null ? housingEndDate.hashCode() : 0);
-        result = 31 * result + (systemReqInd != null ? systemReqInd.hashCode() : 0);
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
-        result = 31 * result + (acyr_code != null ? acyr_code.hashCode() : 0);
-        result = 31 * result + (trmt_code != null ? trmt_code.hashCode() : 0);
-        return result;
+        result = (id != null ? id.hashCode() : 0)
+        result = 31 * result + (code != null ? code.hashCode() : 0)
+        result = 31 * result + (description != null ? description.hashCode() : 0)
+        result = 31 * result + (startDate != null ? startDate.hashCode() : 0)
+        result = 31 * result + (endDate != null ? endDate.hashCode() : 0)
+        result = 31 * result + (financialAidProcessingYear != null ? financialAidProcessingYear.hashCode() : 0)
+        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
+        result = 31 * result + (financialAidTerm != null ? financialAidTerm.hashCode() : 0)
+        result = 31 * result + (financialAidPeriod != null ? financialAidPeriod.hashCode() : 0)
+        result = 31 * result + (financialEndPeriod != null ? financialEndPeriod.hashCode() : 0)
+        result = 31 * result + (housingStartDate != null ? housingStartDate.hashCode() : 0)
+        result = 31 * result + (housingEndDate != null ? housingEndDate.hashCode() : 0)
+        result = 31 * result + (systemReqInd != null ? systemReqInd.hashCode() : 0)
+        result = 31 * result + (financeSummerIndicator != null ? financeSummerIndicator.hashCode() : 0)
+        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
+        result = 31 * result + (version != null ? version.hashCode() : 0)
+        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
+        result = 31 * result + (acyr_code != null ? acyr_code.hashCode() : 0)
+        result = 31 * result + (trmt_code != null ? trmt_code.hashCode() : 0)
+        return result
     }
+
+    //Read Only fields that should be protected against update
+    public static readonlyProperties = ['code']
+    /**
+     * Please put all the custom methods/code in this protected section to protect the code
+     * from being overwritten on re-generation
+     */
+    /*PROTECTED REGION ID(term_custom_methods) ENABLED START*/
+
+    /*PROTECTED REGION END*/
 }

@@ -17,8 +17,8 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
-import org.hibernate.annotations.GenericGenerator
-
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
 
 /**
  * Originator Validation Table
@@ -33,8 +33,8 @@ class Originator implements Serializable {
 	 */
 	@Id
 	@Column(name="STVORIG_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "STVORIG_SEQ_GEN", allocationSize = 1, sequenceName = "STVORIG_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVORIG_SEQ_GEN")
 	Integer id
 
     /**

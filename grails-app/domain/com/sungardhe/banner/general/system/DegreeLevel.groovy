@@ -1,6 +1,6 @@
 
 /** *****************************************************************************
- © 2010 SunGard Higher Education.  All Rights Reserved.
+ Â© 2010 SunGard Higher Education.  All Rights Reserved.
 
  CONFIDENTIAL BUSINESS INFORMATION
 
@@ -9,15 +9,20 @@
  NOR USED FOR ANY PURPOSE OTHER THAN THAT WHICH IT IS SPECIFICALLY PROVIDED
  WITHOUT THE WRITTEN PERMISSION OF THE SAID COMPANY
  ****************************************************************************** */
+/**
+ Banner Automator Version: 0.1.1
+ Generated: Mon Jan 03 15:56:54 CST 2011
+ */
 package com.sungardhe.banner.general.system
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+import javax.persistence.Table
+import javax.persistence.Version
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
 
 /**
  * Faculty Member Degree Level Validation Table
@@ -26,20 +31,20 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name="STVDLEV")
 class DegreeLevel implements Serializable {
-	
+
 	/**
 	 * Surrogate ID for STVDLEV
 	 */
 	@Id
 	@Column(name="STVDLEV_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
-	Long id
+    @SequenceGenerator(name = "STVDLEV_SEQ_GEN", allocationSize = 1, sequenceName = "STVDLEV_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVDLEV_SEQ_GEN")
+    Long id
 
 	/**
 	 * Faculty member degree level code
 	 */
-	@Column(name="STVDLEV_CODE", nullable = false, length=2)
+	@Column(name="STVDLEV_CODE", nullable = false, unique = true, length=2)
 	String code
 
 	/**
@@ -51,20 +56,20 @@ class DegreeLevel implements Serializable {
 	/**
 	 * The activity date
 	 */
-	@Column(name="STVDLEV_activity_date")
+	@Column(name="STVDLEV_ACTIVITY_DATE")
 	Date lastModified
 
 	/**
 	 * Numeric Ranking Value
 	 */
-	@Column(name="STVDLEV_NUMERIC_VALUE", length=22)
+	@Column(name="STVDLEV_NUMERIC_VALUE", precision=2)
 	Integer numericValue
 
 	/**
 	 * Version column which is used as a optimistic lock token for STVDLEV
 	 */
 	@Version
-	@Column(name="STVDLEV_VERSION", nullable = false, length=19)
+	@Column(name="STVDLEV_VERSION", nullable = false, precision = 19)
 	Long version
 
 	/**
@@ -79,8 +84,8 @@ class DegreeLevel implements Serializable {
 	@Column(name="STVDLEV_DATA_ORIGIN", length=30)
 	String dataOrigin
 
-	
-	
+
+
 	public String toString() {
 		"DegreeLevel[id=$id, code=$code, description=$description, lastModified=$lastModified, numericValue=$numericValue, version=$version, lastModifiedBy=$lastModifiedBy, dataOrigin=$dataOrigin]"
 	}
@@ -92,13 +97,13 @@ class DegreeLevel implements Serializable {
 		numericValue(nullable:true, maxSize:22)
 		lastModifiedBy(nullable:true, maxSize:30)
 		dataOrigin(nullable:true, maxSize:30)
- 
+
 		/**
 	     * Please put all the custom tests in this protected section to protect the code
 	     * from being overwritten on re-generation
 	     */
 	    /*PROTECTED REGION ID(degreelevel_custom_constraints) ENABLED START*/
-	    
+
 	    /*PROTECTED REGION END*/
     }
 
@@ -137,11 +142,14 @@ class DegreeLevel implements Serializable {
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
         return result;
     }
-/**
-     * Please put all the custom methods/code in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(degreelevel_custom_methods) ENABLED START*/
-    
-    /*PROTECTED REGION END*/
-}
+
+	//Read Only fields that should be protected against update
+	public static readonlyProperties = [ 'code' ]
+	/**
+	 * Please put all the custom methods/code in this protected section to protect the code
+	 * from being overwritten on re-generation
+	 */
+	/*PROTECTED REGION ID(degreelevel_custom_methods) ENABLED START*/
+
+	/*PROTECTED REGION END*/
+}	                                     

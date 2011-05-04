@@ -17,8 +17,9 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
-import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Type
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
 
 /**
  * Validation entries for Schedule Status Codes.
@@ -33,8 +34,8 @@ class ScheduleToolStatus implements Serializable {
 	 */
 	@Id
 	@Column(name="GTVSCHS_SURROGATE_ID")
-	@GeneratedValue(generator ="triggerAssigned")
-	@GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "GTVSCHS_SEQ_GEN", allocationSize = 1, sequenceName = "GTVSCHS_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVSCHS_SEQ_GEN")
 	Long id
 
 	/**

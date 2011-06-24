@@ -20,10 +20,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sungardhe</groupId>
-  <artifactId>banner-general-common</artifactId>
-  <version>0.2-SNAPSHOT</version>
+  <artifactId>banner-general-validation-common</artifactId>
+  <version>0.0.2</version>
   <packaging>zip</packaging>
-  <description>banner-general-common</description>
+  <description>banner-general-validation-common</description>
   <distributionManagement>
     <snapshotRepository>
       <id>snapshots</id>

@@ -33,7 +33,6 @@ grails.project.dependency.resolution = {
        compile 'com.sungardhe:banner-core:0.2.38'   // Note: Also update version within 'application.properties'
        compile 'com.sungardhe:spring-security-core:1.0.1'
        compile 'com.sungardhe:spring-security-cas:1.0.2'
-       compile 'com.sungardhe:banner-general-validation-common:0.2-SNAPSHOT'
 
     }
     dependencies {

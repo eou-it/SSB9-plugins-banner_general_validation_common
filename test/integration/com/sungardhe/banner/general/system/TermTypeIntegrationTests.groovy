@@ -38,7 +38,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
 
   void testUpdateTermType() {
     def termType = newValidForCreateTermType()
-    if (!termType.save(flush: true)) {
+    if (!termType.save(flush:true, failOnError:true)) {
       fail("Could not save TermType; TERMTYPE ERRORS = " + termType.errors);
     }
     def id = termType.id
@@ -48,7 +48,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
 
     termType.description = "updated"
 
-    if (!termType.save(flush: true)) {
+    if (!termType.save(flush:true, failOnError:true)) {
       fail("Could not update TermType; TERMTYPE ERRORS = " + termType.errors);
     }
     termType = TermType.get(id)
@@ -60,7 +60,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
 
   void testDeleteTermType() {
     def termType = newValidForCreateTermType()
-    if (!termType.save(flush: true)) {
+    if (!termType.save(flush:true, failOnError:true)) {
       fail("Could not save TermType; TERMTYPE ERRORS = " + termType.errors);
     }
     def id = termType.id
@@ -85,7 +85,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
     //Update the entity
     termType.description = "Updated Description"
     shouldFail(HibernateOptimisticLockingFailureException) {
-      termType.save(flush: true)
+      termType.save(flush:true, failOnError:true)
     }
   }
 

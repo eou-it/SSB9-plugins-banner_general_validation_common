@@ -109,7 +109,7 @@ class DegreeIntegrationTests extends BaseIntegrationTestCase {
         degree.lastModifiedBy = "test"
         degree.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            degree.save(flush: true)
+            degree.save(flush:true, failOnError:true)
         }
     }
 
@@ -168,8 +168,8 @@ class DegreeIntegrationTests extends BaseIntegrationTestCase {
                 lastModifiedBy: "test", dataOrigin: "Banner")
         def acat = new AwardCategory(code: "TT", description: "TTTTT", systemRequiredIndicator: "T", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
-        acat.save(flush: true)
-        degreeLevel.save(flush: true)
+        acat.save(flush:true, failOnError:true)
+        degreeLevel.save(flush:true, failOnError:true)
         new Degree(code: "TTTTT", description: "TTTTT", levelOne: "TT", levelTwo: "TT",
                 levelThree: "TT", financeCountIndicator: "T", systemRequiredIndicator: "T",
                 voiceResponseMsgNumber: new Integer(1), displayWebIndicator: true,

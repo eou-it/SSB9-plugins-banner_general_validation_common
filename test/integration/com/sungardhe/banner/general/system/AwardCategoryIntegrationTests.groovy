@@ -86,7 +86,7 @@ class AwardCategoryIntegrationTests extends BaseIntegrationTestCase {
         awardCategory.lastModifiedBy = "test"
         awardCategory.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            awardCategory.save(flush: true)
+            awardCategory.save(flush:true, failOnError:true)
         }
     }
 

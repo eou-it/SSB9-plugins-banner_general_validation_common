@@ -115,7 +115,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
         //Update the entity
         majorMinorConcentration.description = "Update Description"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            majorMinorConcentration.save(flush: true)
+            majorMinorConcentration.save(flush:true, failOnError:true)
         }
     }
 

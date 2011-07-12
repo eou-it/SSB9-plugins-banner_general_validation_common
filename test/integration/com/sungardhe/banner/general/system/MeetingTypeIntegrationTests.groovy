@@ -89,7 +89,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
         meetingType.lastModifiedBy = "test"
         meetingType.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            meetingType.save(flush: true)
+            meetingType.save(flush:true, failOnError:true)
         }
     }
 

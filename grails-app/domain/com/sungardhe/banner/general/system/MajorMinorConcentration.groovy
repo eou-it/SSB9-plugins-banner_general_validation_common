@@ -20,6 +20,7 @@ package com.sungardhe.banner.general.system
 
 import org.hibernate.annotations.Type
 import javax.persistence.*
+import org.apache.commons.lang.StringUtils
 
 /**
  * Major, Minor, Concentration Validation Table
@@ -303,7 +304,12 @@ class MajorMinorConcentration implements Serializable {
 
     public static List fetchBySomeAttributeFromQuery(String filter, String fieldOfStudy) {
 
-        filter += "%"
+        if (StringUtils.isBlank(filter)) {
+            filter = "%"
+        } else if (!(filter =~ /%/)) {
+            filter  = filter.toUpperCase() + "%"
+        }
+        else filter = filter.toUpperCase()
 
         def result
         switch (fieldOfStudy) {

@@ -118,7 +118,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
         nation.lastModifiedBy = "test"
         nation.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            nation.save(flush: true)
+            nation.save(flush:true, failOnError:true)
         }
     }
 

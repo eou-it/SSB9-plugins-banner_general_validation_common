@@ -82,7 +82,7 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
         fgacDomain.lastModifiedBy = "test"
         fgacDomain.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            fgacDomain.save(flush: true)
+            fgacDomain.save(flush:true, failOnError:true)
         }
     }
 

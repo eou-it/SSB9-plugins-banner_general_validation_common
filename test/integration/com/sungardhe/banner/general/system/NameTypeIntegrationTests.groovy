@@ -82,7 +82,7 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
         nameType.lastModifiedBy = "test"
         nameType.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            nameType.save(flush: true)
+            nameType.save(flush:true, failOnError:true)
         }
     }
 

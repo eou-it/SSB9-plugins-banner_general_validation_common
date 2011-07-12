@@ -89,7 +89,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
         buildingAndRoomAttribute.lastModifiedBy = "test"
         buildingAndRoomAttribute.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            buildingAndRoomAttribute.save(flush: true)
+            buildingAndRoomAttribute.save(flush:true, failOnError:true)
         }
     }
 

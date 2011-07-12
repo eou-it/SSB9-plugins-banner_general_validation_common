@@ -85,7 +85,7 @@ class ScheduleToolStatusIntegrationTests extends BaseIntegrationTestCase {
         scheduleToolStatus.lastModifiedBy = "test"
         scheduleToolStatus.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            scheduleToolStatus.save(flush: true)
+            scheduleToolStatus.save(flush:true, failOnError:true)
         }
     }
 

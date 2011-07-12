@@ -102,7 +102,7 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
         sourceAndBackgroundInstitution.lastModifiedBy = "test"
         sourceAndBackgroundInstitution.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            sourceAndBackgroundInstitution.save(flush: true)
+            sourceAndBackgroundInstitution.save(flush:true, failOnError:true)
         }
     }
 
@@ -158,7 +158,7 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
 
         def admr = new AdmissionRequest(code: "TTTT", description: "TTTTT", tableName: "TTTTT", voiceResponseMsgNumber: 1, voiceResponseEligIndicator: "T", displayWebIndicator: true, lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
-        admr.save(flush: true)
+        admr.save(flush:true, failOnError:true)
 
         new SourceAndBackgroundInstitution(code: "TTTTT", typeIndicator: "T",
                 srceIndicator: "T", description: "TTTTT", ediCapable: "T", fice: "TTTTT",

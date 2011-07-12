@@ -82,7 +82,7 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivisionIntegrationTes
         geographicRegionAsCostCenterInformationByDisctirctOrDivision.lastModifiedBy = "test"
         geographicRegionAsCostCenterInformationByDisctirctOrDivision.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            geographicRegionAsCostCenterInformationByDisctirctOrDivision.save(flush: true)
+            geographicRegionAsCostCenterInformationByDisctirctOrDivision.save(flush:true, failOnError:true)
         }
     }
 

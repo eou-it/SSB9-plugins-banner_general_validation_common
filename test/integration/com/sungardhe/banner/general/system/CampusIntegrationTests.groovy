@@ -94,7 +94,7 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
     //Update the entity
     campus.description = "Updating description"
     shouldFail(HibernateOptimisticLockingFailureException) {
-      campus.save(flush: true)
+      campus.save(flush:true, failOnError:true)
     }
   }
 

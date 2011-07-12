@@ -94,7 +94,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
         state.lastModifiedBy = "test"
         state.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            state.save(flush: true)
+            state.save(flush:true, failOnError:true)
         }
     }
 

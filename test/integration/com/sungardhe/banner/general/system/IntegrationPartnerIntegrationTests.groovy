@@ -82,7 +82,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
         integrationPartner.lastModifiedBy = "test"
         integrationPartner.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            integrationPartner.save(flush: true)
+            integrationPartner.save(flush:true, failOnError:true)
         }
     }
 

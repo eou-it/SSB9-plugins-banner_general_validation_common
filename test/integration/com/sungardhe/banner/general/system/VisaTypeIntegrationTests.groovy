@@ -98,7 +98,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
         visaType.lastModifiedBy = "test"
         visaType.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            visaType.save(flush: true)
+            visaType.save(flush:true, failOnError:true)
         }
     }
 
@@ -155,7 +155,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
                 voiceResponseEligIndicator: "T", displayWebIndicator: true,
                 lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
-        admr.save(flush: true)
+        admr.save(flush:true, failOnError:true)
 
         def visa = new VisaType(code: "TT", description: "TTTTT", nonResIndicator: "T",
                 voiceResponseMsgNumber: new Integer(1),

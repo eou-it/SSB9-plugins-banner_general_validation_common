@@ -85,7 +85,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
         building.lastModifiedBy = "test"
         building.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            building.save(flush: true)
+            building.save(flush:true, failOnError:true)
         }
     }
 

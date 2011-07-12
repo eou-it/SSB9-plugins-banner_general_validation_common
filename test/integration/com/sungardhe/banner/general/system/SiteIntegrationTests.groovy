@@ -118,7 +118,7 @@ class SiteIntegrationTests extends BaseIntegrationTestCase {
         site.lastModifiedBy = "test"
         site.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            site.save(flush: true)
+            site.save(flush:true, failOnError:true)
         }
     }
 

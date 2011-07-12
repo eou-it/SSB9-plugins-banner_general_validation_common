@@ -93,7 +93,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
     academicYear.description = "Test Description"
     academicYear.sysreqInd = false
     shouldFail(HibernateOptimisticLockingFailureException) {
-      academicYear.save(flush: true)
+      academicYear.save(flush:true, failOnError:true)
     }
   }
 

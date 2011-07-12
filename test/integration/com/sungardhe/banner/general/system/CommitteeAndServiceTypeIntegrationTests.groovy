@@ -85,7 +85,7 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
         committeeAndServiceType.lastModifiedBy = "test"
         committeeAndServiceType.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            committeeAndServiceType.save(flush: true)
+            committeeAndServiceType.save(flush:true, failOnError:true)
         }
     }
 

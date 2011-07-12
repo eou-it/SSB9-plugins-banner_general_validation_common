@@ -44,7 +44,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
 
   void testUpdateSubject() {
     def subject = newValidForCreateSubject()
-    if (!subject.save(flush: true)) {
+    if (!subject.save(flush:true, failOnError:true)) {
       fail("Could not save Subject; SUBJECT ERRORS = " + subject.errors);
     }
     def id = subject.id
@@ -54,7 +54,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
 
     subject.description = "updated"
 
-    if (!subject.save(flush: true)) {
+    if (!subject.save(flush:true, failOnError:true)) {
       fail("Could not update Subject; SUBJECT ERRORS = " + subject.errors);
     }
     subject = Subject.get(id)
@@ -66,7 +66,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
 
   void testDeleteSubject() {
     def subject = newValidForCreateSubject()
-    if (!subject.save(flush: true)) {
+    if (!subject.save(flush:true, failOnError:true)) {
       fail("Could not save Subject; SUBJECT ERRORS = " + subject.errors);
     }
     def id = subject.id
@@ -93,7 +93,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
     subject.vrMsgNo = 21
     subject.dispWebInd = false
     shouldFail(HibernateOptimisticLockingFailureException) {
-      subject.save(flush: true)
+      subject.save(flush:true, failOnError:true)
     }
   }
 

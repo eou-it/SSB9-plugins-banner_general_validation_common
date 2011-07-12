@@ -98,7 +98,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
         admissionRequest.lastModifiedBy = "test"
         admissionRequest.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            admissionRequest.save(flush: true)
+            admissionRequest.save(flush:true, failOnError:true)
         }
     }
 

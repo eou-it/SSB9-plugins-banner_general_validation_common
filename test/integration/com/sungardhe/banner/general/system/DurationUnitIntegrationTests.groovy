@@ -115,7 +115,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     durationUnit.numberOfDays = 43.34
     durationUnit.vrMsgNo = 3
     shouldFail(HibernateOptimisticLockingFailureException) {
-      durationUnit.save(flush: true)
+      durationUnit.save(flush:true, failOnError:true)
     }
   }
 

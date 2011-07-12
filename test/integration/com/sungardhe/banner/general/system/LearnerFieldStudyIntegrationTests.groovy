@@ -83,7 +83,7 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
     learnerFieldStudy.description = "updated description"
     learnerFieldStudy.systemRequiredIndicator = true
     shouldFail(HibernateOptimisticLockingFailureException) {
-      learnerFieldStudy.save(flush: true)
+      learnerFieldStudy.save(flush:true, failOnError:true)
     }
   }
 

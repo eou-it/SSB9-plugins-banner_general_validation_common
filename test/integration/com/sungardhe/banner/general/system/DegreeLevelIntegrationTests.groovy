@@ -86,7 +86,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
         degreeLevel.lastModifiedBy = "test"
         degreeLevel.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            degreeLevel.save(flush: true)
+            degreeLevel.save(flush:true, failOnError:true)
         }
     }
 

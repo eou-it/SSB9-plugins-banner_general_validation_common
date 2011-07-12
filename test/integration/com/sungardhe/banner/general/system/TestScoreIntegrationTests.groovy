@@ -102,7 +102,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
         }
         entity.description = "This better fail"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            entity.save(flush: true)
+            entity.save(flush:true, failOnError:true)
         }
     }
 

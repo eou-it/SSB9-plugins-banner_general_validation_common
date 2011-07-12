@@ -85,7 +85,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
         function.lastModifiedBy = "test"
         function.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            function.save(flush: true)
+            function.save(flush:true, failOnError:true)
         }
     }
 

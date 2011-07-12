@@ -56,7 +56,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
 
   void testUpdateLevel() {
     def level = newValidForCreateLevel()
-    if (!level.save(flush: true)) {
+    if (!level.save(flush:true, failOnError:true)) {
       fail("Could not save Level; LEVEL ERRORS = " + level.errors);
     }
     def id = level.id
@@ -66,7 +66,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
 
     level.description = "updated"
 
-    if (!level.save(flush: true)) {
+    if (!level.save(flush:true, failOnError:true)) {
       fail("Could not update Level; LEVEL ERRORS = " + level.errors);
     }
     level = Level.get(id)
@@ -78,7 +78,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
 
   void testDeleteLevel() {
     def level = newValidForCreateLevel()
-    if (!level.save(flush: true)) {
+    if (!level.save(flush:true, failOnError:true)) {
       fail("Could not save Level; LEVEL ERRORS = " + level.errors);
     }
     def id = level.id
@@ -104,7 +104,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
     //Update the entity
     level.description = "Test Description"
     shouldFail(HibernateOptimisticLockingFailureException) {
-      level.save(flush: true)
+      level.save(flush:true, failOnError:true)
     }
   }
 

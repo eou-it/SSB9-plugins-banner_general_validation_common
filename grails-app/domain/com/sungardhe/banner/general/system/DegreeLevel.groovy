@@ -94,7 +94,7 @@ class DegreeLevel implements Serializable {
 		code(nullable:false, maxSize:2)
 		description(nullable:false, maxSize:30)
 		lastModified(nullable:true)
-		numericValue(nullable:true, maxSize:22)
+		numericValue(nullable:true)
 		lastModifiedBy(nullable:true, maxSize:30)
 		dataOrigin(nullable:true, maxSize:30)
 

@@ -83,7 +83,7 @@ class Building implements Serializable {
         code(nullable: false, maxSize: 6)
         description(nullable: false, maxSize: 30)
         lastModified(nullable: true)
-        voiceResponseMsgNumber(nullable: true, maxSize: 22, scale: 0)
+        voiceResponseMsgNumber(nullable: true, scale: 0)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
 

@@ -106,7 +106,7 @@ class AdmissionRequest implements Serializable {
     description(nullable: false, maxSize: 30)
     tableName(nullable: true, maxSize: 7)
     lastModified(nullable: true)
-    voiceResponseMsgNumber(nullable: true, maxSize: 22)
+    voiceResponseMsgNumber(nullable: true)
     voiceResponseEligIndicator(nullable: true, maxSize: 1)
     displayWebIndicator(nullable: false)
     lastModifiedBy(nullable: true, maxSize: 30)

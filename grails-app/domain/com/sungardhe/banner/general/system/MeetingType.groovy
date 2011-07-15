@@ -100,7 +100,7 @@ class MeetingType implements Serializable {
 		systemRequiredIndicator(nullable:false)
 		lastModified(nullable:true)
 		lastModifiedBy(nullable:true, maxSize:30)
-		voiceResponseMsgNumber(nullable:true, maxSize:22, scale:0)
+		voiceResponseMsgNumber(nullable:true, scale:0)
 		dataOrigin(nullable:true, maxSize:30)
  
 		/**

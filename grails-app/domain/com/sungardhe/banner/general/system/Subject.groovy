@@ -88,8 +88,8 @@ class Subject implements Serializable {
   static constraints = {
     code(nullable: false, maxSize: 4)
     description(nullable: true, maxSize: 30)
-    vrMsgNo(nullable: true, maxSize: 22)
-    dispWebInd(nullable: false, maxSize: 1)
+    vrMsgNo(nullable: true)
+    dispWebInd(nullable: false)
     lastModified(nullable: true)
     lastModifiedBy(nullable: true, maxSize: 30)
     dataOrigin(nullable: true, maxSize: 30)

@@ -109,9 +109,9 @@ class Level implements Serializable {
   static constraints = {
     code(nullable: false, maxSize: 2)
     description(nullable: false, maxSize: 30)
-    acadInd(nullable: true, maxSize: 1)
-    ceuInd(nullable: false, maxSize: 1)
-    systemReqInd(nullable: true, maxSize: 1)
+    acadInd(nullable: true)
+    ceuInd(nullable: false)
+    systemReqInd(nullable: true)
     vrMsgNo(nullable: true)
     ediEquiv(nullable: true, maxSize: 2)
     lastModified(nullable: true)

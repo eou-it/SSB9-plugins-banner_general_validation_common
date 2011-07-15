@@ -77,7 +77,7 @@ class InstructionalMethod implements Serializable {
 	static constraints = {
 		code(nullable:false, maxSize:5)
 		description(nullable:false, maxSize:30)
-		voiceResponseMessageNumber(nullable:true, maxSize:22)
+		voiceResponseMessageNumber(nullable:true)
         // While these are required in the database, we'll set them via a callback if necessary
         dataOrigin(nullable: true)
         lastModified(nullable:true)

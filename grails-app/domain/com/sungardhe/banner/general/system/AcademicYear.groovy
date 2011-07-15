@@ -86,7 +86,7 @@ class AcademicYear implements Serializable {
   static constraints = {
     code(nullable: false, maxSize: 4)
     description(nullable: true, maxSize: 30)
-    sysreqInd(nullable: true, maxSize: 1)
+    sysreqInd(nullable: true)
     lastModified(nullable: true)
     lastModifiedBy(nullable: true, maxSize: 30)
     dataOrigin(nullable: true, maxSize: 30)

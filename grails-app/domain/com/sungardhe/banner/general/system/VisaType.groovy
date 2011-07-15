@@ -115,12 +115,12 @@ class VisaType implements Serializable {
 		description(nullable:false, maxSize:30)
 		lastModified(nullable:true)
 		nonResIndicator(nullable:true, maxSize:1)
-		voiceResponseMsgNumber(nullable:true, maxSize:22)
-		statscanCde2(nullable:true, maxSize:22)
+		voiceResponseMsgNumber(nullable:true)
+		statscanCde2(nullable:true)
 		sevisEquiv(nullable:true, maxSize:2)
 		lastModifiedBy(nullable:true, maxSize:30)
 		dataOrigin(nullable:true, maxSize:30)
-        admrCode(nullable:true, maxSize:4)
+        admrCode(nullable:true)
  
 		/**
 	     * Please put all the custom tests in this protected section to protect the code

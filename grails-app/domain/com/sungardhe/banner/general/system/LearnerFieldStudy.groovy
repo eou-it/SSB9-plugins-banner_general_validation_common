@@ -86,7 +86,7 @@ class LearnerFieldStudy implements Serializable {
   static constraints = {
     code(nullable: false, maxSize: 15)
     description(nullable: false, maxSize: 30)
-    systemRequiredIndicator(nullable: false, maxSize: 1)
+    systemRequiredIndicator(nullable: false)
     dataOrigin(nullable: false, maxSize: 30)
   }
 

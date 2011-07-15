@@ -126,10 +126,10 @@ class SourceAndBackgroundInstitution implements Serializable {
 		lastModified(nullable:true)
 		ediCapable(nullable:true, maxSize:1)
 		fice(nullable:true, maxSize:6)
-		voiceResponseMsgNumber(nullable:true, maxSize:22)
+		voiceResponseMsgNumber(nullable:true)
 		lastModifiedBy(nullable:true, maxSize:30)
 		dataOrigin(nullable:true, maxSize:30)
-        admrCode(nullable:true, maxSize:4)
+        admrCode(nullable:true)
  
 		/**
 	     * Please put all the custom tests in this protected section to protect the code

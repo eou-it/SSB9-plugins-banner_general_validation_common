@@ -171,7 +171,7 @@ class HoldType implements Serializable {
         description(nullable:true, maxSize:30)
         accountsReceivableHoldIndicator(nullable:true, maxSize:1, inList:["Y"])
         enrollmentVerificationHoldIndicator(nullable:true, maxSize:1, inList:["Y"])
-        voiceResponseMessageNumber(nullable:true, maxSize:6, scale:0)
+        voiceResponseMessageNumber(nullable:true, scale:0)
         displayWebIndicator(nullable:false)
         applicationHoldIndicator(nullable:false)
         complianceHoldIndicator(nullable:false)

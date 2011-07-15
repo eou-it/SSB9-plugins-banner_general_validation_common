@@ -105,9 +105,9 @@ class CIPCode implements Serializable {
   static constraints = {
     code(nullable: false, maxSize: 6)
     description(nullable: false, maxSize: 30)
-    cipcAIndicator(nullable: true, maxSize: 1)
-    cipcBIndicator(nullable: true, maxSize: 1)
-    cipcCIndicator(nullable: true, maxSize: 1)
+    cipcAIndicator(nullable: true)
+    cipcBIndicator(nullable: true)
+    cipcCIndicator(nullable: true)
     sp04Program(nullable: true, maxSize: 5)
     lastModified(nullable: true)
     lastModifiedBy(nullable: true, maxSize: 30)

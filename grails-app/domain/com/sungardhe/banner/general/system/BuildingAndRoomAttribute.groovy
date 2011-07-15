@@ -97,7 +97,7 @@ class BuildingAndRoomAttribute implements Serializable {
         code(nullable: false, maxSize: 4)
         description(nullable: true, maxSize: 30)
         lastModified(nullable: true)
-        schedulerNumber(nullable: true, maxSize: 22, scale: 0)
+        schedulerNumber(nullable: true, scale: 0)
         autoSchedulerIndicator(nullable: false)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)

@@ -81,8 +81,8 @@ class Partition implements Serializable {
     static constraints = {
         code(nullable:false, maxSize:7)
         description(nullable:false, maxSize:30)
-        schedulerNumber(nullable:false, maxSize:22)
-        campus(nullable:true, maxSize:3)
+        schedulerNumber(nullable:false)
+        campus(nullable:true)
         dataOrigin(nullable: true)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true)

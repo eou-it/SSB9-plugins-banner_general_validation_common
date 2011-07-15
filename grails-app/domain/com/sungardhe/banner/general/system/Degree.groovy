@@ -151,12 +151,12 @@ class Degree implements Serializable {
         financeCountIndicator(nullable: true, maxSize: 1)
         lastModified(nullable: true)
         systemRequiredIndicator(nullable: true, maxSize: 1)
-        voiceResponseMsgNumber(nullable: true, maxSize: 22)
+        voiceResponseMsgNumber(nullable: true)
         displayWebIndicator(nullable: false)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
-        awardCatCode(nullable: true, maxSize: 2)
-        degreeLevelCode(nullable: true, maxSize: 2)
+        awardCatCode(nullable: true)
+        degreeLevelCode(nullable: true)
 
         /**
          * Please put all the custom tests in this protected section to protect the code

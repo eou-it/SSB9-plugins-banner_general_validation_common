@@ -93,7 +93,7 @@ class Department implements Serializable {
     code(nullable: false, maxSize: 4)
     description(nullable: false, maxSize: 30)
     systemRequiredIndicator(nullable: true, maxSize: 1, inList: ['Y', 'N'])
-    voiceResponseMessageNumber(nullable: true, maxSize: 6)
+    voiceResponseMessageNumber(nullable: true)
     lastModified(nullable: true)
     lastModifiedBy(nullable: true, maxSize: 30)
     dataOrigin(nullable: true, maxSize: 30)

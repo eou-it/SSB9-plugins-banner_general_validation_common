@@ -154,7 +154,7 @@ class TestScore implements Serializable {
         dataType(nullable: false, maxSize: 1)
         minimumValue(nullable: true, maxSize: 5)
         maximumValue(nullable: true, maxSize: 5)
-        systemRequiredIndicator(nullable: true, maxSize: 1)
+        systemRequiredIndicator(nullable: true)
         managementInformationSystemCode(nullable: true, maxSize: 6)
         assessmentForm(nullable: true, maxSize: 1)
         voiceResponseMessageNumber(nullable: true, max: 999999)

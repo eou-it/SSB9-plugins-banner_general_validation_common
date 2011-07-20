@@ -23,11 +23,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "STVTERM")
 @NamedQueries(value = [
-@NamedQuery(name = "Term.fetchPreviousTerm",
-query = """FROM Term a
-           WHERE a.code = ( SELECT MAX(b.code)
-                            FROM Term b
-                            WHERE b.code < :term)""")
+    @NamedQuery(name = "Term.fetchPreviousTerm",
+                query = """FROM Term a WHERE a.code = ( SELECT MAX(b.code) FROM Term b WHERE b.code < :term)"""),
+    @NamedQuery(name = "Term.fetchMaxTermWithHousingStartDateLessThanEqualDate",
+                query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.housingStartDate <= :housingStartDate)""")
 ])
 
 class Term implements Serializable {
@@ -258,11 +257,19 @@ class Term implements Serializable {
         result = 31 * result + (trmt_code != null ? trmt_code.hashCode() : 0);
         return result;
     }
-     /**
+
+
+    /**
      * Please put all the custom methods/code in this protected section to protect the code
      * from being overwritten on re-generation
      */
     /*PROTECTED REGION ID(term_custom_methods) ENABLED START*/
+
+    public static Term fetchMaxTermWithHousingStartDateLessThanEqualDate(Date housingStartDate) {
+        Term.withSession { session ->
+            session.getNamedQuery('Term.fetchMaxTermWithHousingStartDateLessThanEqualDate').setDate('housingStartDate', housingStartDate).list()[0]
+        }
+    }
 
     /*PROTECTED REGION END*/
 }

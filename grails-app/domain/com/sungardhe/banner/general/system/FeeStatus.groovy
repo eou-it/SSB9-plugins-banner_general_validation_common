@@ -10,7 +10,7 @@
  ****************************************************************************** */
 /**
  Banner Automator Version: 0.1.1
- Generated: Fri Apr 01 15:11:53 IST 2011
+ Generated: Fri Apr 01 14:11:59 IST 2011
  */
 package com.sungardhe.banner.general.system
 
@@ -20,84 +20,86 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.Transient
 import org.hibernate.annotations.GenericGenerator
-import javax.persistence.GenerationType
-import javax.persistence.SequenceGenerator
 
 /**
- * System Indicator Validation Table
+ * Fee Status Code Table
  */
-/*PROTECTED REGION ID(systemindicator_namedqueries) ENABLED START*/
+/*PROTECTED REGION ID(feestatus_namedqueries) ENABLED START*/
 //TODO: NamedQueries that needs to be ported:
 /**
  * Where clause on this entity present in forms:
  * Order by clause on this entity present in forms:
- * Form Name: GTVSYSI
- *  gtvsysi_code
+ * Form Name: GTVFEES
+ *  gtvfees_code
 
  */
 /*PROTECTED REGION END*/
 @Entity
-@Table(name = "GTVSYSI")
-class SystemIndicator implements Serializable {
+@Table(name = "GTVFEES")
+class FeeStatus implements Serializable {
 
-   /**
-    * Surrogate ID for GTVSYSI
-    */
+    /**
+     * Surrogate ID for GTVFEES
+     */
     @Id
-    @Column(name = "GTVSYSI_SURROGATE_ID")
-    @SequenceGenerator(name = "GTVSYSI_SEQ_GEN", allocationSize = 1, sequenceName = "GTVSYSI_SURROGATE_ID_SEQUENCE")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVSYSI_SEQ_GEN")
+    @Column(name = "GTVFEES_SURROGATE_ID")
+    @GeneratedValue(generator = "triggerAssigned")
+    @GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
     Long id
 
     /**
-     * Optimistic lock token for GTVSYSI
+     * Optimistic lock token for GTVFEES
      */
     @Version
-    @Column(name = "GTVSYSI_VERSION", nullable = false, precision = 19)
+    @Column(name = "GTVFEES_VERSION", nullable = false, precision = 19)
     Long version
 
     /**
-     * CODE: System indicator which uniquely identifies this record.
+     * Fee Status Code.
      */
-    @Column(name = "GTVSYSI_CODE", nullable = false, unique = true, length = 2)
+    @Column(name = "GTVFEES_CODE", nullable = false, unique = true, length = 5)
     String code
 
     /**
-     * DESCRIPTION: Description of this code.
+     * Fee Status Code Description.
      */
-    @Column(name = "GTVSYSI_DESC", nullable = false, length = 30)
+    @Column(name = "GTVFEES_DESC", nullable = false, length = 30)
     String description
 
     /**
-     * ACTIVITY DATE: Date that record was created or last updated.
+     * Indicator for whether or not person paid for function.
      */
-    @Column(name = "GTVSYSI_ACTIVITY_DATE")
+    @Column(name = "GTVFEES_PAID_IND", length = 1)
+    String paidIndicator
+
+    /**
+     * Date Fee Status code was last created or modified.
+     */
+    @Column(name = "GTVFEES_ACTIVITY_DATE")
     Date lastModified
 
     /**
-     * Last modified by column for GTVSYSI
+     * Last modified by column for GTVFEES
      */
-    @Column(name = "GTVSYSI_USER_ID", length = 30)
+    @Column(name = "GTVFEES_USER_ID", length = 30)
     String lastModifiedBy
 
     /**
-     * Data origin column for GTVSYSI
+     * Data origin column for GTVFEES
      */
-    @Column(name = "GTVSYSI_DATA_ORIGIN", length = 30)
+    @Column(name = "GTVFEES_DATA_ORIGIN", length = 30)
     String dataOrigin
 
 
 
     public String toString() {
-        """SystemIndicator[
+        """FeeStatus[
 					id=$id,
 					version=$version,
 					code=$code,
 					description=$description,
+					paidIndicator=$paidIndicator,
 					lastModified=$lastModified,
 					lastModifiedBy=$lastModifiedBy,
 					dataOrigin=$dataOrigin]"""
@@ -106,12 +108,13 @@ class SystemIndicator implements Serializable {
 
     boolean equals(o) {
         if (this.is(o)) return true
-        if (!(o instanceof SystemIndicator)) return false
-        SystemIndicator that = (SystemIndicator) o
+        if (!(o instanceof FeeStatus)) return false
+        FeeStatus that = (FeeStatus) o
         if (id != that.id) return false
         if (version != that.version) return false
         if (code != that.code) return false
         if (description != that.description) return false
+        if (paidIndicator != that.paidIndicator) return false
         if (lastModified != that.lastModified) return false
         if (lastModifiedBy != that.lastModifiedBy) return false
         if (dataOrigin != that.dataOrigin) return false
@@ -125,6 +128,7 @@ class SystemIndicator implements Serializable {
         result = 31 * result + (version != null ? version.hashCode() : 0)
         result = 31 * result + (code != null ? code.hashCode() : 0)
         result = 31 * result + (description != null ? description.hashCode() : 0)
+        result = 31 * result + (paidIndicator != null ? paidIndicator.hashCode() : 0)
         result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
         result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
@@ -133,8 +137,9 @@ class SystemIndicator implements Serializable {
 
 
     static constraints = {
-        code(nullable: false, maxSize: 2)
+        code(nullable: false, maxSize: 5)
         description(nullable: false, maxSize: 30)
+        paidIndicator(nullable: true, maxSize: 1, inList: ["Y"])
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
@@ -142,12 +147,12 @@ class SystemIndicator implements Serializable {
          * Please put all the custom constraints in this protected section to protect the code
          * from being overwritten on re-generation
          */
-        /*PROTECTED REGION ID(systemindicator_custom_constraints) ENABLED START*/
+        /*PROTECTED REGION ID(feestatus_custom_constraints) ENABLED START*/
 
         /*PROTECTED REGION END*/
     }
 
-    /*PROTECTED REGION ID(systemindicator_readonly_properties) ENABLED START*/
+    /*PROTECTED REGION ID(feestatus_readonly_properties) ENABLED START*/
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
     /*PROTECTED REGION END*/
@@ -155,7 +160,7 @@ class SystemIndicator implements Serializable {
      * Please put all the custom/transient attributes with @Transient annotations in this protected section to protect the code
      * from being overwritten on re-generation
      */
-    /*PROTECTED REGION ID(systemindicator_custom_attributes) ENABLED START*/
+    /*PROTECTED REGION ID(feestatus_custom_attributes) ENABLED START*/
 
     /*PROTECTED REGION END*/
 
@@ -163,7 +168,7 @@ class SystemIndicator implements Serializable {
      * Please put all the custom methods/code in this protected section to protect the code
      * from being overwritten on re-generation
      */
-    /*PROTECTED REGION ID(systemindicator_custom_methods) ENABLED START*/
+    /*PROTECTED REGION ID(feestatus_custom_methods) ENABLED START*/
 
     /*PROTECTED REGION END*/
 }

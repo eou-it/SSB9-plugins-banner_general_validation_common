@@ -9,91 +9,87 @@
  WITHOUT THE WRITTEN PERMISSION OF THE SAID COMPANY
  ****************************************************************************** */
 /**
- Banner Automator Version: 0.1.1
- Generated: Fri Apr 01 15:11:53 IST 2011
+ Banner Automator Version: 1.21
+ Generated: Thu Jun 16 04:44:41 EDT 2011
  */
 package com.sungardhe.banner.general.system
 
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.Version
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.Transient
-import org.hibernate.annotations.GenericGenerator
-import javax.persistence.GenerationType
-import javax.persistence.SequenceGenerator
 
 /**
- * System Indicator Validation Table
+ * Address Source Code Validation Table.
  */
-/*PROTECTED REGION ID(systemindicator_namedqueries) ENABLED START*/
+/*PROTECTED REGION ID(addresssource_namedqueries) ENABLED START*/
 //TODO: NamedQueries that needs to be ported:
 /**
  * Where clause on this entity present in forms:
  * Order by clause on this entity present in forms:
- * Form Name: GTVSYSI
- *  gtvsysi_code
+ * Form Name: STVASRC
+ *  stvasrc_code
 
  */
 /*PROTECTED REGION END*/
 @Entity
-@Table(name = "GTVSYSI")
-class SystemIndicator implements Serializable {
+@Table(name = "STVASRC")
+class AddressSource implements Serializable {
 
-   /**
-    * Surrogate ID for GTVSYSI
-    */
+    /**
+     * Surrogate ID for STVASRC
+     */
     @Id
-    @Column(name = "GTVSYSI_SURROGATE_ID")
-    @SequenceGenerator(name = "GTVSYSI_SEQ_GEN", allocationSize = 1, sequenceName = "GTVSYSI_SURROGATE_ID_SEQUENCE")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVSYSI_SEQ_GEN")
+    @Column(name = "STVASRC_SURROGATE_ID")
+    @SequenceGenerator(name = "STVASRC_SEQ_GEN", allocationSize = 1, sequenceName = "STVASRC_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVASRC_SEQ_GEN")
     Long id
 
     /**
-     * Optimistic lock token for GTVSYSI
+     * Optimistic lock token for STVASRC
      */
     @Version
-    @Column(name = "GTVSYSI_VERSION", nullable = false, precision = 19)
+    @Column(name = "STVASRC_VERSION", nullable = false, precision = 19)
     Long version
 
     /**
-     * CODE: System indicator which uniquely identifies this record.
+     * Address Source Code.
      */
-    @Column(name = "GTVSYSI_CODE", nullable = false, unique = true, length = 2)
+    @Column(name = "STVASRC_CODE", nullable = false, unique = true, length = 4)
     String code
 
     /**
-     * DESCRIPTION: Description of this code.
+     * Address Source Code Description.
      */
-    @Column(name = "GTVSYSI_DESC", nullable = false, length = 30)
+    @Column(name = "STVASRC_DESC", nullable = false, length = 30)
     String description
 
     /**
-     * ACTIVITY DATE: Date that record was created or last updated.
+     * Date of last change for address source code record.
      */
-    @Column(name = "GTVSYSI_ACTIVITY_DATE")
+    @Column(name = "STVASRC_ACTIVITY_DATE")
     Date lastModified
 
     /**
-     * Last modified by column for GTVSYSI
+     * Last modified by column for STVASRC
      */
-    @Column(name = "GTVSYSI_USER_ID", length = 30)
+    @Column(name = "STVASRC_USER_ID", length = 30)
     String lastModifiedBy
 
     /**
-     * Data origin column for GTVSYSI
+     * Data origin column for STVASRC
      */
-    @Column(name = "GTVSYSI_DATA_ORIGIN", length = 30)
+    @Column(name = "STVASRC_DATA_ORIGIN", length = 30)
     String dataOrigin
 
 
 
     public String toString() {
-        """SystemIndicator[
+        """AddressSource[
 					id=$id,
 					version=$version,
 					code=$code,
@@ -106,8 +102,8 @@ class SystemIndicator implements Serializable {
 
     boolean equals(o) {
         if (this.is(o)) return true
-        if (!(o instanceof SystemIndicator)) return false
-        SystemIndicator that = (SystemIndicator) o
+        if (!(o instanceof AddressSource)) return false
+        AddressSource that = (AddressSource) o
         if (id != that.id) return false
         if (version != that.version) return false
         if (code != that.code) return false
@@ -133,7 +129,7 @@ class SystemIndicator implements Serializable {
 
 
     static constraints = {
-        code(nullable: false, maxSize: 2)
+        code(nullable: false, maxSize: 4)
         description(nullable: false, maxSize: 30)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
@@ -142,12 +138,12 @@ class SystemIndicator implements Serializable {
          * Please put all the custom constraints in this protected section to protect the code
          * from being overwritten on re-generation
          */
-        /*PROTECTED REGION ID(systemindicator_custom_constraints) ENABLED START*/
+        /*PROTECTED REGION ID(addresssource_custom_constraints) ENABLED START*/
 
         /*PROTECTED REGION END*/
     }
 
-    /*PROTECTED REGION ID(systemindicator_readonly_properties) ENABLED START*/
+    /*PROTECTED REGION ID(addresssource_readonly_properties) ENABLED START*/
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
     /*PROTECTED REGION END*/
@@ -155,7 +151,7 @@ class SystemIndicator implements Serializable {
      * Please put all the custom/transient attributes with @Transient annotations in this protected section to protect the code
      * from being overwritten on re-generation
      */
-    /*PROTECTED REGION ID(systemindicator_custom_attributes) ENABLED START*/
+    /*PROTECTED REGION ID(addresssource_custom_attributes) ENABLED START*/
 
     /*PROTECTED REGION END*/
 
@@ -163,7 +159,7 @@ class SystemIndicator implements Serializable {
      * Please put all the custom methods/code in this protected section to protect the code
      * from being overwritten on re-generation
      */
-    /*PROTECTED REGION ID(systemindicator_custom_methods) ENABLED START*/
+    /*PROTECTED REGION ID(addresssource_custom_methods) ENABLED START*/
 
     /*PROTECTED REGION END*/
 }

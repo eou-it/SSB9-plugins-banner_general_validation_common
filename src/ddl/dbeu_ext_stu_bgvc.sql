@@ -26,6 +26,7 @@ REM connect dbeu_owner/&&dbeu_password
 execute dbeu_util.extend_table('SATURN','STVACAT','S',FALSE);
 execute dbeu_util.extend_table('SATURN','STVACYR','S',FALSE);
 execute dbeu_util.extend_table('SATURN','STVADMR','S',FALSE);
+execute dbeu_util.extend_table('SATURN','STVASRC','S',FALSE);
 execute dbeu_util.extend_table('SATURN','STVATYP','S',FALSE);
 execute dbeu_util.extend_table('SATURN','STVBLDG','S',FALSE);
 execute dbeu_util.extend_table('SATURN','STVCAMP','S',FALSE);

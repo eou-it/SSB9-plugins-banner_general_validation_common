@@ -1,4 +1,4 @@
-<plugin name='banner-general-validation-common' version='0.0.4' grailsVersion='1.3.5 &gt; *'>
+<plugin name='banner-general-validation-common' version='0.0.5' grailsVersion='1.3.5 &gt; *'>
   <author>SunGard Higher Education</author>
   <authorEmail>horizon-support@sungardhe.com</authorEmail>
   <title>BannerGeneralOverall Plugin</title>
@@ -11,6 +11,8 @@
     <resource>UrlMappings</resource>
     <resource>spring.resources</resource>
     <resource>com.sungardhe.banner.general.system.AcademicYear</resource>
+    <resource>com.sungardhe.banner.general.system.AddressSource</resource>
+    <resource>com.sungardhe.banner.general.system.AddressType</resource>
     <resource>com.sungardhe.banner.general.system.AdmissionRequest</resource>
     <resource>com.sungardhe.banner.general.system.AwardCategory</resource>
     <resource>com.sungardhe.banner.general.system.Building</resource>
@@ -27,8 +29,13 @@
     <resource>com.sungardhe.banner.general.system.Disability</resource>
     <resource>com.sungardhe.banner.general.system.DisabilityAssistance</resource>
     <resource>com.sungardhe.banner.general.system.DurationUnit</resource>
+    <resource>com.sungardhe.banner.general.system.EventType</resource>
+    <resource>com.sungardhe.banner.general.system.FeeStatus</resource>
     <resource>com.sungardhe.banner.general.system.FgacDomain</resource>
     <resource>com.sungardhe.banner.general.system.Function</resource>
+    <resource>com.sungardhe.banner.general.system.FunctionEmphasis</resource>
+    <resource>com.sungardhe.banner.general.system.FunctionPurpose</resource>
+    <resource>com.sungardhe.banner.general.system.FunctionStatus</resource>
     <resource>com.sungardhe.banner.general.system.GeographicRegionAsCostCenterInformationByDisctirctOrDivision</resource>
     <resource>com.sungardhe.banner.general.system.HoldType</resource>
     <resource>com.sungardhe.banner.general.system.InstitutionalDescription</resource>
@@ -41,19 +48,27 @@
     <resource>com.sungardhe.banner.general.system.MedicalCondition</resource>
     <resource>com.sungardhe.banner.general.system.MedicalEquipment</resource>
     <resource>com.sungardhe.banner.general.system.MeetingType</resource>
+    <resource>com.sungardhe.banner.general.system.Menu</resource>
     <resource>com.sungardhe.banner.general.system.NameType</resource>
     <resource>com.sungardhe.banner.general.system.Nation</resource>
     <resource>com.sungardhe.banner.general.system.Originator</resource>
+    <resource>com.sungardhe.banner.general.system.ParticipantType</resource>
     <resource>com.sungardhe.banner.general.system.Partition</resource>
     <resource>com.sungardhe.banner.general.system.PhoneRate</resource>
+    <resource>com.sungardhe.banner.general.system.Rating</resource>
+    <resource>com.sungardhe.banner.general.system.Relationship</resource>
     <resource>com.sungardhe.banner.general.system.RoomRate</resource>
     <resource>com.sungardhe.banner.general.system.RoomStatus</resource>
+    <resource>com.sungardhe.banner.general.system.Rsvp</resource>
     <resource>com.sungardhe.banner.general.system.ScheduleToolStatus</resource>
     <resource>com.sungardhe.banner.general.system.SdaCrosswalkConversion</resource>
     <resource>com.sungardhe.banner.general.system.Site</resource>
     <resource>com.sungardhe.banner.general.system.SourceAndBackgroundInstitution</resource>
     <resource>com.sungardhe.banner.general.system.State</resource>
     <resource>com.sungardhe.banner.general.system.Subject</resource>
+    <resource>com.sungardhe.banner.general.system.SubjectIndex</resource>
+    <resource>com.sungardhe.banner.general.system.SystemIndicator</resource>
+    <resource>com.sungardhe.banner.general.system.TelephoneType</resource>
     <resource>com.sungardhe.banner.general.system.Term</resource>
     <resource>com.sungardhe.banner.general.system.TermType</resource>
     <resource>com.sungardhe.banner.general.system.TestScore</resource>

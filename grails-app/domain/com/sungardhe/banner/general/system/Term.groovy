@@ -56,12 +56,14 @@ class Term implements Serializable {
      * This field identifies the term start date and is formatted DD-MON-YY.
      */
     @Column(name = "STVTERM_START_DATE", nullable = false)
+    @Temporal(TemporalType.DATE)
     Date startDate
 
     /**
      * This field identifies the term end date and is fomatted DD-MON-YY.
      */
     @Column(name = "STVTERM_END_DATE", nullable = false)
+    @Temporal(TemporalType.DATE)
     Date endDate
 
     /**
@@ -98,12 +100,14 @@ class Term implements Serializable {
      * Housing Start Date.
      */
     @Column(name = "STVTERM_HOUSING_START_DATE", nullable = false)
+    @Temporal(TemporalType.DATE)
     Date housingStartDate
 
     /**
      * Housing End Date.
      */
     @Column(name = "STVTERM_HOUSING_END_DATE", nullable = false)
+    @Temporal(TemporalType.DATE)
     Date housingEndDate
 
     /**

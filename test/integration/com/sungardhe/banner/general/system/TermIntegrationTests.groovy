@@ -190,8 +190,6 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    //TODO enable this after Term has been changed to use javax.persistence.TemporalType or we have found another workaround
-    @Ignore
     void testFetchMaxTermWithHousingStartDateLessThanEqualDate() {
         def cal = Calendar.instance
         cal.set(2001, 11, 31)
@@ -199,27 +197,18 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
         def housingEndDate = housingStartDate.plus( 4 )
         def term = createValidTerm(code: "ZZZZ99", description: "TT", housingStartDate: housingStartDate, housingEndDate: housingEndDate)
 
-        save term
+        term.save(flush:true, failOnError:true)
         assertNotNull(term.id)
 
-//        def a = Term.find("from Term as t where t.code = (select max(tm.code) from Term as tm where tm.housingStartDate <= :hsd) ",
-//                [hsd: housingStartDate])
-
-        //Case: search date before the housingStartDate
+        //Case: search date before the housingStartDate, should not return the newly created term
         def date = term.housingStartDate.previous()
         def returnedValue = Term.fetchMaxTermWithHousingStartDateLessThanEqualDate( date )
-//        def returnedValue = Term.find("from Term as t where t.code = (select max(tm.code) from Term as tm where tm.housingStartDate <= :hsd) ",
-//                [hsd: date])
         if (returnedValue) {
             assertFalse term == returnedValue
         }
 
-        //Case: search date on the housingStartDate
+        //Case: search date on the housingStartDate, should return the newly created term
         date = term.housingStartDate
-        returnedValue = Term.find("from Term as t where t.code = (select max(tm.code) from Term as tm where tm.housingStartDate <= :hsd) ",
-                [hsd: date])
-        assertEquals term, returnedValue
-
         returnedValue= Term.fetchMaxTermWithHousingStartDateLessThanEqualDate( date )
         assertEquals term, returnedValue
 
@@ -228,15 +217,11 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
         cal.roll( Calendar.HOUR_OF_DAY, true )
         date = cal.getTime()
         returnedValue= Term.fetchMaxTermWithHousingStartDateLessThanEqualDate( date )
-//        returnedValue = Term.find("from Term as t where t.code = (select max(tm.code) from Term as tm where tm.housingStartDate <= :hsd) ",
-//                [hsd: date])
         assertEquals term, returnedValue
 
-        //Case: search date after the housingStartDate
+        //Case: search date after the housingStartDate, should return the newly created term
         date = term.housingStartDate.next()
         returnedValue= Term.fetchMaxTermWithHousingStartDateLessThanEqualDate( date )
-//        returnedValue = Term.find("from Term as t where t.code = (select max(tm.code) from Term as tm where tm.housingStartDate <= :hsd) ",
-//                [hsd: date])
         assertEquals term, returnedValue
     }
 

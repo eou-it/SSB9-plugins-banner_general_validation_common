@@ -1,5 +1,5 @@
 /** *****************************************************************************
-  © 2010 SunGard Higher Education.  All Rights Reserved.
+  Â© 2010 SunGard Higher Education.  All Rights Reserved.
 
  CONFIDENTIAL BUSINESS INFORMATION
 
@@ -75,3 +75,5 @@ grails.enable.native2ascii = false
 
 // enable GSP preprocessing: replace head -> g:captureHead, title -> g:captureTitle, meta -> g:captureMeta, body -> g:captureBody
 grails.views.gsp.sitemesh.preprocess = true
+
+seedDataTarget =  ['bgvc': ['/src/groovy/com/sungardhe/banner/seeddata/Data/banner_general_validation_common.xml']]

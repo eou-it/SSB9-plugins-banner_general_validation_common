@@ -25,6 +25,8 @@ import javax.persistence.*
 @NamedQueries(value = [
     @NamedQuery(name = "Term.fetchPreviousTerm",
                 query = """FROM Term a WHERE a.code = ( SELECT MAX(b.code) FROM Term b WHERE b.code < :term)"""),
+    @NamedQuery(name = "Term.fetchMaxTermWithStartDateLessThanGivenDate",
+                query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.startDate <= :givenDate)"""),
     @NamedQuery(name = "Term.fetchMaxTermWithHousingStartDateLessThanEqualDate",
                 query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.housingStartDate <= :housingStartDate)""")
 ])
@@ -272,6 +274,13 @@ class Term implements Serializable {
     public static Term fetchMaxTermWithHousingStartDateLessThanEqualDate(Date housingStartDate) {
         Term.withSession { session ->
             session.getNamedQuery('Term.fetchMaxTermWithHousingStartDateLessThanEqualDate').setDate('housingStartDate', housingStartDate).list()[0]
+        }
+    }
+
+
+    public static Term fetchMaxTermWithStartDateLessThanGivenDate(Date beginDate) {
+        Term.withSession { session ->
+            session.getNamedQuery('Term.fetchMaxTermWithStartDateLessThanGivenDate').setDate('givenDate', beginDate).list()[0]
         }
     }
 

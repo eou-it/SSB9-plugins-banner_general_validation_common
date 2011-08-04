@@ -226,6 +226,17 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchMaxTermWithStartDateLessThanEqualDate() {
+         def term = createValidTerm(code: "WWWW02", description: "ZZZZ01")
+         term.save(flush:true)
+         term.refresh()
+         assertNotNull term.id
+         Term fetchedTerm = Term.fetchMaxTermWithStartDateLessThanGivenDate(new Date()+5)
+         assertEquals term, fetchedTerm
+    }
+
+
+
     private Term createValidTerm(Map p) {
         def academicYear = new AcademicYear(code: "TT", description: "TT", sysreqInd: true, lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")

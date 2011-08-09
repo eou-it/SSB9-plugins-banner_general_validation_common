@@ -47,5 +47,6 @@ execute dbeu_util.extend_table('GENERAL','GTVSDAX','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSUBJ','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSYSI','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GUBINST','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVEMAL','G',FALSE);
 
 

@@ -18,7 +18,10 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * State Code Validation Table
@@ -53,6 +56,7 @@ class State implements Serializable {
 	 * This field identifies the most recent date a record was created or deleted.
 	 */
 	@Column(name="STVSTAT_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

@@ -20,7 +20,10 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Fee Status Code Table
@@ -77,6 +80,7 @@ class FeeStatus implements Serializable {
      * Date Fee Status code was last created or modified.
      */
     @Column(name = "GTVFEES_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

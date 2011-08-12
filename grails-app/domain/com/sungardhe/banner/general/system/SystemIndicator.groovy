@@ -24,7 +24,10 @@ import javax.persistence.NamedQueries
 import javax.persistence.NamedQuery
 import javax.persistence.Transient
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.Type
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
 
 /**
@@ -76,6 +79,7 @@ class SystemIndicator implements Serializable {
      * ACTIVITY DATE: Date that record was created or last updated.
      */
     @Column(name = "GTVSYSI_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

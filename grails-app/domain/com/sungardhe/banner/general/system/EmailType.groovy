@@ -29,6 +29,8 @@ import javax.persistence.GenerationType
 import javax.persistence.SequenceGenerator
 
 import org.hibernate.annotations.GenericGenerator
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import org.hibernate.annotations.Type
 //import com.sungardhe.banner.general.person.PersonEMail
 //import com.sungardhe.banner.general.person.PersonRelatedHold
@@ -96,6 +98,7 @@ class EmailType implements Serializable {
 	 * The date on which the row was added or modified.
 	 */
 	@Column(name = "GTVEMAL_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

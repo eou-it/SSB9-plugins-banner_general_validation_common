@@ -10,6 +10,7 @@
  ****************************************************************************** */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -29,6 +30,7 @@ class MedicalEquipment  implements Serializable {
 	 * This field identifies the most recent date a record was created or updated.
 	 */
 	@Column(name="STVMDEQ_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
     /**

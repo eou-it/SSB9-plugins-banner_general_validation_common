@@ -18,7 +18,10 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Committee Type Code Table
@@ -59,6 +62,7 @@ class CommitteeAndServiceType implements Serializable {
 	 * This field identifies the most current date a record was created or changed.
 	 */
 	@Column(name="STVCOMT_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

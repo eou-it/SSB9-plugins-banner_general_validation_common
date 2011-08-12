@@ -21,7 +21,10 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.Version
+import org.hibernate.annotations.Type
 
 /**
  * Address Source Code Validation Table.
@@ -72,6 +75,7 @@ class AddressSource implements Serializable {
      * Date of last change for address source code record.
      */
     @Column(name = "STVASRC_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

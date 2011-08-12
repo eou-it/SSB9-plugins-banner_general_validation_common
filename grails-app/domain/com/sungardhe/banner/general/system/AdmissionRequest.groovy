@@ -55,6 +55,7 @@ class AdmissionRequest implements Serializable {
    * This field identifies the most current date a record was created or updated.
    */
   @Column(name = "STVADMR_ACTIVITY_DATE")
+  @Temporal(TemporalType.TIMESTAMP)
   Date lastModified
 
   /**

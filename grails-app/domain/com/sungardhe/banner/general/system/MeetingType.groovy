@@ -19,6 +19,8 @@ import javax.persistence.Table
 import javax.persistence.Version
 import org.hibernate.annotations.Type
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
 
 /**
@@ -61,6 +63,7 @@ class MeetingType implements Serializable {
 	 * Activty Date: Date this record entered or last updated
 	 */
 	@Column(name="GTVMTYP_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

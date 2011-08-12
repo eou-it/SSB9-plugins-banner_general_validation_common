@@ -15,6 +15,7 @@ package com.sungardhe.banner.general.system
  * Import Related Entities if they are external to this package
  */
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -50,6 +51,7 @@ class VisaType implements Serializable {
 	 * This field identifies the most recent date a record was created or updated.
 	 */
 	@Column(name="STVVTYP_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

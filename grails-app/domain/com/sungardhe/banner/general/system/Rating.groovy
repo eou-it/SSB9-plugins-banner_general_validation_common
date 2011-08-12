@@ -20,7 +20,10 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Rating Code Validation Table.
@@ -71,6 +74,7 @@ class Rating implements Serializable {
      * Rating Code Activity Date.
      */
     @Column(name = "GTVRTNG_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

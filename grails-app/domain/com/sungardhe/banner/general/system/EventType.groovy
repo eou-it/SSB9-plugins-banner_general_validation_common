@@ -25,7 +25,10 @@ import javax.persistence.NamedQuery
 import javax.persistence.Transient
 import org.hibernate.annotations.GenericGenerator
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Event Type Validation Table
@@ -76,6 +79,7 @@ class EventType implements Serializable {
      * This field identifies the most recent date a record was created or updated.
      */
     @Column(name = "STVETYP_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

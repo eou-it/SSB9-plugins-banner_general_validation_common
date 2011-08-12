@@ -46,6 +46,7 @@ class BuildingAndRoomAttribute implements Serializable {
      * This field identifies the most recent date a record was created or updated.
      */
     @Column(name = "STVRDEF_activity_date")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

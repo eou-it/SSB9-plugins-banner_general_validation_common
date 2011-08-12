@@ -10,6 +10,7 @@
  ****************************************************************************** */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -27,6 +28,7 @@ class MedicalCondition implements Serializable {
 	Long id
 
     @Column (name="STVMEDI_ACTIVITY_DATE", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     @Column (name="STVMEDI_USER_ID", nullable = true, length = 30)

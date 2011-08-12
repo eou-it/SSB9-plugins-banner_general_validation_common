@@ -21,7 +21,10 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.Type
 import javax.persistence.SequenceGenerator
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.GenerationType
 
 /**
@@ -73,6 +76,7 @@ class TargetAudience implements Serializable {
      * Date on which the Code was created or last modified.
      */
     @Column(name = "GTVTARG_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

@@ -18,7 +18,10 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Integration Partner System Code Validation Table.
@@ -59,6 +62,7 @@ class IntegrationPartner implements Serializable {
 	 * ACTIVITY DATE: The date that the information for the row was inserted or updated in the GTVINTP table.
 	 */
 	@Column(name="GTVINTP_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

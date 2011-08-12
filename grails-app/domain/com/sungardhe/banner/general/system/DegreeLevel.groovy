@@ -22,7 +22,10 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Faculty Member Degree Level Validation Table
@@ -57,6 +60,7 @@ class DegreeLevel implements Serializable {
 	 * The activity date
 	 */
 	@Column(name="STVDLEV_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

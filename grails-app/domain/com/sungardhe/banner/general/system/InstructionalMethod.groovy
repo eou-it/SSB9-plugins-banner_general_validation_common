@@ -8,6 +8,7 @@
  ****************************************************************************** */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -42,6 +43,7 @@ class InstructionalMethod implements Serializable {
 	 * Activity Date: Date this record entered or last updated
 	 */
 	@Column(name="gtvinsm_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

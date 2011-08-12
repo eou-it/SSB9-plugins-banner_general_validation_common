@@ -8,6 +8,7 @@
  ****************************************************************************** */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -54,6 +55,7 @@ class Partition implements Serializable {
      * This field identifies the most recent date a record was created/updated
      */
     @Column(name="gtvpars_activity_date")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

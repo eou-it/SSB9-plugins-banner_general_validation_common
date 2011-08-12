@@ -10,6 +10,7 @@
  ****************************************************************************** */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -45,6 +46,7 @@ class NameType implements Serializable {
      * ACTIVITY DATE: The date that this record was created or last updated.
      */
     @Column(name = "GTVNTYP_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

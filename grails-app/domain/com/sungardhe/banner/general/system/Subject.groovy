@@ -45,6 +45,7 @@ class Subject implements Serializable {
    * This field identifies the most recent date a record was created or updated.
    */
   @Column(name = "STVSUBJ_ACTIVITY_DATE")
+  @Temporal(TemporalType.TIMESTAMP)
   Date lastModified
 
   /**

@@ -14,6 +14,7 @@
  */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -48,6 +49,7 @@ class Campus implements Serializable {
    * This field identifies the most recent date a record was created or updated.
    */
   @Column(name = "STVCAMP_ACTIVITY_DATE")
+  @Temporal(TemporalType.TIMESTAMP)
   Date lastModified
 
   /**

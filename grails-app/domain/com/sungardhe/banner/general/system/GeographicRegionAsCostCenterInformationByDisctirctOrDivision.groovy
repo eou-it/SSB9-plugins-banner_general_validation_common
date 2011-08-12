@@ -21,7 +21,10 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.SequenceGenerator
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.GenerationType
+import org.hibernate.annotations.Type
 
 /**
  * This table is used to subdivide geographic regions to capture cost center information by disctirct or division.
@@ -56,6 +59,7 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivision implements Se
    * The date this row was updated.
    */
   @Column(name = "GTVDICD_ACTIVITY_DATE")
+  @Temporal(TemporalType.TIMESTAMP)
   Date lastModified
 
   /**

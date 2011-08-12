@@ -20,7 +20,10 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Menu Code Table
@@ -71,6 +74,7 @@ class Menu implements Serializable {
      * Date menu code was last created or modified.
      */
     @Column(name = "GTVMENU_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

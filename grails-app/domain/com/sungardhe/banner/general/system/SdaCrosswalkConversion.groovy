@@ -23,7 +23,10 @@ import javax.persistence.Version
 import javax.persistence.NamedQueries
 import javax.persistence.NamedQuery
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * SDA crosswalk/conversion table
@@ -151,6 +154,7 @@ class SdaCrosswalkConversion implements Serializable {
      * The last activity date for this row of data
      */
     @Column(name = "GTVSDAX_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

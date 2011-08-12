@@ -21,7 +21,10 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.Version
+import org.hibernate.annotations.Type
 
 /**
  * Subject Index Validation Table
@@ -65,6 +68,7 @@ class SubjectIndex implements Serializable {
      * Date on which the Code was created or last modified.
      */
     @Column(name = "GTVSUBJ_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

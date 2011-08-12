@@ -24,7 +24,10 @@ import javax.persistence.JoinColumns
 import javax.persistence.ManyToOne
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.Version
+import org.hibernate.annotations.Type
 
 /**
  * Function Emphasis Validation Table
@@ -75,6 +78,7 @@ class FunctionEmphasis implements Serializable {
      * Date that the Function Emphasis Code was added or last changed.
      */
     @Column(name = "GTVEMPH_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

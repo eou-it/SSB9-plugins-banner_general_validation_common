@@ -11,6 +11,7 @@
  ****************************************************************************** */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -88,6 +89,7 @@ class Site implements Serializable {
 	 * This field identifies the most recent date a record was created or updated.
 	 */
 	@Column(name="STVSITE_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

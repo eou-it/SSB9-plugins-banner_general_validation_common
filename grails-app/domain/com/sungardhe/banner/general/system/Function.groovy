@@ -18,7 +18,10 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Function Code Validation Table
@@ -59,6 +62,7 @@ class Function implements Serializable {
 	 * Function Code Activity Date.
 	 */
 	@Column(name="GTVFUNC_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

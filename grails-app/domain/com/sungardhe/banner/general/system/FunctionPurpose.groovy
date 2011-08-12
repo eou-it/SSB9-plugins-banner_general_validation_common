@@ -21,7 +21,10 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.Version
+import org.hibernate.annotations.Type
 
 /**
  * Function Purpose Validation Table
@@ -72,6 +75,7 @@ class FunctionPurpose implements Serializable {
      * Date the Purpose Code was created or last modified.
      */
     @Column(name = "GTVPURP_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

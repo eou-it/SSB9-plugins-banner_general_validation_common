@@ -62,6 +62,7 @@ class LearnerFieldStudy implements Serializable {
    * ACTIVITY DATE: The most recent date a record was created or updated
    */
   @Column(name = "GTVLFST_ACTIVITY_DATE")
+  @Temporal(TemporalType.TIMESTAMP)
   Date lastModified
 
   /**

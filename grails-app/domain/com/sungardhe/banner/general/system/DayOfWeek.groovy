@@ -15,6 +15,7 @@
  */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -70,6 +71,7 @@ class DayOfWeek implements Serializable {
 	 * This field identifies the most recent date a record was created or updated.
 	 */
 	@Column(name = "STVDAYS_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

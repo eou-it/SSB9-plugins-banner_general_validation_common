@@ -18,7 +18,10 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * FGAC Domain Code Validation Table
@@ -53,6 +56,7 @@ class FgacDomain implements Serializable {
 	 * ACTIVITY DATE: The most recent date a record was created or updated
 	 */
 	@Column(name="GTVFDMN_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

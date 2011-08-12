@@ -19,6 +19,8 @@ import javax.persistence.Table
 import javax.persistence.Version
 import org.hibernate.annotations.Type
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
 
 /**
@@ -61,6 +63,7 @@ class ScheduleToolStatus implements Serializable {
 	 * This field identifies the date a record was created or updated.
 	 */
 	@Column(name="GTVSCHS_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

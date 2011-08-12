@@ -21,6 +21,8 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 import org.hibernate.annotations.GenericGenerator
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import org.hibernate.annotations.Type
 
 /**
@@ -79,6 +81,7 @@ class Rsvp implements Serializable {
      * Date RSVP code was last created or modified.
      */
     @Column(name = "GTVRSVP_ACTIVITY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

@@ -15,6 +15,7 @@
  */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -135,6 +136,7 @@ class College implements Serializable {
    * This field identifies the most recent date a record was created or updated.
    */
   @Column(name = "STVCOLL_ACTIVITY_DATE", nullable = true)
+  @Temporal(TemporalType.TIMESTAMP)
   Date lastModified
 
   /**

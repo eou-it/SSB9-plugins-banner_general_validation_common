@@ -14,6 +14,7 @@
  */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -45,6 +46,7 @@ class DurationUnit implements Serializable {
   Double numberOfDays
 
   @Column(name = "GTVDUNT_ACTIVITY_DATE")
+  @Temporal(TemporalType.TIMESTAMP)
   Date lastModified
 
   @Column(name = "GTVDUNT_USER_ID")

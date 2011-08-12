@@ -14,6 +14,7 @@
  */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -48,6 +49,7 @@ class TermType implements Serializable {
    * Most recent date record was created or updated.
    */
   @Column(name = "STVTRMT_ACTIVITY_DATE")
+  @Temporal(TemporalType.TIMESTAMP)
   Date lastModified
 
   /**

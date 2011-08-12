@@ -19,6 +19,8 @@ import javax.persistence.Table
 import javax.persistence.Version
 import org.hibernate.annotations.Type
 import javax.persistence.SequenceGenerator
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.GenerationType
 
 /**
@@ -124,6 +126,7 @@ class HoldType implements Serializable {
 	 * This field identifies the most recent date a record was created or updated.
 	 */
 	@Column(name="STVHLDD_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

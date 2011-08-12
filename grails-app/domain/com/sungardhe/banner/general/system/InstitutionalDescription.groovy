@@ -122,6 +122,7 @@ class InstitutionalDescription implements Serializable {
      * ACTIVITY DATE: Date the record was created or last updated.
      */
     @Column(name = "GUBINST_activity_date")
+    @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**

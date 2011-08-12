@@ -23,7 +23,10 @@ import javax.persistence.Table
 import javax.persistence.Version
 
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
+import org.hibernate.annotations.Type
 
 /**
  * Function Revenue Validation Table
@@ -74,6 +77,7 @@ class FunctionRevenue implements Serializable {
 	 * Date the Revenue Code was created or last modified.
 	 */
 	@Column(name = "GTVREVN_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

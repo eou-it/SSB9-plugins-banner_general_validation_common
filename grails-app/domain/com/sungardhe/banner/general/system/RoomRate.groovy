@@ -23,6 +23,8 @@ import javax.persistence.Table
 import javax.persistence.Version
 import org.hibernate.annotations.Type
 import javax.persistence.GenerationType
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
 
 /**
@@ -87,6 +89,7 @@ class RoomRate implements Serializable {
 	 * This field identifies the most recent date a record was created or updated.
 	 */
 	@Column(name = "STVRRCD_ACTIVITY_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 
 	/**

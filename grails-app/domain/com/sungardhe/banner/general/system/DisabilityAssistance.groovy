@@ -8,6 +8,7 @@
  ****************************************************************************** */
 package com.sungardhe.banner.general.system
 
+import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
@@ -30,6 +31,7 @@ class DisabilityAssistance  implements Serializable {
 	 * Date that this domain object was last modified.
 	 */
 	@Column(name="STVSPSR_activity_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	Date lastModified
 	
 	/**

@@ -34,7 +34,6 @@ import javax.persistence.SequenceGenerator
  * System Indicator Validation Table
  */
 /*PROTECTED REGION ID(systemindicator_namedqueries) ENABLED START*/
-//TODO: NamedQueries that needs to be ported:
 /**
  * Where clause on this entity present in forms:
  * Order by clause on this entity present in forms:

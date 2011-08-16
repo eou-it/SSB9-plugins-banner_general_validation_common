@@ -29,7 +29,6 @@ import org.hibernate.annotations.Type
  * RSVP Code Table
  */
 /*PROTECTED REGION ID(rsvp_namedqueries) ENABLED START*/
-//TODO: NamedQueries that needs to be ported:
 /**
  * Where clause on this entity present in forms:
  * Order by clause on this entity present in forms:

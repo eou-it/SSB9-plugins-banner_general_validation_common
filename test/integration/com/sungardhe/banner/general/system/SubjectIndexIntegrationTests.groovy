@@ -48,7 +48,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
 	protected void setUp() {
 		formContext = ['GTVSUBJ'] // Since we are not testing a controller, we need to explicitly set this
 		super.setUp()
-		initializeTestDataForReferences()
+		//initializeTestDataForReferences()
 	}
 
 	//This method is used to initialize test data for references.
@@ -144,11 +144,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
 		subjectIndex.delete()
 		assertNull SubjectIndex.get( id )
 	}
-	@Ignore
-    void testValidation() {
-       def subjectIndex = newInvalidForCreateSubjectIndex()
-       assertTrue "SubjectIndex could not be validated as expected due to ${subjectIndex.errors}", subjectIndex.validate()
-    }
+
 
     void testNullValidationFailure() {
         def subjectIndex = new SubjectIndex()

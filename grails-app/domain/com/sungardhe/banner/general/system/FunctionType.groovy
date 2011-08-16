@@ -29,7 +29,6 @@ import org.hibernate.annotations.Type
  * Function Type Code Validation Table
  */
 /*PROTECTED REGION ID(functiontype_namedqueries) ENABLED START*/
-//TODO: NamedQueries that needs to be ported:
 /**
  * Where clause on this entity present in forms:
  * Order by clause on this entity present in forms:

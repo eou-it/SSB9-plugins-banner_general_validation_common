@@ -64,17 +64,6 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    @Ignore
-    void testCreateInvalidAddressSource() {
-        def addressSource = newInvalidForCreateAddressSource()
-        addressSource.code = null
-        save addressSource
-        shouldFail(ApplicationException) {
-            addressSource.save(failOnError: true, flush: true)
-        }
-    }
-
-
     void testUpdateValidAddressSource() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -90,25 +79,6 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
         addressSource = AddressSource.get(addressSource.id)
         assertEquals 1L, addressSource?.version
         assertEquals u_success_description, addressSource.description
-    }
-
-
-    @Ignore
-    void testUpdateInvalidAddressSource() {
-        def addressSource = newInvalidForCreateAddressSource()
-        addressSource.code = null
-        save addressSource
-        assertNotNull addressSource.id
-        assertEquals 0L, addressSource.version
-        assertEquals i_success_code, addressSource.code
-        assertEquals i_success_description, addressSource.description
-
-        //Update the entity with invalid values
-        addressSource.code = null
-        addressSource.description = u_failure_description
-        shouldFail(ApplicationException) {
-            addressSource.save(failOnError: true, flush: true)
-        }
     }
 
 
@@ -141,13 +111,6 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
         assertNull AddressSource.get(id)
     }
 
-
-    @Ignore
-    void testValidation() {
-        def addressSource = newInvalidForCreateAddressSource()
-        addressSource.code = null
-        assertTrue "AddressSource could not be validated as expected due to ${addressSource.errors}", addressSource.validate()
-    }
 
 
     void testNullValidationFailure() {

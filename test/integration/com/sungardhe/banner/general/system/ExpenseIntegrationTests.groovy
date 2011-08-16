@@ -11,19 +11,19 @@
  *******************************************************************************/
 /**
  Banner Automator Version: 1.24
- Generated: Mon Aug 01 14:09:09 IST 2011 
+ Generated: Mon Aug 01 14:09:09 IST 2011
  */
 package com.sungardhe.banner.general.system
 
 import com.sungardhe.banner.testing.BaseIntegrationTestCase
-import com.sungardhe.banner.exceptions.ApplicationException 
-import groovy.sql.Sql 
+import com.sungardhe.banner.exceptions.ApplicationException
+import groovy.sql.Sql
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
 
 
 class ExpenseIntegrationTests extends BaseIntegrationTestCase {
-	
+
 	/*PROTECTED REGION ID(expense_domain_integration_test_data) ENABLED START*/
 	//Test data for creating new domain instance
 	//Valid test data (For success tests)
@@ -34,7 +34,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
 
 	def i_failure_code = "TT"
 	def i_failure_description = null
-	
+
 	//Test data for creating updating domain instance
 	//Valid test data (For success tests)
 
@@ -45,29 +45,29 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
 	def u_failure_code = "TT"
 	def u_failure_description = null
 	/*PROTECTED REGION END*/
-	
+
 	protected void setUp() {
 		formContext = ['GTVEXPN'] // Since we are not testing a controller, we need to explicitly set this
 		super.setUp()
-		initializeTestDataForReferences()
+		//initializeTestDataForReferences()
 	}
 
-	//This method is used to initialize test data for references. 
+	//This method is used to initialize test data for references.
 	//A method is required to execute database calls as it requires a active transaction
 	void initializeTestDataForReferences() {
 		/*PROTECTED REGION ID(expense_domain_integration_test_data_initialization) ENABLED START*/
-		//Valid test data (For success tests)	
+		//Valid test data (For success tests)
 
 		//Invalid test data (For failure tests)
 
 		//Valid test data (For success tests)
 
 		//Valid test data (For failure tests)
-		
+
 		//Test data for references for custom tests
 		/*PROTECTED REGION END*/
 	}
-	
+
 	protected void tearDown() {
 		super.tearDown()
 	}
@@ -75,14 +75,14 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
 	void testCreateValidExpense() {
 		def expense = newValidForCreateExpense()
 		expense.save( failOnError: true, flush: true )
-		//Test if the generated entity now has an id assigned		
+		//Test if the generated entity now has an id assigned
         assertNotNull expense.id
 	}
 
 	void testCreateInvalidExpense() {
 		def expense = newInvalidForCreateExpense()
 		shouldFail(ValidationException) {
-            expense.save( failOnError: true, flush: true )		
+            expense.save( failOnError: true, flush: true )
 		}
 	}
 
@@ -93,16 +93,16 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 0L, expense.version
         assertEquals i_success_code, expense.code
         assertEquals i_success_description, expense.description
-        
+
 		//Update the entity
-		expense.description = u_success_description 
+		expense.description = u_success_description
 		expense.save( failOnError: true, flush: true )
-		//Assert for sucessful update        
+		//Assert for sucessful update
         expense = Expense.get( expense.id )
         assertEquals 1L, expense?.version
         assertEquals u_success_description, expense.description
 	}
-	
+
 	void testUpdateInvalidExpense() {
 		def expense = newValidForCreateExpense()
 		expense.save( failOnError: true, flush: true )
@@ -110,18 +110,18 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 0L, expense.version
         assertEquals i_success_code, expense.code
         assertEquals i_success_description, expense.description
-        
+
 		//Update the entity with invalid values
-		expense.description = u_failure_description 
+		expense.description = u_failure_description
 		shouldFail(ValidationException) {
-            expense.save( failOnError: true, flush: true )		
+            expense.save( failOnError: true, flush: true )
 		}
 	}
 
-    void testOptimisticLock() { 
+    void testOptimisticLock() {
 		def expense = newValidForCreateExpense()
 		expense.save( failOnError: true, flush: true )
-        
+
         def sql
         try {
             sql = new Sql( sessionFactory.getCurrentSession().connection() )
@@ -131,12 +131,12 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
         }
 		//Try to update the entity
 		//Update the entity
-		expense.description = u_success_description 
+		expense.description = u_success_description
         shouldFail( HibernateOptimisticLockingFailureException ) {
             expense.save( failOnError: true, flush: true )
         }
     }
-	
+
 	void testDeleteExpense() {
 		def expense = newValidForCreateExpense()
 		expense.save( failOnError: true, flush: true )
@@ -145,7 +145,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
 		expense.delete()
 		assertNull Expense.get( id )
 	}
-	
+
     void testValidation() {
        def expense = newInvalidForCreateExpense()
        assertFalse "Expense could not be validated as expected due to ${expense.errors}", expense.validate()
@@ -154,14 +154,14 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     void testNullValidationFailure() {
         def expense = new Expense()
         assertFalse "Expense should have failed validation", expense.validate()
-        assertErrorsFor expense, 'nullable', 
-                                               [ 
-                                                 'code', 
-                                                 'description'                                                 
+        assertErrorsFor expense, 'nullable',
+                                               [
+                                                 'code',
+                                                 'description'
                                                ]
     }
-    
-    
+
+
 	void testValidationMessages() {
 	    def expense = newInvalidForCreateExpense()
 	    expense.code = null
@@ -171,20 +171,20 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
 	    assertFalse expense.validate()
 	    assertLocalizedError expense, 'nullable', /.*Field.*description.*of class.*Expense.*cannot be null.*/, 'description'
 	}
-  
-    
+
+
 	private def newValidForCreateExpense() {
 		def expense = new Expense(
-			code: i_success_code, 
-			description: i_success_description, 
+			code: i_success_code,
+			description: i_success_description,
 		)
 		return expense
 	}
 
 	private def newInvalidForCreateExpense() {
 		def expense = new Expense(
-			code: i_failure_code, 
-			description: i_failure_description, 
+			code: i_failure_code,
+			description: i_failure_description,
 		)
 		return expense
 	}

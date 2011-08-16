@@ -30,7 +30,6 @@ import org.hibernate.annotations.Type
  * Expense Code Validation Table
  */
 /*PROTECTED REGION ID(expense_namedqueries) ENABLED START*/
-//TODO: NamedQueries that needs to be ported:
 /**
  * Where clause on this entity present in forms:
  * Order by clause on this entity present in forms:

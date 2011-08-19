@@ -1,4 +1,4 @@
-<plugin name='banner-general-validation-common' version='0.0.8' grailsVersion='1.3.5 &gt; *'>
+<plugin name='banner-general-validation-common' version='0.0.11' grailsVersion='1.3.5 &gt; *'>
   <author>SunGard Higher Education</author>
   <authorEmail>horizon-support@sungardhe.com</authorEmail>
   <title>BannerGeneralOverall Plugin</title>
@@ -99,8 +99,6 @@
     <resource>com.sungardhe.banner.general.system.TestScoreService</resource>
     <resource>com.sungardhe.banner.general.system.SystemUtility</resource>
   </resources>
-  <dependencies>
-    <plugin name='springSecurityCore' version='1.0.1' />
-  </dependencies>
+  <dependencies />
   <behavior />
 </plugin>

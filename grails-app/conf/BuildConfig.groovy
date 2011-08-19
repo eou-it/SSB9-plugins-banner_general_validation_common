@@ -41,15 +41,13 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile 'com.sungardhe:banner-core:0.3.7'   // Note: Also update version within 'application.properties'
-        compile 'com.sungardhe:spring-security-core:1.0.1'
-        compile 'com.sungardhe:spring-security-cas:1.0.2'
+        compile 'com.sungardhe:banner-core:0.3.10'   // Note: Also update version within 'application.properties'
 
         provided 'com.sungardhe:banner-codenarc:0.1.4'// Note: Also update version within 'application.properties'
         provided 'com.sungardhe:code-coverage:1.2'    // Note: Also update version within 'application.properties'
 
-        compile 'com.sungardhe:banner-db-main:0.0.10'
-        compile 'com.sungardhe:banner-seeddata-catalog:0.0.9'
+        compile 'com.sungardhe:banner-db-main:0.0.15'
+        compile 'com.sungardhe:banner-seeddata-catalog:0.0.10'
 
     }
     dependencies {

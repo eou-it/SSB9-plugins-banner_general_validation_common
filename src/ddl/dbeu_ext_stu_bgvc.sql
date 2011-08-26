@@ -63,4 +63,5 @@ execute dbeu_util.extend_table('SATURN','STVTERM','S',FALSE);
 execute dbeu_util.extend_table('SATURN','STVTESC','S',FALSE);
 execute dbeu_util.extend_table('SATURN','STVTRMT','S',FALSE);
 execute dbeu_util.extend_table('SATURN','STVVTYP','S',FALSE);
+execute dbeu_util.extend_table('SATURN','STVINIT','S',FALSE);
 

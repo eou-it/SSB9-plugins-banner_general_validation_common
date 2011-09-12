@@ -24,6 +24,8 @@ import org.hibernate.annotations.GenericGenerator
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import org.hibernate.annotations.Type
+import javax.persistence.GenerationType
+import javax.persistence.SequenceGenerator
 
 /**
  * Mail Code Validation Table
@@ -47,8 +49,8 @@ class MailType implements Serializable {
      */
     @Id
     @Column(name = "GTVMAIL_SURROGATE_ID")
-    @GeneratedValue(generator = "triggerAssigned")
-    @GenericGenerator(name = "triggerAssigned", strategy = "com.sungardhe.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @SequenceGenerator(name = "GTVMAIL_SEQ_GEN", allocationSize = 1, sequenceName = "GTVMAIL_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVMAIL_SEQ_GEN")
     Long id
 
     /**

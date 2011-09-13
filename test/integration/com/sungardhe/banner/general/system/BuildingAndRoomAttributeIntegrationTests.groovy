@@ -126,18 +126,6 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
-
-        buildingAndRoomAttribute.code = null
-        assertFalse buildingAndRoomAttribute.validate()
-        assertLocalizedError buildingAndRoomAttribute, 'nullable', /.*Field.*code.*of class.*BuildingAndRoomAttribute.*cannot be null.*/, 'code'
-
-        buildingAndRoomAttribute.autoSchedulerIndicator = null
-        assertFalse buildingAndRoomAttribute.validate()
-        assertLocalizedError buildingAndRoomAttribute, 'nullable', /.*Field.*autoSchedulerIndicator.*of class.*BuildingAndRoomAttribute.*cannot be null.*/, 'autoSchedulerIndicator'
-
-    }
 
 
     private def newBuildingAndRoomAttribute() {

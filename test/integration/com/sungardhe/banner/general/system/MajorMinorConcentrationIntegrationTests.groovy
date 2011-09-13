@@ -168,13 +168,6 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def majorMinorConcentration = newValidForCreateMajorMinorConcentration()
-        majorMinorConcentration.code = null
-        assertFalse majorMinorConcentration.validate()
-        assertLocalizedError majorMinorConcentration, 'nullable', /.*Field.*code.*of class.*MajorMinorConcentration.*cannot be null.*/, 'code'
-    }
-
 
     void testFetchBySomeAttribute() {
         // test no filter, no parms

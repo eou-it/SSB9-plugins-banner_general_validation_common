@@ -131,16 +131,6 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
     assertErrorsFor subject, 'maxSize', ['description']
   }
 
-  void testValidationMessages() {
-    def subject = newValidForCreateSubject()
-    subject.code = null
-    assertFalse subject.validate()
-    assertLocalizedError subject, 'nullable', /.*Field.*code.*of class.*Subject.*cannot be null.*/, 'code'
-    subject.dispWebInd = null
-    assertFalse subject.validate()
-    assertLocalizedError subject, 'nullable', /.*Field.*dispWebInd.*of class.*Subject.*cannot be null.*/, 'dispWebInd'
-  }
-
 
   private def newValidForCreateSubject() {
     def subject = new Subject(

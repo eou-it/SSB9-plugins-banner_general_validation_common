@@ -121,23 +121,6 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def function = newFunction()
-
-        function.code = null
-        assertFalse function.validate()
-        assertLocalizedError function, 'nullable', /.*Field.*code.*of class.*Function.*cannot be null.*/, 'code'
-
-        function.description = null
-        assertFalse function.validate()
-        assertLocalizedError function, 'nullable', /.*Field.*description.*of class.*Function.*cannot be null.*/, 'description'
-
-        function.etypCode = null
-        assertFalse function.validate()
-        assertLocalizedError function, 'nullable', /.*Field.*etypCode.*of class.*Function.*cannot be null.*/, 'etypCode'
-
-    }
-
 
     private def newFunction() {
         new Function(code: "TTTTT", description: "TTTTT", etypCode: "TTTT", lastModified: new Date(),

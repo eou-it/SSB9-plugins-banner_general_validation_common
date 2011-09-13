@@ -124,15 +124,6 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def addressSource = newInvalidForCreateAddressSource()
-        addressSource.code = null
-        assertFalse addressSource.validate()
-        assertLocalizedError addressSource, 'nullable', /.*Field.*code.*of class.*AddressSource.*cannot be null.*/, 'code'
-        addressSource.description = null
-        assertFalse addressSource.validate()
-        assertLocalizedError addressSource, 'nullable', /.*Field.*description.*of class.*AddressSource.*cannot be null.*/, 'description'
-    }
 
 
     private def newValidForCreateAddressSource() {

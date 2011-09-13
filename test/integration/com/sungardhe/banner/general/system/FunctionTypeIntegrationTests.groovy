@@ -162,15 +162,6 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def functionType = newInvalidForCreateFunctionType()
-	    functionType.code = null
-	    assertFalse functionType.validate()
-	    assertLocalizedError functionType, 'nullable', /.*Field.*code.*of class.*FunctionType.*cannot be null.*/, 'code'
-	    functionType.description = null
-	    assertFalse functionType.validate()
-	    assertLocalizedError functionType, 'nullable', /.*Field.*description.*of class.*FunctionType.*cannot be null.*/, 'description'
-	}
 
 
 	private def newValidForCreateFunctionType() {

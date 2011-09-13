@@ -124,14 +124,7 @@ class AwardCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def awardCategory = newAwardCategory()
 
-        awardCategory.code = null
-        assertFalse awardCategory.validate()
-        assertLocalizedError(awardCategory, 'nullable', /.*Field.*code.*of class.*AwardCategory.*cannot be null.*/, 'code')
-
-    }
 
 
     private def newAwardCategory() {

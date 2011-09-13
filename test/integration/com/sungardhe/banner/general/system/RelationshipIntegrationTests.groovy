@@ -195,12 +195,6 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def relationship = newInvalidForCreateRelationship()
-        relationship.code = null
-        assertFalse relationship.validate()
-        assertLocalizedError relationship, 'nullable', /.*Field.*code.*of class.*Relationship.*cannot be null.*/, 'code'
-    }
 
 
     private def newValidForCreateRelationship() {

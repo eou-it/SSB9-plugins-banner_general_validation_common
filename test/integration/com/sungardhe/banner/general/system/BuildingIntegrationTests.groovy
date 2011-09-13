@@ -122,15 +122,6 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def building = newBuilding()
-
-        building.code = null
-        assertFalse building.validate()
-        assertLocalizedError building, 'nullable', /.*Field.*code.*of class.*Building.*cannot be null.*/, 'code'
-
-    }
-
 
     private def newBuilding() {
         new Building(code: "TTTTT", description: "TTTTT", voiceResponseMsgNumber: 1, lastModified: new Date(),

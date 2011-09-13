@@ -114,16 +114,6 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def nameType = newNameType()
-        nameType.code = null
-        assertFalse nameType.validate()
-        assertLocalizedError nameType, 'nullable', /.*Field.*code.*of class.*NameType.*cannot be null.*/, 'code'
-        nameType.description = null
-        assertFalse nameType.validate()
-        assertLocalizedError nameType, 'nullable', /.*Field.*description.*of class.*NameType.*cannot be null.*/, 'description'
-    }
-
 
     private def newNameType() {
         def nameType = new NameType(

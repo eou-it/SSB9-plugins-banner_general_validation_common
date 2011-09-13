@@ -113,19 +113,6 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
   }
 
 
-  void testValidationMessages() {
-    def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
-    learnerFieldStudy.code = null
-    assertFalse learnerFieldStudy.validate()
-    assertLocalizedError learnerFieldStudy, 'nullable', /.*Field.*code.*of class.*LearnerFieldStudy.*cannot be null.*/, 'code'
-    learnerFieldStudy.description = null
-    assertFalse learnerFieldStudy.validate()
-    assertLocalizedError learnerFieldStudy, 'nullable', /.*Field.*description.*of class.*LearnerFieldStudy.*cannot be null.*/, 'description'
-    learnerFieldStudy.systemRequiredIndicator = null
-    assertFalse learnerFieldStudy.validate()
-    assertLocalizedError learnerFieldStudy, 'nullable', /.*Field.*systemRequiredIndicator.*of class.*LearnerFieldStudy.*cannot be null.*/, 'systemRequiredIndicator'
-  }
-
 
   private def newValidForCreateLearnerFieldStudy() {
     def learnerFieldStudy = new LearnerFieldStudy(

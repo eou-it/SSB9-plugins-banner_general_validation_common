@@ -116,15 +116,8 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
 		assertFalse "Originator should have failed validation", originator.validate()
 		assertErrorsFor originator, 'maxSize', [ 'description' ]    
     }
-    
-	void testValidationMessages() {
-	    def originator = newOriginator()
-	    originator.code = null
-	    assertFalse originator.validate()
-	    assertLocalizedError originator, 'nullable', /.*Field.*code.*of class.*Originator.*cannot be null.*/, 'code'
-	}
-  
-    
+
+
   private def newOriginator() {
      
     def originator = new Originator(

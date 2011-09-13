@@ -140,20 +140,6 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     }
 
 
-    void testValidationMessages() {
-        def sourceAndBackgroundInstitution = newSourceAndBackgroundInstitution()
-
-        sourceAndBackgroundInstitution.code = null
-        assertFalse sourceAndBackgroundInstitution.validate()
-        assertLocalizedError(sourceAndBackgroundInstitution, 'nullable', /.*Field.*code.*of class.*SourceAndBackgroundInstitution.*cannot be null.*/, 'code')
-
-        sourceAndBackgroundInstitution.description = null
-        assertFalse sourceAndBackgroundInstitution.validate()
-        assertLocalizedError(sourceAndBackgroundInstitution, 'nullable', /.*Field.*description.*of class.*SourceAndBackgroundInstitution.*cannot be null.*/, 'description')
-
-    }
-
-
     private def newSourceAndBackgroundInstitution() {
 
         def admr = new AdmissionRequest(code: "TTTT", description: "TTTTT", tableName: "TTTTT", voiceResponseMsgNumber: 1, voiceResponseEligIndicator: "T", displayWebIndicator: true, lastModified: new Date(),

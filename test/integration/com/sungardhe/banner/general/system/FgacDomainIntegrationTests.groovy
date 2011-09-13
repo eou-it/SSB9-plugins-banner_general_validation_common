@@ -114,15 +114,6 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def fgacDomain = newFgacDomain()
-        fgacDomain.code = null
-        assertFalse fgacDomain.validate()
-        assertLocalizedError fgacDomain, 'nullable', /.*Field.*code.*of class.*FgacDomain.*cannot be null.*/, 'code'
-        fgacDomain.description = null
-        assertFalse fgacDomain.validate()
-        assertLocalizedError fgacDomain, 'nullable', /.*Field.*description.*of class.*FgacDomain.*cannot be null.*/, 'description'
-    }
 
 
     private def newFgacDomain() {

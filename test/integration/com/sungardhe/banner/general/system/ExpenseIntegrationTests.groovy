@@ -162,16 +162,6 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def expense = newInvalidForCreateExpense()
-	    expense.code = null
-	    assertFalse expense.validate()
-	    assertLocalizedError expense, 'nullable', /.*Field.*code.*of class.*Expense.*cannot be null.*/, 'code'
-	    expense.description = null
-	    assertFalse expense.validate()
-	    assertLocalizedError expense, 'nullable', /.*Field.*description.*of class.*Expense.*cannot be null.*/, 'description'
-	}
-
 
 	private def newValidForCreateExpense() {
 		def expense = new Expense(

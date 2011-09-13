@@ -126,14 +126,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def meetingType = newMeetingType()
 
-        meetingType.code = null
-        assertFalse meetingType.validate()
-        assertLocalizedError meetingType, 'nullable', /.*Field.*code.*of class.*MeetingType.*cannot be null.*/, 'code'
-
-    }
 
 
     private def newMeetingType() {

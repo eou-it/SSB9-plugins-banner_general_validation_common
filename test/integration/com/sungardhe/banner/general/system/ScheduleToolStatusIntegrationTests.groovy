@@ -121,23 +121,6 @@ class ScheduleToolStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def scheduleToolStatus = newScheduleToolStatus()
-
-        scheduleToolStatus.code = null
-        assertFalse scheduleToolStatus.validate()
-        assertLocalizedError scheduleToolStatus, 'nullable', /.*Field.*code.*of class.*ScheduleToolStatus.*cannot be null.*/, 'code'
-
-        scheduleToolStatus.description = null
-        assertFalse scheduleToolStatus.validate()
-        assertLocalizedError scheduleToolStatus, 'nullable', /.*Field.*description.*of class.*ScheduleToolStatus.*cannot be null.*/, 'description'
-
-        scheduleToolStatus.systemRequiredIndicator = null
-        assertFalse scheduleToolStatus.validate()
-        assertLocalizedError scheduleToolStatus, 'nullable', /.*Field.*systemRequiredIndicator.*of class.*ScheduleToolStatus.*cannot be null.*/, 'systemRequiredIndicator'
-
-    }
-
 
     private def newScheduleToolStatus() {
         new ScheduleToolStatus(code: "TTT",

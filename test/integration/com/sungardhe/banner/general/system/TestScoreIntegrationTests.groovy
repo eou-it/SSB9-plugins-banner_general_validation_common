@@ -118,14 +118,6 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def testScore = newTestScore()
-        testScore.code = null
-        assertFalse testScore.validate()
-
-        assertLocalizedError(testScore, 'nullable', /.*Field.*code.*of class.*TestScore.*cannot be null.*/, 'code')
-    }
-
 
     private def newTestScore() {
         new TestScore(code: "TT", description: "TT",

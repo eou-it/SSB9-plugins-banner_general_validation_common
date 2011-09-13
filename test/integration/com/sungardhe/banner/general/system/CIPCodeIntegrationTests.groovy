@@ -107,13 +107,6 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
 		assertErrorsFor cipCode, 'maxSize', [ 'code', 'description' ]
     }
 
-    void testValidationMessages() {
-        def cipCode = newCIPCode()
-
-        cipCode.code = null
-        assertFalse cipCode.validate()
-        assertLocalizedError cipCode, 'nullable', /.*Field.*code.*of class.*CIPCode.*cannot be null.*/, 'code'
-    }
 
     private def newCIPCode() {
       new CIPCode( code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT" ,

@@ -122,15 +122,6 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def committeeAndServiceType = newCommitteeAndServiceType()
-
-        committeeAndServiceType.code = null
-        assertFalse committeeAndServiceType.validate()
-        assertLocalizedError committeeAndServiceType, 'nullable', /.*Field.*code.*of class.*CommitteeAndServiceType.*cannot be null.*/, 'code'
-
-    }
-
 
     private def newCommitteeAndServiceType() {
         new CommitteeAndServiceType(code: "TTTTT", description: "TTTTT", transactionPrint: "T", lastModified: new Date(),

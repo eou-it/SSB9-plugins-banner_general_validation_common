@@ -230,18 +230,6 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
 		assertErrorsFor initials, 'maxSize', [ 'title2', 'emailAddress' ]
     }
 
-	void testValidationMessages() {
-	    def initials = newInvalidForCreateInitials()
-	    initials.code = null
-	    assertFalse initials.validate()
-	    assertLocalizedError initials, 'nullable', /.*Field.*code.*of class.*Initials.*cannot be null.*/, 'code'
-	    initials.description = null
-	    assertFalse initials.validate()
-	    assertLocalizedError initials, 'nullable', /.*Field.*description.*of class.*Initials.*cannot be null.*/, 'description'
-	    initials.title1 = null
-	    assertFalse initials.validate()
-	    assertLocalizedError initials, 'nullable', /.*Field.*title1.*of class.*Initials.*cannot be null.*/, 'title1'
-	}
 
 
 	private def newValidForCreateInitials() {

@@ -172,18 +172,7 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
 		assertErrorsFor emailType, 'maxSize', [ 'description' ]    
     }
     
-	void testValidationMessages() {
-	    def emailType = newInvalidForCreateEmailType()
-	    emailType.code = null
-	    assertFalse emailType.validate()
-	    assertLocalizedError emailType, 'nullable', /.*Field.*code.*of class.*EmailType.*cannot be null.*/, 'code'
-	    emailType.displayWebIndicator = null
-	    assertFalse emailType.validate()
-	    assertLocalizedError emailType, 'nullable', /.*Field.*displayWebIndicator.*of class.*EmailType.*cannot be null.*/, 'displayWebIndicator'
-	    emailType.urlIndicator = null
-	    assertFalse emailType.validate()
-	    assertLocalizedError emailType, 'nullable', /.*Field.*urlIndicator.*of class.*EmailType.*cannot be null.*/, 'urlIndicator'
-	}
+
   
     
 	private def newValidForCreateEmailType() {

@@ -194,24 +194,6 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def phoneRate = newInvalidForCreatePhoneRate()
-        phoneRate.code = null
-        assertFalse phoneRate.validate()
-        assertLocalizedError phoneRate, 'nullable', /.*Field.*code.*of class.*PhoneRate.*cannot be null.*/, 'code'
-        phoneRate.monthlyIndicator = null
-        assertFalse phoneRate.validate()
-        assertLocalizedError phoneRate, 'nullable', /.*Field.*monthlyIndicator.*of class.*PhoneRate.*cannot be null.*/, 'monthlyIndicator'
-        phoneRate.dailyIndicator = null
-        assertFalse phoneRate.validate()
-        assertLocalizedError phoneRate, 'nullable', /.*Field.*dailyIndicator.*of class.*PhoneRate.*cannot be null.*/, 'dailyIndicator'
-        phoneRate.termlyIndicator = null
-        assertFalse phoneRate.validate()
-        assertLocalizedError phoneRate, 'nullable', /.*Field.*termlyIndicator.*of class.*PhoneRate.*cannot be null.*/, 'termlyIndicator'
-        phoneRate.description = null
-        assertFalse phoneRate.validate()
-        assertLocalizedError phoneRate, 'nullable', /.*Field.*description.*of class.*PhoneRate.*cannot be null.*/, 'description'
-    }
 
 
     private def newValidForCreatePhoneRate() {

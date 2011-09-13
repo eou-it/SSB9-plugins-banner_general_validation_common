@@ -163,17 +163,6 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def rating = newInvalidForCreateRating()
-	    rating.code = null
-	    assertFalse rating.validate()
-	    assertLocalizedError rating, 'nullable', /.*Field.*code.*of class.*Rating.*cannot be null.*/, 'code'
-	    rating.description = null
-	    assertFalse rating.validate()
-	    assertLocalizedError rating, 'nullable', /.*Field.*description.*of class.*Rating.*cannot be null.*/, 'description'
-	}
-
-
 	private def newValidForCreateRating() {
 		def rating = new Rating(
 			code: i_success_code,

@@ -172,15 +172,6 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def functionEmphasis = newInvalidForCreateFunctionEmphasis()
-        assertFalse functionEmphasis.validate()
-        assertLocalizedError functionEmphasis, 'nullable', /.*Field.*code.*of class.*FunctionEmphasis.*cannot be null.*/, 'code'
-        functionEmphasis.description = null
-        assertFalse functionEmphasis.validate()
-        assertLocalizedError functionEmphasis, 'nullable', /.*Field.*description.*of class.*FunctionEmphasis.*cannot be null.*/, 'description'
-    }
-
 
     private def newValidForCreateFunctionEmphasis() {
         def functionEmphasis = new FunctionEmphasis(

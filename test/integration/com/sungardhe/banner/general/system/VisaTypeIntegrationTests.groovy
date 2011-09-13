@@ -136,20 +136,6 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def visaType = newVisaType()
-
-        visaType.description = null
-        assertFalse visaType.validate()
-        assertLocalizedError(visaType, 'nullable', /.*Field.*description.*of class.*VisaType.*cannot be null.*/, 'description')
-
-        visaType.code = null
-        assertFalse visaType.validate()
-        assertLocalizedError(visaType, 'nullable', /.*Field.*code.*of class.*VisaType.*cannot be null.*/, 'code')
-
-    }
-
-
     private def newVisaType() {
         def admr = new AdmissionRequest(code: "TTTT", description: "TTTTT", tableName: "TTTTT", voiceResponseMsgNumber: 1,
                 voiceResponseEligIndicator: "T", displayWebIndicator: true,

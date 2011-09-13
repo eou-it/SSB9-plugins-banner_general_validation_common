@@ -108,13 +108,6 @@ class MedicalEquipmentIntegrationTests extends BaseIntegrationTestCase {
        assertErrorsFor medicalEquipment, 'maxSize', [ 'code', 'description' ]
     }
 
-    void testValidationMessages() {
-       def medicalEquipment = newMedicalEquipment()
-
-       medicalEquipment.code = null
-       assertFalse medicalEquipment.validate()
-       assertLocalizedError medicalEquipment, 'nullable', /.*Field.*code.*of class.*MedicalEquipment.*cannot be null.*/, 'code'
-    }
 
 
     private def newMedicalEquipment() {

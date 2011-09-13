@@ -172,22 +172,6 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
 		assertFalse "HoldType should have failed validation", holdType.validate()
 		assertErrorsFor holdType, 'maxSize', [ 'registrationHoldIndicator', 'transactionHoldIndicator', 'gradHoldIndicator', 'gradeHoldIndicator', 'description', 'accountsReceivableHoldIndicator', 'enrollmentVerificationHoldIndicator' ]    
     }
-    
-	void testValidationMessages() {
-	    def holdType = newHoldType()
-	    holdType.code = null
-	    assertFalse holdType.validate()
-	    assertLocalizedError holdType, 'nullable', /.*Field.*code.*of class.*HoldType.*cannot be null.*/, 'code'
-        holdType.displayWebIndicator = null
-        assertFalse holdType.validate()
-        assertLocalizedError holdType, 'nullable', /.*Field.*displayWebIndicator.*of class.*HoldType.*cannot be null.*/, 'displayWebIndicator'
-        holdType.applicationHoldIndicator = null
-	    assertFalse holdType.validate()
-	    assertLocalizedError holdType, 'nullable', /.*Field.*applicationHoldIndicator.*of class.*HoldType.*cannot be null.*/, 'applicationHoldIndicator'
-	    holdType.complianceHoldIndicator = null
-	    assertFalse holdType.validate()
-	    assertLocalizedError holdType, 'nullable', /.*Field.*complianceHoldIndicator.*of class.*HoldType.*cannot be null.*/, 'complianceHoldIndicator'
-	}
   
     
   private def newHoldType() {

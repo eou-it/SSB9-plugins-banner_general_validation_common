@@ -146,19 +146,6 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
   }
 
 
-  void testValidationMessages() {
-    def durationUnit = newInvalidForCreateDurationUnit()
-    durationUnit.code = null
-    assertFalse durationUnit.validate()
-    assertLocalizedError durationUnit, 'nullable', /.*Field.*code.*of class.*DurationUnit.*cannot be null.*/, 'code'
-    durationUnit.description = null
-    assertFalse durationUnit.validate()
-    assertLocalizedError durationUnit, 'nullable', /.*Field.*description.*of class.*DurationUnit.*cannot be null.*/, 'description'
-    durationUnit.numberOfDays = null
-    assertFalse durationUnit.validate()
-    assertLocalizedError durationUnit, 'nullable', /.*Field.*numberOfDays.*of class.*DurationUnit.*cannot be null.*/, 'numberOfDays'
-  }
-
 
   private def newValidForCreateDurationUnit() {
     def durationUnit = new DurationUnit(

@@ -117,13 +117,6 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
   }
 
 
-  void testValidationMessages() {
-    def college = newCollege()
-    college.code = null
-    assertFalse college.validate()
-
-    assertLocalizedError(college, 'nullable', /.*Field.*code.*of class.*College.*cannot be null.*/, 'code')
-  }
 
 
   void testFetchBySomeAttribute() {

@@ -113,16 +113,6 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
   }
 
 
-  void testValidationMessages() {
-    def termType = newValidForCreateTermType()
-    termType.code = null
-    assertFalse termType.validate()
-    assertLocalizedError termType, 'nullable', /.*Field.*code.*of class.*TermType.*cannot be null.*/, 'code'
-    termType.description = null
-    assertFalse termType.validate()
-    assertLocalizedError termType, 'nullable', /.*Field.*description.*of class.*TermType.*cannot be null.*/, 'description'
-  }
-
 
   private def newValidForCreateTermType() {
     def termType = new TermType(

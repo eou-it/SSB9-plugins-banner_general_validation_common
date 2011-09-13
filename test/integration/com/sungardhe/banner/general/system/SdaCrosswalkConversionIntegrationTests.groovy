@@ -220,21 +220,6 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def sdaCrosswalkConversion = newInvalidForCreateSdaCrosswalkConversion()
-        sdaCrosswalkConversion.external = null
-        assertFalse sdaCrosswalkConversion.validate()
-        assertLocalizedError sdaCrosswalkConversion, 'nullable', /.*Field.*external.*of class.*SdaCrosswalkConversion.*cannot be null.*/, 'external'
-        sdaCrosswalkConversion.internal = null
-        assertFalse sdaCrosswalkConversion.validate()
-        assertLocalizedError sdaCrosswalkConversion, 'nullable', /.*Field.*internal.*of class.*SdaCrosswalkConversion.*cannot be null.*/, 'internal'
-        sdaCrosswalkConversion.internalGroup = null
-        assertFalse sdaCrosswalkConversion.validate()
-        assertLocalizedError sdaCrosswalkConversion, 'nullable', /.*Field.*internalGroup.*of class.*SdaCrosswalkConversion.*cannot be null.*/, 'internalGroup'
-        sdaCrosswalkConversion.description = null
-        assertFalse sdaCrosswalkConversion.validate()
-        assertLocalizedError sdaCrosswalkConversion, 'nullable', /.*Field.*description.*of class.*SdaCrosswalkConversion.*cannot be null.*/, 'description'
-    }
 
 
     void testfetchAllByInternalAndExternalAndInternalGroup() {

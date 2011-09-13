@@ -163,17 +163,6 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def participantType = newInvalidForCreateParticipantType()
-	    participantType.code = null
-	    assertFalse participantType.validate()
-	    assertLocalizedError participantType, 'nullable', /.*Field.*code.*of class.*ParticipantType.*cannot be null.*/, 'code'
-	    participantType.description = null
-	    assertFalse participantType.validate()
-	    assertLocalizedError participantType, 'nullable', /.*Field.*description.*of class.*ParticipantType.*cannot be null.*/, 'description'
-	}
-
-
 	private def newValidForCreateParticipantType() {
 		def participantType = new ParticipantType(
 			code: i_success_code,

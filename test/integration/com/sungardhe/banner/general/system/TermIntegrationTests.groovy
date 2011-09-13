@@ -164,30 +164,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def term = createValidTerm(code: "TT", description: "TT")
-        term.code = null
-        assertFalse term.validate()
-        assertLocalizedError term, 'nullable', /.*Field.*code.*of class.*Term.*cannot be null.*/, 'code'
-        term.description = null
-        assertFalse term.validate()
-        assertLocalizedError term, 'nullable', /.*Field.*description.*of class.*Term.*cannot be null.*/, 'description'
-        term.startDate = null
-        assertFalse term.validate()
-        assertLocalizedError term, 'nullable', /.*Field.*startDate.*of class.*Term.*cannot be null.*/, 'startDate'
-        term.endDate = null
-        assertFalse term.validate()
-        assertLocalizedError term, 'nullable', /.*Field.*endDate.*of class.*Term.*cannot be null.*/, 'endDate'
-        term.housingStartDate = null
-        assertFalse term.validate()
-        assertLocalizedError term, 'nullable', /.*Field.*housingStartDate.*of class.*Term.*cannot be null.*/, 'housingStartDate'
-        term.housingEndDate = null
-        assertFalse term.validate()
-        assertLocalizedError term, 'nullable', /.*Field.*housingEndDate.*of class.*Term.*cannot be null.*/, 'housingEndDate'
-        term.acyr_code = null
-        assertFalse term.validate()
-        assertLocalizedError term, 'nullable', /.*Field.*acyr_code.*of class.*Term.*cannot be null.*/, 'acyr_code'
-    }
+
 
 
     void testFetchMaxTermWithHousingStartDateLessThanEqualDate() {

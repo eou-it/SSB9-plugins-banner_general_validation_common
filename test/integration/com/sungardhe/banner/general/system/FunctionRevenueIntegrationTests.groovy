@@ -160,17 +160,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
                                                  'description'                                                 
                                                ]
     }
-    
-    
-	void testValidationMessages() {
-	    def functionRevenue = newInvalidForCreateFunctionRevenue()
-	    functionRevenue.code = null
-	    assertFalse functionRevenue.validate()
-	    assertLocalizedError functionRevenue, 'nullable', /.*Field.*code.*of class.*FunctionRevenue.*cannot be null.*/, 'code'
-	    functionRevenue.description = null
-	    assertFalse functionRevenue.validate()
-	    assertLocalizedError functionRevenue, 'nullable', /.*Field.*description.*of class.*FunctionRevenue.*cannot be null.*/, 'description'
-	}
+
   
     
 	private def newValidForCreateFunctionRevenue() {

@@ -136,20 +136,6 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def eventType = newInvalidForCreateEventType()
-        eventType.code = null
-        assertFalse eventType.validate()
-        assertLocalizedError eventType, 'nullable', /.*Field.*code.*of class.*EventType.*cannot be null.*/, 'code'
-        eventType.code = u_failure_code
-        eventType.description = u_failure_description
-        assertFalse eventType.validate()
-        String expectedDescriptionErrorMessage = "Field description of class com.sungardhe.banner.general.system.EventType with value 1234567890123456789012345678901234567890 exceeds the maximum size of 30"
-        assertEquals expectedDescriptionErrorMessage, getErrorMessage( eventType.errors.getFieldError( "description" ) )
-        String expectedCodeErrorMessage = "Field code of class com.sungardhe.banner.general.system.EventType with value 1234567890 exceeds the maximum size of 4"
-        assertEquals expectedCodeErrorMessage, getErrorMessage( eventType.errors.getFieldError( "code" ) )
-    }
-
 
     private def newValidForCreateEventType() {
         def eventType = new EventType(

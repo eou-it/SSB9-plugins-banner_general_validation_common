@@ -118,20 +118,7 @@ class TelephoneTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def telephoneType = newInvalidForCreateTelephoneType()
-	    assertFalse telephoneType.validate()
-	    assertLocalizedError telephoneType, 'nullable', /.*Field.*code.*of class.*TelephoneType.*cannot be null.*/, 'code'
-	    assertLocalizedError telephoneType, 'nullable', /.*Field.*description.*of class.*TelephoneType.*cannot be null.*/, 'description'
-        telephoneType.code=u_failure_code
-        telephoneType.description=u_failure_description
-        assertFalse telephoneType.validate()
-        assertErrorsFor telephoneType, 'maxSize', [ 'code', 'description' ]
-        String expectedDescriptionErrorMessage = "Field description of class com.sungardhe.banner.general.system.TelephoneType with value 1234567890123456789012345678901234567890 exceeds the maximum size of 30"
-        assertEquals expectedDescriptionErrorMessage, getErrorMessage( telephoneType.errors.getFieldError( "description" ) )
-        String expectedCodeErrorMessage = "Field code of class com.sungardhe.banner.general.system.TelephoneType with value 1234567890 exceeds the maximum size of 4"
-        assertEquals expectedCodeErrorMessage, getErrorMessage( telephoneType.errors.getFieldError( "code" ) )
-	}
+
 
 
 	private def newValidForCreateTelephoneType() {

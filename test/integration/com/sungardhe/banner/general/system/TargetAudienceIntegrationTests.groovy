@@ -162,15 +162,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def targetAudience = newInvalidForCreateTargetAudience()
-	    targetAudience.code = null
-	    assertFalse targetAudience.validate()
-	    assertLocalizedError targetAudience, 'nullable', /.*Field.*code.*of class.*TargetAudience.*cannot be null.*/, 'code'
-	    targetAudience.description = null
-	    assertFalse targetAudience.validate()
-	    assertLocalizedError targetAudience, 'nullable', /.*Field.*description.*of class.*TargetAudience.*cannot be null.*/, 'description'
-	}
+
 
 
 	private def newValidForCreateTargetAudience() {

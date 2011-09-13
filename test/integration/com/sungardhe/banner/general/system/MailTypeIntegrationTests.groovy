@@ -172,19 +172,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
                                                ]
     }
     
-    
-	void testValidationMessages() {
-	    def mailType = newInvalidForCreateMailType()
-	    mailType.code = null
-	    assertFalse mailType.validate()
-	    assertLocalizedError mailType, 'nullable', /.*Field.*code.*of class.*MailType.*cannot be null.*/, 'code'
-	    mailType.description = null
-	    assertFalse mailType.validate()
-	    assertLocalizedError mailType, 'nullable', /.*Field.*description.*of class.*MailType.*cannot be null.*/, 'description'
-	    mailType.displayWebIndicator = null
-	    assertFalse mailType.validate()
-	    assertLocalizedError mailType, 'nullable', /.*Field.*displayWebIndicator.*of class.*MailType.*cannot be null.*/, 'displayWebIndicator'
-	}
+
   
     
 	private def newValidForCreateMailType() {

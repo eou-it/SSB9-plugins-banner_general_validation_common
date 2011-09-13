@@ -157,15 +157,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def subjectIndex = newInvalidForCreateSubjectIndex()
-	    subjectIndex.code = null
-	    assertFalse subjectIndex.validate()
-	    assertLocalizedError subjectIndex, 'nullable', /.*Field.*code.*of class.*SubjectIndex.*cannot be null.*/, 'code'
-	    subjectIndex.description = null
-	    assertFalse subjectIndex.validate()
-	    assertLocalizedError subjectIndex, 'nullable', /.*Field.*description.*of class.*SubjectIndex.*cannot be null.*/, 'description'
-	}
+
 
 
 	private def newValidForCreateSubjectIndex() {

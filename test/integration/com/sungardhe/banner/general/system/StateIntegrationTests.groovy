@@ -144,20 +144,6 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def state = newState()
-
-        state.code = null
-        assertFalse state.validate()
-        assertLocalizedError state, 'nullable', /.*Field.*code.*of class.*State.*cannot be null.*/, 'code'
-
-        state.description = null
-        assertFalse state.validate()
-        assertLocalizedError state, 'nullable', /.*Field.*description.*of class.*State.*cannot be null.*/, 'description'
-
-
-    }
-
 
     private def newState() {
 

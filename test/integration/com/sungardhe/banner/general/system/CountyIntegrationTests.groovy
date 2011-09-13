@@ -158,13 +158,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
 		assertFalse "County should have failed validation", county.validate()
 		assertErrorsFor county, 'maxSize', [ 'description' ]    
     }
-    
-	void testValidationMessages() {
-	    def county = newInvalidForCreateCounty()
-	    county.code = null
-	    assertFalse county.validate()
-	    assertLocalizedError county, 'nullable', /.*Field.*code.*of class.*County.*cannot be null.*/, 'code'
-	}
+
   
     
 	private def newValidForCreateCounty() {

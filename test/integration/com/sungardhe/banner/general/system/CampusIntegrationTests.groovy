@@ -125,12 +125,6 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
     assertErrorsFor campus, 'maxSize', ['description']
   }
 
-  void testValidationMessages() {
-    def campus = newValidForCreateCampus()
-    campus.code = null
-    assertFalse campus.validate()
-    assertLocalizedError campus, 'nullable', /.*Field.*code.*of class.*Campus.*cannot be null.*/, 'code'
-  }
 
 
   private def newValidForCreateCampus() {

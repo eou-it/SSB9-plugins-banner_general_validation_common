@@ -118,13 +118,7 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
        assertErrorsFor disability, 'maxSize', [ 'code', 'description' ]
     }
 
-    void testValidationMessages() {
-       def disability = newDisability()
 
-       disability.code = null
-       assertFalse disability.validate()
-       assertLocalizedError disability, 'nullable', /.*Field.*code.*of class.*Disability.*cannot be null.*/, 'code'
-    }
 
      private def newDisability() {
        new Disability(code: "TT", description: "TT" , lastModified: new Date(),

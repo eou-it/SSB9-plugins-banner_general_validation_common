@@ -171,18 +171,6 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def rsvp = newInvalidForCreateRsvp()
-	    rsvp.code = null
-	    assertFalse rsvp.validate()
-	    assertLocalizedError rsvp, 'nullable', /.*Field.*code.*of class.*Rsvp.*cannot be null.*/, 'code'
-	    rsvp.description = null
-	    assertFalse rsvp.validate()
-	    assertLocalizedError rsvp, 'nullable', /.*Field.*description.*of class.*Rsvp.*cannot be null.*/, 'description'
-	    rsvp.planToAttendenceIndicator = null
-	    assertFalse rsvp.validate()
-	    assertLocalizedError rsvp, 'nullable', /.*Field.*planToAttendenceIndicator.*of class.*Rsvp.*cannot be null.*/, 'planToAttendenceIndicator'
-	}
 
 
 	private def newValidForCreateRsvp() {

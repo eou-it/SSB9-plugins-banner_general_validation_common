@@ -114,14 +114,6 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-       def department = newDepartment()
-
-       department.code = null
-       assertFalse department.validate()
-       assertLocalizedError department, 'nullable', /.*Field.*code.*of class.*Department.*cannot be null.*/, 'code'
-    }
-
 
     void testFetchBySomeAttribute() {
       def department = Department.fetchBySomeAttribute()

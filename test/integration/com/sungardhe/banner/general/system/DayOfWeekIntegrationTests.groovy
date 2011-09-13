@@ -204,16 +204,6 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def dayOfWeek = newInvalidForCreateDayOfWeek()
-        dayOfWeek.code = null
-        assertFalse dayOfWeek.validate()
-        assertLocalizedError dayOfWeek, 'nullable', /.*Field.*code.*of class.*DayOfWeek.*cannot be null.*/, 'code'
-        dayOfWeek.number = null
-        assertFalse dayOfWeek.validate()
-        assertLocalizedError dayOfWeek, 'nullable', /.*Field.*number.*of class.*DayOfWeek.*cannot be null.*/, 'number'
-    }
-
 
     private def newValidForCreateDayOfWeek() {
         def dayOfWeek = new DayOfWeek(

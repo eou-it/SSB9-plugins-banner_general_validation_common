@@ -165,15 +165,6 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def menu = newInvalidForCreateMenu()
-	    menu.code = null
-	    assertFalse menu.validate()
-	    assertLocalizedError menu, 'nullable', /.*Field.*code.*of class.*Menu.*cannot be null.*/, 'code'
-	    menu.description = null
-	    assertFalse menu.validate()
-	    assertLocalizedError menu, 'nullable', /.*Field.*description.*of class.*Menu.*cannot be null.*/, 'description'
-	}
 
 
 	private def newValidForCreateMenu() {

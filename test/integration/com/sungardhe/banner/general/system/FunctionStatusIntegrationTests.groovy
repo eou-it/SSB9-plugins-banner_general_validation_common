@@ -140,21 +140,6 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	void testValidationMessages() {
-	    def functionStatus = newInvalidForCreateFunctionStatus()
-	    assertFalse functionStatus.validate()
-	    assertLocalizedError functionStatus, 'nullable', /.*Field.*description.*of class.*FunctionStatus.*cannot be null.*/, 'description'
-        assertLocalizedError functionStatus, 'nullable', /.*Field.*code.*of class.*FunctionStatus.*cannot be null.*/, 'code'
-        functionStatus.code=u_failure_code
-        functionStatus.description=u_failure_description
-        assertFalse functionStatus.validate()
-        String expectedDescriptionErrorMessage = "Field description of class com.sungardhe.banner.general.system.FunctionStatus with value 1234567890123456789012345678901234567890 exceeds the maximum size of 30"
-        String expectedCodeErrorMessage = "Field code of class com.sungardhe.banner.general.system.FunctionStatus with value 1234567890 exceeds the maximum size of 1"
-        assertEquals expectedCodeErrorMessage, getErrorMessage( functionStatus.errors.getFieldError( "code" ) )
-        assertEquals expectedDescriptionErrorMessage, getErrorMessage( functionStatus.errors.getFieldError( "description" ) )
-	}
-
-
 	private def newValidForCreateFunctionStatus() {
 		def functionStatus = new FunctionStatus(
 			code: i_success_code,

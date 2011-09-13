@@ -184,12 +184,6 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def roomStatus = newInvalidForCreateRoomStatus()
-        roomStatus.code = null
-        assertFalse roomStatus.validate()
-        assertLocalizedError roomStatus, 'nullable', /.*Field.*code.*of class.*RoomStatus.*cannot be null.*/, 'code'
-    }
 
 
     private def newValidForCreateRoomStatus() {

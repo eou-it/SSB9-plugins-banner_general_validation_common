@@ -123,20 +123,6 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivisionIntegrationTes
     }
 
 
-    void testValidationMessages() {
-        def geographicRegionAsCostCenterInformationByDisctirctOrDivision = newGeographicRegionAsCostCenterInformationByDisctirctOrDivision()
-
-        geographicRegionAsCostCenterInformationByDisctirctOrDivision.code = null
-        assertFalse geographicRegionAsCostCenterInformationByDisctirctOrDivision.validate()
-        assertLocalizedError geographicRegionAsCostCenterInformationByDisctirctOrDivision, 'nullable', /.*Field.*code.*of class.*GeographicRegionAsCostCenterInformationByDisctirctOrDivision.*cannot be null.*/, 'code'
-
-        geographicRegionAsCostCenterInformationByDisctirctOrDivision.description = null
-        assertFalse geographicRegionAsCostCenterInformationByDisctirctOrDivision.validate()
-        assertLocalizedError geographicRegionAsCostCenterInformationByDisctirctOrDivision, 'nullable', /.*Field.*description.*of class.*GeographicRegionAsCostCenterInformationByDisctirctOrDivision.*cannot be null.*/, 'description'
-
-
-    }
-
 
     private def newGeographicRegionAsCostCenterInformationByDisctirctOrDivision() {
 

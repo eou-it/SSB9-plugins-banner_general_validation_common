@@ -124,15 +124,6 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def degreeLevel = newDegreeLevel()
-
-        degreeLevel.code = null
-        assertFalse degreeLevel.validate()
-        assertLocalizedError(degreeLevel, 'nullable', /.*Field.*code.*of class.*DegreeLevel.*cannot be null.*/, 'code')
-
-    }
-
 
     private def newDegreeLevel() {
         new DegreeLevel(code: "TT", description: "TTTTT", numericValue: 2, lastModified: new Date(),

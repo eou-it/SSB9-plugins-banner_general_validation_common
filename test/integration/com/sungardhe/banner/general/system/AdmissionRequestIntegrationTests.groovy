@@ -140,19 +140,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def admissionRequest = new AdmissionRequest()
 
-        admissionRequest.code = null
-        assertFalse admissionRequest.validate()
-        assertLocalizedError(admissionRequest, 'nullable', /.*Field.*code.*of class.*AdmissionRequest.*cannot be null.*/, 'code')
-
-        admissionRequest.description = null
-        assertFalse admissionRequest.validate()
-        assertLocalizedError(admissionRequest, 'nullable', /.*Field.*description.*of class.*AdmissionRequest.*cannot be null.*/, 'description')
-
-
-    }
 
 
     private def newAdmissionRequest() {

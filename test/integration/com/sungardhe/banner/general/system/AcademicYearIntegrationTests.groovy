@@ -134,13 +134,6 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
     assertErrorsFor(academicYear, 'maxSize', ['description'])
   }
 
-  void testValidationMessages() {
-    def academicYear = newValidForCreateAcademicYear()
-    academicYear.code = null
-    assertFalse academicYear.validate()
-    assertLocalizedError academicYear, 'nullable', /.*Field.*code.*of class.*AcademicYear.*cannot be null.*/, 'code'
-  }
-
 
   private def newValidForCreateAcademicYear() {
     def academicYear = new AcademicYear(

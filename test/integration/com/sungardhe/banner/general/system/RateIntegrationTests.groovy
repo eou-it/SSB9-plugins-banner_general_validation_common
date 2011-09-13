@@ -161,16 +161,7 @@ class RateIntegrationTests extends BaseIntegrationTestCase {
                                                ]
     }
     
-    
-	void testValidationMessages() {
-	    def rate = newInvalidForCreateRate()
-	    rate.code = null
-	    assertFalse rate.validate()
-	    assertLocalizedError rate, 'nullable', /.*Field.*code.*of class.*Rate.*cannot be null.*/, 'code'
-	    rate.description = null
-	    assertFalse rate.validate()
-	    assertLocalizedError rate, 'nullable', /.*Field.*description.*of class.*Rate.*cannot be null.*/, 'description'
-	}
+
   
     
 	private def newValidForCreateRate() {

@@ -182,20 +182,6 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def nation = newNation()
-
-        nation.code = null
-        assertFalse nation.validate()
-        assertLocalizedError nation, 'nullable', /.*Field.*code.*of class.*Nation.*cannot be null.*/, 'code'
-
-        nation.nation = null
-        assertFalse nation.validate()
-        assertLocalizedError nation, 'nullable', /.*Field.*nation.*of class.*Nation.*cannot be null.*/, 'nation'
-
-
-    }
-
 
     private def newNation() {
 

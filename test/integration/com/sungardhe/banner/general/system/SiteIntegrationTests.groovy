@@ -182,16 +182,6 @@ class SiteIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def site = newSite()
-
-        site.code = null
-        assertFalse site.validate()
-        assertLocalizedError site, 'nullable', /.*Field.*code.*of class.*Site.*cannot be null.*/, 'code'
-
-
-    }
-
 
     private def newSite() {
 

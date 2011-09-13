@@ -129,24 +129,6 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def systemIndicator = newInvalidForCreateSystemIndicator()
-        systemIndicator.code = null
-        assertFalse systemIndicator.validate()
-        assertLocalizedError systemIndicator, 'nullable', /.*Field.*code.*of class.*SystemIndicator.*cannot be null.*/, 'code'
-        systemIndicator.description = null
-        assertFalse systemIndicator.validate()
-        assertLocalizedError systemIndicator, 'nullable', /.*Field.*description.*of class.*SystemIndicator.*cannot be null.*/, 'description'
-        systemIndicator.code=u_failure_code
-        systemIndicator.description=u_failure_description
-        assertFalse systemIndicator.validate()
-        String expectedDescriptionErrorMessage = "Field description of class com.sungardhe.banner.general.system.SystemIndicator with value 1234567890123456789012345678901234567890 exceeds the maximum size of 30"
-        String expectedCodeErrorMessage = "Field code of class com.sungardhe.banner.general.system.SystemIndicator with value 1234567890 exceeds the maximum size of 2"
-        assertEquals expectedCodeErrorMessage, getErrorMessage( systemIndicator.errors.getFieldError( "code" ) )
-        assertEquals expectedDescriptionErrorMessage, getErrorMessage( systemIndicator.errors.getFieldError( "description" ) )
-    }
-
-
 
     void testMaxSizeValidationFailures() {
         def systemIndicator = new SystemIndicator(code:u_failure_code, description: u_failure_description)

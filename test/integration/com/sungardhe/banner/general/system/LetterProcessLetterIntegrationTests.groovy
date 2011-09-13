@@ -142,19 +142,6 @@ class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def letterProcessLetter = createLetterProcessLetter()
-
-        letterProcessLetter.code = null
-        assertFalse letterProcessLetter.validate()
-        assertLocalizedError letterProcessLetter, 'nullable', /.*Field.*code.*of class.*LetterProcessLetter.*cannot be null.*/, 'code'
-
-        letterProcessLetter.duplIndicator = null
-        assertFalse letterProcessLetter.validate()
-        assertLocalizedError letterProcessLetter, 'nullable', /.*Field.*duplIndicator.*of class.*LetterProcessLetter.*cannot be null.*/, 'duplIndicator'
-
-
-    }
 
 
     private def createLetterProcessLetter() {

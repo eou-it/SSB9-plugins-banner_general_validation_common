@@ -194,24 +194,6 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def roomRate = newInvalidForCreateRoomRate()
-        roomRate.code = null
-        assertFalse roomRate.validate()
-        assertLocalizedError roomRate, 'nullable', /.*Field.*code.*of class.*RoomRate.*cannot be null.*/, 'code'
-        roomRate.monthlyIndicator = null
-        assertFalse roomRate.validate()
-        assertLocalizedError roomRate, 'nullable', /.*Field.*monthlyIndicator.*of class.*RoomRate.*cannot be null.*/, 'monthlyIndicator'
-        roomRate.dailyIndicator = null
-        assertFalse roomRate.validate()
-        assertLocalizedError roomRate, 'nullable', /.*Field.*dailyIndicator.*of class.*RoomRate.*cannot be null.*/, 'dailyIndicator'
-        roomRate.termlyIndicator = null
-        assertFalse roomRate.validate()
-        assertLocalizedError roomRate, 'nullable', /.*Field.*termlyIndicator.*of class.*RoomRate.*cannot be null.*/, 'termlyIndicator'
-        roomRate.description = null
-        assertFalse roomRate.validate()
-        assertLocalizedError roomRate, 'nullable', /.*Field.*description.*of class.*RoomRate.*cannot be null.*/, 'description'
-    }
 
 
     private def newValidForCreateRoomRate() {

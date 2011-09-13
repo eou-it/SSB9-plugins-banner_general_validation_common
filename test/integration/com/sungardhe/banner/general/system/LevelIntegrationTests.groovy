@@ -153,18 +153,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
     assertErrorsFor level, 'maxSize', ['description', 'ediEquiv']
   }
 
-  void testValidationMessages() {
-    def level = newValidForCreateLevel()
-    level.code = null
-    assertFalse level.validate()
-    assertLocalizedError level, 'nullable', /.*Field.*code.*of class.*Level.*cannot be null.*/, 'code'
-    level.description = null
-    assertFalse level.validate()
-    assertLocalizedError level, 'nullable', /.*Field.*description.*of class.*Level.*cannot be null.*/, 'description'
-    level.ceuInd = null
-    assertFalse level.validate()
-    assertLocalizedError level, 'nullable', /.*Field.*ceuInd.*of class.*Level.*cannot be null.*/, 'ceuInd'
-  }
+
 
 
   private def newValidForCreateLevel() {

@@ -132,23 +132,6 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testValidationMessages() {
-        def functionPurpose = newInvalidForCreateFunctionPurpose()
-        functionPurpose.code = null
-        assertFalse functionPurpose.validate()
-        assertLocalizedError functionPurpose, 'nullable', /.*Field.*code.*of class.*FunctionPurpose.*cannot be null.*/, 'code'
-        functionPurpose.description = null
-        assertFalse functionPurpose.validate()
-        assertLocalizedError functionPurpose, 'nullable', /.*Field.*description.*of class.*FunctionPurpose.*cannot be null.*/, 'description'
-        functionPurpose.code=u_failure_code
-        functionPurpose.description=u_failure_description
-        assertFalse functionPurpose.validate()
-        String expectedDescriptionErrorMessage = "Field description of class com.sungardhe.banner.general.system.FunctionPurpose with value 1234567890123456789012345678901234567890123456789012345678901234567890 exceeds the maximum size of 60"
-        String expectedCodeErrorMessage = "Field code of class com.sungardhe.banner.general.system.FunctionPurpose with value 123456789012345 exceeds the maximum size of 10"
-        assertEquals expectedCodeErrorMessage, getErrorMessage( functionPurpose.errors.getFieldError( "code" ) )
-        assertEquals expectedDescriptionErrorMessage, getErrorMessage( functionPurpose.errors.getFieldError( "description" ) )
-    }
-
 
     private def newValidForCreateFunctionPurpose() {
         def functionPurpose = new FunctionPurpose(

@@ -171,14 +171,6 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
 		assertErrorsFor addressType, 'maxSize', [ 'description', 'systemRequiredIndicator' ]
     }
 
-	void testValidationMessages() {
-	    def addressType = newInvalidForCreateAddressType()
-        addressType.description = u_failure_description
-	    assertFalse addressType.validate()
-	    assertLocalizedError addressType, 'nullable', /.*Field.*code.*of class.*AddressType.*cannot be null.*/, 'code'
-        String expectedDescriptionErrorMessage = "Field description of class com.sungardhe.banner.general.system.AddressType with value 1234567890123456789012345678901234567890 exceeds the maximum size of 30"
-        assertEquals expectedDescriptionErrorMessage, getErrorMessage( addressType.errors.getFieldError( "description" ) )
-	}
 
 
 	private def newValidForCreateAddressType() {

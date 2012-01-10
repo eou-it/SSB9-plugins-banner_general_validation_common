@@ -14,9 +14,13 @@
 -- * Banner and Luminis are either registered trademarks or trademarks of SunGard Higher   *
 -- * Education in the U.S.A. and/or other regions and/or countries.                        *
 -- *****************************************************************************************
-
-
---
+REM
+REM dbeu_ext_gen_bgvc.sql
+REM 
+REM AUDIT TRAIL: 9.0 
+REM 1. Horizon 
+REM AUDIT TRAIL END 
+REM
 whenever oserror exit rollback;
 whenever sqlerror exit rollback;
 REM connect dbeu_owner/&&dbeu_password
@@ -51,5 +55,3 @@ execute dbeu_util.extend_table('GENERAL','GTVFTYP','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVMAIL','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVRATE','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVTARG','G',FALSE);
-
-

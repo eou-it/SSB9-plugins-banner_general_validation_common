@@ -41,7 +41,7 @@ class BannerGeneralValidationCommonGrailsPlugin {
     // independent of deploying a new plugin build to Nexus.
     //
     //String version = "0.2-SNAPSHOT"
-    String version = "1.0.2"
+    String version = "1.0.3"
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.7 > *"

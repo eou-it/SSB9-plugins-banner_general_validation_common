@@ -119,6 +119,7 @@ class SdaCrosswalkConversion implements Serializable {
      * The date column used for various reporting needs
      */
     @Column(name = "GTVSDAX_REPORTING_DATE")
+    @Temporal(TemporalType.DATE)
     Date reportingDate
 
     /**

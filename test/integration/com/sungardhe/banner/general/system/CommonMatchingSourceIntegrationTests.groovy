@@ -18,7 +18,6 @@
 package com.sungardhe.banner.general.system
 
 import com.sungardhe.banner.testing.BaseIntegrationTestCase
-import com.sungardhe.banner.exceptions.ApplicationException
 import groovy.sql.Sql
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import java.text.SimpleDateFormat
@@ -104,7 +103,6 @@ class CommonMatchingSourceIntegrationTests extends BaseIntegrationTestCase {
 	}
 
     void testDates() {
-        def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()
@@ -183,12 +181,4 @@ class CommonMatchingSourceIntegrationTests extends BaseIntegrationTestCase {
 		return commonMatchingSource
 	}
 
-	private def newInvalidForCreateCommonMatchingSource() {
-		def commonMatchingSource = new CommonMatchingSource(
-			code: i_failure_code,
-			description: i_failure_description,
-			longDescription: i_failure_longDescription,
-		)
-		return commonMatchingSource
-	}
 }

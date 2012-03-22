@@ -16,10 +16,10 @@
 -- *****************************************************************************************
 REM
 REM dbeu_ext_gen_bgvc.sql
-REM 
-REM AUDIT TRAIL: 9.0 
-REM 1. Horizon 
-REM AUDIT TRAIL END 
+REM
+REM AUDIT TRAIL: 9.0
+REM 1. Horizon
+REM AUDIT TRAIL END
 REM
 whenever oserror exit rollback;
 whenever sqlerror exit rollback;
@@ -55,3 +55,4 @@ execute dbeu_util.extend_table('GENERAL','GTVFTYP','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVMAIL','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVRATE','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVTARG','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVCMSC','G',FALSE);

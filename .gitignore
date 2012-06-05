@@ -17,3 +17,4 @@ SendFailures.txt
 out/
 grails-*.zip
 *.sha1
+plugin.xml

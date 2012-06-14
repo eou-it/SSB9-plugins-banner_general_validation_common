@@ -56,3 +56,6 @@ execute dbeu_util.extend_table('GENERAL','GTVMAIL','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVRATE','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVTARG','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVCMSC','G',FALSE);
+
+execute dbeu_util.extend_table('GENERAL','GTVSQRU','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVSQPR','G',FALSE);

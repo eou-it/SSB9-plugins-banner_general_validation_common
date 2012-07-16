@@ -11,7 +11,7 @@
  **********************************************************************************/
 
 
-import com.sungardhe.banner.configuration.ApplicationConfigurationUtils as ConfigFinder
+import net.hedtech.banner.configuration.ApplicationConfigurationUtils as ConfigFinder
 import grails.plugins.springsecurity.SecurityConfigType
 
 // ******************************************************************************
@@ -37,7 +37,7 @@ def locationAdder = ConfigFinder.&addLocation.curry(grails.config.locations)
 
 
 
-grails.project.groupId = "com.sungardhe" // used when deploying to a maven repo
+grails.project.groupId = "net.hedtech" // used when deploying to a maven repo
 
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
@@ -77,4 +77,4 @@ grails.enable.native2ascii = false
 // enable GSP preprocessing: replace head -> g:captureHead, title -> g:captureTitle, meta -> g:captureMeta, body -> g:captureBody
 grails.views.gsp.sitemesh.preprocess = true
 
-seedDataTarget =  ['bgvc': ['/src/groovy/com/sungardhe/banner/seeddata/Data/banner_general_validation_common.xml']]
+seedDataTarget =  ['bgvc': ['/src/groovy/net/hedtech/banner/seeddata/Data/banner_general_validation_common.xml']]

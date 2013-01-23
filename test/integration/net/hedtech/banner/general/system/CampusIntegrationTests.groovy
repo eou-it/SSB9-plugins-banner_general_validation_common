@@ -32,7 +32,7 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
   def campusService
 
   protected void setUp() {
-    formContext = ['STVCAMP'] // Since we are not testing a controller, we need to explicitly set this
+    formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
     super.setUp()
   }
 

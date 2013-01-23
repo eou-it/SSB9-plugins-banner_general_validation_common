@@ -19,7 +19,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
 
     protected void setUp() {
-        formContext = ['GTVINSM'] // Since we are not testing a controller, we need to explicitly set this
+        formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 

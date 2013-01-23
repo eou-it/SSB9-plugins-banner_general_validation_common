@@ -23,7 +23,7 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
 
 
     protected void setUp() {
-        formContext = ['STVMDEQ'] // Since we are not testing a controller, we need to explicitly set this
+        formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 

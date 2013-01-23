@@ -25,7 +25,7 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
     def medicalEquipmentService
     
 	protected void setUp() {
-        formContext = [ 'STVDISA' ] // Since we are not testing a controller, we need to explicitly set this
+        formContext = [ 'GUAGMNU' ] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 

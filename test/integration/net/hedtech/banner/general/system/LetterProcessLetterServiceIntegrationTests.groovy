@@ -21,7 +21,7 @@ class LetterProcessLetterServiceIntegrationTests extends BaseIntegrationTestCase
   def letterProcessLetterService
 
   protected void setUp() {
-    formContext = ['GTVLETR']
+    formContext = ['GUAGMNU']
     super.setUp()
   }
 

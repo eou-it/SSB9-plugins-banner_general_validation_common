@@ -28,7 +28,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
   def i_success_displayWebIndicator = true
 
   protected void setUp() {
-    formContext = ['STVSUBJ'] // Since we are not testing a controller, we need to explicitly set this
+    formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
     super.setUp()
   }
 

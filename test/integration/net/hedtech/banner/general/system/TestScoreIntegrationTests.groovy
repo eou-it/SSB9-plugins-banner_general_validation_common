@@ -1,14 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -40,24 +32,24 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
         assertFalse "TestScore should have failed validation", testScore.validate()
         assertErrorsFor(testScore, 'nullable', ['code', 'numberPositions', 'dataType'])
         assertNoErrorsFor(testScore, ['description', 'minimumValue', 'maximumValue',
-                          'systemRequiredIndicator', 'managementInformationSystemCode',
-                          'assessmentForm', 'voiceResponseMessageNumber',
-                          'admissionRequest'])
+                'systemRequiredIndicator', 'managementInformationSystemCode',
+                'assessmentForm', 'voiceResponseMessageNumber',
+                'admissionRequest'])
 
     }
 
 
     void testMaxSizeValidationFailures() {
         def testScore = new TestScore(code: "TTXXX", description: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                                      numberPositions: 22567,
-                                      minimumValue: "XXXXXX", maximumValue: "XXXXXX",
-                                      systemRequiredIndicator: true, managementInformationSystemCode: 'XXXXXXXXXXXXX',
-                                      assessmentForm: "XX", voiceResponseMessageNumber: 1234567)
+                numberPositions: 22567,
+                minimumValue: "XXXXXX", maximumValue: "XXXXXX",
+                systemRequiredIndicator: true, managementInformationSystemCode: 'XXXXXXXXXXXXX',
+                assessmentForm: "XX", voiceResponseMessageNumber: 1234567)
 
         assertFalse "TestScore should have failed validation", testScore.validate()
         assertErrorsFor(testScore, 'maxSize', ['code', 'description', 'minimumValue', 'maximumValue',
-                        'managementInformationSystemCode', 'assessmentForm'
-                        ])
+                'managementInformationSystemCode', 'assessmentForm'
+        ])
 
         assertErrorsFor(testScore, 'max', ['numberPositions', 'voiceResponseMessageNumber'])
     }
@@ -102,7 +94,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
         }
         entity.description = "This better fail"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            entity.save(flush:true, failOnError:true)
+            entity.save(flush: true, failOnError: true)
         }
     }
 
@@ -118,13 +110,13 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-
     private def newTestScore() {
         new TestScore(code: "TT", description: "TT",
-                      numberPositions: 1, dataType: "Z",
-                      minimumValue: "A", maximumValue: "Z",
-                      systemRequiredIndicator: true, managementInformationSystemCode: "A",
-                      assessmentForm: "A", voiceResponseMessageNumber: 1,
-                      lastModified: new Date(), lastModifiedBy: 'horizon', dataOrigin: 'horizon')
+                numberPositions: 1, dataType: "Z",
+                minimumValue: "A", maximumValue: "Z",
+                systemRequiredIndicator: true, managementInformationSystemCode: "A",
+                assessmentForm: "A", voiceResponseMessageNumber: 1,
+                lastModified: new Date(), lastModifiedBy: 'horizon', dataOrigin: 'horizon')
     }
+
 }

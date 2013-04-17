@@ -1,14 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -99,7 +91,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
         admissionRequest.lastModifiedBy = "test"
         admissionRequest.dataOrigin = "Banner"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            admissionRequest.save(flush:true, failOnError:true)
+            admissionRequest.save(flush: true, failOnError: true)
         }
     }
 
@@ -141,18 +133,10 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-
-
-
     private def newAdmissionRequest() {
         new AdmissionRequest(code: "TTTT", description: "TTTTT", tableName: "TTTTT", voiceResponseMsgNumber: 1, voiceResponseEligIndicator: "T", displayWebIndicator: true, lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
     }
 
-    /**
-     * Please put all the custom tests in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(admissionrequest_custom_integration_test_methods) ENABLED START*/
-    /*PROTECTED REGION END*/
+
 }

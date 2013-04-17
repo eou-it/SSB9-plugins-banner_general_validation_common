@@ -89,7 +89,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
         studentActivity.save(failOnError: true, flush: true)
         //Assert for sucessful update
         studentActivity = StudentActivity.get(studentActivity.id)
-        assertTrue studentActivity?.version >  initialVersion
+        assertTrue studentActivity?.version > initialVersion
         assertEquals u_success_description, studentActivity.description
 
 

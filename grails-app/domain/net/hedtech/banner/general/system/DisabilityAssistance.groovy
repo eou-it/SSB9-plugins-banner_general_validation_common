@@ -1,14 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import org.hibernate.annotations.Type
@@ -19,68 +11,68 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVSPSR")
-class DisabilityAssistance  implements Serializable {
-	
-	/**
-	 * The unique identifier for this domain object.
-	 */
-	@Id
+class DisabilityAssistance implements Serializable {
+
+    /**
+     * The unique identifier for this domain object.
+     */
+    @Id
     @SequenceGenerator(name = "STVSPSR_SEQ_GEN", allocationSize = 1, sequenceName = "STVSPSR_SURROGATE_ID_SEQUENCE")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVSPSR_SEQ_GEN")
-    @Column(name="STVSPSR_SURROGATE_ID")
-	Long id
-	
-	/**
-	 * Date that this domain object was last modified.
-	 */
-	@Column(name="STVSPSR_activity_date")
-	@Temporal(TemporalType.TIMESTAMP)
-	Date lastModified
-	
-	/**
-	 * Id of person to last modify this domain object.
-	 */
-	@Column(name="STVSPSR_USER_ID" )
-	String lastModifiedBy
-	
-	/**
-	 * Source system that created or updated this domain object.
-	 */
-	@Column(name="STVSPSR_DATA_ORIGIN", length = 30)
-	String dataOrigin
-	
-	/**
-	 * Optimistic lock token.
-	 */
-	@Version
-	@Column(name="STVSPSR_VERSION",nullable = false)
-	Long version
-	
-	/**
-	 * Disability service code.
-	 */
-	@Column(name="STVSPSR_CODE",nullable = false, length =2)
-	String code
-	
-	/**
-	 * Disability service description.
-	 */
-	@Column(name="STVSPSR_DESC",nullable = false, length = 30)
-	String description
-	
-	
+    @Column(name = "STVSPSR_SURROGATE_ID")
+    Long id
+
+    /**
+     * Date that this domain object was last modified.
+     */
+    @Column(name = "STVSPSR_activity_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    Date lastModified
+
+    /**
+     * Id of person to last modify this domain object.
+     */
+    @Column(name = "STVSPSR_USER_ID")
+    String lastModifiedBy
+
+    /**
+     * Source system that created or updated this domain object.
+     */
+    @Column(name = "STVSPSR_DATA_ORIGIN", length = 30)
+    String dataOrigin
+
+    /**
+     * Optimistic lock token.
+     */
+    @Version
+    @Column(name = "STVSPSR_VERSION", nullable = false)
+    Long version
+
+    /**
+     * Disability service code.
+     */
+    @Column(name = "STVSPSR_CODE", nullable = false, length = 2)
+    String code
+
+    /**
+     * Disability service description.
+     */
+    @Column(name = "STVSPSR_DESC", nullable = false, length = 30)
+    String description
+
+
     public String toString() {
         "DisabilityAssistance[id=$id, code=$code, description=$description, dataOrigin=$dataOrigin, version=$version, lastModifiedBy=$lastModifiedBy, lastModified=$lastModified]"
     }
-	
-	
-	static constraints = {
-		
-		code(maxSize:2, blank:false)
-		description(maxSize: 30, blank:false)
-		dataOrigin(nullable:true)
-		
-	}
+
+
+    static constraints = {
+
+        code(maxSize: 2, blank: false)
+        description(maxSize: 30, blank: false)
+        dataOrigin(nullable: true)
+
+    }
 
 
     boolean equals(o) {

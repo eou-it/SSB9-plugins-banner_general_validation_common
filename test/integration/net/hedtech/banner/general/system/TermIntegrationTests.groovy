@@ -1,14 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -27,15 +19,8 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
         super.setUp()
     }
 
-    /**
-     * Please put all the custom tests in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(term_custom_test_methods) ENABLED START*/
-
 
     void testCreateTerm() {
-
         def term = createValidTerm(code: "TT", description: "TT")
 
         if (!term.save()) {
@@ -47,7 +32,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
 
     void testUpdateTerm() {
         def term = createValidTerm(code: "TT", description: "TT")
-        if (!term.save(flush:true, failOnError:true)) {
+        if (!term.save(flush: true, failOnError: true)) {
             fail("Could not save Term; TERM ERRORS = " + term.errors);
         }
         def id = term.id
@@ -57,7 +42,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
 
         term.description = "updated"
 
-        if (!term.save(flush:true, failOnError:true)) {
+        if (!term.save(flush: true, failOnError: true)) {
             fail("Could not update Term; TERM ERRORS = " + term.errors);
         }
         term = Term.get(id)
@@ -70,7 +55,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
 
     void testDeleteTerm() {
         def term = createValidTerm(code: "TT", description: "TT")
-        if (!term.save(flush:true, failOnError:true)) {
+        if (!term.save(flush: true, failOnError: true)) {
             fail("Could not save Term; TERM ERRORS = " + term.errors);
         }
         def id = term.id
@@ -96,7 +81,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
         //Update the entity
         term.description = "Updated Description"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            term.save(flush:true, failOnError:true)
+            term.save(flush: true, failOnError: true)
         }
     }
 
@@ -124,9 +109,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
         def nextTerm = Term.fetchPreviousTerm("000001")
         assertNotNull nextTerm
         assertEquals nextTerm.code, "000000"
-
     }
-
 
 
     void testNullValidationFailure() {
@@ -164,52 +147,49 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-
-
-
     void testFetchMaxTermWithHousingStartDateLessThanEqualDate() {
         def cal = Calendar.instance
         cal.set(2001, 11, 31)
         def housingStartDate = cal.time
-        def housingEndDate = housingStartDate.plus( 4 )
+        def housingEndDate = housingStartDate.plus(4)
         def term = createValidTerm(code: "ZZZZ99", description: "TT", housingStartDate: housingStartDate, housingEndDate: housingEndDate)
 
-        term.save(flush:true, failOnError:true)
+        term.save(flush: true, failOnError: true)
         assertNotNull(term.id)
 
         //Case: search date before the housingStartDate, should not return the newly created term
         def date = term.housingStartDate.previous()
-        def returnedValue = Term.fetchMaxTermWithHousingStartDateLessThanEqualDate( date )
+        def returnedValue = Term.fetchMaxTermWithHousingStartDateLessThanEqualDate(date)
         if (returnedValue) {
             assertFalse term == returnedValue
         }
 
         //Case: search date on the housingStartDate, should return the newly created term
         date = term.housingStartDate
-        returnedValue= Term.fetchMaxTermWithHousingStartDateLessThanEqualDate( date )
+        returnedValue = Term.fetchMaxTermWithHousingStartDateLessThanEqualDate(date)
         assertEquals term, returnedValue
 
         cal = Calendar.instance
-        cal.setTime( term.housingStartDate )
-        cal.roll( Calendar.HOUR_OF_DAY, true )
+        cal.setTime(term.housingStartDate)
+        cal.roll(Calendar.HOUR_OF_DAY, true)
         date = cal.getTime()
-        returnedValue= Term.fetchMaxTermWithHousingStartDateLessThanEqualDate( date )
+        returnedValue = Term.fetchMaxTermWithHousingStartDateLessThanEqualDate(date)
         assertEquals term, returnedValue
 
         //Case: search date after the housingStartDate, should return the newly created term
         date = term.housingStartDate.next()
-        returnedValue= Term.fetchMaxTermWithHousingStartDateLessThanEqualDate( date )
+        returnedValue = Term.fetchMaxTermWithHousingStartDateLessThanEqualDate(date)
         assertEquals term, returnedValue
     }
 
 
     void testFetchMaxTermWithStartDateLessThanEqualDate() {
-         def term = createValidTerm(code: "WWWW02", description: "ZZZZ01")
-         term.save(flush:true)
-         term.refresh()
-         assertNotNull term.id
-         Term fetchedTerm = Term.fetchMaxTermWithStartDateLessThanGivenDate(new Date()+5)
-         assertEquals term, fetchedTerm
+        def term = createValidTerm(code: "WWWW02", description: "ZZZZ01")
+        term.save(flush: true)
+        term.refresh()
+        assertNotNull term.id
+        Term fetchedTerm = Term.fetchMaxTermWithStartDateLessThanGivenDate(new Date() + 5)
+        assertEquals term, fetchedTerm
     }
 
 
@@ -246,4 +226,5 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
 
         return term
     }
+
 }

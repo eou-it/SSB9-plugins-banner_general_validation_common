@@ -1,14 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import org.hibernate.annotations.Type
@@ -18,14 +10,14 @@ import javax.persistence.*
  * Validation entries for Partition codes.  Partition Codes define campus zones, which are catagories or groupings of rooms.
  */
 @Entity
-@Table(name="GTVPARS")
+@Table(name = "GTVPARS")
 class Partition implements Serializable {
-    
+
     /**
      * Surrogate ID
      */
     @Id
-    @Column(name="gtvpars_surrogate_id")
+    @Column(name = "gtvpars_surrogate_id")
     @SequenceGenerator(name = "GTVPARS_SEQ_GEN", allocationSize = 1, sequenceName = "GTVPARS_SURROGATE_ID_SEQUENCE")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVPARS_SEQ_GEN")
     Long id
@@ -33,31 +25,31 @@ class Partition implements Serializable {
     /**
      * Partition code for campus zones for scheduling product.
      */
-    @Column(name="gtvpars_code", nullable = false, length=7)
+    @Column(name = "gtvpars_code", nullable = false, length = 7)
     String code
 
     /**
      * Description of partition code for scheduling product.
      */
-    @Column(name="gtvpars_desc", nullable = false, length=30)
+    @Column(name = "gtvpars_desc", nullable = false, length = 30)
     String description
 
     /**
      * Numeric identifying value for partition code for scheduling product.
      */
-    @Column(name="gtvpars_scheduler_number", nullable = false, length=22)
+    @Column(name = "gtvpars_scheduler_number", nullable = false, length = 22)
     BigDecimal schedulerNumber
 
     /**
      * This field identifies the user who last updated the record
      */
-    @Column(name="gtvpars_user_id" )
+    @Column(name = "gtvpars_user_id")
     String lastModifiedBy
 
     /**
      * This field identifies the most recent date a record was created/updated
      */
-    @Column(name="gtvpars_activity_date")
+    @Column(name = "gtvpars_activity_date")
     @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
@@ -68,26 +60,26 @@ class Partition implements Serializable {
     @JoinColumns([
     @JoinColumn(name = "gtvpars_camp_code", referencedColumnName = "STVCAMP_CODE")
     ])
-    Campus campus 
+    Campus campus
 
     /**
      * Optimistic Lock Token
      */
     @Version
-    @Column(name="gtvpars_version", nullable = false, length=19)
+    @Column(name = "gtvpars_version", nullable = false, length = 19)
     Long version
 
     /**
      * Application name that created this data
      */
-    @Column(name="gtvpars_data_origin", length=30)
+    @Column(name = "gtvpars_data_origin", length = 30)
     String dataOrigin
 
     static constraints = {
-        code(nullable:false, maxSize:7)
-        description(nullable:false, maxSize:30)
-        schedulerNumber(nullable:false)
-        campus(nullable:true)
+        code(nullable: false, maxSize: 7)
+        description(nullable: false, maxSize: 30)
+        schedulerNumber(nullable: false)
+        campus(nullable: true)
         dataOrigin(nullable: true)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true)

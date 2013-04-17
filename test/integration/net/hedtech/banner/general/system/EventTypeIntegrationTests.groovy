@@ -1,18 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
-/**
- Banner Automator Version: 0.1.1
- Generated: Tue May 10 23:42:29 IST 2011
- */
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -23,7 +11,6 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 
 class EventTypeIntegrationTests extends BaseIntegrationTestCase {
 
-    /*PROTECTED REGION ID(eventtype_domain_integration_test_data) ENABLED START*/
     //Test data for creating new domain instance
     //Valid test data (For success tests)
 
@@ -43,7 +30,7 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
 
     def u_failure_code = "1234567890"
     def u_failure_description = "1234567890123456789012345678901234567890"
-    /*PROTECTED REGION END*/
+
 
 
     protected void setUp() {
@@ -130,10 +117,10 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
     void testMaxSizeValidationFailures() {
-        def eventType = new EventType( code:u_failure_code,
+        def eventType = new EventType(code: u_failure_code,
                 description: u_failure_description)
         assertFalse "EventType should have failed validation", eventType.validate()
-        assertErrorsFor eventType, 'maxSize', ['description','code']
+        assertErrorsFor eventType, 'maxSize', ['description', 'code']
     }
 
 
@@ -161,10 +148,5 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
         return eventType
     }
 
-    /**
-     * Please put all the custom tests in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(eventtype_custom_integration_test_methods) ENABLED START*/
-    /*PROTECTED REGION END*/
+
 }

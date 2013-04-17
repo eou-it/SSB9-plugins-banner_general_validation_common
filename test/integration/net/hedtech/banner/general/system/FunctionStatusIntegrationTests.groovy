@@ -1,18 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
-/**
- Banner Automator Version: 0.1.1
- Generated: Thu May 12 23:12:04 IST 2011
- */
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -21,7 +9,6 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 
 class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 
-	/*PROTECTED REGION ID(functionstatus_domain_integration_test_data) ENABLED START*/
 	//Test data for creating new domain instance
 	//Valid test data (For success tests)
 
@@ -44,7 +31,6 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 
 	def u_failure_code = "1234567890"
 	def u_failure_description = "1234567890123456789012345678901234567890"
-	/*PROTECTED REGION END*/
 
 	protected void setUp() {
 		formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
@@ -79,7 +65,7 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 		functionStatus.description = u_success_description
 		functionStatus.activeIndicator = u_success_activeIndicator
         save functionStatus
-		//Asset for sucessful update
+		//Asset for successful update
         functionStatus = FunctionStatus.get( functionStatus.id )
         assertEquals 1L, functionStatus?.version
         assertEquals u_success_description, functionStatus.description
@@ -165,10 +151,5 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 		return functionStatus
 	}
 
-   /**
-     * Please put all the custom tests in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(functionstatus_custom_integration_test_methods) ENABLED START*/
-    /*PROTECTED REGION END*/
+
 }

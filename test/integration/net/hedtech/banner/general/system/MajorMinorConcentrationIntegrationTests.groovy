@@ -1,18 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
-/**
- Banner Automator Version: 0.1.1
- Generated: Mon Jan 03 16:09:29 CST 2011 
- */
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -21,7 +9,6 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 
 class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
 
-    /*PROTECTED REGION ID(majorminorconcentration_domain_integration_test_data) ENABLED START*/
     //Test data for creating new domain instance
     //Valid test data (For success tests)
     def i_success_code = "TTTT"
@@ -116,7 +103,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
         //Update the entity
         majorMinorConcentration.description = "Update Description"
         shouldFail(HibernateOptimisticLockingFailureException) {
-            majorMinorConcentration.save(flush:true, failOnError:true)
+            majorMinorConcentration.save(flush: true, failOnError: true)
         }
     }
 
@@ -141,22 +128,22 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
         def majorMinorConcentration = new MajorMinorConcentration()
         assertFalse "MajorMinorConcentration should have failed validation", majorMinorConcentration.validate()
         assertErrorsFor majorMinorConcentration, 'nullable',
-                        [
+                [
                         'code'
-                        ]
+                ]
         assertNoErrorsFor majorMinorConcentration,
-                          [
-                          'description',
-                          'validMajorIndicator',
-                          'validMinorIndicator',
-                          'validConcentratnIndicator',
-                          'occupationIndicator',
-                          'aidEligibilityIndicator',
-                          'systemRequiredIndicator',
-                          'voiceResponseMessageNumber',
-                          'sevisEquiv',
-                          'cipcCode'
-                          ]
+                [
+                        'description',
+                        'validMajorIndicator',
+                        'validMinorIndicator',
+                        'validConcentratnIndicator',
+                        'occupationIndicator',
+                        'aidEligibilityIndicator',
+                        'systemRequiredIndicator',
+                        'voiceResponseMessageNumber',
+                        'sevisEquiv',
+                        'cipcCode'
+                ]
     }
 
 
@@ -180,8 +167,8 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     void testFetchBySomeAttributeWithFilter() {
         // test with filter, no parms
         def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MATH")
-        assertEquals majorMinorConcentrations.list.size()   ,
-                     MajorMinorConcentration.findAllByCodeIlikeOrDescriptionIlike("%MATH%", "%MATH%").size()
+        assertEquals majorMinorConcentrations.list.size(),
+                MajorMinorConcentration.findAllByCodeIlikeOrDescriptionIlike("%MATH%", "%MATH%").size()
     }
 
 

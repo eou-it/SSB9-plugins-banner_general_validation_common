@@ -1,14 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import org.hibernate.annotations.Type
@@ -19,33 +11,33 @@ import javax.persistence.*
  *
  */
 @Entity
-@Table (name = "STVMEDI")
+@Table(name = "STVMEDI")
 class MedicalCondition implements Serializable {
-    
-	@Id
-	@Column(name="STVMEDI_SURROGATE_ID")
+
+    @Id
+    @Column(name = "STVMEDI_SURROGATE_ID")
     @SequenceGenerator(name = "STVMEDI_SEQ_GEN", allocationSize = 1, sequenceName = "STVMEDI_SURROGATE_ID_SEQUENCE")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STVMEDI_SEQ_GEN")
-	Long id
+    Long id
 
-    @Column (name="STVMEDI_ACTIVITY_DATE", nullable = true)
+    @Column(name = "STVMEDI_ACTIVITY_DATE", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
-    @Column (name="STVMEDI_USER_ID", nullable = true, length = 30)
+    @Column(name = "STVMEDI_USER_ID", nullable = true, length = 30)
     String lastModifiedBy
 
-    @Column (name="STVMEDI_DATA_ORIGIN", nullable = true, length = 30)
+    @Column(name = "STVMEDI_DATA_ORIGIN", nullable = true, length = 30)
     String dataOrigin
 
     @Version
-    @Column (name="STVMEDI_VERSION",nullable = false)
+    @Column(name = "STVMEDI_VERSION", nullable = false)
     Long version
 
-    @Column (name="STVMEDI_CODE",nullable = false, length = 10)
+    @Column(name = "STVMEDI_CODE", nullable = false, length = 10)
     String code
 
-    @Column (name="STVMEDI_DESC",nullable = false, length = 30)
+    @Column(name = "STVMEDI_DESC", nullable = false, length = 30)
     String description
 
     public String toString() {
@@ -53,11 +45,11 @@ class MedicalCondition implements Serializable {
     }
 
     static constraints = {
-        code(           maxSize: 10, blank: false )
-        description(    maxSize: 30, blank: false )
-        dataOrigin(     nullable: true )
-        lastModified(   nullable: true )
-        lastModifiedBy( nullable: true )
+        code(maxSize: 10, blank: false)
+        description(maxSize: 30, blank: false)
+        dataOrigin(nullable: true)
+        lastModified(nullable: true)
+        lastModifiedBy(nullable: true)
     }
 
 

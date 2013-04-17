@@ -1,19 +1,10 @@
---
+--/** *****************************************************************************
+-- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+-- ****************************************************************************** */--
 -- dbeu_table_extends.sql
 --
 -- V8.1
 --
--- *****************************************************************************************
--- * Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.                    *
--- * This copyrighted software contains confidential and proprietary information of        *
--- * SunGard Higher Education and its subsidiaries. Any use of this software is limited    *
--- * solely to SunGard Higher Education licensees, and is further subject to the terms     *
--- * and conditions of one or more written license agreements between SunGard Higher       *
--- * Education and the licensee in question. SunGard is either a registered trademark or   *
--- * trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.*
--- * Banner and Luminis are either registered trademarks or trademarks of SunGard Higher   *
--- * Education in the U.S.A. and/or other regions and/or countries.                        *
--- *****************************************************************************************
 REM
 REM dbeu_ext_gen_bgvc.sql
 REM
@@ -24,6 +15,9 @@ REM
 whenever oserror exit rollback;
 whenever sqlerror exit rollback;
 REM connect dbeu_owner/&&dbeu_password
+
+execute dbeu_util.extend_table('GENERAL','GXVBANK','G',FALSE);
+
 execute dbeu_util.extend_table('GENERAL','GTVDICD','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVDUNT','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVEMPH','G',FALSE);
@@ -55,7 +49,8 @@ execute dbeu_util.extend_table('GENERAL','GTVFTYP','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVMAIL','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVRATE','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVTARG','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVCCRD','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVCMSC','G',FALSE);
-
+execute dbeu_util.extend_table('GENERAL','GTVCURR','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSQRU','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSQPR','G',FALSE);

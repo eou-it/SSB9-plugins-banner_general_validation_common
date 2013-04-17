@@ -1,18 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
-/**
- Banner Automator Version: 0.1.1
- Generated: Mon Jan 03 15:56:54 CST 2011
- */
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import org.hibernate.annotations.Type
@@ -24,12 +12,12 @@ import javax.persistence.*
 @Entity
 @Table(name = "STVTERM")
 @NamedQueries(value = [
-    @NamedQuery(name = "Term.fetchPreviousTerm",
-                query = """FROM Term a WHERE a.code = ( SELECT MAX(b.code) FROM Term b WHERE b.code < :term)"""),
-    @NamedQuery(name = "Term.fetchMaxTermWithStartDateLessThanGivenDate",
-                query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.startDate <= :givenDate)"""),
-    @NamedQuery(name = "Term.fetchMaxTermWithHousingStartDateLessThanEqualDate",
-                query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.housingStartDate <= :housingStartDate)""")
+@NamedQuery(name = "Term.fetchPreviousTerm",
+query = """FROM Term a WHERE a.code = ( SELECT MAX(b.code) FROM Term b WHERE b.code < :term)"""),
+@NamedQuery(name = "Term.fetchMaxTermWithStartDateLessThanGivenDate",
+query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.startDate <= :givenDate)"""),
+@NamedQuery(name = "Term.fetchMaxTermWithHousingStartDateLessThanEqualDate",
+query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.housingStartDate <= :housingStartDate)""")
 ])
 
 class Term implements Serializable {
@@ -267,11 +255,6 @@ class Term implements Serializable {
     }
 
 
-    /**
-     * Please put all the custom methods/code in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(term_custom_methods) ENABLED START*/
 
     public static Term fetchMaxTermWithHousingStartDateLessThanEqualDate(Date housingStartDate) {
         Term.withSession { session ->
@@ -286,5 +269,4 @@ class Term implements Serializable {
         }
     }
 
-    /*PROTECTED REGION END*/
 }

@@ -1,14 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -20,155 +12,150 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
  * */
 class LevelIntegrationTests extends BaseIntegrationTestCase {
 
-  /*PROTECTED REGION ID(level_domain_integration_test_data) ENABLED START*/
-  //Test data for creating new domain instance
-  //Valid test data (For success tests)
+    //Test data for creating new domain instance
+    //Valid test data (For success tests)
 
-  def i_success_code = "TT"
-  def i_success_description = "TTTTT"
-  def i_success_academicIndicator = true
-  def i_success_continuingEducationIndicator = true
+    def i_success_code = "TT"
+    def i_success_description = "TTTTT"
+    def i_success_academicIndicator = true
+    def i_success_continuingEducationIndicator = true
 
-  def i_success_systemRequiredIndicator = true
-  def i_success_voiceResponseMessageNumber = 1
+    def i_success_systemRequiredIndicator = true
+    def i_success_voiceResponseMessageNumber = 1
 
-  def i_success_electronicDataInterchangeEquivalent = "TT"
+    def i_success_electronicDataInterchangeEquivalent = "TT"
 
-  /*PROTECTED REGION END*/
-
-  def levelService
+    def levelService
 
 
-  protected void setUp() {
-    formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
-    super.setUp()
-  }
-
-
-  void testCreateLevel() {
-    def level = newValidForCreateLevel()
-
-    if (!level.save()) {
-      fail("Could not save Level; LEVEL ERRORS = " + level.errors);
+    protected void setUp() {
+        formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
+        super.setUp()
     }
-    assertNotNull(level.id)
-  }
 
-  void testUpdateLevel() {
-    def level = newValidForCreateLevel()
-    if (!level.save(flush:true, failOnError:true)) {
-      fail("Could not save Level; LEVEL ERRORS = " + level.errors);
+
+    void testCreateLevel() {
+        def level = newValidForCreateLevel()
+
+        if (!level.save()) {
+            fail("Could not save Level; LEVEL ERRORS = " + level.errors);
+        }
+        assertNotNull(level.id)
     }
-    def id = level.id
-    def version = level.version
-    assertNotNull(id)
-    assertEquals(0L, version)
 
-    level.description = "updated"
+    void testUpdateLevel() {
+        def level = newValidForCreateLevel()
+        if (!level.save(flush: true, failOnError: true)) {
+            fail("Could not save Level; LEVEL ERRORS = " + level.errors);
+        }
+        def id = level.id
+        def version = level.version
+        assertNotNull(id)
+        assertEquals(0L, version)
 
-    if (!level.save(flush:true, failOnError:true)) {
-      fail("Could not update Level; LEVEL ERRORS = " + level.errors);
+        level.description = "updated"
+
+        if (!level.save(flush: true, failOnError: true)) {
+            fail("Could not update Level; LEVEL ERRORS = " + level.errors);
+        }
+        level = Level.get(id)
+
+        assertNotNull("found must not be null", level)
+        assertEquals("updated", level.description)
+        assertEquals(1, level.version)
     }
-    level = Level.get(id)
 
-    assertNotNull("found must not be null", level)
-    assertEquals("updated", level.description)
-    assertEquals(1, level.version)
-  }
-
-  void testDeleteLevel() {
-    def level = newValidForCreateLevel()
-    if (!level.save(flush:true, failOnError:true)) {
-      fail("Could not save Level; LEVEL ERRORS = " + level.errors);
+    void testDeleteLevel() {
+        def level = newValidForCreateLevel()
+        if (!level.save(flush: true, failOnError: true)) {
+            fail("Could not save Level; LEVEL ERRORS = " + level.errors);
+        }
+        def id = level.id
+        assertNotNull(id)
+        level.delete();
+        def found = Level.get(id)
+        assertNull(found)
     }
-    def id = level.id
-    assertNotNull(id)
-    level.delete();
-    def found = Level.get(id)
-    assertNull(found)
-  }
 
 
-  void testOptimisticLock() {
-    def level = newValidForCreateLevel()
-    save level
+    void testOptimisticLock() {
+        def level = newValidForCreateLevel()
+        save level
 
-    def sql
-    try {
-      sql = new Sql(sessionFactory.getCurrentSession().connection())
-      sql.executeUpdate("update STVLEVL set STVLEVL_VERSION = 999 where STVLEVL_SURROGATE_ID = ?", [level.id])
-    } finally {
-      sql?.close() // note that the test will close the connection, since it's our current session's connection
+        def sql
+        try {
+            sql = new Sql(sessionFactory.getCurrentSession().connection())
+            sql.executeUpdate("update STVLEVL set STVLEVL_VERSION = 999 where STVLEVL_SURROGATE_ID = ?", [level.id])
+        } finally {
+            sql?.close() // note that the test will close the connection, since it's our current session's connection
+        }
+        //Try to update the entity
+        //Update the entity
+        level.description = "Test Description"
+        shouldFail(HibernateOptimisticLockingFailureException) {
+            level.save(flush: true, failOnError: true)
+        }
     }
-    //Try to update the entity
-    //Update the entity
-    level.description = "Test Description"
-    shouldFail(HibernateOptimisticLockingFailureException) {
-      level.save(flush:true, failOnError:true)
+
+    void testValidation() {
+        def level = new Level()
+        //should not pass validation since none of the required values are provided
+        assertFalse(level.validate())
+        level.code = "TT"
+        level.description = "TT"
+        level.acadInd = true
+        level.ceuInd = true
+        level.systemReqInd = true
+        level.vrMsgNo = 4321
+        level.ediEquiv = "TT"
+        level.lastModified = new Date()
+        level.lastModifiedBy = "test"
+        level.dataOrigin = "banner"
+
+        //should pass this time
+        assertTrue(level.validate())
     }
-  }
 
-  void testValidation() {
-    def level = new Level()
-    //should not pass validation since none of the required values are provided
-    assertFalse(level.validate())
-    level.code = "TT"
-    level.description = "TT"
-    level.acadInd = true
-    level.ceuInd = true
-    level.systemReqInd = true
-    level.vrMsgNo = 4321
-    level.ediEquiv = "TT"
-    level.lastModified = new Date()
-    level.lastModifiedBy = "test"
-    level.dataOrigin = "banner"
+    void testNullValidationFailure() {
+        def level = new Level()
+        assertFalse "Level should have failed validation", level.validate()
+        assertErrorsFor level, 'nullable',
+                [
+                        'code',
+                        'description',
+                        'ceuInd'
+                ]
+        assertNoErrorsFor level,
+                [
+                        'acadInd',
+                        'systemReqInd',
+                        'vrMsgNo',
+                        'ediEquiv'
+                ]
+    }
 
-    //should pass this time
-    assertTrue(level.validate())
-  }
-
-  void testNullValidationFailure() {
-    def level = new Level()
-    assertFalse "Level should have failed validation", level.validate()
-    assertErrorsFor level, 'nullable',
-            [
-                    'code',
-                    'description',
-                    'ceuInd'
-            ]
-    assertNoErrorsFor level,
-            [
-                    'acadInd',
-                    'systemReqInd',
-                    'vrMsgNo',
-                    'ediEquiv'
-            ]
-  }
-
-  void testMaxSizeValidationFailures() {
-    def level = new Level(
-            description: 'This description is longet then allowed, it should throw maxSize error',
-            ediEquiv: 'Allowd length is 2, should throw maxSize Error')
-    assertFalse "Level should have failed validation", level.validate()
-    assertErrorsFor level, 'maxSize', ['description', 'ediEquiv']
-  }
+    void testMaxSizeValidationFailures() {
+        def level = new Level(
+                description: 'This description is longet then allowed, it should throw maxSize error',
+                ediEquiv: 'Allowd length is 2, should throw maxSize Error')
+        assertFalse "Level should have failed validation", level.validate()
+        assertErrorsFor level, 'maxSize', ['description', 'ediEquiv']
+    }
 
 
-
-
-  private def newValidForCreateLevel() {
-    def level = new Level(
-            code: i_success_code,
-            description: i_success_description,
-            acadInd: i_success_academicIndicator,
-            ceuInd: i_success_continuingEducationIndicator,
-            systemReqInd: i_success_systemRequiredIndicator,
-            vrMsgNo: i_success_voiceResponseMessageNumber,
-            ediEquiv: i_success_electronicDataInterchangeEquivalent,
-            lastModified: new Date(),
-            lastModifiedBy: "test",
-            dataOrigin: "Banner"
-    )
-    return level
-  }
+    private def newValidForCreateLevel() {
+        def level = new Level(
+                code: i_success_code,
+                description: i_success_description,
+                acadInd: i_success_academicIndicator,
+                ceuInd: i_success_continuingEducationIndicator,
+                systemReqInd: i_success_systemRequiredIndicator,
+                vrMsgNo: i_success_voiceResponseMessageNumber,
+                ediEquiv: i_success_electronicDataInterchangeEquivalent,
+                lastModified: new Date(),
+                lastModifiedBy: "test",
+                dataOrigin: "Banner"
+        )
+        return level
+    }
 }

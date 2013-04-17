@@ -1,18 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
-/**
- Banner Automator Version: 0.1.1
- Generated: Fri Feb 11 16:39:35 EST 2011 
- */
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -21,7 +9,6 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 
 class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
 
-    /*PROTECTED REGION ID(phonerate_domain_integration_test_data) ENABLED START*/
     //Test data for creating new domain instance
     //Valid test data (For success tests)
 
@@ -53,7 +40,6 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_dailyIndicator = "X"
     def u_failure_termlyIndicator = "X"
     def u_failure_description = "Test Failure Description for invalid update"
-    /*PROTECTED REGION END*/
 
 
     protected void setUp() {
@@ -67,8 +53,6 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
 
 
     void initializeTestDataForReferences() {
-        /*PROTECTED REGION ID(phonerate_domain_integration_test_data_initialization) ENABLED START*/
-        /*PROTECTED REGION END*/
     }
 
 
@@ -110,7 +94,8 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
         phoneRate.termlyIndicator = u_success_termlyIndicator
         phoneRate.description = u_success_description
         phoneRate.save(failOnError: true, flush: true)
-        //Asset for sucessful update
+
+        //Asset for successful update
         phoneRate = PhoneRate.get(phoneRate.id)
         assertEquals 1L, phoneRate?.version
         assertEquals u_success_monthlyIndicator, phoneRate.monthlyIndicator
@@ -195,8 +180,6 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-
-
     private def newValidForCreatePhoneRate() {
         def phoneRate = new PhoneRate(
                 code: i_success_code,
@@ -226,10 +209,5 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
         return phoneRate
     }
 
-    /**
-     * Please put all the custom tests in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(phonerate_custom_integration_test_methods) ENABLED START*/
-    /*PROTECTED REGION END*/
+
 }

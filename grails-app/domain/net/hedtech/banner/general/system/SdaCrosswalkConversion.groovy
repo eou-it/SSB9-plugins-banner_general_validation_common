@@ -1,18 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
-/**
- Banner Automator Version: 0.1.1
- Generated: Thu Jan 13 15:25:11 EST 2011 
- */
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import javax.persistence.Column
@@ -32,32 +20,6 @@ import org.hibernate.annotations.Type
 /**
  * SDA crosswalk/conversion table
  */
-/*PROTECTED REGION ID(sdacrosswalkconversion_namedqueries) ENABLED START*/
-/**
- * Where clause on this entity present in forms:
- * Form Name: GUAPPRF
- *  where GTVSDAX_INTERNAL_CODE_GROUP = 'CREATEPIN'
-
- * Form Name: GUAQPRG
- *  GTVSDAX_INTERNAL_CODE = 'AQ4PIPES'
-
- * Order by clause on this entity present in forms:
- * Form Name: GTVSDAX
- *  gtvsdax_internal_code,
- gtvsdax_internal_code_group,
- gtvsdax_internal_code_seqno,
- gtvsdax_external_code
-
- WHERE G.GTVSDAX_INTERNAL_CODE = 'PREREQCHK'
- AND G.GTVSDAX_INTERNAL_CODE_GROUP = 'DEGREEWORKS'
- AND G.GTVSDAX_EXTERNAL_CODE <> '999999'
- AND G.GTVSDAX_EXTERNAL_CODE <= :KEY_BLOCK.SSASECT_TERM_CODE
- AND EXISTS (SELECT 1 FROM STVTERM WHERE STVTERM_CODE=G.GTVSDAX_EXTERNAL_CODE);
-
- * Form Name: GUAQPRG
- *  GTVSDAX_INTERNAL_CODE_GROUP
-
- */
 
 @NamedQueries(value = [
 @NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalAndExternalAndInternalGroup",
@@ -71,7 +33,7 @@ query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
            and a.external < :external
            and a.internalGroup = :internalGroup
-           order by a.internalSequenceNumber """)    ,
+           order by a.internalSequenceNumber """),
 @NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup",
 query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
@@ -79,10 +41,6 @@ query = """FROM SdaCrosswalkConversion a
            order by a.internalSequenceNumber """)
 ])
 
-
-
-
-/*PROTECTED REGION END*/
 @Entity
 @Table(name = "GTVSDAX")
 class SdaCrosswalkConversion implements Serializable {
@@ -243,20 +201,7 @@ class SdaCrosswalkConversion implements Serializable {
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
-        /**
-         * Please put all the custom constraints in this protected section to protect the code
-         * from being overwritten on re-generation
-         */
-        /*PROTECTED REGION ID(sdacrosswalkconversion_custom_constraints) ENABLED START*/
-
-        /*PROTECTED REGION END*/
     }
-    /**
-     * Please put all the custom methods/code in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(sdacrosswalkconversion_custom_methods) ENABLED START*/
-
 
     public static List fetchAllByInternalAndExternalAndInternalGroup(String internal, String external, String internalGroup) {
         def sdax
@@ -277,15 +222,13 @@ class SdaCrosswalkConversion implements Serializable {
 
     }
 
-        public static List fetchAllByInternalAndInternalGroup(String internal,  String internalGroup) {
+    public static List fetchAllByInternalAndInternalGroup(String internal, String internalGroup) {
         def sdax
         SdaCrosswalkConversion.withSession {session ->
-            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup')
-                    .setString('internal', internal).setString('internalGroup', internalGroup).list()
+            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).list()
         }
         return sdax
 
     }
 
-    /*PROTECTED REGION END*/
 }

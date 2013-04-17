@@ -1,15 +1,6 @@
-
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import javax.persistence.Column
@@ -29,83 +20,75 @@ import org.hibernate.annotations.Type
  */
 
 @Entity
-@Table(name="GTVFUNC")
+@Table(name = "GTVFUNC")
 class Function implements Serializable {
-	
-	/**
-	 * Surrogate ID for GTVFUNC
-	 */
-	@Id
-	@Column(name="GTVFUNC_SURROGATE_ID")
+
+    /**
+     * Surrogate ID for GTVFUNC
+     */
+    @Id
+    @Column(name = "GTVFUNC_SURROGATE_ID")
     @SequenceGenerator(name = "GTVFUNC_SEQ_GEN", allocationSize = 1, sequenceName = "GTVFUNC_SURROGATE_ID_SEQUENCE")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVFUNC_SEQ_GEN")
-	Long id
+    Long id
 
-	/**
-	 * Function Code.
-	 */
-	@Column(name="GTVFUNC_CODE", nullable = false, length=12)
-	String code
+    /**
+     * Function Code.
+     */
+    @Column(name = "GTVFUNC_CODE", nullable = false, length = 12)
+    String code
 
-	/**
-	 * Function Code Description.
-	 */
-	@Column(name="GTVFUNC_DESC", nullable = false, length=60)
-	String description
+    /**
+     * Function Code Description.
+     */
+    @Column(name = "GTVFUNC_DESC", nullable = false, length = 60)
+    String description
 
-	/**
-	 * Default Function Event Type Code.
-	 */
- 	@Column(name="GTVFUNC_ETYP_CODE", nullable = false, length=4)
-	String etypCode
+    /**
+     * Default Function Event Type Code.
+     */
+    @Column(name = "GTVFUNC_ETYP_CODE", nullable = false, length = 4)
+    String etypCode
 
-	/**
-	 * Function Code Activity Date.
-	 */
-	@Column(name="GTVFUNC_activity_date")
-	@Temporal(TemporalType.TIMESTAMP)
-	Date lastModified
+    /**
+     * Function Code Activity Date.
+     */
+    @Column(name = "GTVFUNC_activity_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    Date lastModified
 
-	/**
-	 * Version column which is used as a optimistic lock token for GTVFUNC
-	 */
-	@Version
-	@Column(name="GTVFUNC_VERSION", nullable = false, length=19)
-	Long version
+    /**
+     * Version column which is used as a optimistic lock token for GTVFUNC
+     */
+    @Version
+    @Column(name = "GTVFUNC_VERSION", nullable = false, length = 19)
+    Long version
 
-	/**
-	 * Last Modified By column for GTVFUNC
-	 */
-	@Column(name="GTVFUNC_USER_ID", length=30)
-	String lastModifiedBy
+    /**
+     * Last Modified By column for GTVFUNC
+     */
+    @Column(name = "GTVFUNC_USER_ID", length = 30)
+    String lastModifiedBy
 
-	/**
-	 * Data Origin column for GTVFUNC
-	 */
-	@Column(name="GTVFUNC_DATA_ORIGIN", length=30)
-	String dataOrigin
+    /**
+     * Data Origin column for GTVFUNC
+     */
+    @Column(name = "GTVFUNC_DATA_ORIGIN", length = 30)
+    String dataOrigin
 
-	
-	
-	public String toString() {
-		"Function[id=$id, code=$code, description=$description, etypCode=$etypCode, lastModified=$lastModified, version=$version, lastModifiedBy=$lastModifiedBy, dataOrigin=$dataOrigin]"
-	}
 
-	static constraints = {
-		code(nullable:false, maxSize:12)
-		description(nullable:false, maxSize:60)
-		etypCode(nullable:false, maxSize:4)
-		lastModified(nullable:true)
-		lastModifiedBy(nullable:true, maxSize:30)
-		dataOrigin(nullable:true, maxSize:30)
- 
-		/**
-	     * Please put all the custom tests in this protected section to protect the code
-	     * from being overwritten on re-generation
-	     */
-	    /*PROTECTED REGION ID(function_custom_constraints) ENABLED START*/
-	    
-	    /*PROTECTED REGION END*/
+
+    public String toString() {
+        "Function[id=$id, code=$code, description=$description, etypCode=$etypCode, lastModified=$lastModified, version=$version, lastModifiedBy=$lastModifiedBy, dataOrigin=$dataOrigin]"
+    }
+
+    static constraints = {
+        code(nullable: false, maxSize: 12)
+        description(nullable: false, maxSize: 60)
+        etypCode(nullable: false, maxSize: 4)
+        lastModified(nullable: true)
+        lastModifiedBy(nullable: true, maxSize: 30)
+        dataOrigin(nullable: true, maxSize: 30)
     }
 
 
@@ -142,11 +125,5 @@ class Function implements Serializable {
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
         return result;
     }
-/**
-     * Please put all the custom methods/code in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(function_custom_methods) ENABLED START*/
-    
-    /*PROTECTED REGION END*/
+
 }

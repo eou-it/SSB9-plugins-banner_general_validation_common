@@ -1,18 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
-/**
- Banner Automator Version: 0.1.1
- Generated: Tue May 10 23:42:29 IST 2011
- */
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -21,7 +9,6 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 
 class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
-    /*PROTECTED REGION ID(functionpurpose_domain_integration_test_data) ENABLED START*/
     //Test data for creating new domain instance
     //Valid test data (For success tests)
 
@@ -41,7 +28,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
     def u_failure_code = "123456789012345"
     def u_failure_description = "1234567890123456789012345678901234567890123456789012345678901234567890"
-    /*PROTECTED REGION END*/
+
 
 
     protected void setUp() {
@@ -115,8 +102,8 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
     void testValidation() {
         def functionPurpose = newInvalidForCreateFunctionPurpose()
-        functionPurpose.code=u_failure_code
-        functionPurpose.description=u_failure_description
+        functionPurpose.code = u_failure_code
+        functionPurpose.description = u_failure_description
         assertFalse "FunctionPurpose could not be validated as expected due to ${functionPurpose.errors}", functionPurpose.validate()
         assertErrorsFor functionPurpose, 'maxSize', ['code', 'description']
     }
@@ -157,10 +144,5 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
         return functionPurpose
     }
 
-    /**
-     * Please put all the custom tests in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(functionpurpose_custom_integration_test_methods) ENABLED START*/
-    /*PROTECTED REGION END*/
+
 }

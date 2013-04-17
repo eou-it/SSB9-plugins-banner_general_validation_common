@@ -1,18 +1,6 @@
-/*********************************************************************************
- Copyright 2009-2011 SunGard Higher Education. All Rights Reserved.
- This copyrighted software contains confidential and proprietary information of 
- SunGard Higher Education and its subsidiaries. Any use of this software is limited 
- solely to SunGard Higher Education licensees, and is further subject to the terms 
- and conditions of one or more written license agreements between SunGard Higher 
- Education and the licensee in question. SunGard is either a registered trademark or
- trademark of SunGard Data Systems in the U.S.A. and/or other regions and/or countries.
- Banner and Luminis are either registered trademarks or trademarks of SunGard Higher 
- Education in the U.S.A. and/or other regions and/or countries.
- **********************************************************************************/
-/**
- Banner Automator Version: 0.1.1
- Generated: Mon Jan 03 15:56:54 CST 2011
- */
+/** *****************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 /**
@@ -262,17 +250,11 @@ class MajorMinorConcentration implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
-    /**
-     * Please put all the custom methods/code in this protected section to protect the code
-     * from being overwritten on re-generation
-     */
-    /*PROTECTED REGION ID(majorminorconcentration_custom_methods) ENABLED START*/
 
     /**
      * bean methods for lookups
      * @return
      */
-
     public static Object fetchBySomeAttribute() {
         def returnObj = [list: MajorMinorConcentration.findAll([sort: "code"])]
         return returnObj
@@ -303,13 +285,12 @@ class MajorMinorConcentration implements Serializable {
      * @param fieldOfStudy
      * @return list of MajorMinorConcentration
      */
-
     public static List fetchBySomeAttributeFromQuery(String filter, String fieldOfStudy) {
 
         if (StringUtils.isBlank(filter)) {
             filter = "%"
         } else if (!(filter =~ /%/)) {
-            filter  = filter.toUpperCase() + "%"
+            filter = filter.toUpperCase() + "%"
         }
         else filter = filter.toUpperCase()
 
@@ -347,7 +328,6 @@ class MajorMinorConcentration implements Serializable {
      * @param params
      * @return MajorMinorConcentration object
      */
-
     public static MajorMinorConcentration fetchValidMajor(String filter, params) {
 
         def result
@@ -378,5 +358,5 @@ class MajorMinorConcentration implements Serializable {
         return result
 
     }
-    /*PROTECTED REGION END*/
+
 }

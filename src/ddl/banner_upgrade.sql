@@ -18,4 +18,10 @@ REM
 start dbeu_ext_gen_bgvc
 start dbeu_ext_stu_bgvc
 REM
+REM
+REM Recompile invalid objects before doing seed data
+REM
+conn sys/u_pick_it as sysdba
+execute utl_recomp.recomp_parallel();
+start showinv
 spool off;

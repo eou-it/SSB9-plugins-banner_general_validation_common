@@ -18,6 +18,11 @@ REM
 start dbeu_ext_gen_bgvc
 start dbeu_ext_stu_bgvc
 REM
+connect baninst1/&&baninst1_password
+start genview_bgvc
+REM
+connect baninst1/&&baninst1_password
+start gendbpr_bgvc
 REM
 REM Recompile invalid objects before doing seed data
 REM

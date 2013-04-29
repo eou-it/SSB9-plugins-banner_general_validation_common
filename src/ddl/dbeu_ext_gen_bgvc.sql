@@ -56,4 +56,5 @@ execute dbeu_util.extend_table('GENERAL','GTVSQPR','G',FALSE);
 
 execute dbeu_util.extend_table('GENERAL','GORRACE','G',TRUE);
 execute dbeu_util.extend_table('GENERAL','GXVBANK','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVZIPC','G',FALSE);
 

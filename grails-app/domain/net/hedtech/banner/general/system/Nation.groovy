@@ -211,6 +211,7 @@ class Nation implements Serializable {
         return result;
     }
 
+
     static constraints = {
         code(nullable: false, maxSize: 5)
         nation(nullable: false, maxSize: 30)
@@ -230,5 +231,16 @@ class Nation implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
+
+    public static Object fetchBySomeNation() {
+        def returnObj = [list: Nation.list().sort { it.nation }]
+        return returnObj
+    }
+
+
+    public static Object fetchBySomeNation(filter) {
+        def returnObj = [list: Nation.findAllByCodeIlikeOrNationIlike("%" + filter + "%", "%" + filter + "%").sort { it.nation }]
+        return returnObj
+    }
 
 }

@@ -173,6 +173,19 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchByNation() {
+        def nationList = Nation.fetchBySomeNation()
+        assertTrue nationList.list.size() > 5
+
+        nationList = Nation.fetchBySomeNation("157")
+        assertEquals nationList.list.size(), 1
+        assertEquals "157", nationList.list[0].code
+
+        nationList = Nation.fetchBySomeNation("Panama")
+        assertEquals nationList.list.size(), 1
+        assertEquals "Panama", nationList.list[0].nation
+    }
+
 
     private def newNation() {
         def nation = new Nation(

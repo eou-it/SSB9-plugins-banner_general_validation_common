@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.query.DynamicFinder
+
 import javax.persistence.*
 
 /**
@@ -149,4 +151,24 @@ class Zip implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code', 'city']
+
+    /**
+     * Query finder for advanced search GTQZIPC
+     */
+    def static countAll(filterData) {
+        finderByAll().count(filterData)
+    }
+
+
+    def static fetchSearch(filterData, pagingAndSortParams) {
+        def sourceBackgroundInstitutionQuery = finderByAll().find(filterData, pagingAndSortParams)
+        return sourceBackgroundInstitutionQuery
+    }
+
+
+    def private static finderByAll = {
+        def query = """FROM  Zip a """
+
+        return new DynamicFinder(Zip.class, query, "a")
+    }
 }

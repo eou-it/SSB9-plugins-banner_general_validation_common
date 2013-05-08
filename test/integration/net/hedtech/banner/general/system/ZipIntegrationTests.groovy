@@ -148,6 +148,29 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchSearchInstitutionType() {
+        def zip = newValidForCreateZip()
+        zip.save(failOnError: true, flush: true)
+        def code = "123456789012345678901234567890"
+        def pagingAndSortParams = [sortColumn: "code", sortDirection: "asc"]
+        Map paramsMap = [code: code]
+        def criteriaMap =
+            [
+                    [key: "code", binding: "code", operator: "equals"],
+            ]
+        def filterData = [params: paramsMap, criteria: criteriaMap]
+
+        def zips = Zip.fetchSearch(filterData, pagingAndSortParams)
+        assertNotNull zips
+        assertTrue zips.size() > 0
+        assertEquals "123456789012345678901234567890", zip.code
+
+        def count = Zip.countAll(filterData)
+        assertEquals zips.size(), count
+
+    }
+
+
     private def newValidForCreateZip() {
         def zip = new Zip(
                 code: "123456789012345678901234567890",

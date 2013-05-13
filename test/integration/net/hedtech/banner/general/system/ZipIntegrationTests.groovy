@@ -171,6 +171,21 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchBySomeCode() {
+        def zip = newValidForCreateZip()
+        zip.save(failOnError: true, flush: true)
+
+        def zips = Zip.fetchBySomeCode( "1234")
+        def zipList = zips.get("list")
+        assertNotNull zipList
+        assertTrue zipList.size() > 0
+
+        def zip1 = Zip.findByCode("123456789012345678901234567890")
+        assertNotNull zip1
+        assertTrue zipList.contains(zip1)
+    }
+
+
     private def newValidForCreateZip() {
         def zip = new Zip(
                 code: "123456789012345678901234567890",

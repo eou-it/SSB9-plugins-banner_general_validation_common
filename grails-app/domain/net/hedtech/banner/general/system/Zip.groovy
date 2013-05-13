@@ -171,4 +171,10 @@ class Zip implements Serializable {
 
         return new DynamicFinder(Zip.class, query, "a")
     }
+
+
+    public static Object fetchBySomeCode(filter) {
+        def returnObj = [list: Zip.findAllByCodeIlikeOrCityIlike("%" + filter + "%", "%" + filter + "%").sort { it.code }]
+        return returnObj
+    }
 }

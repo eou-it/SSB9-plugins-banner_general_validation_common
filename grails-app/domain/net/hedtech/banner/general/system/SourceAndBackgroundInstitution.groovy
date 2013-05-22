@@ -109,6 +109,7 @@ class SourceAndBackgroundInstitution implements Serializable {
         "SourceAndBackgroundInstitution[id=$id, code=$code, typeIndicator=$typeIndicator, srceIndicator=$srceIndicator, description=$description, lastModified=$lastModified, ediCapable=$ediCapable, fice=$fice, voiceResponseMsgNumber=$voiceResponseMsgNumber, version=$version, lastModifiedBy=$lastModifiedBy, dataOrigin=$dataOrigin]"
     }
 
+
     static constraints = {
         code(nullable: false, maxSize: 6)
         typeIndicator(nullable: false, maxSize: 1)
@@ -166,6 +167,18 @@ class SourceAndBackgroundInstitution implements Serializable {
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
         result = 31 * result + (admrCode != null ? admrCode.hashCode() : 0);
         return result;
+    }
+
+
+    public static Object fetchBySomeSourceAndBackgroundInstitution() {
+        def returnObj = [list: SourceAndBackgroundInstitution.list().sort { it.code }]
+        return returnObj
+    }
+
+
+    public static Object fetchBySomeSourceAndBackgroundInstitution(filter) {
+        def returnObj = [list: SourceAndBackgroundInstitution.findAllByCodeIlike("%" + filter + "%", "%" + filter + "%").sort { it.code }]
+        return returnObj
     }
 
 }

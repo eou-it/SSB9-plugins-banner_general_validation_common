@@ -133,6 +133,16 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     }
 
 
+    void testFetchBySomeSourceAndBackgroundInstitution() {
+        def sourceAndBackgroundInstitutionList = SourceAndBackgroundInstitution.fetchBySomeSourceAndBackgroundInstitution()
+        assertTrue sourceAndBackgroundInstitutionList.list.size() > 5
+
+        sourceAndBackgroundInstitutionList = SourceAndBackgroundInstitution.fetchBySomeSourceAndBackgroundInstitution("152600")
+        assertEquals sourceAndBackgroundInstitutionList.list.size(), 1
+        assertEquals "152600", sourceAndBackgroundInstitutionList.list[0].code
+    }
+
+
     private def newSourceAndBackgroundInstitution() {
         def admr = new AdmissionRequest(code: "TTTT", description: "TTTTT", tableName: "TTTTT", voiceResponseMsgNumber: 1, voiceResponseEligIndicator: "T", displayWebIndicator: true, lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")

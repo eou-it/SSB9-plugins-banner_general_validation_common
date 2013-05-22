@@ -91,6 +91,7 @@ class AdmissionRequest implements Serializable {
         "AdmissionRequest[id=$id, code=$code, description=$description, tableName=$tableName, lastModified=$lastModified, voiceResponseMsgNumber=$voiceResponseMsgNumber, voiceResponseEligIndicator=$voiceResponseEligIndicator, displayWebIndicator=$displayWebIndicator, version=$version, lastModifiedBy=$lastModifiedBy, dataOrigin=$dataOrigin]"
     }
 
+
     static constraints = {
         code(nullable: false, maxSize: 4)
         description(nullable: false, maxSize: 30)
@@ -147,5 +148,17 @@ class AdmissionRequest implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+
+    public static Object fetchBySomeAdmissionRequest() {
+        def returnObj = [list: AdmissionRequest.list().sort { it.code }]
+        return returnObj
+    }
+
+
+    public static Object fetchBySomeAdmissionRequest(filter) {
+        def returnObj = [list: AdmissionRequest.findAllByCodeIlike("%" + filter + "%", "%" + filter + "%").sort { it.code }]
+        return returnObj
+    }
 
 }

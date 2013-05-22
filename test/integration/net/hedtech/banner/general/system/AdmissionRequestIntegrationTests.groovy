@@ -133,6 +133,16 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchBySomeAdmissionRequest() {
+        def admissionRequestList = AdmissionRequest.fetchBySomeAdmissionRequest()
+        assertTrue admissionRequestList.list.size() > 5
+
+        admissionRequestList = AdmissionRequest.fetchBySomeAdmissionRequest("TUTD")
+        assertEquals admissionRequestList.list.size(), 1
+        assertEquals "TUTD", admissionRequestList.list[0].code
+    }
+
+
     private def newAdmissionRequest() {
         new AdmissionRequest(code: "TTTT", description: "TTTTT", tableName: "TTTTT", voiceResponseMsgNumber: 1, voiceResponseEligIndicator: "T", displayWebIndicator: true, lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")

@@ -16,6 +16,7 @@ whenever oserror exit rollback;
 whenever sqlerror exit rollback;
 REM connect dbeu_owner/&&dbeu_password
 
+execute dbeu_util.extend_table('GENERAL','GTVADID','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVDICD','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVDUNT','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVEMPH','G',FALSE);
@@ -53,6 +54,7 @@ execute dbeu_util.extend_table('GENERAL','GTVCMSC','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVCURR','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSQRU','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSQPR','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVUOMS','G',FALSE);
 
 execute dbeu_util.extend_table('GENERAL','GORRACE','G',TRUE);
 execute dbeu_util.extend_table('GENERAL','GXVBANK','G',FALSE);

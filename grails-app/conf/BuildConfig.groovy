@@ -5,7 +5,6 @@
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 grails.plugin.location.'banner-core' = "../banner_core.git"
 grails.plugin.location.'banner-db-main' = "../banner_db_main.git"
@@ -35,8 +34,12 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+        compile ":hibernate:$grailsVersion"
+        compile ":tomcat:$grailsVersion"
+        test ':code-coverage:1.2.5'
 
     }
+	
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 

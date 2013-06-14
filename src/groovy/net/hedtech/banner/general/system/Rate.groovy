@@ -6,7 +6,9 @@ package net.hedtech.banner.general.system
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.Temporal
@@ -15,64 +17,64 @@ import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Type
 
 /**
- * Function Type Code Validation Table
+ * Rate Code Validation Table
  */
 
 @Entity
-@Table(name = "GTVFTYP")
-class FunctionType implements Serializable {
+@Table(name = "GTVRATE")
+class Rate implements Serializable {
 
     /**
-     * Surrogate ID for GTVFTYP
+     * Surrogate ID for GTVRATE
      */
     @Id
-    @Column(name = "GTVFTYP_SURROGATE_ID")
-    @GeneratedValue(generator = "triggerAssigned")
-    @GenericGenerator(name = "triggerAssigned", strategy = "net.hedtech.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @Column(name = "GTVRATE_SURROGATE_ID")
+    @SequenceGenerator(name = "GTVRATE_SEQ_GEN", allocationSize = 1, sequenceName = "GTVRATE_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVRATE_SEQ_GEN")
     Long id
 
     /**
-     * Optimistic lock token for GTVFTYP
+     * Optimistic lock token for GTVRATE
      */
     @Version
-    @Column(name = "GTVFTYP_VERSION", nullable = false, precision = 19)
+    @Column(name = "GTVRATE_VERSION", nullable = false, precision = 19)
     Long version
 
     /**
-     * Function Type Code
+     * Rate Code.
      */
-    @Column(name = "GTVFTYP_CODE", nullable = false, unique = true, length = 6)
+    @Column(name = "GTVRATE_CODE", nullable = false, unique = true, length = 6)
     String code
 
     /**
-     * Function Type Code Description.
+     * Rate Code Description.
      */
-    @Column(name = "GTVFTYP_DESC", nullable = false, length = 30)
+    @Column(name = "GTVRATE_DESC", nullable = false, length = 30)
     String description
 
     /**
-     * Function Type Code Activity Date.
+     * Rate Code Activity Date.
      */
-    @Column(name = "GTVFTYP_ACTIVITY_DATE")
+    @Column(name = "GTVRATE_ACTIVITY_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**
-     * Last modified by column for GTVFTYP
+     * Last modified by column for GTVRATE
      */
-    @Column(name = "GTVFTYP_USER_ID", length = 30)
+    @Column(name = "GTVRATE_USER_ID", length = 30)
     String lastModifiedBy
 
     /**
-     * Data origin column for GTVFTYP
+     * Data origin column for GTVRATE
      */
-    @Column(name = "GTVFTYP_DATA_ORIGIN", length = 30)
+    @Column(name = "GTVRATE_DATA_ORIGIN", length = 30)
     String dataOrigin
 
 
 
     public String toString() {
-        """FunctionType[
+        """Rate[
 					id=$id,
 					version=$version,
 					code=$code,
@@ -85,8 +87,8 @@ class FunctionType implements Serializable {
 
     boolean equals(o) {
         if (this.is(o)) return true
-        if (!(o instanceof FunctionType)) return false
-        FunctionType that = (FunctionType) o
+        if (!(o instanceof Rate)) return false
+        Rate that = (Rate) o
         if (id != that.id) return false
         if (version != that.version) return false
         if (code != that.code) return false

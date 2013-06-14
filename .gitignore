@@ -19,3 +19,4 @@ grails-*.zip
 *.sha1
 plugin.xml
 src/ddl/horizon_upgrade.lis
+*.ser

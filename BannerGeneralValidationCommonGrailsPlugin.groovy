@@ -26,7 +26,7 @@ class BannerGeneralValidationCommonGrailsPlugin {
     String version = "1.0.6"
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "1.3.7 > *"
+    def grailsVersion = "2.2.1 > *"
 
 
     // resources that are excluded from plugin packaging

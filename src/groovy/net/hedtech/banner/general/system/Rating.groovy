@@ -6,7 +6,9 @@ package net.hedtech.banner.general.system
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.Temporal
@@ -15,64 +17,64 @@ import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Type
 
 /**
- * Rate Code Validation Table
+ * Rating Code Validation Table.
  */
 
 @Entity
-@Table(name = "GTVRATE")
-class Rate implements Serializable {
+@Table(name = "GTVRTNG")
+class Rating implements Serializable {
 
     /**
-     * Surrogate ID for GTVRATE
+     * Surrogate ID for GTVRTNG
      */
     @Id
-    @Column(name = "GTVRATE_SURROGATE_ID")
-    @GeneratedValue(generator = "triggerAssigned")
-    @GenericGenerator(name = "triggerAssigned", strategy = "net.hedtech.banner.framework.persistence.util.TriggerAssignedIdentityGenerator")
+    @Column(name = "GTVRTNG_SURROGATE_ID")
+    @SequenceGenerator(name = "GTVRTNG_SEQ_GEN", allocationSize = 1, sequenceName = "GTVRTNG_SURROGATE_ID_SEQUENCE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GTVRTNG_SEQ_GEN")
     Long id
 
     /**
-     * Optimistic lock token for GTVRATE
+     * Optimistic lock token for GTVRTNG
      */
     @Version
-    @Column(name = "GTVRATE_VERSION", nullable = false, precision = 19)
+    @Column(name = "GTVRTNG_VERSION", nullable = false, precision = 19)
     Long version
 
     /**
-     * Rate Code.
+     * Rating Code.
      */
-    @Column(name = "GTVRATE_CODE", nullable = false, unique = true, length = 6)
+    @Column(name = "GTVRTNG_CODE", nullable = false, unique = true, length = 2)
     String code
 
     /**
-     * Rate Code Description.
+     * Rating Code Description.
      */
-    @Column(name = "GTVRATE_DESC", nullable = false, length = 30)
+    @Column(name = "GTVRTNG_DESC", nullable = false, length = 30)
     String description
 
     /**
-     * Rate Code Activity Date.
+     * Rating Code Activity Date.
      */
-    @Column(name = "GTVRATE_ACTIVITY_DATE")
+    @Column(name = "GTVRTNG_ACTIVITY_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     Date lastModified
 
     /**
-     * Last modified by column for GTVRATE
+     * Last modified by column for GTVRTNG
      */
-    @Column(name = "GTVRATE_USER_ID", length = 30)
+    @Column(name = "GTVRTNG_USER_ID", length = 30)
     String lastModifiedBy
 
     /**
-     * Data origin column for GTVRATE
+     * Data origin column for GTVRTNG
      */
-    @Column(name = "GTVRATE_DATA_ORIGIN", length = 30)
+    @Column(name = "GTVRTNG_DATA_ORIGIN", length = 30)
     String dataOrigin
 
 
 
     public String toString() {
-        """Rate[
+        """Rating[
 					id=$id,
 					version=$version,
 					code=$code,
@@ -85,8 +87,8 @@ class Rate implements Serializable {
 
     boolean equals(o) {
         if (this.is(o)) return true
-        if (!(o instanceof Rate)) return false
-        Rate that = (Rate) o
+        if (!(o instanceof Rating)) return false
+        Rating that = (Rating) o
         if (id != that.id) return false
         if (version != that.version) return false
         if (code != that.code) return false
@@ -112,7 +114,7 @@ class Rate implements Serializable {
 
 
     static constraints = {
-        code(nullable: false, maxSize: 6)
+        code(nullable: false, maxSize: 2)
         description(nullable: false, maxSize: 30)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
@@ -121,4 +123,5 @@ class Rate implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
 }

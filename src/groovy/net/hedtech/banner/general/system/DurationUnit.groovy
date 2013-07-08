@@ -11,6 +11,14 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GTVDUNT")
+@NamedQueries(value = [
+@NamedQuery(name = "DurationUnit.fetchByCodeOrDescriptionILike",
+query = """SELECT a.code,
+                  a.description
+             FROM DurationUnit a
+		    WHERE (a.code like :filter OR UPPER(a.description) like :filter)
+		    ORDER BY UPPER(a.description)""")
+])
 class DurationUnit implements Serializable {
 
     @Id
@@ -106,5 +114,13 @@ class DurationUnit implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+
+    public static List fetchByCodeOrDescriptionILike(String filter) {
+        def durationUnits = DurationUnit.withSession {session ->
+            session.getNamedQuery('DurationUnit.fetchByCodeOrDescriptionILike').setString('filter', filter).list()
+        }
+        return durationUnits
+    }
 
 }

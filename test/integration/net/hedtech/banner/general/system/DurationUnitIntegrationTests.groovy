@@ -5,6 +5,8 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
+import org.apache.commons.lang.StringUtils
+import org.junit.Test
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 /**
@@ -51,6 +53,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testCreateDurationUnitCode() {
         def durationUnitCode = newValidForCreateDurationUnit()
 
@@ -59,6 +62,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testUpdateDurationUnitCode() {
         def durationUnitCode = newValidForCreateDurationUnit()
 
@@ -77,6 +81,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testDeleteDurationUnitCode() {
         def durationUnitCode = newValidForCreateDurationUnit()
 
@@ -88,6 +93,8 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
         assertNull DurationUnit.get(id)
     }
 
+
+    @Test
     void testOptimisticLock() {
         def durationUnit = newValidForCreateDurationUnit()
         save durationUnit
@@ -109,6 +116,8 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
+    @Test
     void testValidation() {
         def durationUnitCode = new DurationUnit()
         //should not pass validation since none of the required values are provided
@@ -120,6 +129,8 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
         assertTrue durationUnitCode.validate()
     }
 
+
+    @Test
     void testNullValidationFailure() {
         def durationUnit = new DurationUnit()
         assertFalse "DurationUnit should have failed validation", durationUnit.validate()
@@ -135,6 +146,22 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
+
+    @Test
+    void testFetchByCodeOrDescriptionILike() {
+
+        def filter = "HALF"
+        def results = DurationUnit.fetchByCodeOrDescriptionILike(formatWildCard(filter))
+        assertEquals 1, results.size()
+
+        results.each {
+            assertTrue it[0].contains(filter) || it[1].contains(filter)
+        }
+
+        filter = "day"
+        results = DurationUnit.fetchByCodeOrDescriptionILike(formatWildCard(filter))
+        assertEquals 3, results.size()
+    }
 
 
     private def newValidForCreateDurationUnit() {
@@ -162,4 +189,17 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
         )
         return durationUnit
     }
+
+
+    private String formatWildCard(filter) {
+        def wildCard = "%"
+        if (StringUtils.isBlank(filter)) {
+            filter = wildCard
+        } else if (!(filter =~ /%/)) {
+            filter = wildCard + filter.toUpperCase() + wildCard
+        }
+        else filter = filter.toUpperCase()
+        return filter
+    }
+
 }

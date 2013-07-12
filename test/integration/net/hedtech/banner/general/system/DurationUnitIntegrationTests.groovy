@@ -155,7 +155,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 1, results.size()
 
         results.each {
-            assertTrue it[0].contains(filter) || it[1].contains(filter)
+            assertTrue it.code.contains(filter) || it.code.contains(filter)
         }
 
         filter = "day"

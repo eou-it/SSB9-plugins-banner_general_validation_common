@@ -13,9 +13,7 @@ import javax.persistence.*
 @Table(name = "GTVDUNT")
 @NamedQueries(value = [
 @NamedQuery(name = "DurationUnit.fetchByCodeOrDescriptionILike",
-query = """SELECT a.code,
-                  a.description
-             FROM DurationUnit a
+query = """FROM DurationUnit a
 		    WHERE (a.code like :filter OR UPPER(a.description) like :filter)
 		    ORDER BY UPPER(a.description)""")
 ])

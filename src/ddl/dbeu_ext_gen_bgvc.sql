@@ -60,3 +60,7 @@ execute dbeu_util.extend_table('GENERAL','GORRACE','G',TRUE);
 execute dbeu_util.extend_table('GENERAL','GXVBANK','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVZIPC','G',FALSE);
 
+execute dbeu_util.extend_table('GENERAL','GTVCELG','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVDOCM','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVVISS','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVSRCE','G',FALSE);

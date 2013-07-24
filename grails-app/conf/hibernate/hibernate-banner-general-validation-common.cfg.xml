@@ -37,6 +37,7 @@
         <mapping class="net.hedtech.banner.general.system.Building"/>
         <mapping class="net.hedtech.banner.general.system.BuildingAndRoomAttribute"/>
         <mapping class="net.hedtech.banner.general.system.Campus"/>
+        <mapping class="net.hedtech.banner.general.system.CertificationOfEligibility"/>
         <mapping class="net.hedtech.banner.general.system.CIPCode"/>
         <mapping class="net.hedtech.banner.general.system.CitizenType"/>
         <mapping class="net.hedtech.banner.general.system.College"/>
@@ -53,7 +54,9 @@
         <mapping class="net.hedtech.banner.general.system.Disability"/>
         <mapping class="net.hedtech.banner.general.system.DisabilityAssistance"/>
         <mapping class="net.hedtech.banner.general.system.DurationUnit"/>
+        <mapping class="net.hedtech.banner.general.system.Document"/>
         <mapping class="net.hedtech.banner.general.system.EmailType"/>
+        <mapping class="net.hedtech.banner.general.system.EmploymentType"/>
         <mapping class="net.hedtech.banner.general.system.EntriesForSql"/>
         <mapping class="net.hedtech.banner.general.system.EntriesForSqlProcesss"/>
         <mapping class="net.hedtech.banner.general.system.Ethnicity"/>
@@ -74,7 +77,9 @@
         <mapping class="net.hedtech.banner.general.system.InstitutionalHonor"/>
         <mapping class="net.hedtech.banner.general.system.InstructionalMethod"/>
         <mapping class="net.hedtech.banner.general.system.IntegrationPartner"/>
+        <mapping class="net.hedtech.banner.general.system.InternationalSponsor"/>
         <mapping class="net.hedtech.banner.general.system.IpedsEthnicity"/>
+        <mapping class="net.hedtech.banner.general.system.Language"/>
         <mapping class="net.hedtech.banner.general.system.Leadership"/>
         <mapping class="net.hedtech.banner.general.system.LearnerFieldStudy"/>
         <mapping class="net.hedtech.banner.general.system.Legacy"/>
@@ -94,6 +99,7 @@
         <mapping class="net.hedtech.banner.general.system.Partition"/>
         <mapping class="net.hedtech.banner.general.system.PersonType"/>
         <mapping class="net.hedtech.banner.general.system.PhoneRate"/>
+        <mapping class="net.hedtech.banner.general.system.PortOfEntry"/>
         <mapping class="net.hedtech.banner.general.system.Race"/>
         <mapping class="net.hedtech.banner.general.system.Rate"/>
         <mapping class="net.hedtech.banner.general.system.Rating"/>
@@ -118,6 +124,8 @@
         <mapping class="net.hedtech.banner.general.system.TermType"/>
         <mapping class="net.hedtech.banner.general.system.TestScore"/>
         <mapping class="net.hedtech.banner.general.system.UnitOfMeasure"/>
+        <mapping class="net.hedtech.banner.general.system.VisaIssuingAuthority"/>
+        <mapping class="net.hedtech.banner.general.system.VisaSource"/>
         <mapping class="net.hedtech.banner.general.system.VisaType"/>
         <mapping class="net.hedtech.banner.general.system.Zip"/>
    

@@ -10,6 +10,14 @@ import javax.persistence.*
 /**
  * Regulatory Race Validation Table.
  */
+
+@NamedQueries(value = [
+@NamedQuery(name = "RegulatoryRace.fetchRequiredRegulatoryRaces",
+query = """FROM RegulatoryRace a
+           WHERE a.systemRequiredIndicator = 'Y'
+           order by a.code""")
+])
+
 @Entity
 @Table(name = "GTVRRAC")
 class RegulatoryRace implements Serializable {
@@ -124,5 +132,15 @@ class RegulatoryRace implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+
+    public static List fetchRequiredRegulatoryRaces() {
+        def regulatoryRaces
+        RegulatoryRace.withSession {session ->
+            regulatoryRaces = session.getNamedQuery('RegulatoryRace.fetchRequiredRegulatoryRaces').list()
+        }
+        return regulatoryRaces
+
+    }
 
 }

@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import org.apache.commons.lang.StringUtils
+
 import javax.persistence.*
 
 /**
@@ -10,6 +12,14 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GV_GORRACE")
+@NamedQueries(value = [
+@NamedQuery(name = "Race.fetchAllLikeRaceOrDescription",
+query = """FROM  Race a
+		   WHERE a.race LIKE :filter
+		      OR a.description LIKE :filter
+		   ORDER BY a.race
+	""")
+])
 class Race implements Serializable {
 
     /**
@@ -143,5 +153,32 @@ class Race implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['race']
+
+    // Used for lookups
+    public static Object fetchAllLikeRaceOrDescription() {
+        def returnObj = [list: Race.list().sort { it.race }]
+        return returnObj
+    }
+
+    // Used for lookups
+    public static Object fetchAllLikeRaceOrDescription(String filter) {
+        def sqlFilter
+        def result = []
+
+        // If a wildcard character exists, use the given string. Otherwise wrap the string with wildcards characters.
+        if (filter) {
+            if (StringUtils.contains(filter, "%")) {
+                sqlFilter = filter.toUpperCase()
+            } else {
+                sqlFilter = ("%" + filter + "%").toUpperCase()
+            }
+
+            result = Race.withSession { session ->
+                session.getNamedQuery('Race.fetchAllLikeRaceOrDescription').setString('filter', sqlFilter).list()
+            }
+        }
+
+        return result
+    }
 
 }

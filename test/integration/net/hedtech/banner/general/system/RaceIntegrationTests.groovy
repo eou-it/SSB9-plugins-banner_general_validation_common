@@ -120,13 +120,10 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testMaxSizeValidationFailures() {
-        def race = new Race( race:  "TTTT",
-                description:  "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
-                electronicDataInterchangeEquivalent: 'XXXX',
-                lmsEquivalent: 'XXX')
-        assertFalse "Race should have failed validation", race.validate()
-        assertErrorsFor race, 'maxSize', ['race', 'description','electronicDataInterchangeEquivalent', 'lmsEquivalent']
+    void testFetchAllLikeRaceOrDescription() {
+        def races = Race.fetchAllLikeRaceOrDescription("AA")
+        assertNotNull  races
+        assertTrue races.size() > 1
     }
 
 

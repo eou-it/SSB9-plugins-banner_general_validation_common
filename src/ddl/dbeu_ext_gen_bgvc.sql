@@ -18,6 +18,7 @@ REM connect dbeu_owner/&&dbeu_password
 
 execute dbeu_util.extend_table('GENERAL','GTVADID','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVDICD','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVDIRO','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVDUNT','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVEMPH','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVFDMN','G',FALSE);

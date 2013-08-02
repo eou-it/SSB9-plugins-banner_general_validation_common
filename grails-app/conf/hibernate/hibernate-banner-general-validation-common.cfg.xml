@@ -51,6 +51,7 @@
         <mapping class="net.hedtech.banner.general.system.DegreeLevel"/>
         <mapping class="net.hedtech.banner.general.system.Department"/>
         <mapping class="net.hedtech.banner.general.system.DiplomaType"/>
+        <mapping class="net.hedtech.banner.general.system.DirectoryOption"/>
         <mapping class="net.hedtech.banner.general.system.Disability"/>
         <mapping class="net.hedtech.banner.general.system.DisabilityAssistance"/>
         <mapping class="net.hedtech.banner.general.system.DurationUnit"/>

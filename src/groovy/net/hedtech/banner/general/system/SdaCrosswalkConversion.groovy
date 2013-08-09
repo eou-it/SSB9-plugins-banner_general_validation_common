@@ -38,13 +38,7 @@ query = """FROM SdaCrosswalkConversion a
 query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
            and a.internalGroup = :internalGroup
-           order by a.internalSequenceNumber """),
-@NamedQuery(name = "SdaCrosswalkConversion.fetchSurveyDates",
-query = """FROM SdaCrosswalkConversion a
-           WHERE  a.internal = :internal
-           and a.internalSequenceNumber = :internalSequenceNumber
-           and a.internalGroup = :internalGroup
-           and a.systemRequestIndicator = 'Y' """)
+           order by a.internalSequenceNumber """)
 ])
 
 @Entity
@@ -232,21 +226,6 @@ class SdaCrosswalkConversion implements Serializable {
         def sdax
         SdaCrosswalkConversion.withSession {session ->
             sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).list()
-        }
-        return sdax
-
-    }
-
-
-    public static List fetchSurveyDates(String internal, Integer internalSequenceNumber, String internalGroup) {
-        def sdax
-        SdaCrosswalkConversion.withSession {session ->
-            //sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchSurveyDates').setString('internal', internal).setInteger('internalSequenceNumber', internalSequenceNumber).setString('internalGroup', internalGroup).list()
-            org.hibernate.Query query = session.getNamedQuery('SdaCrosswalkConversion.fetchSurveyDates')
-            query.setString('internal', internal)
-            query.setInteger('internalSequenceNumber', internalSequenceNumber)
-            query.setString('internalGroup', internalGroup)
-            sdax = query.list()
         }
         return sdax
 

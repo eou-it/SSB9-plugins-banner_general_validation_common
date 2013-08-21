@@ -3,23 +3,25 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
-
 
 class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
 
     def holdTypeService
+
 
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
+
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateHoldType() {
         def holdType = newHoldType()
@@ -28,6 +30,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull holdType.id
     }
 
+
     void testUpdateHoldType() {
         def holdType = newHoldType()
         save holdType
@@ -35,52 +38,28 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull holdType.id
         assertEquals 0L, holdType.version
         assertEquals "TT", holdType.code
-        assertEquals "Y", holdType.registrationHoldIndicator
-        assertEquals "Y", holdType.transactionHoldIndicator
-        assertEquals "Y", holdType.gradHoldIndicator
-        assertEquals "Y", holdType.gradeHoldIndicator
+        assertTrue holdType.registrationHoldIndicator
+        assertTrue holdType.transcriptHoldIndicator
+        assertTrue holdType.graduationHoldIndicator
+        assertTrue holdType.gradeHoldIndicator
         assertEquals "TTTTT", holdType.description
-        assertEquals "Y", holdType.accountsReceivableHoldIndicator
-        assertEquals "Y", holdType.enrollmentVerificationHoldIndicator
+        assertTrue holdType.accountsReceivableHoldIndicator
+        assertTrue holdType.enrollmentVerificationHoldIndicator
         assertEquals 1, holdType.voiceResponseMessageNumber
-        assertEquals true, holdType.displayWebIndicator
-        assertEquals true, holdType.applicationHoldIndicator
-        assertEquals true, holdType.complianceHoldIndicator
+        assertTrue holdType.displayWebIndicator
+        assertTrue holdType.applicationHoldIndicator
+        assertTrue  holdType.complianceHoldIndicator
 
         //Update the entity
         def testDate = new Date()
-        holdType.code = "UU"
-        holdType.registrationHoldIndicator = "Y"
-        holdType.transactionHoldIndicator = "Y"
-        holdType.gradHoldIndicator = "Y"
-        holdType.gradeHoldIndicator = "Y"
-        holdType.description = "UUUUU"
-        holdType.accountsReceivableHoldIndicator = "Y"
-        holdType.enrollmentVerificationHoldIndicator = "Y"
-        holdType.voiceResponseMessageNumber = 0
-        holdType.displayWebIndicator = true
-        holdType.applicationHoldIndicator = true
-        holdType.complianceHoldIndicator = true
-        holdType.lastModified = testDate
-        holdType.lastModifiedBy = "test"
-        holdType.dataOrigin = "Banner"
+        holdType.registrationHoldIndicator = false
         save holdType
 
         holdType = HoldType.get(holdType.id)
         assertEquals 1L, holdType?.version
-        assertEquals "UU", holdType.code
-        assertEquals "Y", holdType.registrationHoldIndicator
-        assertEquals "Y", holdType.transactionHoldIndicator
-        assertEquals "Y", holdType.gradHoldIndicator
-        assertEquals "Y", holdType.gradeHoldIndicator
-        assertEquals "UUUUU", holdType.description
-        assertEquals "Y", holdType.accountsReceivableHoldIndicator
-        assertEquals "Y", holdType.enrollmentVerificationHoldIndicator
-        assertEquals 0, holdType.voiceResponseMessageNumber
-        assertEquals true, holdType.displayWebIndicator
-        assertEquals true, holdType.applicationHoldIndicator
-        assertEquals true, holdType.complianceHoldIndicator
+        assertFalse holdType.registrationHoldIndicator
     }
+
 
     void testOptimisticLock() {
         def holdType = newHoldType()
@@ -95,24 +74,13 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
         }
         //Try to update the entity
         holdType.code = "UU"
-        holdType.registrationHoldIndicator = "Y"
-        /*	holdType.transactionHoldIndicator="Y"
-          holdType.gradHoldIndicator="Y"
-          holdType.gradeHoldIndicator="Y"
-          holdType.description="UUUUU"
-          holdType.accountsReceivableHoldIndicator="Y"
-          holdType.enrollmentVerificationHoldIndicator="Y"
-          holdType.voiceResponseMessageNumber= 0
-          holdType.displayWebIndicator=true
-          holdType.applicationHoldIndicator=true
-          holdType.complianceHoldIndicator=true
-          holdType.lastModified= new Date()
-          holdType.lastModifiedBy="test"
-          holdType.dataOrigin= "Banner"   */
+        holdType.registrationHoldIndicator = false
+
         shouldFail(HibernateOptimisticLockingFailureException) {
             holdType.save(flush: true)
         }
     }
+
 
     void testDeleteHoldType() {
         def holdType = newHoldType()
@@ -123,45 +91,42 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNull HoldType.get(id)
     }
 
+
     void testValidation() {
         def holdType = newHoldType()
         assertTrue "HoldType could not be validated as expected due to ${holdType.errors}", holdType.validate()
     }
 
+
     void testNullValidationFailure() {
         def holdType = new HoldType()
         assertFalse "HoldType should have failed validation", holdType.validate()
         assertErrorsFor holdType, 'nullable',
-                [
-                        'code'
-                ]
+                        [
+                                'code'
+                        ]
         assertNoErrorsFor holdType,
-                [
-                        'registrationHoldIndicator',
-                        'transactionHoldIndicator',
-                        'gradHoldIndicator',
-                        'gradeHoldIndicator',
-                        'description',
-                        'accountsreceivablerHoldIndicator',
-                        'enrollmentVerificationHoldIndicator',
-                        'voiceResponseMessageNumber',
-                        'displayWebIndicator',
-                        'applicationHoldIndicator',
-                        'complianceHoldIndicator'
-                ]
+                          [
+                                  'registrationHoldIndicator',
+                                  'transcriptHoldIndicator',
+                                  'graduationHoldIndicator',
+                                  'gradeHoldIndicator',
+                                  'description',
+                                  'accountsreceivablerHoldIndicator',
+                                  'enrollmentVerificationHoldIndicator',
+                                  'voiceResponseMessageNumber',
+                                  'displayWebIndicator',
+                                  'applicationHoldIndicator',
+                                  'complianceHoldIndicator'
+                          ]
     }
+
 
     void testMaxSizeValidationFailures() {
         def holdType = new HoldType(
-                registrationHoldIndicator: 'XXX',
-                transactionHoldIndicator: 'XXX',
-                gradHoldIndicator: 'XXX',
-                gradeHoldIndicator: 'XXX',
-                description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-                accountsReceivableHoldIndicator: 'XXX',
-                enrollmentVerificationHoldIndicator: 'XXX')
+                description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
         assertFalse "HoldType should have failed validation", holdType.validate()
-        assertErrorsFor holdType, 'maxSize', ['registrationHoldIndicator', 'transactionHoldIndicator', 'gradHoldIndicator', 'gradeHoldIndicator', 'description', 'accountsReceivableHoldIndicator', 'enrollmentVerificationHoldIndicator']
+        assertErrorsFor holdType, 'maxSize', ['description']
     }
 
 
@@ -169,13 +134,13 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
 
         def holdType = new HoldType(
                 code: "TT",
-                registrationHoldIndicator: "Y",
-                transactionHoldIndicator: "Y",
-                gradHoldIndicator: "Y",
-                gradeHoldIndicator: "Y",
+                registrationHoldIndicator: true,
+                transcriptHoldIndicator: true,
+                graduationHoldIndicator: true,
+                gradeHoldIndicator: true,
                 description: "TTTTT",
-                accountsReceivableHoldIndicator: "Y",
-                enrollmentVerificationHoldIndicator: "Y",
+                accountsReceivableHoldIndicator: true,
+                enrollmentVerificationHoldIndicator: true,
                 voiceResponseMessageNumber: 1,
                 displayWebIndicator: true,
                 applicationHoldIndicator: true,

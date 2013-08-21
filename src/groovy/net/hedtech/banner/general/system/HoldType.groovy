@@ -48,44 +48,50 @@ class HoldType implements Serializable {
     /**
      * This field indicates whether the hold type prevents registration.
      */
+    @Type(type = "yes_no")
     @Column(name = "STVHLDD_REG_HOLD_IND")
-    String registrationHoldIndicator
+    Boolean registrationHoldIndicator
 
     /**
      * This field indicates whether the hold type prevents transcript generation.
      */
+    @Type(type = "yes_no")
     @Column(name = "STVHLDD_TRANS_HOLD_IND")
-    String transactionHoldIndicator
+    Boolean transcriptHoldIndicator
 
     /**
      * This field indicates whether the hold type prevents graduation.
      */
+    @Type(type = "yes_no")
     @Column(name = "STVHLDD_GRAD_HOLD_IND")
-    String gradHoldIndicator
+    Boolean graduationHoldIndicator
 
     /**
      * This field indicates whether the hold type prevents grade report generation.
      */
+    @Type(type = "yes_no")
     @Column(name = "STVHLDD_GRADE_HOLD_IND")
-    String gradeHoldIndicator
+    Boolean gradeHoldIndicator
 
     /**
      * This field specifies the hold type (e.g. registrars hold, library fine, financial hold, etc.) associated with the hold type code.
-     */
+     */ 
     @Column(name = "STVHLDD_DESC")
     String description
 
     /**
      * Accounts Receivable Hold Indicator.
      */
+    @Type(type = "yes_no")
     @Column(name = "STVHLDD_AR_HOLD_IND")
-    String accountsReceivableHoldIndicator
+    Boolean accountsReceivableHoldIndicator
 
     /**
      * Enrollment verification hold indicator
      */
+    @Type(type = "yes_no")
     @Column(name = "STVHLDD_ENV_HOLD_IND")
-    String enrollmentVerificationHoldIndicator
+    Boolean enrollmentVerificationHoldIndicator
 
     /**
      * The Voice Response message number assigned to the recorded message that describes the hold type code.
@@ -140,8 +146,8 @@ class HoldType implements Serializable {
 		            version=$version,
 					code=$code, 
 					registrationHoldIndicator=$registrationHoldIndicator, 
-					transactionHoldIndicator=$transactionHoldIndicator, 
-					gradHoldIndicator=$gradHoldIndicator, 
+					transcriptHoldIndicator=$transcriptHoldIndicator, 
+					graduationHoldIndicator=$graduationHoldIndicator, 
 					gradeHoldIndicator=$gradeHoldIndicator, 
 					description=$description, 
 					accountsReceivableHoldIndicator=$accountsReceivableHoldIndicator,
@@ -159,13 +165,13 @@ class HoldType implements Serializable {
 
     static constraints = {
         code(nullable: false, maxSize: 2)
-        registrationHoldIndicator(nullable: true, maxSize: 1, inList: ["Y"])
-        transactionHoldIndicator(nullable: true, maxSize: 1, inList: ["Y"])
-        gradHoldIndicator(nullable: true, maxSize: 1, inList: ["Y"])
-        gradeHoldIndicator(nullable: true, maxSize: 1, inList: ["Y"])
+        registrationHoldIndicator(nullable: true )
+        transcriptHoldIndicator(nullable: true )
+        graduationHoldIndicator(nullable: true )
+        gradeHoldIndicator(nullable: true )
         description(nullable: true, maxSize: 30)
-        accountsReceivableHoldIndicator(nullable: true, maxSize: 1, inList: ["Y"])
-        enrollmentVerificationHoldIndicator(nullable: true, maxSize: 1, inList: ["Y"])
+        accountsReceivableHoldIndicator(nullable: true, )
+        enrollmentVerificationHoldIndicator(nullable: true )
         voiceResponseMessageNumber(nullable: true, scale: 0)
         displayWebIndicator(nullable: false)
         applicationHoldIndicator(nullable: false)
@@ -184,8 +190,8 @@ class HoldType implements Serializable {
         if (version != that.version) return false
         if (code != that.code) return false
         if (registrationHoldIndicator != that.registrationHoldIndicator) return false
-        if (transactionHoldIndicator != that.transactionHoldIndicator) return false
-        if (gradHoldIndicator != that.gradHoldIndicator) return false
+        if (transcriptHoldIndicator != that.transcriptHoldIndicator) return false
+        if (graduationHoldIndicator != that.graduationHoldIndicator) return false
         if (gradeHoldIndicator != that.gradeHoldIndicator) return false
         if (description != that.description) return false
         if (accountsReceivableHoldIndicator != that.accountsReceivableHoldIndicator) return false
@@ -207,8 +213,8 @@ class HoldType implements Serializable {
         result = 31 * result + (version != null ? version.hashCode() : 0)
         result = 31 * result + (code != null ? code.hashCode() : 0)
         result = 31 * result + (registrationHoldIndicator != null ? registrationHoldIndicator.hashCode() : 0)
-        result = 31 * result + (transactionHoldIndicator != null ? transactionHoldIndicator.hashCode() : 0)
-        result = 31 * result + (gradHoldIndicator != null ? gradHoldIndicator.hashCode() : 0)
+        result = 31 * result + (transcriptHoldIndicator != null ? transcriptHoldIndicator.hashCode() : 0)
+        result = 31 * result + (graduationHoldIndicator != null ? graduationHoldIndicator.hashCode() : 0)
         result = 31 * result + (gradeHoldIndicator != null ? gradeHoldIndicator.hashCode() : 0)
         result = 31 * result + (description != null ? description.hashCode() : 0)
         result = 31 * result + (accountsReceivableHoldIndicator != null ? accountsReceivableHoldIndicator.hashCode() : 0)

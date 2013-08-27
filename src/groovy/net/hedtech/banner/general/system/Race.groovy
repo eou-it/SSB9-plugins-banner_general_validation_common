@@ -11,13 +11,6 @@ import javax.persistence.*
  * Race Rules Table.
  */
 
-@NamedQueries(value = [
-@NamedQuery(name = "Race.fetchAllByRegulatoryRace",
-query = """FROM Race a
-           WHERE a.regulatoryRace.code = :regulatoryRaceCode
-           order by a.description""")
-])
-
 @Entity
 @Table(name = "GV_GORRACE")
 @NamedQueries(value = [
@@ -26,7 +19,11 @@ query = """FROM  Race a
 		   WHERE a.race LIKE :filter
 		      OR a.description LIKE :filter
 		   ORDER BY a.race
-	""")
+	"""),
+@NamedQuery(name = "Race.fetchAllByRegulatoryRace",
+query = """FROM Race a
+           WHERE a.regulatoryRace.code = :regulatoryRaceCode
+           order by a.description""")
 ])
 class Race implements Serializable {
 
@@ -101,15 +98,15 @@ class Race implements Serializable {
 
     public String toString() {
         """Race[
-					id=$id, 
-					version=$version, 
-					race=$race, 
-					description=$description, 
-					electronicDataInterchangeEquivalent=$electronicDataInterchangeEquivalent, 
-					lmsEquivalent=$lmsEquivalent, 
-					lastModified=$lastModified, 
-					lastModifiedBy=$lastModifiedBy, 
-					dataOrigin=$dataOrigin, 
+					id=$id,
+					version=$version,
+					race=$race,
+					description=$description,
+					electronicDataInterchangeEquivalent=$electronicDataInterchangeEquivalent,
+					lmsEquivalent=$lmsEquivalent,
+					lastModified=$lastModified,
+					lastModifiedBy=$lastModifiedBy,
+					dataOrigin=$dataOrigin,
 					regulatoryRace=$regulatoryRace]"""
     }
 
@@ -172,7 +169,7 @@ class Race implements Serializable {
 
     }
 
-}
+
     // Used for lookups
     public static Object fetchAllLikeRaceOrDescription() {
         def returnObj = [list: Race.list().sort { it.race }]

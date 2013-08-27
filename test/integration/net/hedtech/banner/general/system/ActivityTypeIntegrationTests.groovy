@@ -93,7 +93,6 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
     void testDates() {
-        def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()

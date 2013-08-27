@@ -3,8 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
@@ -109,11 +109,6 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
         assertFalse "IntegrationPartner should have failed validation", integrationPartner.validate()
         assertErrorsFor integrationPartner, 'maxSize', ['code', 'description']
-    }
-
-
-    void testValidationMessages() {
-
     }
 
 

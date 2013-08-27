@@ -3,12 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
 
@@ -32,29 +30,17 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_code = "TTTTT"
     def u_failure_description = null
 
+
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        //	initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidFunctionType() {
         def functionType = newValidForCreateFunctionType()
@@ -63,12 +49,14 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull functionType.id
     }
 
+
     void testCreateInvalidFunctionType() {
         def functionType = newInvalidForCreateFunctionType()
         shouldFail(ValidationException) {
             functionType.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidFunctionType() {
         def functionType = newValidForCreateFunctionType()
@@ -88,6 +76,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, functionType.description
     }
 
+
     void testUpdateInvalidFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -102,6 +91,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
             functionType.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def functionType = newValidForCreateFunctionType()
@@ -122,6 +112,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -131,10 +122,12 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNull FunctionType.get(id)
     }
 
+
     void testValidation() {
         def functionType = newInvalidForCreateFunctionType()
         assertFalse "FunctionType could not be validated as expected due to ${functionType.errors}", functionType.validate()
     }
+
 
     void testNullValidationFailure() {
         def functionType = new FunctionType()
@@ -154,6 +147,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
         )
         return functionType
     }
+
 
     private def newInvalidForCreateFunctionType() {
         def functionType = new FunctionType(

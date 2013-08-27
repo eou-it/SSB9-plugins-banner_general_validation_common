@@ -33,18 +33,13 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidCounty() {
         def county = newValidForCreateCounty()
@@ -53,12 +48,14 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull county.id
     }
 
+
     void testCreateInvalidCounty() {
         def county = newInvalidForCreateCounty()
         shouldFail {
             county.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidCounty() {
         def county = newValidForCreateCounty()
@@ -77,6 +74,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, county.description
     }
 
+
     void testUpdateInvalidCounty() {
         def county = newValidForCreateCounty()
         county.save(failOnError: true, flush: true)
@@ -91,6 +89,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
             county.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def county = newValidForCreateCounty()
@@ -111,6 +110,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteCounty() {
         def county = newValidForCreateCounty()
         county.save(failOnError: true, flush: true)
@@ -120,10 +120,12 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
         assertNull County.get(id)
     }
 
+
     void testValidation() {
         def county = newValidForCreateCounty()
         assertTrue "County could not be validated as expected due to ${county.errors}", county.validate()
     }
+
 
     void testNullValidationFailure() {
         def county = new County()
@@ -137,6 +139,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
                         'description'
                 ]
     }
+
 
     void testMaxSizeValidationFailures() {
         def county = new County(
@@ -157,6 +160,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
         )
         return county
     }
+
 
     private def newInvalidForCreateCounty() {
         def county = new County(

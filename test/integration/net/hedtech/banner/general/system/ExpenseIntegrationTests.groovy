@@ -3,12 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class ExpenseIntegrationTests extends BaseIntegrationTestCase {
 
@@ -36,26 +34,13 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        //initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidExpense() {
         def expense = newValidForCreateExpense()
@@ -64,12 +49,14 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull expense.id
     }
 
+
     void testCreateInvalidExpense() {
         def expense = newInvalidForCreateExpense()
         shouldFail(ValidationException) {
             expense.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidExpense() {
         def expense = newValidForCreateExpense()
@@ -88,6 +75,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, expense.description
     }
 
+
     void testUpdateInvalidExpense() {
         def expense = newValidForCreateExpense()
         expense.save(failOnError: true, flush: true)
@@ -102,6 +90,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
             expense.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def expense = newValidForCreateExpense()
@@ -122,6 +111,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteExpense() {
         def expense = newValidForCreateExpense()
         expense.save(failOnError: true, flush: true)
@@ -131,10 +121,12 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
         assertNull Expense.get(id)
     }
 
+
     void testValidation() {
         def expense = newInvalidForCreateExpense()
         assertFalse "Expense could not be validated as expected due to ${expense.errors}", expense.validate()
     }
+
 
     void testNullValidationFailure() {
         def expense = new Expense()
@@ -155,6 +147,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
         )
         return expense
     }
+
 
     private def newInvalidForCreateExpense() {
         def expense = new Expense(

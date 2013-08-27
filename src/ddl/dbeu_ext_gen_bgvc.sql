@@ -9,7 +9,7 @@ REM
 REM dbeu_ext_gen_bgvc.sql
 REM
 REM AUDIT TRAIL: 9.0
-REM 1. Horizon
+REM 1. Banner XE
 REM AUDIT TRAIL END
 REM
 whenever oserror exit rollback;

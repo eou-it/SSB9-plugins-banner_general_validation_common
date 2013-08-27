@@ -3,26 +3,9 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.Transient
-import javax.persistence.GenerationType
-import javax.persistence.SequenceGenerator
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
-import javax.persistence.JoinColumn
-import javax.persistence.JoinColumns
-import javax.persistence.ManyToOne
-import org.hibernate.annotations.GenericGenerator
-import org.hibernate.annotations.Type
-import net.hedtech.banner.general.system.CurrencyConversion
 import net.hedtech.banner.general.crossproduct.Bank
+
+import javax.persistence.*
 
 /**
  * Currency conversion validation table.
@@ -161,10 +144,10 @@ class CurrencyConversion implements Serializable {
     /**
      * Foreign Key : FKV_GTVCURR_INV_GXVBANK_CODE
      */
-	@ManyToOne
-    	@JoinColumns([
-    		@JoinColumn(name="GTVCURR_BANK_CODE", referencedColumnName="GXVBANK_BANK_CODE")
-    		])
+    @ManyToOne
+    @JoinColumns([
+    @JoinColumn(name = "GTVCURR_BANK_CODE", referencedColumnName = "GXVBANK_BANK_CODE")
+    ])
     Bank bank
 
 
@@ -247,6 +230,7 @@ class CurrencyConversion implements Serializable {
         return result
     }
 
+
     static constraints = {
         currencyConversion(nullable: false, maxSize: 4)
         rateEffectiveDate(nullable: false)
@@ -268,8 +252,7 @@ class CurrencyConversion implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
-
     //Read Only fields that should be protected against update
-    public static readonlyProperties = [ 'currencyConversion', 'rateEffectiveDate', 'rateNextChangeDate']
+    public static readonlyProperties = ['currencyConversion', 'rateEffectiveDate', 'rateNextChangeDate']
 
 }

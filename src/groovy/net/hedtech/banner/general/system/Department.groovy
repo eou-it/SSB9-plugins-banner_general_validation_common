@@ -3,18 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
-import org.hibernate.annotations.Type
-import javax.persistence.SequenceGenerator
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
-import javax.persistence.GenerationType
-import org.hibernate.annotations.Type
+import javax.persistence.*
 
 /**
  * Department Validation Table

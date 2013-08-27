@@ -3,12 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
 
@@ -32,29 +30,17 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_code = "TT"
     def u_failure_description = null
 
+
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
@@ -63,12 +49,14 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull functionRevenue.id
     }
 
+
     void testCreateInvalidFunctionRevenue() {
         def functionRevenue = newInvalidForCreateFunctionRevenue()
         shouldFail(ValidationException) {
             functionRevenue.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
@@ -87,6 +75,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, functionRevenue.description
     }
 
+
     void testUpdateInvalidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -101,6 +90,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
             functionRevenue.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def functionRevenue = newValidForCreateFunctionRevenue()
@@ -121,6 +111,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -130,10 +121,12 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
         assertNull FunctionRevenue.get(id)
     }
 
+
     void testValidation() {
         def functionRevenue = newInvalidForCreateFunctionRevenue()
         assertFalse "FunctionRevenue could not be validated as expected due to ${functionRevenue.errors}", functionRevenue.validate()
     }
+
 
     void testNullValidationFailure() {
         def functionRevenue = new FunctionRevenue()
@@ -154,6 +147,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
         )
         return functionRevenue
     }
+
 
     private def newInvalidForCreateFunctionRevenue() {
         def functionRevenue = new FunctionRevenue(

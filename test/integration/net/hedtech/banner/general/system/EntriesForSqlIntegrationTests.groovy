@@ -3,11 +3,12 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import grails.validation.ValidationException
 import groovy.sql.Sql
-import java.text.SimpleDateFormat
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
+
+import java.text.SimpleDateFormat
 
 class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
 
@@ -47,21 +48,6 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        initializeTestDataForReferences()
-    }
-
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
     }
 
 

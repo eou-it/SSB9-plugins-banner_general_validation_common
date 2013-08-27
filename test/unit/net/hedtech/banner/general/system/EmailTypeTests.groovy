@@ -10,11 +10,9 @@ class EmailTypeTests extends GrailsUnitTestCase {
         super.setUp()
     }
 
+
     protected void tearDown() {
         super.tearDown()
     }
 
-    void testSomething() {
-
-    }
 }

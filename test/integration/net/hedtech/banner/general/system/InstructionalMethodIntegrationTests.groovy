@@ -1,12 +1,9 @@
 /** *****************************************************************************
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
-package net.hedtech.banner.general.system;
+package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase;
-
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
 

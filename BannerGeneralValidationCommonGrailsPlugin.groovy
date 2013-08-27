@@ -34,8 +34,8 @@ class BannerGeneralValidationCommonGrailsPlugin {
             "grails-app/views/error.gsp"
     ]
 
-    def author = "SunGard Higher Education"
-    def authorEmail = "horizon-support@sungardhe.com"
+    def author = "Ellucian"
+    def authorEmail = "actionline@ellucian.com"
     def title = "BannerGeneralOverall Plugin"
     def description = '''This plugin is BannerGeneralCommon.'''//.stripMargin()  // TODO Enable this once we adopt Groovy 1.7.3
 

@@ -3,12 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
 
@@ -32,29 +30,17 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_code = "TTTTT"
     def u_failure_description = null
 
+
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        //initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
@@ -63,12 +49,14 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull targetAudience.id
     }
 
+
     void testCreateInvalidTargetAudience() {
         def targetAudience = newInvalidForCreateTargetAudience()
         shouldFail(ValidationException) {
             targetAudience.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
@@ -88,6 +76,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, targetAudience.description
     }
 
+
     void testUpdateInvalidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -102,6 +91,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
             targetAudience.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def targetAudience = newValidForCreateTargetAudience()
@@ -122,6 +112,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -131,10 +122,12 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
         assertNull TargetAudience.get(id)
     }
 
+
     void testValidation() {
         def targetAudience = newInvalidForCreateTargetAudience()
         assertFalse "TargetAudience could not be validated as expected due to ${targetAudience.errors}", targetAudience.validate()
     }
+
 
     void testNullValidationFailure() {
         def targetAudience = new TargetAudience()
@@ -155,6 +148,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
         )
         return targetAudience
     }
+
 
     private def newInvalidForCreateTargetAudience() {
         def targetAudience = new TargetAudience(

@@ -3,9 +3,9 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import grails.validation.ValidationException
 import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class RsvpIntegrationTests extends BaseIntegrationTestCase {
@@ -34,29 +34,17 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
     def u_failure_planToAttendenceIndicator = true
 
+
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        //initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidRsvp() {
         def rsvp = newValidForCreateRsvp()
@@ -65,12 +53,14 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull rsvp.id
     }
 
+
     void testCreateInvalidRsvp() {
         def rsvp = newInvalidForCreateRsvp()
         shouldFail(ValidationException) {
             rsvp.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidRsvp() {
         def rsvp = newValidForCreateRsvp()
@@ -93,6 +83,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_planToAttendenceIndicator, rsvp.planToAttendenceIndicator
     }
 
+
     void testUpdateInvalidRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -109,6 +100,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
             rsvp.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def rsvp = newValidForCreateRsvp()
@@ -130,6 +122,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -139,10 +132,12 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
         assertNull Rsvp.get(id)
     }
 
+
     void testValidation() {
         def rsvp = newInvalidForCreateRsvp()
         assertFalse "Rsvp could not be validated as expected due to ${rsvp.errors}", rsvp.validate()
     }
+
 
     void testNullValidationFailure() {
         def rsvp = new Rsvp()
@@ -164,6 +159,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
         )
         return rsvp
     }
+
 
     private def newInvalidForCreateRsvp() {
         def rsvp = new Rsvp(

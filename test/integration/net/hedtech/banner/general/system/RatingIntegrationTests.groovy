@@ -3,12 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class RatingIntegrationTests extends BaseIntegrationTestCase {
 
@@ -32,29 +30,17 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_code = "TT"
     def u_failure_description = "TTTTT"
 
+
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        //initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidRating() {
         def rating = newValidForCreateRating()
@@ -63,6 +49,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull rating.id
     }
 
+
     void testCreateInvalidRating() {
         def rating = newInvalidForCreateRating()
         rating.code = null
@@ -70,6 +57,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
             rating.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidRating() {
         def rating = newValidForCreateRating()
@@ -89,6 +77,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, rating.description
     }
 
+
     void testUpdateInvalidRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -104,6 +93,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
             rating.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def rating = newValidForCreateRating()
@@ -124,6 +114,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -133,10 +124,12 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
         assertNull Rating.get(id)
     }
 
+
     void testValidation() {
         def rating = newInvalidForCreateRating()
         assertTrue "Rating could not be validated as expected due to ${rating.errors}", rating.validate()
     }
+
 
     void testNullValidationFailure() {
         def rating = new Rating()
@@ -159,6 +152,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
         )
         return rating
     }
+
 
     private def newInvalidForCreateRating() {
         def rating = new Rating(

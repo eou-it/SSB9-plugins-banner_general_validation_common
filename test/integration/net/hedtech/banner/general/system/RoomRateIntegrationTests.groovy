@@ -3,8 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class RoomRateIntegrationTests extends BaseIntegrationTestCase {
@@ -46,14 +46,6 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        initializeTestDataForReferences()
-    }
-
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-
-
-    void initializeTestDataForReferences() {
     }
 
 

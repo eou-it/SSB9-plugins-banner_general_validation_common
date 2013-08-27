@@ -30,7 +30,7 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 0L, maritalStatus.version
         assertEquals "T", maritalStatus.code
         assertEquals "TTTTTTTTTT", maritalStatus.description
-        assertEquals "T",  maritalStatus.financeConversion
+        assertEquals "T", maritalStatus.financeConversion
         assertEquals "T", maritalStatus.electronicDataInterchangeEquivalent
     }
 
@@ -41,7 +41,7 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull maritalStatus.id
         assertEquals "T", maritalStatus.code
         assertEquals "TTTTTTTTTT", maritalStatus.description
-        assertEquals "T",  maritalStatus.financeConversion
+        assertEquals "T", maritalStatus.financeConversion
         assertEquals "T", maritalStatus.electronicDataInterchangeEquivalent
 
         //Update the entity
@@ -53,13 +53,12 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
         maritalStatus = MaritalStatus.get(maritalStatus.id)
         assertEquals 1L, maritalStatus?.version
         assertEquals "UUUUUUUUUU", maritalStatus.description
-        assertEquals "U",  maritalStatus.financeConversion
+        assertEquals "U", maritalStatus.financeConversion
         assertEquals "U", maritalStatus.electronicDataInterchangeEquivalent
     }
 
 
     void testDates() {
-        def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()

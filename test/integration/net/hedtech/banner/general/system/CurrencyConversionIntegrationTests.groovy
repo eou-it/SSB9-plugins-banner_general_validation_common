@@ -3,15 +3,13 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import grails.validation.ValidationException
+import groovy.sql.Sql
 import net.hedtech.banner.general.crossproduct.Bank
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
-import net.hedtech.banner.general.system.CurrencyConversion
-import grails.validation.ValidationException
-import java.text.SimpleDateFormat
 
+import java.text.SimpleDateFormat
 
 class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
 
@@ -87,28 +85,13 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        initializeTestDataForReferences()
     }
 
-
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidCurrencyConversion() {
         def currencyConversion = newValidForCreateCurrencyConversion()
@@ -117,12 +100,14 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull currencyConversion.id
     }
 
+
     void testCreateInvalidCurrencyConversion() {
         def currencyConversion = newInvalidForCreateCurrencyConversion()
         shouldFail(ValidationException) {
             currencyConversion.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidCurrencyConversion() {
         def currencyConversion = newValidForCreateCurrencyConversion()
@@ -174,6 +159,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_standardCodeIso, currencyConversion.standardCodeIso
     }
 
+
     void testUpdateInvalidCurrencyConversion() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversion.save(failOnError: true, flush: true)
@@ -211,8 +197,8 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDates() {
-        def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()
@@ -238,6 +224,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
         assertEquals date.format(currencyConversion.rateNextChangeDate), date.format(rateNextChangeDate)
         assertEquals date.format(currencyConversion.rateTerminationDate), date.format(rateTerminationDate)
     }
+
 
     void testOptimisticLock() {
         def currencyConversion = newValidForCreateCurrencyConversion()
@@ -267,6 +254,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteCurrencyConversion() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversion.save(failOnError: true, flush: true)
@@ -276,10 +264,12 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
         assertNull CurrencyConversion.get(id)
     }
 
+
     void testValidation() {
         def currencyConversion = newInvalidForCreateCurrencyConversion()
         assertFalse "CurrencyConversion could not be validated as expected due to ${currencyConversion.errors}", currencyConversion.validate()
     }
+
 
     void testNullValidationFailure() {
         def currencyConversion = new CurrencyConversion()
@@ -307,6 +297,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
+
     void testMaxSizeValidationFailures() {
         def currencyConversion = new CurrencyConversion(
                 currencyConversion: 'XXXXX',
@@ -323,26 +314,28 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
                 'exchangeAccount', 'accountsPayableAccount2', 'exchangeAccount2', 'standardCodeIso']
     }
 
+
     void testInListValidationFailures() {
         def currencyConversion = new CurrencyConversion(
                 statusIndicator: "#",
-		        conversionType: "#")
+                conversionType: "#")
         assertFalse "CurrencyConversion should have failed validation", currencyConversion.validate()
         assertErrorsFor currencyConversion, 'inList', [
-                        'statusIndicator',
-                        'conversionType']
+                'statusIndicator',
+                'conversionType']
     }
+
 
     private def newValidForCreateCurrencyConversion() {
 
         def newBank = new Bank(bank: "##",
-                               effectiveDate: new Date()-100,
-                               bankPidm: 1,
-                               bankAccountName: '#####',
-                               bankAccountNumber: '#####',
-                               achStatus: "A",
-                               statusIndicator: "A",
-                               nextChangeDate: new Date()+100)
+                effectiveDate: new Date() - 100,
+                bankPidm: 1,
+                bankAccountName: '#####',
+                bankAccountNumber: '#####',
+                achStatus: "A",
+                statusIndicator: "A",
+                nextChangeDate: new Date() + 100)
         save newBank
 
         def currencyConversion = new CurrencyConversion(
@@ -364,6 +357,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
         )
         return currencyConversion
     }
+
 
     private def newInvalidForCreateCurrencyConversion() {
         def currencyConversion = new CurrencyConversion(

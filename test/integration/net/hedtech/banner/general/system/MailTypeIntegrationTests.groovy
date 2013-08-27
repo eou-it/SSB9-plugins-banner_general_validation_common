@@ -3,12 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class MailTypeIntegrationTests extends BaseIntegrationTestCase {
 
@@ -40,26 +38,13 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidMailType() {
         def mailType = newValidForCreateMailType()
@@ -68,12 +53,14 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull mailType.id
     }
 
+
     void testCreateInvalidMailType() {
         def mailType = newInvalidForCreateMailType()
         shouldFail(ValidationException) {
             mailType.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidMailType() {
         def mailType = newValidForCreateMailType()
@@ -95,6 +82,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_displayWebIndicator, mailType.displayWebIndicator
     }
 
+
     void testUpdateInvalidMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -111,6 +99,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
             mailType.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def mailType = newValidForCreateMailType()
@@ -132,6 +121,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -141,10 +131,12 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNull MailType.get(id)
     }
 
+
     void testValidation() {
         def mailType = newInvalidForCreateMailType()
         assertFalse "MailType could not be validated as expected due to ${mailType.errors}", mailType.validate()
     }
+
 
     void testNullValidationFailure() {
         def mailType = new MailType()
@@ -168,6 +160,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
         )
         return mailType
     }
+
 
     private def newInvalidForCreateMailType() {
         def mailType = new MailType(

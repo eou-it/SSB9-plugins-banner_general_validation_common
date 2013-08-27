@@ -51,7 +51,6 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
         assertTrue  holdType.complianceHoldIndicator
 
         //Update the entity
-        def testDate = new Date()
         holdType.registrationHoldIndicator = false
         save holdType
 

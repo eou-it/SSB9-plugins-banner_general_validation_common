@@ -3,12 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
 
@@ -44,26 +40,13 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidEmailType() {
         def emailType = newValidForCreateEmailType()
@@ -72,12 +55,14 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull emailType.id
     }
 
+
     void testCreateInvalidEmailType() {
         def emailType = newInvalidForCreateEmailType()
         shouldFail(ValidationException) {
             emailType.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidEmailType() {
         def emailType = newValidForCreateEmailType()
@@ -102,6 +87,7 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_urlIndicator, emailType.urlIndicator
     }
 
+
     void testUpdateInvalidEmailType() {
         def emailType = newValidForCreateEmailType()
         emailType.save(failOnError: true, flush: true)
@@ -121,6 +107,7 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteEmailType() {
         def emailType = newValidForCreateEmailType()
         emailType.save(failOnError: true, flush: true)
@@ -130,10 +117,12 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNull EmailType.get(id)
     }
 
+
     void testValidation() {
         def emailType = newInvalidForCreateEmailType()
         assertFalse "EmailType could not be validated as expected due to ${emailType.errors}", emailType.validate()
     }
+
 
     void testNullValidationFailure() {
         def emailType = new EmailType()
@@ -149,6 +138,7 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
                         'description'
                 ]
     }
+
 
     void testMaxSizeValidationFailures() {
         def emailType = new EmailType(
@@ -169,6 +159,7 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         )
         return emailType
     }
+
 
     private def newInvalidForCreateEmailType() {
         def emailType = new EmailType(

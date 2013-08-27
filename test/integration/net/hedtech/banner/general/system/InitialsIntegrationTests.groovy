@@ -3,13 +3,12 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
-import java.text.SimpleDateFormat
 import grails.validation.ValidationException
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
+import java.text.SimpleDateFormat
 
 class InitialsIntegrationTests extends BaseIntegrationTestCase {
 
@@ -49,26 +48,13 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidInitials() {
         def initials = newValidForCreateInitials()
@@ -77,6 +63,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull initials.id
     }
 
+
     void testCreateInvalidInitials() {
         def initials = newInvalidForCreateInitials()
         initials.code = null
@@ -84,6 +71,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
             initials.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidInitials() {
         def initials = newValidForCreateInitials()
@@ -111,6 +99,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_emailAddress, initials.emailAddress
     }
 
+
     void testUpdateInvalidInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -133,8 +122,8 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDates() {
-        def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()
@@ -153,6 +142,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
 
 
     }
+
 
     void testOptimisticLock() {
         def initials = newValidForCreateInitials()
@@ -176,6 +166,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -185,11 +176,13 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
         assertNull Initials.get(id)
     }
 
+
     void testValidation() {
         def initials = newInvalidForCreateInitials()
         initials.code = null
         assertFalse "Initials could not be validated as expected due to ${initials.errors}", initials.validate()
     }
+
 
     void testNullValidationFailure() {
         def initials = new Initials()
@@ -206,6 +199,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
                         'emailAddress'
                 ]
     }
+
 
     void testMaxSizeValidationFailures() {
         def initials = new Initials(
@@ -227,6 +221,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
         )
         return initials
     }
+
 
     private def newInvalidForCreateInitials() {
         def initials = new Initials(

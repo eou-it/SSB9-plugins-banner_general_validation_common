@@ -5,7 +5,7 @@ REM
 REM login.sql
 REM 
 REM AUDIT TRAIL: 9.0 
-REM 1. Horizon 
+REM 1. Banner XE
 REM File for login info
 REM AUDIT TRAIL END 
 REM

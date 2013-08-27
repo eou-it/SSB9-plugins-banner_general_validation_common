@@ -3,12 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
 
@@ -36,26 +34,13 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        //initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidParticipantType() {
         def participantType = newValidForCreateParticipantType()
@@ -64,6 +49,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull participantType.id
     }
 
+
     void testCreateInvalidParticipantType() {
         def participantType = newInvalidForCreateParticipantType()
         participantType.code = null
@@ -71,6 +57,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
             participantType.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidParticipantType() {
         def participantType = newValidForCreateParticipantType()
@@ -90,6 +77,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, participantType.description
     }
 
+
     void testUpdateInvalidParticipantType() {
         def participantType = newValidForCreateParticipantType()
         save participantType
@@ -105,6 +93,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
             participantType.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def participantType = newValidForCreateParticipantType()
@@ -125,6 +114,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteParticipantType() {
         def participantType = newValidForCreateParticipantType()
         save participantType
@@ -134,10 +124,12 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNull ParticipantType.get(id)
     }
 
+
     void testValidation() {
         def participantType = newInvalidForCreateParticipantType()
         assertTrue "ParticipantType could not be validated as expected due to ${participantType.errors}", participantType.validate()
     }
+
 
     void testNullValidationFailure() {
         def participantType = new ParticipantType()
@@ -160,6 +152,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
         )
         return participantType
     }
+
 
     private def newInvalidForCreateParticipantType() {
         def participantType = new ParticipantType(

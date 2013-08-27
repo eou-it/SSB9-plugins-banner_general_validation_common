@@ -3,24 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.Transient
-
-import javax.persistence.GenerationType
-import javax.persistence.SequenceGenerator
-
-import org.hibernate.annotations.GenericGenerator
-
-import org.hibernate.annotations.Type
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
+import javax.persistence.*
 
 /**
  * Recruiting Initials Code Validation Table
@@ -144,6 +127,7 @@ class Initials implements Serializable {
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
         return result
     }
+
 
     static constraints = {
         code(nullable: false, maxSize: 4)

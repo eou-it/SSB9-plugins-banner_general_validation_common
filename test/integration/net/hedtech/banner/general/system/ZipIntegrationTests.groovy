@@ -79,7 +79,6 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
 
 
     void testDates() {
-        def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()
@@ -175,7 +174,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
 
-        def zips = Zip.fetchBySomeCode( "1234")
+        def zips = Zip.fetchBySomeCode("1234")
         def zipList = zips.get("list")
         assertNotNull zipList
         assertTrue zipList.size() > 0

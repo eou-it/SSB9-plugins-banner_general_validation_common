@@ -3,25 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.crossproduct
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.Transient
-import javax.persistence.GenerationType
-import javax.persistence.SequenceGenerator
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
-import javax.persistence.JoinColumn
-import javax.persistence.JoinColumns
-import javax.persistence.ManyToOne
-import org.hibernate.annotations.GenericGenerator
-import org.hibernate.annotations.Type
-import net.hedtech.banner.general.system.CurrencyConversion
+import javax.persistence.*
 
 /**
  * Bank Validation Table
@@ -74,7 +56,7 @@ class Bank implements Serializable {
     @Column(name = "GXVBANK_BANK_CODE_PIDM")
     Integer bankPidm
 
-     /**
+    /**
      * BANK ACCOUNT NUMBER:  This is the bank assigned number unique to this account and is the number that is encoded on the checks.
      */
     @Column(name = "GXVBANK_ACCT_NUM")
@@ -172,7 +154,7 @@ class Bank implements Serializable {
     @Column(name = "GXVBANK_COMPANY_ID")
     String companyId
 
-     /**
+    /**
      * ORIGINATING LONG NAME: The long name of the bank.
      */
     @Column(name = "GXVBANK_ACH_ORIG_NAME")
@@ -184,7 +166,7 @@ class Bank implements Serializable {
     @Column(name = "GXVBANK_BANK_ROUT_NUM")
     String bankOriginatingRoutingNumber
 
-     /**
+    /**
      * ACH FILE NUMBER : The number of direct deposit tape file that has been produced from this bank.
      */
     @Column(name = "GXVBANK_ACH_FILE_NUMBER")
@@ -312,14 +294,15 @@ class Bank implements Serializable {
         return result
     }
 
+
     static constraints = {
-        bank(nullable:false, maxSize: 2)
+        bank(nullable: false, maxSize: 2)
         effectiveDate(nullable: false)
         nextChangeDate(nullable: false)
         bankPidm(nullable: false, min: -99999999, max: 99999999)
         bankAccountNumber(nullable: false, maxSize: 17)
         bankAccountName(nullable: false, maxSize: 35)
-        achStatus(nullable: false, maxSize: 1, inList: ["A","I"])
+        achStatus(nullable: false, maxSize: 1, inList: ["A", "I"])
         statusIndicator(nullable: false, maxSize: 1, inList: ["A"])
         terminationDate(nullable: true)
         chartOfAccounts(nullable: true, maxSize: 1)
@@ -342,7 +325,7 @@ class Bank implements Serializable {
     }
 
     //Read Only fields that should be protected against update
-    public static readonlyProperties = ['bank' , 'effectiveDate', 'nextChangeDate']
+    public static readonlyProperties = ['bank', 'effectiveDate', 'nextChangeDate']
 
 
 }

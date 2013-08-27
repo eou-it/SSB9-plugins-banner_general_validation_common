@@ -3,10 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
-import org.junit.Ignore
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class AddressSourceIntegrationTests extends BaseIntegrationTestCase {

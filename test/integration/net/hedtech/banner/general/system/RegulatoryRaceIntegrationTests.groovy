@@ -60,7 +60,6 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
 
 
     void testDates() {
-        def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()
@@ -120,7 +119,7 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
     void testNullValidationFailure() {
         def regulatoryRace = new RegulatoryRace()
         assertFalse "RegulatoryRace should have failed validation", regulatoryRace.validate()
-        assertErrorsFor(regulatoryRace, 'nullable', ['code', 'description', 'systemRequiredIndicator' ])
+        assertErrorsFor(regulatoryRace, 'nullable', ['code', 'description', 'systemRequiredIndicator'])
     }
 
 

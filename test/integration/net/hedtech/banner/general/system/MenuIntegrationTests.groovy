@@ -3,12 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
-import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 import grails.validation.ValidationException
-
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class MenuIntegrationTests extends BaseIntegrationTestCase {
 
@@ -36,26 +34,13 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        //initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidMenu() {
         def menu = newValidForCreateMenu()
@@ -64,6 +49,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull menu.id
     }
 
+
     void testCreateInvalidMenu() {
         def menu = newInvalidForCreateMenu()
         menu.code = null
@@ -71,6 +57,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
             menu.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidMenu() {
         def menu = newValidForCreateMenu()
@@ -89,6 +76,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, menu.description
     }
 
+
     void testUpdateInvalidMenu() {
         def menu = newValidForCreateMenu()
         menu.save(failOnError: true, flush: true)
@@ -104,6 +92,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
             menu.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def menu = newValidForCreateMenu()
@@ -124,6 +113,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     void testDeleteMenu() {
         def menu = newValidForCreateMenu()
         menu.save(failOnError: true, flush: true)
@@ -133,11 +123,13 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
         assertNull Menu.get(id)
     }
 
+
     void testValidation() {
         def menu = newInvalidForCreateMenu()
         menu.code = null
         assertFalse "Menu could not be validated as expected due to ${menu.errors}", menu.validate()
     }
+
 
     void testNullValidationFailure() {
         def menu = new Menu()
@@ -157,6 +149,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
         )
         return menu
     }
+
 
     private def newInvalidForCreateMenu() {
         def menu = new Menu(

@@ -3,21 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.Transient
-import javax.persistence.GenerationType
-import javax.persistence.SequenceGenerator
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
-import org.hibernate.annotations.GenericGenerator
-import org.hibernate.annotations.Type
+import javax.persistence.*
 
 /**
  * CREDIT CARD TYPE Validation Table
@@ -123,6 +109,7 @@ class CreditCardType implements Serializable {
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
         return result
     }
+
 
     static constraints = {
         code(nullable: false, maxSize: 10)

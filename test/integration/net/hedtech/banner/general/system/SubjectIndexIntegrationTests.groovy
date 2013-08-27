@@ -3,10 +3,9 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import grails.validation.ValidationException
 import groovy.sql.Sql
-import org.junit.Ignore
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
@@ -35,26 +34,13 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     protected void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
-        //initializeTestDataForReferences()
     }
 
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-
-        //Invalid test data (For failure tests)
-
-        //Valid test data (For success tests)
-
-        //Valid test data (For failure tests)
-
-        //Test data for references for custom tests
-    }
 
     protected void tearDown() {
         super.tearDown()
     }
+
 
     void testCreateValidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
@@ -63,12 +49,14 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull subjectIndex.id
     }
 
+
     void testCreateInvalidSubjectIndex() {
         def subjectIndex = newInvalidForCreateSubjectIndex()
         shouldFail(ValidationException) {
             subjectIndex.save(failOnError: true, flush: true)
         }
     }
+
 
     void testUpdateValidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
@@ -88,6 +76,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_description, subjectIndex.description
     }
 
+
     void testUpdateInvalidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -102,6 +91,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
             subjectIndex.save(failOnError: true, flush: true)
         }
     }
+
 
     void testOptimisticLock() {
         def subjectIndex = newValidForCreateSubjectIndex()
@@ -121,6 +111,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
             subjectIndex.save(failOnError: true, flush: true)
         }
     }
+
 
     void testDeleteSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
@@ -153,6 +144,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
         )
         return subjectIndex
     }
+
 
     private def newInvalidForCreateSubjectIndex() {
         def subjectIndex = new SubjectIndex(

@@ -10,6 +10,14 @@ import javax.persistence.*
 /**
  * Race Rules Table.
  */
+
+@NamedQueries(value = [
+@NamedQuery(name = "Race.fetchAllByRegulatoryRace",
+query = """FROM Race a
+           WHERE a.regulatoryRace.code = :regulatoryRaceCode
+           order by a.description""")
+])
+
 @Entity
 @Table(name = "GV_GORRACE")
 @NamedQueries(value = [
@@ -154,6 +162,17 @@ class Race implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['race']
 
+
+    public static List fetchAllByRegulatoryRace(String regulatoryRaceCode) {
+        def races
+        Race.withSession {session ->
+            races = session.getNamedQuery('Race.fetchAllByRegulatoryRace').setString('regulatoryRaceCode', regulatoryRaceCode).list()
+        }
+        return races
+
+    }
+
+}
     // Used for lookups
     public static Object fetchAllLikeRaceOrDescription() {
         def returnObj = [list: Race.list().sort { it.race }]

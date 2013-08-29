@@ -15,4 +15,7 @@ class EmailTypeTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
+    void testSomething() {
+
+    }
 }

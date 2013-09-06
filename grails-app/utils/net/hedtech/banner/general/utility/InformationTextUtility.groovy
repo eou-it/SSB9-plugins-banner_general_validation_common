@@ -18,11 +18,11 @@ import net.hedtech.banner.security.BannerUser
  ****************************************************************************** */
 class InformationTextUtility {
 
-    public static String getMessages(String pageName, Locale locale = LocaleContextHolder.getLocale()) {
+    public static Map getMessages(String pageName, Locale locale = LocaleContextHolder.getLocale()) {
         String localeParam = locale.toString().toUpperCase();
         List roles = getUserRoles()
 
-        if(roles == null) {
+        if (roles == null) {
             return "";
         }
 
@@ -74,11 +74,13 @@ class InformationTextUtility {
         resultSet.each { t ->
             //if same key concatentate
             String text = informationTexts.get(t.GURINFO_LABEL)
-            if(text == null) {
+            if (text == null || text == "") {
                 text = getTextBasedOnDateRange(t)
             }
             else {
-                text += "\n" + getTextBasedOnDateRange(t)
+                if (getTextBasedOnDateRange(t) != "") {
+                    text += "\n" + getTextBasedOnDateRange(t)
+                }
             }
             informationTexts.put(t.GURINFO_LABEL, text)
         }
@@ -87,7 +89,7 @@ class InformationTextUtility {
     }
 
     private static String getTextBasedOnDateRange(row) {
-        if(row.GURINFO_SOURCE_INDICATOR == "L" && row.GURINFO_START_DATE == null) {
+        if (row.GURINFO_SOURCE_INDICATOR == "L" && row.GURINFO_START_DATE == null) {
             return ""
         }
         else {
@@ -99,7 +101,7 @@ class InformationTextUtility {
         String localeParam = locale.toString().toUpperCase();
         List roles = getUserRoles()
 
-        if(roles == null) {
+        if (roles == null) {
             return "";
         }
 
@@ -153,14 +155,16 @@ class InformationTextUtility {
         def resultSet = sql.rows(sqlQueryString, params)
         resultSet.each {t ->
             //infoText += t.GURINFO_TEXT + "\n"
-            if(infoText == null) {
+            if (infoText == null || infoText == "") {
                 infoText = getTextBasedOnDateRange(t)
             }
             else {
-                infoText += "\n" + getTextBasedOnDateRange(t)
+                if (getTextBasedOnDateRange(t) != "") {
+                    infoText += "\n" + getTextBasedOnDateRange(t)
+                }
             }
         }
-        if(infoText == null) {
+        if (infoText == null) {
             infoText = label
         }
         return infoText
@@ -175,7 +179,7 @@ class InformationTextUtility {
 
             authorities.each {
                 String authority = it.authority
-                String role = authority.substring("ROLE_SELFSERVICE".length() + 1 )
+                String role = authority.substring("ROLE_SELFSERVICE".length() + 1)
                 role = role.split("_")[0]
                 roles << role
             }

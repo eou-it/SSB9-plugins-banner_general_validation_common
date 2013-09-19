@@ -23,19 +23,6 @@ class InformationTextPersonaListService {
     }
 
     public List fetchInformationTextPersonas(String filter) {
-        def sql
-        def result = []
-        def existsSql = """SELECT 'Y' as tableExists FROM ALL_TABLES WHERE TABLE_NAME = 'GURINFO'"""
-        try {
-            sql = new Sql(sessionFactory.currentSession.connection())
-            result = sql.firstRow(existsSql)
-        } finally {
-            sql?.close()
-        }
-        if (!(result?.tableExists as boolean)) {
-            return []
-        }
-
         if (StringUtils.isBlank(filter)) {
             filter = "%"
         } else if (!(filter =~ /%/)) {

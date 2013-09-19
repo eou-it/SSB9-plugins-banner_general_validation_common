@@ -1,4 +1,8 @@
 package net.hedtech.banner.general.utility
+
+import org.springframework.context.ApplicationContext
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 /**
  * Created with IntelliJ IDEA.
  * User: harishsp
@@ -7,6 +11,7 @@ package net.hedtech.banner.general.utility
  * To change this template use File | Settings | File Templates.
  */
 class InformationTextPersona implements Serializable {
+
     /**
      * CODE : The persona code
      */
@@ -28,7 +33,7 @@ class InformationTextPersona implements Serializable {
     String lastModifiedBy
 
 
-    public String toString( ) {
+    public String toString() {
         """InformationTextPersona[
             code=$code,
             description=$description,
@@ -55,5 +60,40 @@ class InformationTextPersona implements Serializable {
         result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
         result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
         return result
+    }
+
+    def static informationTextPersonaListService
+
+    private static ApplicationContext getApplicationContext() {
+        return (ApplicationContext) ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT);
+    }
+
+    public static def fetchInformationTextPersonas() {
+        def filter = "%"
+        if (informationTextPersonaListService == null) {
+            informationTextPersonaListService = getApplicationContext().getBean("informationTextPersonaListService")
+        }
+        def returnList = informationTextPersonaListService.fetchInformationTextPersonas(filter)
+        def returnObj = [list: returnList]
+        return returnObj
+    }
+
+
+    public static def fetchInformationTextPersonas(filter) {
+        if (informationTextPersonaListService == null) {
+            informationTextPersonaListService = getApplicationContext().getBean("informationTextPersonaListService")
+        }
+        def returnList = informationTextPersonaListService.fetchInformationTextPersonas(filter)
+        def returnObj = [list: returnList]
+        return returnObj
+    }
+
+
+    public static InformationTextPersona fetchValidInformationTextPersona(String filter) {
+        if (informationTextPersonaListService == null) {
+            informationTextPersonaListService = getApplicationContext().getBean("informationTextPersonaListService")
+        }
+        def returnObj = informationTextPersonaListService.fetchInformationTextPersonas(filter)[0]
+        return returnObj?.code ? returnObj : null
     }
 }

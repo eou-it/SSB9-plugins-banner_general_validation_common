@@ -132,6 +132,22 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor(regulatoryRace, 'maxSize', ['code', 'description'])
     }
 
+    void testFetchAllByRegulatoryRaceSuccess() {
+            RegulatoryRace regulatoryRace = newRegulatoryRace()
+            save regulatoryRace
+            def id=regulatoryRace.id
+            assertNotNull id
+
+            List<RegulatoryRace> quiredRegulatoryRace = RegulatoryRace.fetchRequiredRegulatoryRaces()
+            assertNotNull quiredRegulatoryRace
+            assertFalse quiredRegulatoryRace.isEmpty()
+
+            regulatoryRace.delete()
+            assertNull RegulatoryRace.get(id)
+
+
+        }
+
 
     private def newRegulatoryRace() {
         new RegulatoryRace(code: "T", description: "TTTTT", systemRequiredIndicator: true, lastModified: new Date(),

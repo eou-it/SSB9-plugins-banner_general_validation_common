@@ -187,10 +187,10 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
 
     def createInfoTextTestData(sourceIndicator, text, label, startDate = null, endDate = null, recordsSize = 4, singleNullDateIndicator = false) {
         def pageName = "TESTPAGE"
-        def textType = "Label"
+        def textType = "N"
         def sequenceNumber = 1
         def persona = "STUDENT"
-        def locale = "EN_US"
+        def locale = "en_US"
         def comment = "Test data"
         recordsSize.times {
             if (singleNullDateIndicator) {

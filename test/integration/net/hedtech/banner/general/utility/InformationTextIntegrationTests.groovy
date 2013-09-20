@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     def i_success_pageName = "TT"
     def i_success_label = "TT"
-    def i_success_textType = "#"
+    def i_success_textType = "T"
     def i_success_sequenceNumber = 1
     def i_success_persona = "TTTT"
     def i_success_startDate = new Date()
@@ -40,7 +40,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     //Valid test data (For success tests)
     def u_success_pageName = "WW"
     def u_success_label = "WW"
-    def u_success_textType = "#"
+    def u_success_textType = "P"
     def u_success_sequenceNumber = 1
     def u_success_persona = "TTTT"
     def u_success_startDate = new Date()
@@ -225,15 +225,15 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
                         [
                                 'pageName',
                                 'label',
-                                'textType',
                                 'sequenceNumber',
                                 'persona',
                                 'text',
-                                'locale',
-                                'comment'
+                                'locale'
                         ]
         assertNoErrorsFor informationText,
                           [
+                                  'textType',
+                                  'comment',
                                   'sourceIndicator',
                                   'startDate',
                                   'endDate',
@@ -258,10 +258,11 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
 
     void testInListValidationFailures( ) {
         def informationText = new InformationText(
-                sourceIndicator: 'A'
+                sourceIndicator: 'A',
+                textType: 'X'
         )
         assertFalse informationText.validate()
-        assertErrorsFor informationText, 'inList', ['sourceIndicator']
+        assertErrorsFor informationText, 'inList', ['sourceIndicator','textType']
     }
 
 

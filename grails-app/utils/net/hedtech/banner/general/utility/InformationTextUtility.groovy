@@ -22,7 +22,7 @@ class InformationTextUtility {
 
     public static Map getMessages(String pageName, Locale locale = LocaleContextHolder.getLocale()) {
          Map informationTexts = new HashMap()
-         String localeParam = locale.toString().toUpperCase();
+         String localeParam = locale.toString();
          List roles = BannerGrantedAuthorityService.getUserRoles()
          if(roles) {
              def params = [pageName]
@@ -53,7 +53,7 @@ class InformationTextUtility {
 
      public static String getMessage(String pageName, String label, Locale locale = LocaleContextHolder.getLocale()) {
          def infoText = null
-         String localeParam = locale.toString().toUpperCase();
+         String localeParam = locale.toString();
          List roles = BannerGrantedAuthorityService.getUserRoles()
          if(roles){
              def params = [pageName]

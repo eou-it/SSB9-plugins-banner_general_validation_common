@@ -33,7 +33,7 @@ class InformationText implements Serializable {
     String label
 
     /**
-     * TEXT TYPE: Type of text.    Types - Notification, tooltip, Panel, Header
+     * TEXT TYPE: Type of text.    Types - NF- Notification, T-Tooltip, P-Panel, H-Header, N - Normal
      */
     @Column(name = "GURINFO_TEXT_TYPE")
     String textType
@@ -179,17 +179,25 @@ class InformationText implements Serializable {
     }
 
     static constraints = {
-        pageName(nullable: false, maxSize: 20)
-        label(nullable: false, maxSize: 20)
-        textType(nullable: false, maxSize: 20)
+        pageName(blank: false, nullable: false, maxSize: 20)
+        label(blank: false, nullable: false, maxSize: 20)
+        textType(blank: false, nullable: false, maxSize: 20, inList:['NF','T','P','H','N'])
         sequenceNumber(nullable: false, min: 0, max: 99999)
-        persona(nullable: false, maxSize: 30)
-        text(nullable: false, maxSize: 4000)
-        locale(nullable: false, maxSize: 20)
-        comment(nullable: false, maxSize: 200)
+        persona(blank: false, nullable: false, maxSize: 30)
+        locale(blank: false, nullable: false, maxSize: 20)
         sourceIndicator(nullable: false, maxSize: 1, inList:['B','L'])
-        startDate(nullable: true)
-        endDate(nullable: true)
+        text(nullable: true, maxSize: 4000)
+        comment(nullable: true, maxSize: 200)
+        startDate(nullable: true, validator: { val, obj ->
+            if ( val && obj.endDate && (val > obj.endDate) ) {
+                return 'invalid.startDateLessThanEndDate'
+            }
+        } )
+        endDate(nullable: true, validator: { val, obj ->
+            if ( val && obj.startDate && (val < obj.startDate) ) {
+                return 'invalid.startDateLessThanEndDate'
+            }
+        } )
         dataOrigin(nullable: true, maxSize: 30)
         lastModifiedBy(nullable: true, maxSize: 30)
         lastModified(nullable: true)

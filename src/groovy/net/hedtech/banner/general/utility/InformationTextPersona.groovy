@@ -3,13 +3,7 @@ package net.hedtech.banner.general.utility
 import org.springframework.context.ApplicationContext
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
-/**
- * Created with IntelliJ IDEA.
- * User: harishsp
- * Date: 8/2/13
- * Time: 6:11 PM
- * To change this template use File | Settings | File Templates.
- */
+
 class InformationTextPersona implements Serializable {
 
     /**

@@ -10,6 +10,13 @@ import org.springframework.security.core.context.SecurityContextHolder
 
 class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
 
+
+    protected void setUp() {
+        formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
+        super.setUp()
+    }
+
+
     void testInformationTextPersonasWithoutFilter() {
         InformationTextPersonaListService.webTailorRoleList = [
                 [
@@ -86,29 +93,29 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void testValidInformationTextPersonaWithFilter() {
-         InformationTextPersonaListService.webTailorRoleList = [
-                 [
-                         code: "ALUMNI",
-                         description: "Alumni",
-                         lastModified: "19-OCT-98",
-                         lastModifiedBy: ""
-                 ],
-                 [
-                         code: "EMPLOYEE",
-                         description: "Employee",
-                         lastModified: "19-OCT-98",
-                         lastModifiedBy: ""
-                 ],
-                 [
-                         code: "FACULTY",
-                         description: "Faculty",
-                         lastModified: "19-OCT-98",
-                         lastModifiedBy: ""
-                 ]]
-         def personaList = InformationTextPersona.fetchValidInformationTextPersona('U')
-         int personaCount = personaList.list.size()
-         assertEquals(1, personaCount)
-     }
+        InformationTextPersonaListService.webTailorRoleList = [
+                [
+                        code: "ALUMNI",
+                        description: "Alumni",
+                        lastModified: "19-OCT-98",
+                        lastModifiedBy: ""
+                ],
+                [
+                        code: "EMPLOYEE",
+                        description: "Employee",
+                        lastModified: "19-OCT-98",
+                        lastModifiedBy: ""
+                ],
+                [
+                        code: "FACULTY",
+                        description: "Faculty",
+                        lastModified: "19-OCT-98",
+                        lastModifiedBy: ""
+                ]]
+        def personaList = InformationTextPersona.fetchValidInformationTextPersona('U')
+        String persona = personaList.code
+        assertEquals("ALUMNI", persona)
+    }
 }
 
 

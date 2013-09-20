@@ -7,7 +7,6 @@ package net.hedtech.banner.general.utility
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
 

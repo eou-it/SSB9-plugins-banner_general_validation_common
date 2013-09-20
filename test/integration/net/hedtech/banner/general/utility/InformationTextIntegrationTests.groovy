@@ -227,12 +227,12 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
                                 'label',
                                 'sequenceNumber',
                                 'persona',
-                                'text',
+                                'textType',
                                 'locale'
                         ]
         assertNoErrorsFor informationText,
                           [
-                                  'textType',
+                                  'text',
                                   'comment',
                                   'sourceIndicator',
                                   'startDate',

@@ -179,21 +179,20 @@ class InformationText implements Serializable {
     }
 
     static constraints = {
-        pageName(blank: false, nullable: false, maxSize: 20)
-        label(blank: false, nullable: false, maxSize: 20)
+        pageName(blank: false, nullable: false, maxSize: 200)
+        label(blank: false, nullable: false, maxSize: 200)
         textType(blank: false, nullable: false, maxSize: 20, inList:['NF','T','P','H','N'])
         sequenceNumber(nullable: false, min: 0, max: 99999)
         persona(blank: false, nullable: false, maxSize: 30)
         locale(blank: false, nullable: false, maxSize: 20)
         sourceIndicator(nullable: false, maxSize: 1, inList:['B','L'])
         text(nullable: true, maxSize: 4000)
-        comment(nullable: true, maxSize: 200)
-        startDate(nullable: true, validator: { val, obj ->
-            if ( val && obj.endDate && (val > obj.endDate) ) {
-                return 'invalid.startDateLessThanEndDate'
-            }
-        } )
+        comment(nullable: true, maxSize: 2000)
+        startDate(nullable: true)
         endDate(nullable: true, validator: { val, obj ->
+            if(val && !obj.startDate){
+                return 'invalid.missingStartDate'
+            }
             if ( val && obj.startDate && (val < obj.startDate) ) {
                 return 'invalid.startDateLessThanEndDate'
             }

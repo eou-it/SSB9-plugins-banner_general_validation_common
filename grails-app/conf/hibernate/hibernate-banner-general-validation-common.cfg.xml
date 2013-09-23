@@ -93,6 +93,8 @@
         <mapping class="net.hedtech.banner.general.system.PersonType"/>
         <mapping class="net.hedtech.banner.general.system.PhoneRate"/>
         <mapping class="net.hedtech.banner.general.system.PortOfEntry"/>
+        <mapping class="net.hedtech.banner.general.system.ProxyAccessSystem"/>
+        <mapping class="net.hedtech.banner.general.system.ProxyAccessSystemOptionType"/>
         <mapping class="net.hedtech.banner.general.system.Race"/>
         <mapping class="net.hedtech.banner.general.system.Rate"/>
         <mapping class="net.hedtech.banner.general.system.Rating"/>

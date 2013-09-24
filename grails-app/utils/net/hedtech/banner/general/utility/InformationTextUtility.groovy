@@ -6,23 +6,16 @@ import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import groovy.sql.Sql
 
 import net.hedtech.banner.security.BannerGrantedAuthorityService
-import net.hedtech.banner.general.utility.SourceIndicators
-/** *****************************************************************************
- © 2013 SunGard Higher Education.  All Rights Reserved.
-
- CONFIDENTIAL BUSINESS INFORMATION
-
- THIS PROGRAM IS PROPRIETARY INFORMATION OF SUNGARD HIGHER EDUCATION
- AND IS NOT TO BE COPIED, REPRODUCED, LENT, OR DISPOSED OF,
- NOR USED FOR ANY PURPOSE OTHER THAN THAT WHICH IT IS SPECIFICALLY PROVIDED
- WITHOUT THE WRITTEN PERMISSION OF THE SAID COMPANY
+/*******************************************************************************
+ Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
+
 class InformationTextUtility {
 
     public static Map getMessages(String pageName, Locale locale = LocaleContextHolder.getLocale()) {
         Map informationTexts = new HashMap()
         String localeParam = locale.toString();
-        List<String> roles = BannerGrantedAuthorityService.getUserRoles()
+        List<String> roles = BannerGrantedAuthorityService.getSelfServiceUserRole()
         if (roles) {
             List<String> params = [pageName]
             String roleClauseParams = getParams(roles, params)
@@ -33,7 +26,7 @@ class InformationTextUtility {
             def resultSet = sql.rows(sqlQueryString, params)
             resultSet.each { t ->
                 String infoText = informationTexts.get(t.GURINFO_LABEL)
-                infoText = getInfoText(infoText, t)
+                infoText=getInfoText(infoText, t)
                 informationTexts.put(t.GURINFO_LABEL, infoText)
             }
         }
@@ -45,7 +38,7 @@ class InformationTextUtility {
     public static String getMessage(String pageName, String label, Locale locale = LocaleContextHolder.getLocale()) {
         String infoText = null
         String localeParam = locale.toString();
-        List<String> roles = BannerGrantedAuthorityService.getUserRoles()
+        List<String> roles = BannerGrantedAuthorityService.getSelfServiceUserRole()
         if (roles) {
             List<String> params = [pageName]
             String roleClauseParams = getParams(roles, params)
@@ -81,14 +74,14 @@ class InformationTextUtility {
                            AND GURINFO_LOCALE = ?
                            AND GURINFO_SOURCE_INDICATOR =
                            (
-                               SELECT nvl( MAX(GURINFO_SOURCE_INDICATOR ),'${SourceIndicators.getSourceIndicator("B").getCode()}')
+                               SELECT nvl( MAX(GURINFO_SOURCE_INDICATOR ),'${SourceIndicators.BASELINE.getCode()}')
                                FROM GURINFO
                                WHERE gurinfo_page_name = a.gurinfo_page_name
                                AND GURINFO_LABEL = a.GURINFO_LABEL
                                AND GURINFO_SEQUENCE_NUMBER = a.GURINFO_SEQUENCE_NUMBER
                                AND GURINFO_ROLE_CODE = a.GURINFO_ROLE_CODE
                                AND GURINFO_LOCALE = a.GURINFO_LOCALE
-                               AND GURINFO_SOURCE_INDICATOR ='${SourceIndicators.getSourceIndicator("L").getCode()}'
+                               AND GURINFO_SOURCE_INDICATOR ='${SourceIndicators.LOCAL.getCode()}'
                                AND TRUNC(SYSDATE) BETWEEN TRUNC(NVL( GURINFO_START_DATE, (SYSDATE - 1) ) ) AND TRUNC( NVL( GURINFO_END_DATE, (SYSDATE + 1) ))
                            )"""
 
@@ -96,7 +89,7 @@ class InformationTextUtility {
     }
 
     private static String getTextBasedOnDateRange(row) {
-        if (row.GURINFO_SOURCE_INDICATOR == "${SourceIndicators.getSourceIndicator("L").getCode()}" && row.GURINFO_START_DATE == null) {
+        if (row.GURINFO_SOURCE_INDICATOR == "${SourceIndicators.LOCAL.getCode()}" && row.GURINFO_START_DATE == null) {
             return ""
         }
         else {
@@ -112,18 +105,16 @@ class InformationTextUtility {
         sql
     }
 
-    private static String getParams(ArrayList<String> roles, params) {
-        String roleClauseParams = null
+    private static String getParams(List<String> roles, params) {
+        StringBuffer roleClauseParams = new StringBuffer()
         if (roles.size() >= 1) {
-            roleClauseParams = "?"
-            String role = roles.get(0)
-            params << role
+            roleClauseParams.append("?")
+            params << roles.get(0)
         }
         for (int i = 1; i < roles.size(); i++) {
-            roleClauseParams += ", ? "
-            String role = roles.get(i)
-            params << role
+            roleClauseParams.append(",?")
+            params << roles.get(i)
         }
-        roleClauseParams
+        roleClauseParams.toString()
     }
-    }
+}

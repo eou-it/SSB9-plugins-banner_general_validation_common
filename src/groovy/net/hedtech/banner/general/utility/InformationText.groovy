@@ -185,7 +185,7 @@ class InformationText implements Serializable {
         sequenceNumber(nullable: false, min: 0, max: 99999)
         persona(blank: false, nullable: false, maxSize: 30)
         locale(blank: false, nullable: false, maxSize: 20)
-        sourceIndicator(nullable: false, maxSize: 1, inList:['B','L'])
+        sourceIndicator(blank: false, nullable: false, maxSize: 1, inList:['B','L'])
         text(nullable: true, maxSize: 4000)
         comment(nullable: true, maxSize: 2000)
         startDate(nullable: true)

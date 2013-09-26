@@ -65,3 +65,4 @@ execute dbeu_util.extend_table('GENERAL','GTVCELG','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVDOCM','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVVISS','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSRCE','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GURINFO','G',FALSE);

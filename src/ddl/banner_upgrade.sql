@@ -3,11 +3,11 @@
 --  ****************************************************************************** */
 REM
 REM banner_upgrade.sql
-REM 
-REM AUDIT TRAIL: 9.0 
-REM 1. Horizon 
+REM
+REM AUDIT TRAIL: 9.0
+REM 1. Horizon
 REM Main common project schema maintenance script.
-REM AUDIT TRAIL END 
+REM AUDIT TRAIL END
 REM
 set scan on echo on termout on;
 REM
@@ -23,6 +23,10 @@ start genview_bgvc
 REM
 connect baninst1/&&baninst1_password
 start gendbpr_bgvc
+REM
+REM Create baseline seed data for GURINFO
+connect baninst1/&&baninst1_password
+start ggtvgurinfoi.sql
 REM
 REM Recompile invalid objects before doing seed data
 REM

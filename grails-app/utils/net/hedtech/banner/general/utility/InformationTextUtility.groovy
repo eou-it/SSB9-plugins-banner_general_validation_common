@@ -13,21 +13,24 @@ import org.apache.log4j.Logger
  ****************************************************************************** */
 
 class InformationTextUtility {
-    private  static final log = Logger.getLogger(getClass())
+    private static final log = Logger.getLogger(getClass())
+
     public static Map getMessages(String pageName, Locale locale = LocaleContextHolder.getLocale()) {
         Map informationTexts = new HashMap()
-        def sql =null
+        def sql = null
         try {
             String localeParam = locale.toString();
             List<String> roles = BannerGrantedAuthorityService.getSelfServiceUserRole()
             if (roles) {
                 List<String> params = [pageName]
-                String roleClauseParams = getParams(roles, params)
-                params << localeParam
+                String roleClauseParams = getQueryPlaceHolders(roles)
+                List<String> temporaryParams = params
+                temporaryParams.addAll(getParams(roles))
+                temporaryParams << localeParam
                 sql = getSQLObject()
                 def queryString = " ${buildBasicQueryString(roleClauseParams)} ORDER BY GURINFO_LABEL, GURINFO_SEQUENCE_NUMBER "
                 String sqlQueryString = queryString.toString()
-                def resultSet = sql.rows(sqlQueryString, params)
+                def resultSet = sql.rows(sqlQueryString, temporaryParams)
                 resultSet.each { t ->
                     String infoText = informationTexts.get(t.GURINFO_LABEL)
                     infoText = getInfoText(infoText, t)
@@ -52,19 +55,21 @@ class InformationTextUtility {
 
     public static String getMessage(String pageName, String label, Locale locale = LocaleContextHolder.getLocale()) {
         String infoText = null
-        Sql sql =null
+        Sql sql = null
         try {
             String localeParam = locale.toString();
             List<String> roles = BannerGrantedAuthorityService.getSelfServiceUserRole()
             if (roles) {
                 List<String> params = [pageName]
-                String roleClauseParams = getParams(roles, params)
-                params << localeParam
-                params << label
+                String roleClauseParams = getQueryPlaceHolders(roles)
+                List<String> temporaryParams = params
+                temporaryParams.addAll(getParams(roles))
+                temporaryParams << localeParam
+                temporaryParams << label
                 def queryString = " ${buildBasicQueryString(roleClauseParams)} AND GURINFO_LABEL = ?   ORDER BY GURINFO_LABEL, GURINFO_SEQUENCE_NUMBER "
                 String sqlQueryString = queryString.toString()
                 sql = getSQLObject()
-                def resultSet = sql.rows(sqlQueryString, params)
+                def resultSet = sql.rows(sqlQueryString, temporaryParams)
                 resultSet.each {t ->
                     infoText = getInfoText(infoText, t)
                 }
@@ -73,14 +78,14 @@ class InformationTextUtility {
                 }
             }
         } finally {
-                try{
-                if(sql){
+            try {
+                if (sql) {
                     sql.close()
                 }
-                }catch (SQLException ae) {
-                            log.debug ae.stackTrace
-                            throw ae
-                        }
+            } catch (SQLException ae) {
+                log.debug ae.stackTrace
+                throw ae
+            }
 
         }
         return infoText
@@ -132,15 +137,21 @@ class InformationTextUtility {
         sql
     }
 
-    private static String getParams(List<String> roles, params) {
-        StringBuffer roleClauseParams = new StringBuffer()
+    private static List getParams(List<String> roles) {
+        List localparams = []
+        for (int i = 0; i < roles.size(); i++) {
+            localparams << roles.get(i)
+        }
+        return localparams
+    }
+
+    private static String getQueryPlaceHolders(List<String> roles) {
+        StringBuilder roleClauseParams = new StringBuilder()
         if (roles.size() >= 1) {
             roleClauseParams.append("?")
-            params << roles.get(0)
         }
         for (int i = 1; i < roles.size(); i++) {
             roleClauseParams.append(",?")
-            params << roles.get(i)
         }
         roleClauseParams.toString()
     }

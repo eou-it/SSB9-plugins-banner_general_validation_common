@@ -33,7 +33,7 @@ INSERT INTO GURINFO (
             GURINFO_DATA_ORIGIN,
             GURINFO_VPDI_CODE)
 SELECT 'RESURVEY',
-       'survey.ethnicity.header',
+       'ethnicity.header',
        'N',
        1,
        'STUDENT',
@@ -52,7 +52,7 @@ SELECT 'RESURVEY',
 FROM DUAL WHERE NOT EXISTS ( SELECT 'X'
                              FROM GURINFO
                              WHERE GURINFO_PAGE_NAME = 'RESURVEY'
-                               AND GURINFO_LABEL = 'survey.ethnicity.header'
+                               AND GURINFO_LABEL = 'ethnicity.header'
                                AND GURINFO_SEQUENCE_NUMBER = 1
                                AND GURINFO_ROLE_CODE = 'STUDENT'
                                AND GURINFO_LOCALE = 'en_US'
@@ -77,7 +77,7 @@ INSERT INTO GURINFO (
             GURINFO_DATA_ORIGIN,
             GURINFO_VPDI_CODE)
 SELECT 'RESURVEY',
-       'survey.race.header',
+       'race.header',
        'N',
        1,
        'STUDENT',
@@ -96,7 +96,7 @@ SELECT 'RESURVEY',
 FROM DUAL WHERE NOT EXISTS ( SELECT 'X'
                              FROM GURINFO
                              WHERE GURINFO_PAGE_NAME = 'RESURVEY'
-                               AND GURINFO_LABEL = 'survey.race.header'
+                               AND GURINFO_LABEL = 'race.header'
                                AND GURINFO_SEQUENCE_NUMBER = 1
                                AND GURINFO_ROLE_CODE = 'STUDENT'
                                AND GURINFO_LOCALE = 'en_US'

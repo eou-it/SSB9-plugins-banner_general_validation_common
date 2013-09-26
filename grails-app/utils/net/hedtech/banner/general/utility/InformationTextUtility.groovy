@@ -6,29 +6,44 @@ import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import groovy.sql.Sql
 
 import net.hedtech.banner.security.BannerGrantedAuthorityService
+import java.sql.SQLException
+import org.apache.log4j.Logger
 /*******************************************************************************
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 class InformationTextUtility {
-
+    private  static final log = Logger.getLogger(getClass())
     public static Map getMessages(String pageName, Locale locale = LocaleContextHolder.getLocale()) {
         Map informationTexts = new HashMap()
-        String localeParam = locale.toString();
-        List<String> roles = BannerGrantedAuthorityService.getSelfServiceUserRole()
-        if (roles) {
-            List<String> params = [pageName]
-            String roleClauseParams = getParams(roles, params)
-            params << localeParam
-            def sql = getSQLObject()
-            def queryString = " ${buildBasicQueryString(roleClauseParams)} ORDER BY GURINFO_LABEL, GURINFO_SEQUENCE_NUMBER "
-            String sqlQueryString = queryString.toString()
-            def resultSet = sql.rows(sqlQueryString, params)
-            resultSet.each { t ->
-                String infoText = informationTexts.get(t.GURINFO_LABEL)
-                infoText=getInfoText(infoText, t)
-                informationTexts.put(t.GURINFO_LABEL, infoText)
+        def sql =null
+        try {
+            String localeParam = locale.toString();
+            List<String> roles = BannerGrantedAuthorityService.getSelfServiceUserRole()
+            if (roles) {
+                List<String> params = [pageName]
+                String roleClauseParams = getParams(roles, params)
+                params << localeParam
+                sql = getSQLObject()
+                def queryString = " ${buildBasicQueryString(roleClauseParams)} ORDER BY GURINFO_LABEL, GURINFO_SEQUENCE_NUMBER "
+                String sqlQueryString = queryString.toString()
+                def resultSet = sql.rows(sqlQueryString, params)
+                resultSet.each { t ->
+                    String infoText = informationTexts.get(t.GURINFO_LABEL)
+                    infoText = getInfoText(infoText, t)
+                    informationTexts.put(t.GURINFO_LABEL, infoText)
+                }
             }
+        } finally {
+            try {
+                if (sql) {
+                    sql.close()
+                }
+            } catch (SQLException ae) {
+                log.debug ae.stackTrace
+                throw ae
+            }
+
         }
         return informationTexts
     }
@@ -37,25 +52,38 @@ class InformationTextUtility {
 
     public static String getMessage(String pageName, String label, Locale locale = LocaleContextHolder.getLocale()) {
         String infoText = null
-        String localeParam = locale.toString();
-        List<String> roles = BannerGrantedAuthorityService.getSelfServiceUserRole()
-        if (roles) {
-            List<String> params = [pageName]
-            String roleClauseParams = getParams(roles, params)
-            params << localeParam
-            params << label
-            def queryString = " ${buildBasicQueryString(roleClauseParams)} AND GURINFO_LABEL = ?   ORDER BY GURINFO_LABEL, GURINFO_SEQUENCE_NUMBER "
-            String sqlQueryString = queryString.toString()
-            Sql sql = getSQLObject()
-            def resultSet = sql.rows(sqlQueryString, params)
-            resultSet.each {t ->
-                infoText = getInfoText(infoText, t)
-                if (infoText == null) {
-                    infoText = label
+        Sql sql =null
+        try {
+            String localeParam = locale.toString();
+            List<String> roles = BannerGrantedAuthorityService.getSelfServiceUserRole()
+            if (roles) {
+                List<String> params = [pageName]
+                String roleClauseParams = getParams(roles, params)
+                params << localeParam
+                params << label
+                def queryString = " ${buildBasicQueryString(roleClauseParams)} AND GURINFO_LABEL = ?   ORDER BY GURINFO_LABEL, GURINFO_SEQUENCE_NUMBER "
+                String sqlQueryString = queryString.toString()
+                sql = getSQLObject()
+                def resultSet = sql.rows(sqlQueryString, params)
+                resultSet.each {t ->
+                    infoText = getInfoText(infoText, t)
+                    if (infoText == null) {
+                        infoText = label
+                    }
                 }
             }
-            return infoText
+        } finally {
+                try{
+                if(sql){
+                    sql.close()
+                }
+                }catch (SQLException ae) {
+                            log.debug ae.stackTrace
+                            throw ae
+                        }
+
         }
+        return infoText
     }
 
     private static String getInfoText(infoText, t) {

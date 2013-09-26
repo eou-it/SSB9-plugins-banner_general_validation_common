@@ -67,9 +67,9 @@ class InformationTextUtility {
                 def resultSet = sql.rows(sqlQueryString, params)
                 resultSet.each {t ->
                     infoText = getInfoText(infoText, t)
-                    if (infoText == null) {
-                        infoText = label
-                    }
+                }
+                if (infoText == null) {
+                    infoText = label
                 }
             }
         } finally {
@@ -88,11 +88,10 @@ class InformationTextUtility {
 
     private static String getInfoText(infoText, t) {
         if (infoText == null || infoText == "") { infoText = getTextBasedOnDateRange(t) }
-
         else {
             if (getTextBasedOnDateRange(t) != "") { infoText += "\n" + getTextBasedOnDateRange(t) }
-
         }
+        return infoText
     }
 
     private static String buildBasicQueryString(roleClauseParams) {

@@ -33,7 +33,7 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
         assertNotNull admissionRequestUpdate
 
         admissionRequestUpdate.description = "ZZ"
-        admissionRequestUpdate = admissionRequestService.update([domainModel: admissionRequest])
+        admissionRequestUpdate = admissionRequestService.update([domainModel: admissionRequestUpdate])
         assertEquals "ZZ", admissionRequestUpdate.description
     }
 

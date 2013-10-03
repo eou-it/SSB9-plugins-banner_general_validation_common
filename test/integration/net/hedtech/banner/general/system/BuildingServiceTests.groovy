@@ -35,7 +35,7 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
         assertNotNull buildingUpdate
 
         buildingUpdate.description = "ZZ"
-        buildingUpdate = buildingService.update([domainModel: building])
+        buildingUpdate = buildingService.update([domainModel: buildingUpdate])
         assertEquals "ZZ", buildingUpdate.description
     }
 

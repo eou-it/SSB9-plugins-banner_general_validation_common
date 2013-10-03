@@ -35,7 +35,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
         assertNotNull languageUpdate
 
         languageUpdate.description = "ZZ"
-        languageUpdate = languageService.update([domainModel: language])
+        languageUpdate = languageService.update([domainModel: languageUpdate])
         assertEquals "ZZ", languageUpdate.description
     }
 

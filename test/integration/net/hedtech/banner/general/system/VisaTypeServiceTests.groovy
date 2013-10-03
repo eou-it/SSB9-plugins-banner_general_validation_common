@@ -35,7 +35,7 @@ class VisaTypeServiceTests extends BaseIntegrationTestCase {
         assertNotNull visaTypeUpdate
 
         visaTypeUpdate.description = "ZZ"
-        visaTypeUpdate = visaTypeService.update([domainModel: visaType])
+        visaTypeUpdate = visaTypeService.update([domainModel: visaTypeUpdate])
         assertEquals "ZZ", visaTypeUpdate.description
     }
 

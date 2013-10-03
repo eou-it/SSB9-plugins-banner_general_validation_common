@@ -35,7 +35,7 @@ class MaritalStatusServiceTests extends BaseIntegrationTestCase {
         assertNotNull maritalStatusUpdate
 
         maritalStatusUpdate.description = "ZZ"
-        maritalStatusUpdate = maritalStatusService.update([domainModel:maritalStatus])
+        maritalStatusUpdate = maritalStatusService.update([domainModel:maritalStatusUpdate])
         assertEquals "ZZ", maritalStatusUpdate.description
     }
 

@@ -33,7 +33,7 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
         assertNotNull religionUpdate
 
         religionUpdate.description = "ZZ"
-        religionUpdate = religionService.update([domainModel: religion])
+        religionUpdate = religionService.update([domainModel: religionUpdate])
         assertEquals "ZZ", religionUpdate.description
     }
 

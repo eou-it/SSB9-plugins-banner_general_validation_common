@@ -20,27 +20,27 @@ class CampusServiceTests extends BaseIntegrationTestCase {
 
 
     void testCreateCampus() {
-        def campus = new Campus(code: "TT", description: "TT")
+        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
         assertNotNull campus
     }
 
 
     void testUpdateCampus() {
-        def campus = new Campus(code: "TT", description: "TT")
+        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
 
         Campus campusUpdate = Campus.findWhere(code: "TT")
         assertNotNull campusUpdate
 
         campusUpdate.description = "ZZ"
-        campusUpdate = campusService.update([domainModel: campus])
+        campusUpdate = campusService.update([domainModel: campusUpdate])
         assertEquals "ZZ", campusUpdate.description
     }
 
 
     void testDeleteCampus() {
-        def campus = new Campus(code: "TT", description: "TT")
+        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
         assertNotNull campus
         def id = campus.id

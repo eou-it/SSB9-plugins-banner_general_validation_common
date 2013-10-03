@@ -33,7 +33,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
         assertNotNull citizenTypeUpdate
 
         citizenTypeUpdate.description = "ZZ"
-        citizenTypeUpdate = citizenTypeService.update([domainModel: citizenType])
+        citizenTypeUpdate = citizenTypeService.update([domainModel: citizenTypeUpdate])
         assertEquals "ZZ", citizenTypeUpdate.description
     }
 

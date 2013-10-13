@@ -123,7 +123,7 @@
         <mapping class="net.hedtech.banner.general.system.VisaSource"/>
         <mapping class="net.hedtech.banner.general.system.VisaType"/>
         <mapping class="net.hedtech.banner.general.system.Zip"/>
-   
+        <mapping class="net.hedtech.banner.general.utility.InformationText"/>
+
    </session-factory>
    </hibernate-configuration>
-   

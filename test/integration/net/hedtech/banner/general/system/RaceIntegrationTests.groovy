@@ -125,6 +125,30 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
         assertTrue races.size() > 1
     }
 
+    void testFetchAllByRegulatoryRaceSuccess() {
+        Race race = newRace()
+        race.save(failOnError: true, flush: true)
+        assertNotNull race.id
+        List<Race> quiredRace = Race.fetchAllByRegulatoryRace(race.regulatoryRace.code)
+        assertFalse quiredRace.isEmpty()
+
+
+    }
+
+
+    void testFetchAllByRegulatoryRaceForInvalidValues() {
+        List<Race> quiredRacelist = Race.fetchAllByRegulatoryRace('INVALID')
+        assertTrue quiredRacelist.isEmpty()
+
+        quiredRacelist = Race.fetchAllByRegulatoryRace(null)
+        assertTrue quiredRacelist.isEmpty()
+
+        quiredRacelist = Race.fetchAllByRegulatoryRace('')
+        assertTrue quiredRacelist.isEmpty()
+
+
+    }
+
 
     private def newRace() {
         def regulatoryRace = RegulatoryRace.findByCode("1")

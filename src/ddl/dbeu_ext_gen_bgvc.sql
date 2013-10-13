@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 --/** *****************************************************************************
 -- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
 -- ****************************************************************************** */--
@@ -67,3 +68,5 @@ execute dbeu_util.extend_table('GENERAL','GTVVISS','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSRCE','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSYST','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVOTYP','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GURINFO','G',FALSE);
+ 

@@ -24,8 +24,8 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     def i_success_comment = "TTTT"
 
     //Invalid test data (For failure tests)
-    def i_failure_pageName = "TT" * 11
-    def i_failure_label = "TT" * 11
+    def i_failure_pageName = "TT" * 201
+    def i_failure_label = "TT" * 201
     def i_failure_textType = "#"
     def i_failure_sequenceNumber = 1
     def i_failure_persona = "TTTT"
@@ -51,8 +51,8 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     def u_success_comment = "TTTT"
 
     //Valid test data (For failure tests)
-    def u_failure_pageName = "TT" * 11
-    def u_failure_label = "TT" * 11
+    def u_failure_pageName = "TT" * 201
+    def u_failure_label = "TT" * 201
     def u_failure_textType = "#"
     def u_failure_sequenceNumber = 1
     def u_failure_persona = "TTTT"
@@ -243,13 +243,13 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
 
     void testMaxSizeValidationFailures( ) {
         def informationText = new InformationText(
-                pageName: 'X' * 21,
-                label: 'X' * 21,
-                textType: 'X' * 21,
-                persona: 'X' * 31,
+                pageName: 'X' * 201,
+                label: 'X' * 201,
+                textType: 'X' * 201,
+                persona: 'X' * 301,
                 text: 'X' * 4001,
-                locale: 'X' * 21,
-                comment: 'X' * 201
+                locale: 'X' * 201,
+                comment: 'X' * 300001
         )
         assertFalse informationText.validate()
         assertErrorsFor informationText, 'maxSize', ['pageName', 'label', 'textType', 'persona', 'text', 'locale', 'comment']

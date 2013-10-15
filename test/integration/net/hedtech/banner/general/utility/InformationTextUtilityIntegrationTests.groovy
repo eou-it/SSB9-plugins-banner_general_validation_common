@@ -4,13 +4,10 @@
 
 package net.hedtech.banner.general.utility
 
-import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-
-import java.text.SimpleDateFormat
 
 class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
 
@@ -18,16 +15,19 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
 
 
     protected void setUp() {
+        if (!isSsbEnabled()) return
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
     protected void tearDown() {
+        if (!isSsbEnabled()) return
         super.tearDown()
     }
 
     void testSingleValueKeyWithBaseline() {
+        if (!isSsbEnabled()) return
         createBaselineWithSingleValueKey()
         setAuthentication()
         def informationText = InformationTextUtility.getMessage("TESTPAGE", "key1")
@@ -37,6 +37,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void testMultipleValuesKeyWithBaseline() {
+        if (!isSsbEnabled()) return
         createBaselineTestDataWithNotNullDate()
         setAuthentication()
         def informationText = InformationTextUtility.getMessages("TESTPAGE")
@@ -48,6 +49,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void testSingleKeyWithoutValue() {
+        if (!isSsbEnabled()) return
         setAuthentication()
         def informationText = InformationTextUtility.getMessage("TESTPAGE", "key1")
         String expectedText = "key1"
@@ -56,6 +58,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void testSingleValueKeyWithLocal() {
+        if (!isSsbEnabled()) return
         createLocalWithSingleValueKey()
         setAuthentication()
         def informationText = InformationTextUtility.getMessage("TESTPAGE", "key1")
@@ -65,6 +68,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void testMultipleValuesKeyWithLocalNullDate() {
+        if (!isSsbEnabled()) return
         createBaselineTestDataWithNotNullDate()
         createLocalTestDataWithNullDate()
         setAuthentication()
@@ -76,6 +80,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void testMultipleValuesKeyWithLocalNotNullDate() {
+        if (!isSsbEnabled()) return
         createBaselineTestDataWithNotNullDate()
         createLocalTestDataWithNotNullDate()
         setAuthentication()
@@ -88,6 +93,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void testMultipleValuesKeyWithLocalSingleNullDate() {
+        if (!isSsbEnabled()) return
         createBaselineTestDataWithNotNullDate()
         createLocalTestDataWithSingleNullDate()
         setAuthentication()
@@ -98,6 +104,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void testLocalWithFutureStartDate() {
+        if (!isSsbEnabled()) return
         createBaselineTestDataWithNotNullDate()
         createLocalTestDataWithFutureStartDate()
         setAuthentication()
@@ -214,6 +221,10 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
             ).save(failOnError: true, flush: true)
 
         }
+    }
+
+    private def isSsbEnabled() {
+        ConfigurationHolder.config.ssbEnabled instanceof Boolean ? ConfigurationHolder.config.ssbEnabled : false
     }
 
 }

@@ -3,6 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 /**
@@ -54,14 +55,12 @@ class SourceAndBackgroundInstitutionServiceIntegrationTests extends BaseIntegrat
 
 
     void testSourceAndBackgroundInstitutionListFilteredWithPagination() {
-
         def params = ["filter[0][field]": "code", "filter[0][value]": "1%", "filter[0][operator]": "contains",
                 "max": 10, "offset": 2, "sort": "code"]
         def list = sourceAndBackgroundInstitutionService.list(params)
         assertTrue list.size() > 0
         assertEquals 10, list.size()
         assertTrue list[0] instanceof SourceAndBackgroundInstitution
-
     }
 
 
@@ -104,5 +103,31 @@ class SourceAndBackgroundInstitutionServiceIntegrationTests extends BaseIntegrat
         def listSize = sourceAndBackgroundInstitutionService.count(params)
         assertTrue listSize > 0
         assertEquals sourceAndBackgroundInstitutionControlList.size(), listSize
+    }
+
+
+    void testSourceAndBackgroundInstitutionListNonApiFilter() {
+        def sourceAndBackgroundInstitutionControlList = SourceAndBackgroundInstitution.findAllByCodeIlike("1%")
+        assertTrue sourceAndBackgroundInstitutionControlList.size() > 0
+        assertNotNull sourceAndBackgroundInstitutionControlList.find { it.code == "1005" }
+        // now try the new service (with parameters already in the correct form, not from the restfulApi plugin)
+        def filterCriteria = ["params": ["code": "1%"],
+                "criteria": [["key": "code", "binding": "code", "operator": Operators.CONTAINS]]]
+        def list = sourceAndBackgroundInstitutionService.list(filterCriteria)
+        assertTrue list.size() > 0
+        assertEquals sourceAndBackgroundInstitutionControlList.size(), list.size()
+        assertTrue list[0] instanceof SourceAndBackgroundInstitution
+        assertNotNull list.find { it.code == "1005" }
+    }
+
+
+    void testSourceAndBackgroundInstitutionListNonApiFilterWithPagination() {
+        def filterCriteria = ["params": ["code": "1%"],
+                "criteria": [["key": "code", "binding": "code", "operator": Operators.CONTAINS]],
+                "pagingAndSortParams": ["max": 10, "offset": 2, "sort": "code"]]
+        def list = sourceAndBackgroundInstitutionService.list(filterCriteria)
+        assertTrue list.size() > 0
+        assertEquals 10, list.size()
+        assertTrue list[0] instanceof SourceAndBackgroundInstitution
     }
 }

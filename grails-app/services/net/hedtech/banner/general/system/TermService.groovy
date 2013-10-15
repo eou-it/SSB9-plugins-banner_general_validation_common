@@ -40,18 +40,23 @@ class TermService extends ServiceBase {
         def filtered = createFilters(map)
 
         // If not using filters, defer to the ServiceBase or any other list implementation
-        if (filtered.size() == 0) return super.list(map)
+        if (filtered.size() == 0 && !map.params && !map.criteria) return super.list(map)
 
-        // Otherwise prepare each filter (putting it into maps for DynamicFinder)
+        // Otherwise prepare each restfulApi filter (putting it into maps for DynamicFinder)
         filtered.each {
             paramsMap.put(it["field"], it["value"])
             criteriaMap.add([key: it["field"], binding: it["field"], operator: operatorConversions[it["operator"]]])
         }
 
+        // If criteria are passed in with the correct format already, just copy them.
+        if (map?.containsKey("params")) paramsMap.putAll(map.params)
+        if (map?.containsKey("criteria")) criteriaMap.addAll(map.criteria)
+
         def pagingAndSortParams = [:]
         if (map?.containsKey("max")) pagingAndSortParams.put("max", map["max"].toInteger())
         if (map?.containsKey("offset")) pagingAndSortParams.put("offset", map["offset"].toInteger())
         if (map?.containsKey("sort")) pagingAndSortParams.put("sort", map["sort"])
+        if (map?.containsKey("pagingAndSortParams")) pagingAndSortParams.putAll(map.pagingAndSortParams)
 
         map = [params: paramsMap, criteria: criteriaMap]
         def termQuery = """from Term a"""
@@ -67,13 +72,17 @@ class TermService extends ServiceBase {
         def filtered = createFilters(map)
 
         // If not using filters, defer to the ServiceBase or any other count implementation
-        if (filtered.size() == 0) return super.count(map)
+        if (filtered.size() == 0 && !map.params && !map.criteria) return super.count(map)
 
-        // Otherwise prepare each filter (putting it into maps for DynamicFinder)
+        // Otherwise prepare each restfulApi filter (putting it into maps for DynamicFinder)
         filtered.each {
             paramsMap.put(it["field"], it["value"])
             criteriaMap.add([key: it["field"], binding: it["field"], operator: operatorConversions[it["operator"]]])
         }
+
+        // If criteria are passed in with the correct format already, just copy them.
+        if (map?.containsKey("params")) paramsMap.putAll(map.params)
+        if (map?.containsKey("criteria")) criteriaMap.addAll(map.criteria)
 
         map = [params: paramsMap, criteria: criteriaMap]
         def termQuery = """from Term a"""

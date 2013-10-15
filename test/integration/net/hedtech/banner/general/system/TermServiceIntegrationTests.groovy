@@ -3,6 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 /**
@@ -86,7 +87,6 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-
     void testTermCount() {
         def termControlList = Term.findAllByCodeIlike("201%")
         assertTrue termControlList.size() > 0
@@ -96,5 +96,31 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
         def listSize = termService.count(params)
         assertTrue listSize > 0
         assertEquals termControlList.size(), listSize
+    }
+
+
+    void testTermListNonApiFilter() {
+        def termControlList = Term.findAllByCodeIlike("201%")
+        assertTrue termControlList.size() > 0
+        assertNotNull termControlList.find { it.code == "201410" }
+        // now try the new service (with parameters already in the correct form, not from the restfulApi plugin)
+        def filterCriteria = ["params": ["code": "201%"],
+                "criteria": [["key": "code", "binding": "code", "operator": Operators.CONTAINS]]]
+        def list = termService.list(filterCriteria)
+        assertTrue list.size() > 0
+        assertEquals termControlList.size(), list.size()
+        assertTrue list[0] instanceof Term
+        assertNotNull list.find { it.code == "201410" }
+    }
+
+
+    void testTermListNonApiFilterWithPagination() {
+        def filterCriteria = ["params": ["code": "201%"],
+                "criteria": [["key": "code", "binding": "code", "operator": Operators.CONTAINS]],
+                "pagingAndSortParams": ["max": 10, "offset": 2, "sort": "code"]]
+        def list = termService.list(filterCriteria)
+        assertTrue list.size() > 0
+        assertEquals 10, list.size()
+        assertTrue list[0] instanceof Term
     }
 }

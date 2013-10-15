@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.query.DynamicFinder
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -14,10 +16,92 @@ import net.hedtech.banner.service.ServiceBase
 // create, update, and delete may throw grails.validation.ValidationException a runtime exception when there is a validation failure
 
 /**
- * A transactional service supporting persistence of the Term model. 
+ * A transactional service supporting persistence of the Term model and filtering using the restfulApi plugin.
  * */
-class TermService extends ServiceBase{
+class TermService extends ServiceBase {
 
     boolean transactional = true
+    def operatorConversions = ["gt": Operators.GREATER_THAN, "eq": Operators.EQUALS, "lt": Operators.LESS_THAN, "contains": Operators.CONTAINS]
+    // Operators must be converted from the ones that the restfulApi plugin uses to what the CriteriaBuilder expects.
 
+    def list() {
+        super.list()
+    }
+
+
+    def count() {
+        super.count()
+    }
+
+
+    def list(Map map) {
+        def paramsMap = [:]
+        def criteriaMap = []
+        def filtered = createFilters(map)
+
+        // If not using filters, defer to the ServiceBase or any other list implementation
+        if (filtered.size() == 0) return super.list(map)
+
+        // Otherwise prepare each filter (putting it into maps for DynamicFinder)
+        filtered.each {
+            paramsMap.put(it["field"], it["value"])
+            criteriaMap.add([key: it["field"], binding: it["field"], operator: operatorConversions[it["operator"]]])
+        }
+
+        def pagingAndSortParams = [:]
+        if (map?.containsKey("max")) pagingAndSortParams.put("max", map["max"].toInteger())
+        if (map?.containsKey("offset")) pagingAndSortParams.put("offset", map["offset"].toInteger())
+        if (map?.containsKey("sort")) pagingAndSortParams.put("sort", map["sort"])
+
+        map = [params: paramsMap, criteria: criteriaMap]
+        def termQuery = """from Term a"""
+        def termList = new DynamicFinder(Term.class, termQuery, "a").find(map, pagingAndSortParams)
+
+        return termList
+    }
+
+
+    def count(Map map) {
+        def paramsMap = [:]
+        def criteriaMap = []
+        def filtered = createFilters(map)
+
+        // If not using filters, defer to the ServiceBase or any other count implementation
+        if (filtered.size() == 0) return super.count(map)
+
+        // Otherwise prepare each filter (putting it into maps for DynamicFinder)
+        filtered.each {
+            paramsMap.put(it["field"], it["value"])
+            criteriaMap.add([key: it["field"], binding: it["field"], operator: operatorConversions[it["operator"]]])
+        }
+
+        map = [params: paramsMap, criteria: criteriaMap]
+        def termQuery = """from Term a"""
+        def termSize = new DynamicFinder(Term.class, termQuery, "a").count(map)
+
+        return termSize
+    }
+
+
+    private static createFilters(Map params) {
+        def filterRE = /filter\[([0-9]+)\]\[(field|operator|value|type)\]=(.*)/
+        def filters = [:]
+        def matcher
+
+        params.each {
+            if (it.key.startsWith('filter')) {
+                matcher = (it =~ filterRE)
+                if (matcher.count) {
+                    // Regex matches are broken up into parts for ease of understanding
+                    // toString is called to convert GStrings to strings, which is important to note.
+                    def filterNumber = "${matcher[0][1]}".toString()
+                    def key = "${matcher[0][2]}".toString()
+                    def value = "${matcher[0][3]}".toString()
+                    if (!filters.containsKey(filterNumber)) filters.put(filterNumber, [:])
+                    filters[filterNumber]?.put(key, value)
+                }
+            }
+        }
+        return filters.values()
+    }
 }

@@ -197,3 +197,47 @@ FROM DUAL WHERE NOT EXISTS ( SELECT 'X'
                                AND GURINFO_ROLE_CODE = 'STUDENT'
                                AND GURINFO_LOCALE = 'en_US'
                                AND GURINFO_SOURCE_INDICATOR = 'B');
+
+INSERT INTO GURINFO (
+            GURINFO_PAGE_NAME,
+            GURINFO_LABEL,
+            GURINFO_TEXT_TYPE,
+            GURINFO_SEQUENCE_NUMBER,
+            GURINFO_ROLE_CODE,
+            GURINFO_TEXT,
+            GURINFO_LOCALE,
+            GURINFO_COMMENT,
+            GURINFO_SOURCE_INDICATOR,
+            GURINFO_ACTIVITY_DATE,
+            GURINFO_START_DATE,
+            GURINFO_END_DATE,
+            GURINFO_SURROGATE_ID,
+            GURINFO_VERSION,
+            GURINFO_USER_ID,
+            GURINFO_DATA_ORIGIN,
+            GURINFO_VPDI_CODE)
+SELECT 'SECURITYQA',
+       'security.qa.information',
+       'N',
+       1,
+       'STUDENT',
+       'Please enter your new Security Question and Answer, then Submit Changes.',
+       'en_US',
+       null,
+       'B',
+       SYSDATE,
+       null,
+       null,
+       null,
+       null,
+       'BASELINE',
+       'GENERAL',
+       null
+FROM DUAL WHERE NOT EXISTS ( SELECT 'X'
+                             FROM GURINFO
+                             WHERE GURINFO_PAGE_NAME = 'SECURITYQA'
+                               AND GURINFO_LABEL = 'security.qa.information'
+                               AND GURINFO_SEQUENCE_NUMBER = 1
+                               AND GURINFO_ROLE_CODE = 'STUDENT'
+                               AND GURINFO_LOCALE = 'en_US'
+                               AND GURINFO_SOURCE_INDICATOR = 'B');

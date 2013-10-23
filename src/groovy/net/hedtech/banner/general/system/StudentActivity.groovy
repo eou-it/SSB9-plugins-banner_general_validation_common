@@ -3,10 +3,19 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.query.DynamicFinder
+
 import javax.persistence.*
 
 @Entity
 @Table(name = "STVACTC")
+@NamedQueries(value = [
+@NamedQuery(name = "StudentActivity.fetchByActivityTypeCode",
+query = """FROM  StudentActivity a
+           WHERE a.activityType.code = :code
+           ORDER BY a.code
+            """)
+])
 class StudentActivity implements Serializable {
 
     /**
@@ -144,5 +153,29 @@ class StudentActivity implements Serializable {
         leadership(nullable: true)
     }
 
+
     public static readonlyProperties = ['code']
+
+
+
+    public static List fetchAllByActivityType(String activityType) {
+       def activities = null
+       StudentActivity.withSession { session ->
+           activities = session.getNamedQuery('StudentActivity.fetchByActivityTypeCode').setString('code', activityType).list()
+       }
+       return activities
+    }
+
+
+    public static Object fetchBySomeActivityType(Map params) {
+        def results = StudentActivity.fetchAllByActivityType(params.activityType)
+        return [list: results]
+    }
+
+
+    public static Object fetchBySomeActivityType(String activityType) {
+        def results = StudentActivity.fetchAllByActivityType(activityType)
+        return [list: results]
+    }
+
 }

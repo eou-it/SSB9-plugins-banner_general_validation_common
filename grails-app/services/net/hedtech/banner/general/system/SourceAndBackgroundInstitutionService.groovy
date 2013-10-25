@@ -4,7 +4,7 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.query.DynamicFinder
-import net.hedtech.banner.query.operators.Operators
+import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -21,8 +21,7 @@ import net.hedtech.banner.service.ServiceBase
 class SourceAndBackgroundInstitutionService extends ServiceBase {
 
     boolean transactional = true
-    def operatorConversions = ["gt": Operators.GREATER_THAN, "eq": Operators.EQUALS, "lt": Operators.LESS_THAN, "contains": Operators.CONTAINS]
-    // Operators must be converted from the ones that the restfulApi plugin uses to what the CriteriaBuilder expects.
+
 
     def list() {
         super.list()
@@ -35,82 +34,32 @@ class SourceAndBackgroundInstitutionService extends ServiceBase {
 
 
     def list(Map map) {
-        def paramsMap = [:]
-        def criteriaMap = []
-        def filtered = createFilters(map)
-
+        def filterMap = QueryBuilder.getFilterData(map)
         // If not using filters, defer to the ServiceBase or any other list implementation
-        if (filtered.size() == 0 && !map.params && !map.criteria) return super.list(map)
+        if (filterMap?.size() == 0 && !map.params && !map.criteria) return super.list(map)
 
-        // Otherwise prepare each restfulApi filter (putting it into maps for DynamicFinder)
-        filtered.each {
-            paramsMap.put(it["field"], it["value"])
-            criteriaMap.add([key: it["field"], binding: it["field"], operator: operatorConversions[it["operator"]]])
-        }
-
-        // If criteria are passed in with the correct format already, just copy them.
-        if (map?.containsKey("params")) paramsMap.putAll(map.params)
-        if (map?.containsKey("criteria")) criteriaMap.addAll(map.criteria)
-
-        def pagingAndSortParams = [:]
-        if (map?.containsKey("max")) pagingAndSortParams.put("max", map["max"].toInteger())
-        if (map?.containsKey("offset")) pagingAndSortParams.put("offset", map["offset"].toInteger())
-        if (map?.containsKey("sort")) pagingAndSortParams.put("sort", map["sort"])
-        if (map?.containsKey("pagingAndSortParams")) pagingAndSortParams.putAll(map.pagingAndSortParams)
-
-        map = [params: paramsMap, criteria: criteriaMap]
         def sourceAndBackgroundInstitutionQuery = """from SourceAndBackgroundInstitution a"""
-        def sourceAndBackgroundInstitutionList = new DynamicFinder(SourceAndBackgroundInstitution.class, sourceAndBackgroundInstitutionQuery, "a").find(map, pagingAndSortParams)
+        def sourceAndBackgroundInstitutionList = new DynamicFinder(SourceAndBackgroundInstitution.class,
+                                                                   sourceAndBackgroundInstitutionQuery, "a").find([params: filterMap.params,
+                                                                                                                          criteria: filterMap.criteria],
+                                                                                                                  filterMap.pagingAndSortParams)
 
         return sourceAndBackgroundInstitutionList
     }
 
 
     def count(Map map) {
-        def paramsMap = [:]
-        def criteriaMap = []
-        def filtered = createFilters(map)
+        def filterMap = QueryBuilder.getFilterData(map)
+        // If not using filters, defer to the ServiceBase or any other list implementation
+        if (filterMap?.size() == 0 && !map.params && !map.criteria) return super.count()
 
-        // If not using filters, defer to the ServiceBase or any other count implementation
-        if (filtered.size() == 0 && !map.params && !map.criteria) return super.count(map)
-
-        // Otherwise prepare each restfulApi filter (putting it into maps for DynamicFinder)
-        filtered.each {
-            paramsMap.put(it["field"], it["value"])
-            criteriaMap.add([key: it["field"], binding: it["field"], operator: operatorConversions[it["operator"]]])
-        }
-
-        // If criteria are passed in with the correct format already, just copy them.
-        if (map?.containsKey("params")) paramsMap.putAll(map.params)
-        if (map?.containsKey("criteria")) criteriaMap.addAll(map.criteria)
-
-        map = [params: paramsMap, criteria: criteriaMap]
         def sourceAndBackgroundInstitutionQuery = """from SourceAndBackgroundInstitution a"""
-        def sourceAndBackgroundInstitutionSize = new DynamicFinder(SourceAndBackgroundInstitution.class, sourceAndBackgroundInstitutionQuery, "a").count(map)
+        def sourceAndBackgroundInstitutionSize = new DynamicFinder(SourceAndBackgroundInstitution.class,
+                                                                   sourceAndBackgroundInstitutionQuery, "a").count([params: filterMap.params,
+                criteria: filterMap.criteria])
 
         return sourceAndBackgroundInstitutionSize
     }
 
 
-    private static createFilters(Map params) {
-        def filterRE = /filter\[([0-9]+)\]\[(field|operator|value|type)\]=(.*)/
-        def filters = [:]
-        def matcher
-
-        params.each {
-            if (it.key.startsWith('filter')) {
-                matcher = (it =~ filterRE)
-                if (matcher.count) {
-                    // Regex matches are broken up into parts for ease of understanding
-                    // toString is called to convert GStrings to strings, which is important to note.
-                    def filterNumber = "${matcher[0][1]}".toString()
-                    def key = "${matcher[0][2]}".toString()
-                    def value = "${matcher[0][3]}".toString()
-                    if (!filters.containsKey(filterNumber)) filters.put(filterNumber, [:])
-                    filters[filterNumber]?.put(key, value)
-                }
-            }
-        }
-        return filters.values()
-    }
 }

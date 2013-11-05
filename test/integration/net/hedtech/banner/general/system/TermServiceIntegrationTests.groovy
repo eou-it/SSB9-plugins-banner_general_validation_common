@@ -40,11 +40,26 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
 
 
     void testTermListFilteredNoPagination() {
+        def termControlList = Term.findAllByCodeIlike("%201%")
+        assertTrue termControlList.size() > 0
+        assertNotNull termControlList.find { it.code == "201410" }
+        // now try the new service
+        def params = ["filter[0][field]": "code", "filter[0][value]": "201", "filter[0][operator]": "contains"]
+        def list = termService.list(params)
+        assertTrue list.size() > 0
+        assertEquals termControlList.size(), list.size()
+        assertTrue list[0] instanceof Term
+        assertNotNull list.find { it.code == "201410" }
+
+    }
+
+
+    void testTermListFilteredStartsWith() {
         def termControlList = Term.findAllByCodeIlike("201%")
         assertTrue termControlList.size() > 0
         assertNotNull termControlList.find { it.code == "201410" }
         // now try the new service
-        def params = ["filter[0][field]": "code", "filter[0][value]": "201%", "filter[0][operator]": "contains"]
+        def params = ["filter[0][field]": "code", "filter[0][value]": "201", "filter[0][operator]": "startswith"]
         def list = termService.list(params)
         assertTrue list.size() > 0
         assertEquals termControlList.size(), list.size()
@@ -66,9 +81,48 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testTermListApiFilterByDate() {
+        def term = Term.findByCode("200211")
+        assertTrue term.lastModified >= new Date("01/01/2010")
+        def params = ["filter[0][field]": "lastModified", "filter[0][value]": "2010-01-01T00:00:00-00:00", "filter[0][operator]": "gt", "filter[0][type]": "date"]
+        def list = termService.list(params)
+        assertTrue list.size() > 0
+        assertTrue list[0] instanceof Term
+        assertNotNull list.find { it.code == "200211" }
+    }
+
+
     void testTermListMultipleFiltersNoPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "201410", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "fall%", "filter[1][operator]": "contains"]
+        def list = termService.list(params)
+        assertTrue list.size() > 0
+        assertTrue list[0] instanceof Term
+        assertNotNull list.find { it.code == "201010" }
+    }
+
+
+    void testTermListMultipleFiltersContainsWithoutWildcard() {
+        def params = ["filter[0][field]": "code", "filter[0][value]": "201410", "filter[0][operator]": "lt",
+                "filter[1][field]": "description", "filter[1][value]": "fall", "filter[1][operator]": "contains"]
+        def list = termService.list(params)
+        assertTrue list.size() > 0
+        assertTrue list[0] instanceof Term
+        assertNotNull list.find { it.code == "201010" }
+    }
+
+
+    void testTermListMultipleFiltersContainsStartsWthOutWildcard() {
+        def params = ["filter[0][field]": "code", "filter[0][value]": "201", "filter[0][operator]": "startswith"]
+        def list = termService.list(params)
+        assertTrue list.size() > 0
+        assertTrue list[0] instanceof Term
+        assertNotNull list.find { it.code == "201010" }
+    }
+
+
+    void testTermListMultipleFiltersContainsStartsWthWildcard() {
+        def params = ["filter[0][field]": "code", "filter[0][value]": "201%", "filter[0][operator]": "startswith"]
         def list = termService.list(params)
         assertTrue list.size() > 0
         assertTrue list[0] instanceof Term

@@ -18,33 +18,33 @@ import org.apache.commons.lang.StringUtils
 @Table(name = "STVMAJR")
 @NamedQueries(value = [
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMajor",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
            OR a.description like :filter )
            AND a.validMajorIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMinor",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
            OR a.description like :filter )
            AND a.validMinorIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidConcentration",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
            OR a.description like :filter )
            AND a.validConcentratnIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeAndValidMajor",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE   a.code = :filter
            AND a.validMajorIndicator = 'Y'  """),
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeAndValidMinor",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE   a.code  = :filter
            AND a.validMinorIndicator = 'Y'  """),
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeAndValidConcentration",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE   a.code  = :filter
            AND a.validConcentratnIndicator = 'Y'  """)
 ])
@@ -291,26 +291,25 @@ class MajorMinorConcentration implements Serializable {
             filter = "%"
         } else if (!(filter =~ /%/)) {
             filter = filter.toUpperCase() + "%"
-        }
-        else filter = filter.toUpperCase()
+        } else filter = filter.toUpperCase()
 
         def result
         switch (fieldOfStudy) {
             case "MAJOR":
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMajor').setString('filter', filter).list()
                 }
                 break
 
             case "MINOR":
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMinor').setString('filter', filter).list()
                 }
                 break
 
 
             case ["CONCENTRATION"]:
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidConcentration').setString('filter', filter).list()
                 }
                 break
@@ -333,20 +332,20 @@ class MajorMinorConcentration implements Serializable {
         def result
         switch (params.fieldOfStudy) {
             case "MAJOR":
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidMajor').setString('filter', filter).list()[0]
                 }
                 break
 
             case "MINOR":
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidMinor').setString('filter', filter).list()[0]
                 }
                 break
 
 
             case ["CONCENTRATION"]:
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidConcentration').setString('filter', filter).list()[0]
                 }
                 break
@@ -357,6 +356,17 @@ class MajorMinorConcentration implements Serializable {
 
         return result
 
+    }
+
+    /**
+     * Method to validate the major entered on the lookup component is a Major
+     * @param filter
+     * @return MajorMinorConcentration object
+     */
+    public static MajorMinorConcentration fetchValidMajorOnly(String filter) {
+        def result = MajorMinorConcentration.withSession { session ->
+            session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidMajor').setString('filter', filter).list()[0]
+        }
     }
 
 }

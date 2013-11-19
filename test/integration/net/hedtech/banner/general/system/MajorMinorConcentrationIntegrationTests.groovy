@@ -190,17 +190,17 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
 
         def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MIS", [fieldOfStudy: "MAJOR"])
         def majors = MajorMinorConcentration.findAllByValidMajorIndicator(true)
-        def filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS"}
+        def filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
         assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
 
         majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MIS", [fieldOfStudy: "MINOR"])
         majors = MajorMinorConcentration.findAllByValidMinorIndicator(true)
-        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS"}
+        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
         assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
 
         majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MIS", [fieldOfStudy: "CONCENTRATION"])
         majors = MajorMinorConcentration.findAllByValidConcentratnIndicator(true)
-        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS"}
+        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
         assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
 
         majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MIS", [fieldOfStudy: "INTERNSHIP"])
@@ -266,6 +266,18 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
         majorMinorConcentration = MajorMinorConcentration.fetchValidMajor("M", [fieldOfStudy: ""])
         assertNull majorMinorConcentration
 
+    }
+
+
+    void testFetchValidMajorOnly() {
+        def majorMinorConcentration = MajorMinorConcentration.fetchValidMajorOnly("MIS")
+        assertNotNull majorMinorConcentration
+    }
+
+
+    void testFetchInValidMajorOnly() {
+        def majorMinorConcentration = MajorMinorConcentration.fetchValidMajorOnly("BIL")
+        assertNull majorMinorConcentration
     }
 
 

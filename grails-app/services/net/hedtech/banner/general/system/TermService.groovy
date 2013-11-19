@@ -25,6 +25,7 @@ class TermService extends ServiceBase {
     def operatorConversions = ["gt": Operators.GREATER_THAN, "eq": Operators.EQUALS, "lt": Operators.LESS_THAN, "contains": Operators.CONTAINS]
     // Operators must be converted from the ones that the restfulApi plugin uses to what the CriteriaBuilder expects.
 
+
     def list() {
         super.list()
     }
@@ -54,6 +55,7 @@ class TermService extends ServiceBase {
 
        // def filterMap = QueryBuilder.getFilterData(map)
         def filterMap = getFilterData(map)
+
 
         // If not using filters, defer to the ServiceBase or any other count implementation
         if (filterMap.size() == 0 && !map.params && !map.criteria) return super.count()

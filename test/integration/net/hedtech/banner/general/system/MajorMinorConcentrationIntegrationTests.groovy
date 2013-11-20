@@ -269,18 +269,6 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testFetchValidMajorOnly() {
-        def majorMinorConcentration = MajorMinorConcentration.fetchValidMajorOnly("MIS")
-        assertNotNull majorMinorConcentration
-    }
-
-
-    void testFetchInValidMajorOnly() {
-        def majorMinorConcentration = MajorMinorConcentration.fetchValidMajorOnly("BIL")
-        assertNull majorMinorConcentration
-    }
-
-
     private def newValidForCreateMajorMinorConcentration() {
         def majorMinorConcentration = new MajorMinorConcentration(
                 code: i_success_code,

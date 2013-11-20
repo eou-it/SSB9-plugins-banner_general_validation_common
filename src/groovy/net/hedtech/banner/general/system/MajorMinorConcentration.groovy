@@ -358,15 +358,4 @@ class MajorMinorConcentration implements Serializable {
 
     }
 
-    /**
-     * Method to validate the major entered on the lookup component is a Major
-     * @param filter
-     * @return MajorMinorConcentration object
-     */
-    public static MajorMinorConcentration fetchValidMajorOnly(String filter) {
-        def result = MajorMinorConcentration.withSession { session ->
-            session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidMajor').setString('filter', filter).list()[0]
-        }
-    }
-
 }

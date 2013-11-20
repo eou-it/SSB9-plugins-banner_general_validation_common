@@ -194,9 +194,14 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testFetchAllBySomeActivityType() {
-        def activitiesList = StudentActivity.fetchAllByActivityType("SPRTS")
+    void testFetchAllByActivityType() {
+        def activityType = "SPRTS"
+        def activitiesList = StudentActivity.fetchAllByActivityType(activityType)
         assertTrue 0 < activitiesList.size()
+        def listWithActivityType = activitiesList.find { it.activityType.code == activityType }
+        assertNotNull listWithActivityType
+        def listWithoutActivityType = activitiesList.find { it.activityType.code != activityType }
+        assertNull listWithoutActivityType
     }
 
 
@@ -205,18 +210,58 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
         def activitiesList = StudentActivity.fetchBySomeActivityType(map)
         assertTrue 0 < activitiesList.size()
         activitiesList.list.each { result ->
-                                   assertEquals result.activityType.code,"SPRTS"
-                                   }
+            assertEquals result.activityType.code, "SPRTS"
+        }
     }
 
 
     void testFetchBySomeActivityType() {
-        def activityType = "SPRTS"
-        def activitiesList = StudentActivity.fetchBySomeActivityType(activityType)
+        def map = [activityType: "SPRTS"]
+        def activitiesList = StudentActivity.fetchBySomeActivityType("%", map)
         assertTrue 0 < activitiesList.size()
         activitiesList.list.each { result ->
-                                   assertEquals result.activityType.code,"SPRTS"
-                                 }
+            assertEquals result.activityType.code, "SPRTS"
+        }
+    }
+
+
+    void testFetchByActivityAndActivityTypeValid() {
+        def activity = "130"
+        def activityType = "SPRTS"
+        def activitiesList = StudentActivity.fetchByActivityAndActivityType(activity, activityType)
+        assertTrue 0 < activitiesList.size()
+        def listWithActivity = activitiesList.find { it.code == activity }
+        assertNotNull listWithActivity
+        def listWithoutActivity = activitiesList.find { it.code != activity }
+        assertNull listWithoutActivity
+        def listWithActivityType = activitiesList.find { it.activityType.code == activityType }
+        assertNotNull listWithActivityType
+        def listWithoutActivityType = activitiesList.find { it.activityType.code != activityType }
+        assertNull listWithoutActivityType
+    }
+
+
+    void testFetchByActivityAndActivityTypeInvalid() {
+        def activity = "101"
+        def activityType = "SPRTS"
+        def activitiesList = StudentActivity.fetchByActivityAndActivityType(activity, activityType)
+        assertTrue 0 == activitiesList.size()
+    }
+
+
+    void testFetchValidActivityForActivityTypeValid() {
+        def activity = "130"
+        def map = [activityType: "SPRTS"]
+        def activities = StudentActivity.fetchValidActivityForActivityType(activity, map)
+        assertNotNull activities
+    }
+
+
+    void testFetchValidActivityForActivityTypeInvalid() {
+        def activity = "101"
+        def map = [activityType: "SPRTS"]
+        def activities = StudentActivity.fetchValidActivityForActivityType(activity, map)
+        assertNull activities
     }
 
 

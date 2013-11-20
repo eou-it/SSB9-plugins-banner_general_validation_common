@@ -10,11 +10,14 @@ import javax.persistence.*
 @Entity
 @Table(name = "STVACTC")
 @NamedQueries(value = [
-@NamedQuery(name = "StudentActivity.fetchByActivityTypeCode",
-query = """FROM  StudentActivity a
-           WHERE a.activityType.code = :code
-           ORDER BY a.code
-            """)
+@NamedQuery(name = "StudentActivity.fetchByActivityType",
+        query = """FROM  StudentActivity a
+           WHERE a.activityType.code = :activityType
+           ORDER BY a.code  """),
+@NamedQuery(name = "StudentActivity.fetchByActivityAndActivityType",
+        query = """FROM StudentActivity a
+           WHERE a.code like upper(:activity)
+           AND   a.activityType.code = :activityType""")
 ])
 class StudentActivity implements Serializable {
 
@@ -157,25 +160,44 @@ class StudentActivity implements Serializable {
     public static readonlyProperties = ['code']
 
 
+    public static List fetchByActivityAndActivityType(String activity, String activityType) {
+        def activities = StudentActivity.withSession { session ->
+            session.getNamedQuery('StudentActivity.fetchByActivityAndActivityType')
+                    .setString('activity', "%" + activity + "%")
+                    .setString('activityType', activityType).list()
+        }
+        return activities
+    }
+
+
+    public static def fetchValidActivityForActivityType(String activity, Map params) {
+        def activities = StudentActivity.withSession { session ->
+            session.getNamedQuery('StudentActivity.fetchByActivityAndActivityType')
+                    .setString('activity', activity)
+                    .setString('activityType', params.activityType).list()
+        }
+        return activities[0]
+    }
+
 
     public static List fetchAllByActivityType(String activityType) {
-       def activities = null
-       StudentActivity.withSession { session ->
-           activities = session.getNamedQuery('StudentActivity.fetchByActivityTypeCode').setString('code', activityType).list()
-       }
-       return activities
+        def activities = StudentActivity.withSession { session ->
+            session.getNamedQuery('StudentActivity.fetchByActivityType').setString('activityType', activityType).list()
+        }
+        return activities
     }
 
 
     public static Object fetchBySomeActivityType(Map params) {
-        def results = StudentActivity.fetchAllByActivityType(params.activityType)
-        return [list: results]
+        def returnObj = [list: StudentActivity.fetchAllByActivityType(params.activityType)]
+        return returnObj
     }
 
 
-    public static Object fetchBySomeActivityType(String activityType) {
-        def results = StudentActivity.fetchAllByActivityType(activityType)
-        return [list: results]
+    public static Object fetchBySomeActivityType(String activity, Map params) {
+        def returnObj = [list: StudentActivity.fetchByActivityAndActivityType(activity, params.activityType)]
+        return returnObj
     }
+
 
 }

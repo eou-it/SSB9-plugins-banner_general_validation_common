@@ -3,13 +3,13 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import org.apache.commons.lang.StringUtils
+import org.hibernate.annotations.Type
+
 /**
  * Import Related Entities if they are external to this package
  */
-
-import org.hibernate.annotations.Type
 import javax.persistence.*
-import org.apache.commons.lang.StringUtils
 
 /**
  * Major, Minor, Concentration Validation Table
@@ -18,33 +18,33 @@ import org.apache.commons.lang.StringUtils
 @Table(name = "STVMAJR")
 @NamedQueries(value = [
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMajor",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
            OR a.description like :filter )
            AND a.validMajorIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMinor",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
            OR a.description like :filter )
            AND a.validMinorIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidConcentration",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
            OR a.description like :filter )
            AND a.validConcentratnIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeAndValidMajor",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE   a.code = :filter
            AND a.validMajorIndicator = 'Y'  """),
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeAndValidMinor",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE   a.code  = :filter
            AND a.validMinorIndicator = 'Y'  """),
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeAndValidConcentration",
-query = """FROM MajorMinorConcentration a
+        query = """FROM MajorMinorConcentration a
            WHERE   a.code  = :filter
            AND a.validConcentratnIndicator = 'Y'  """)
 ])
@@ -291,26 +291,25 @@ class MajorMinorConcentration implements Serializable {
             filter = "%"
         } else if (!(filter =~ /%/)) {
             filter = filter.toUpperCase() + "%"
-        }
-        else filter = filter.toUpperCase()
+        } else filter = filter.toUpperCase()
 
         def result
         switch (fieldOfStudy) {
             case "MAJOR":
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMajor').setString('filter', filter).list()
                 }
                 break
 
             case "MINOR":
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMinor').setString('filter', filter).list()
                 }
                 break
 
 
             case ["CONCENTRATION"]:
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidConcentration').setString('filter', filter).list()
                 }
                 break
@@ -333,20 +332,20 @@ class MajorMinorConcentration implements Serializable {
         def result
         switch (params.fieldOfStudy) {
             case "MAJOR":
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidMajor').setString('filter', filter).list()[0]
                 }
                 break
 
             case "MINOR":
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidMinor').setString('filter', filter).list()[0]
                 }
                 break
 
 
             case ["CONCENTRATION"]:
-                result = MajorMinorConcentration.withSession {session ->
+                result = MajorMinorConcentration.withSession { session ->
                     session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidConcentration').setString('filter', filter).list()[0]
                 }
                 break
@@ -359,4 +358,76 @@ class MajorMinorConcentration implements Serializable {
 
     }
 
+
+    public static MajorMinorConcentration fetchValidType(String filter, params) {
+
+        def result
+        switch (params.fieldOfStudy) {
+            case params.majorType:
+                result = MajorMinorConcentration.withSession { session ->
+                    session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidMajor').setString('filter', filter).uniqueResult()
+                }
+                break
+
+            case params.minorType:
+                result = MajorMinorConcentration.withSession { session ->
+                    session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidMinor').setString('filter', filter).uniqueResult()
+                }
+                break
+
+
+            case  params.concentrationType:
+                    result = MajorMinorConcentration.withSession { session ->
+                        session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidConcentration').setString('filter', filter).uniqueResult()
+                    }
+                break
+
+            default:
+                result = MajorMinorConcentration.findByCode(filter)
+        }
+
+        return result
+    }
+
+
+    public static def fetchBySomeAttributeForType(String filter, params) {
+        def filterText
+        if (StringUtils.isBlank(filter)) {
+            filterText = "%"
+        } else if (!(filter =~ /%/)) {
+            filterText = filter.toUpperCase() + "%"
+        } else filterText = filter.toUpperCase()
+
+        def result
+        switch (params.fieldOfStudy) {
+            case params.majorType:
+                result = MajorMinorConcentration.withSession { session ->
+                    session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMajor').setString('filter', filterText).list()
+                }
+                break
+
+            case params.minorType:
+                result = MajorMinorConcentration.withSession { session ->
+                    session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMinor').setString('filter', filterText).list()
+                }
+                break
+
+
+            case params.concentrationType:
+                result = MajorMinorConcentration.withSession { session ->
+                    session.getNamedQuery('MajorMinorConcentration.fetchAllByCodeDescriptionAndValidConcentration').setString('filter', filterText).list()
+                }
+                break
+
+            default:
+                result = MajorMinorConcentration.findAllByCodeIlikeOrDescriptionIlike("%" + filterText + "%", "%" + filterText + "%", [sort: "code"])
+        }
+        return [list: result]
+
+    }
+
+
+    public static def fetchBySomeAttributeForType(params) {
+        return fetchBySomeAttributeForType("%", params)
+    }
 }

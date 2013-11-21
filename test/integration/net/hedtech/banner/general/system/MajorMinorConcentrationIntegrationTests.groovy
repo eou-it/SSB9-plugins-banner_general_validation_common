@@ -3,8 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
@@ -128,22 +128,22 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
         def majorMinorConcentration = new MajorMinorConcentration()
         assertFalse "MajorMinorConcentration should have failed validation", majorMinorConcentration.validate()
         assertErrorsFor majorMinorConcentration, 'nullable',
-                [
-                        'code'
-                ]
+                        [
+                                'code'
+                        ]
         assertNoErrorsFor majorMinorConcentration,
-                [
-                        'description',
-                        'validMajorIndicator',
-                        'validMinorIndicator',
-                        'validConcentratnIndicator',
-                        'occupationIndicator',
-                        'aidEligibilityIndicator',
-                        'systemRequiredIndicator',
-                        'voiceResponseMessageNumber',
-                        'sevisEquiv',
-                        'cipcCode'
-                ]
+                          [
+                                  'description',
+                                  'validMajorIndicator',
+                                  'validMinorIndicator',
+                                  'validConcentratnIndicator',
+                                  'occupationIndicator',
+                                  'aidEligibilityIndicator',
+                                  'systemRequiredIndicator',
+                                  'voiceResponseMessageNumber',
+                                  'sevisEquiv',
+                                  'cipcCode'
+                          ]
     }
 
 
@@ -168,7 +168,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
         // test with filter, no parms
         def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MATH")
         assertEquals majorMinorConcentrations.list.size(),
-                MajorMinorConcentration.findAllByCodeIlikeOrDescriptionIlike("%MATH%", "%MATH%").size()
+                     MajorMinorConcentration.findAllByCodeIlikeOrDescriptionIlike("%MATH%", "%MATH%").size()
     }
 
 
@@ -190,17 +190,17 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
 
         def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MIS", [fieldOfStudy: "MAJOR"])
         def majors = MajorMinorConcentration.findAllByValidMajorIndicator(true)
-        def filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS"}
+        def filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
         assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
 
         majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MIS", [fieldOfStudy: "MINOR"])
         majors = MajorMinorConcentration.findAllByValidMinorIndicator(true)
-        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS"}
+        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
         assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
 
         majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MIS", [fieldOfStudy: "CONCENTRATION"])
         majors = MajorMinorConcentration.findAllByValidConcentratnIndicator(true)
-        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS"}
+        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
         assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
 
         majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MIS", [fieldOfStudy: "INTERNSHIP"])
@@ -247,7 +247,6 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
         majorMinorConcentration = MajorMinorConcentration.fetchValidMajor("BIL", [fieldOfStudy: "MAJOR"])
         assertNull majorMinorConcentration
 
-
         majorMinorConcentration = MajorMinorConcentration.fetchValidMajor("M", [fieldOfStudy: "MINOR"])
         assertNull majorMinorConcentration
 
@@ -265,6 +264,104 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
 
         majorMinorConcentration = MajorMinorConcentration.fetchValidMajor("M", [fieldOfStudy: ""])
         assertNull majorMinorConcentration
+
+    }
+
+
+    void testFetchBySomeAttributeForTypeWithFilter() {
+        // test no filter, with parms
+
+        def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType("MIS", [fieldOfStudy: "MAJOR", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        def majors = MajorMinorConcentration.findAllByValidMajorIndicator(true)
+        def filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
+        assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType("MIS", [fieldOfStudy: "MINOR", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        majors = MajorMinorConcentration.findAllByValidMinorIndicator(true)
+        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
+        assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType("MIS", [fieldOfStudy: "CONCENTRATION", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        majors = MajorMinorConcentration.findAllByValidConcentratnIndicator(true)
+        filteredMajors = majors.findAll { it.code =~ "MIS" || it.description =~ "MIS" }
+        assertEquals majorMinorConcentrations.list.size(), filteredMajors.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType("MIS", [fieldOfStudy: "INTERNSHIP", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        majors = MajorMinorConcentration.findAllByCodeIlikeOrDescriptionIlike("%MIS%", "%MIS%")
+        assertEquals majorMinorConcentrations.list.size(), majors.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType("MIS", [fieldOfStudy: "", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        majors = MajorMinorConcentration.findAllByCodeIlikeOrDescriptionIlike("%MIS%", "%MIS%")
+        assertEquals majorMinorConcentrations.list.size(), majors.size()
+
+    }
+
+
+    void testFetchBySomeAttributeForTypeWithOutFilter() {
+        // test no filter, with parms
+
+        def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType([fieldOfStudy: "MAJOR", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        def majors = MajorMinorConcentration.findAllByValidMajorIndicator(true)
+        assertEquals majors.size(), majorMinorConcentrations.list.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType([fieldOfStudy: "MINOR", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        majors = MajorMinorConcentration.findAllByValidMinorIndicator(true)
+        assertEquals majorMinorConcentrations.list.size(), majors.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType([fieldOfStudy: "CONCENTRATION", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        majors = MajorMinorConcentration.findAllByValidConcentratnIndicator(true)
+        assertEquals majorMinorConcentrations.list.size(), majors.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType([fieldOfStudy: "INTERNSHIP", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        majors = MajorMinorConcentration.findAll()
+        assertEquals majorMinorConcentrations.list.size(), majors.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeForType([fieldOfStudy: "", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        assertEquals majorMinorConcentrations.list.size(), majors.size()
+
+    }
+
+
+    void testFetchValidType() {
+        // test no filter, with parms
+        def major = MajorMinorConcentration.findByCode("MIS")
+        assertTrue major.validMajorIndicator
+        assertTrue major.validMinorIndicator
+        assertTrue major.validConcentratnIndicator
+
+        MajorMinorConcentration majorMinorConcentration = MajorMinorConcentration.fetchValidType("MIS", [fieldOfStudy: "MAJOR", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        assertNotNull majorMinorConcentration
+        assertEquals "MIS", majorMinorConcentration.code
+
+        majorMinorConcentration = MajorMinorConcentration.fetchValidType("MIS", [fieldOfStudy: "MINOR", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        assertNotNull majorMinorConcentration
+        assertEquals "MIS", majorMinorConcentration.code
+
+        majorMinorConcentration = MajorMinorConcentration.fetchValidType("MIS", [fieldOfStudy: "CONCENTRATION", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        assertNotNull majorMinorConcentration
+        assertEquals "MIS", majorMinorConcentration.code
+
+        majorMinorConcentration = MajorMinorConcentration.fetchValidType("MIS", [fieldOfStudy: "INTERNSHIP", majorType: "MAJOR",
+                minorType: "MINOR", concentrationType: "CONCENTRATION"])
+        assertNotNull majorMinorConcentration
+        assertEquals "MIS", majorMinorConcentration.code
+
+        majorMinorConcentration = MajorMinorConcentration.fetchValidType("MIS", [fieldOfStudy: ""])
+        assertNotNull majorMinorConcentration
+        assertEquals "MIS", majorMinorConcentration.code
 
     }
 

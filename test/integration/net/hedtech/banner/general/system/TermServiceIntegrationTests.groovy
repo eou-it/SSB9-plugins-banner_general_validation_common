@@ -3,6 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -176,5 +177,27 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
         assertTrue list.size() > 0
         assertEquals 10, list.size()
         assertTrue list[0] instanceof Term
+    }
+
+    void testTermShowWithValidTerm() {
+        def args = formMapForShow()
+        def term = termService.show(args)
+        assertNotNull term
+        assertEquals term.code, "201410"
+    }
+
+
+    void testTermShowWithInvalidTermCode() {
+        def args = formMapForShow()
+        args << [id: "wwwwwww"]
+        shouldFail(ApplicationException) {
+            def term = termService.show(args)
+        }
+    }
+
+
+    private def formMapForShow() {
+        Map args = [id: "201410", pluralizedResourceName: "terms"]
+        return args
     }
 }

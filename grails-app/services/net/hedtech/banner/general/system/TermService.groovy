@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.query.DynamicFinder
 import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
@@ -62,5 +64,18 @@ class TermService extends ServiceBase {
         return termSize
     }
 
+
+    def show(Map map) {
+        Term term
+        if (map?.pluralizedResourceName) { // RESTful API request  for term
+            // map.id represents termCode
+            String termCode = map.id
+            term = Term.findByCode(termCode)
+            if (!term) {
+                throw new ApplicationException("Term", termCode, new NotFoundException(id: termCode, entityClassName: Term.class.simpleName))
+            }
+        }
+        return term
+    }
 
 }

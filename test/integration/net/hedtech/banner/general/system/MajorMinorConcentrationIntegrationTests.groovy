@@ -366,6 +366,57 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchFromExistingBySomeAttributeForType() {
+        // test no filter, with parms
+        def majorsList = ['MIS', 'MATH', 'BIOL']
+        def majorMis = MajorMinorConcentration.findByCodeAndValidMajorIndicator("MIS", true)
+        assertNotNull majorMis
+        def majorMath = MajorMinorConcentration.findByCodeAndValidMajorIndicator("MATH", true)
+        assertNotNull majorMath
+        def majorBiol = MajorMinorConcentration.findByCodeAndValidMajorIndicator("BIOL", true)
+        assertNotNull majorBiol
+
+        def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeFromExistingMajors("MI", [existingMajors: majorsList])
+        assertEquals 1, majorMinorConcentrations.list.size()
+        assertEquals "MIS", majorMinorConcentrations.list[0].code
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeFromExistingMajors([existingMajors: majorsList])
+        assertEquals 3, majorMinorConcentrations.list.size()
+        assertNotNull majorMinorConcentrations.list.find { it.code == "MIS" }
+        assertNotNull majorMinorConcentrations.list.find { it.code == "MATH" }
+        assertNotNull majorMinorConcentrations.list.find { it.code == "BIOL" }
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeFromExistingMajors([existingMajors: []])
+        assertEquals 0, majorMinorConcentrations.list.size()
+
+        majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttributeFromExistingMajors([])
+        assertEquals 0, majorMinorConcentrations.list.size()
+    }
+
+
+    void testFetchValidateFromExistingBySomeAttributeForType() {
+        // test no filter, with parms
+        def majorsList = ['MIS', 'MATH', 'BIOL']
+        def majorMis = MajorMinorConcentration.findByCodeAndValidMajorIndicator("MIS", true)
+        assertNotNull majorMis
+        def majorMath = MajorMinorConcentration.findByCodeAndValidMajorIndicator("MATH", true)
+        assertNotNull majorMath
+        def majorBiol = MajorMinorConcentration.findByCodeAndValidMajorIndicator("BIOL", true)
+        assertNotNull majorBiol
+
+        def majorMinorConcentration = MajorMinorConcentration.fetchByCodeFromExistingMajors("MI", [existingMajors: majorsList])
+        assertNull majorMinorConcentration
+        majorMinorConcentration = MajorMinorConcentration.fetchByCodeFromExistingMajors("MIS", [existingMajors: majorsList])
+        assertNotNull majorMinorConcentration
+
+        majorMinorConcentration = MajorMinorConcentration.fetchByCodeFromExistingMajors("MIS", [existingMajors: []])
+        assertNull majorMinorConcentration
+
+        majorMinorConcentration = MajorMinorConcentration.fetchByCodeFromExistingMajors("MIS", [])
+        assertNull majorMinorConcentration
+    }
+
+
     private def newValidForCreateMajorMinorConcentration() {
         def majorMinorConcentration = new MajorMinorConcentration(
                 code: i_success_code,

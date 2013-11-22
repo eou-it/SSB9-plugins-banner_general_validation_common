@@ -6,11 +6,11 @@ package net.hedtech.banner.general.system
 import org.apache.commons.lang.StringUtils
 import org.hibernate.annotations.Type
 
+import javax.persistence.*
+
 /**
  * Import Related Entities if they are external to this package
  */
-import javax.persistence.*
-
 /**
  * Major, Minor, Concentration Validation Table
  */
@@ -46,7 +46,17 @@ import javax.persistence.*
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeAndValidConcentration",
         query = """FROM MajorMinorConcentration a
            WHERE   a.code  = :filter
-           AND a.validConcentratnIndicator = 'Y'  """)
+           AND a.validConcentratnIndicator = 'Y'  """),
+@NamedQuery(name = "MajorMinorConcentration.fetchBySomeAttributeFromExistingMajors",
+        query = """FROM MajorMinorConcentration a
+           WHERE ( a.code  like :filter
+           OR a.description like :filter )
+           AND a.code in :majors
+           ORDER by a.code """)  ,
+@NamedQuery(name = "MajorMinorConcentration.fetchByCodeFromExistingMajors",
+        query = """FROM MajorMinorConcentration a
+           WHERE   a.code  = :filter
+           AND a.code in :majors """)
 ])
 class MajorMinorConcentration implements Serializable {
 
@@ -376,10 +386,10 @@ class MajorMinorConcentration implements Serializable {
                 break
 
 
-            case  params.concentrationType:
-                    result = MajorMinorConcentration.withSession { session ->
-                        session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidConcentration').setString('filter', filter).uniqueResult()
-                    }
+            case params.concentrationType:
+                result = MajorMinorConcentration.withSession { session ->
+                    session.getNamedQuery('MajorMinorConcentration.fetchByCodeAndValidConcentration').setString('filter', filter).uniqueResult()
+                }
                 break
 
             default:
@@ -430,4 +440,42 @@ class MajorMinorConcentration implements Serializable {
     public static def fetchBySomeAttributeForType(params) {
         return fetchBySomeAttributeForType("%", params)
     }
+
+    // take in list of existing majors for student and product list and validate the one they select is valid as per the list
+    public static def fetchBySomeAttributeFromExistingMajors(filter, params) {
+        def filterText
+        if (StringUtils.isBlank(filter)) {
+            filterText = "%"
+        } else if (!(filter =~ /%/)) {
+            filterText = filter.toUpperCase() + "%"
+        } else filterText = filter.toUpperCase()
+        def result = []
+        if (params.existingMajors?.size()) {
+            result = MajorMinorConcentration.withSession { session ->
+                session.getNamedQuery('MajorMinorConcentration.fetchBySomeAttributeFromExistingMajors').setString('filter', filterText)
+                        .setParameterList('majors', params.existingMajors).list()
+            }
+        }
+        return [list: result]
+    }
+
+
+    public static def fetchBySomeAttributeFromExistingMajors(params) {
+        return fetchBySomeAttributeFromExistingMajors("%", params)
+    }
+
+
+    public static def fetchByCodeFromExistingMajors(filter, params) {
+
+        def result = []
+        if (params.existingMajors?.size()) {
+            result = MajorMinorConcentration.withSession { session ->
+                session.getNamedQuery('MajorMinorConcentration.fetchByCodeFromExistingMajors').setString('filter', filter)
+                        .setParameterList('majors', params.existingMajors).list()
+            }
+        }
+        if (result.size()  == 1)   return result[0]
+        else  return null
+    }
+
 }

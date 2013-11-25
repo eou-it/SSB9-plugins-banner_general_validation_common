@@ -1,17 +1,13 @@
---/** *****************************************************************************
--- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
--- ****************************************************************************** */
--- dbeu_table_extends.sql
---
--- V8.1
---
-REM
+REM *****************************************************************************************
+REM * Copyright 2009-2013 Ellucian Company L.P. and its affiliates.                         *
+REM *****************************************************************************************
 REM dbeu_ext_stu_bgvc.sql
-REM 
-REM AUDIT TRAIL: 9.0 
-REM 1. Horizon 
+REM
+REM AUDIT TRAIL: 9.0
+REM 1. Invocation of dbeu extenstion utility for student module. 
 REM AUDIT TRAIL END 
 REM
+
 whenever oserror exit rollback;
 whenever sqlerror exit rollback;
 REM connect dbeu_owner/&&dbeu_password

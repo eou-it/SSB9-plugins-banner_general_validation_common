@@ -1,16 +1,15 @@
--- *****************************************************************************
--- *                                                                           *
--- * Copyright 2013 Ellucian Company L.P. and its affiliates.                  *
--- *                                                                           *
--- *****************************************************************************
+REM *****************************************************************************
+REM * Copyright 2013 Ellucian Company L.P. and its affiliates.                  *
+REM *****************************************************************************
 REM
 REM gv_gorrace.sql
 REM
 REM AUDIT TRAIL: 9.0
-REM 1. Horizon
-REM Generated view for Horizon API support
+REM MF 23-APR-2013
+REM 1. Generated view for Horizon API support.
 REM AUDIT TRAIL END
 REM
+
 CREATE OR REPLACE FORCE VIEW gv_gorrace AS SELECT
       gorrace_race_cde,
       gorrace_desc,

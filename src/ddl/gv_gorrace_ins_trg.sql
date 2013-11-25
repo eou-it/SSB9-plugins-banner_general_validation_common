@@ -1,16 +1,15 @@
--- *****************************************************************************
--- *                                                                           *
--- * Copyright 2013 Ellucian Company L.P. and its affiliates.                  *
--- *                                                                           *
--- *****************************************************************************
+REM *****************************************************************************
+REM * Copyright 2013 Ellucian Company L.P. and its affiliates.                  *
+REM *****************************************************************************
 REM
 REM gv_gorrace_ins_trg.sql
 REM
 REM AUDIT TRAIL: 9.0
-REM 1. Horizon
-REM Generated trigger for Horizon API support
+REM MF 23-APR-2013
+REM 1. Generated trigger for Horizon API support
 REM AUDIT TRAIL END
 REM
+
 CREATE OR REPLACE TRIGGER gorrace_view_create_trg
   INSTEAD OF INSERT ON gv_gorrace
 DECLARE

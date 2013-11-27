@@ -37,7 +37,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
                         lastModified: "19-OCT-98",
                         lastModifiedBy: ""
                 ]]
-        def personaList = InformationTextPersona.fetchInformationTextPersonas()
+        def personaList = InformationTextPersonaListService.fetchPersonas()
         int personaCount = personaList.list.size()
         assertEquals(3, personaCount)
     }
@@ -62,7 +62,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
                         lastModified: "19-OCT-98",
                         lastModifiedBy: ""
                 ]]
-        def personaList = InformationTextPersona.fetchInformationTextPersonas('U')
+        def personaList = InformationTextPersonaListService.fetchPersonas('U')
         int personaCount = personaList.list.size()
         assertEquals(2, personaCount)
     }
@@ -87,7 +87,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
                         lastModified: "19-OCT-98",
                         lastModifiedBy: ""
                 ]]
-        def personaList = InformationTextPersona.fetchInformationTextPersonas('ALUMNI')
+        def personaList = InformationTextPersonaListService.fetchPersonas('ALUMNI')
         String persona = personaList.list[0].code
         assertEquals('ALUMNI', persona)
     }
@@ -112,7 +112,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
                         lastModified: "19-OCT-98",
                         lastModifiedBy: ""
                 ]]
-        def personaList = InformationTextPersona.fetchValidInformationTextPersona('U')
+        def personaList = InformationTextPersonaListService.fetchValidInformationTextPersona('U')
         String persona = personaList.code
         assertEquals("ALUMNI", persona)
     }

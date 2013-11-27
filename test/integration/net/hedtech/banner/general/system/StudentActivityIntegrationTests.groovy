@@ -194,6 +194,32 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchAllBySomeActivityType() {
+        def activitiesList = StudentActivity.fetchAllByActivityType("SPRTS")
+        assertTrue 0 < activitiesList.size()
+    }
+
+
+    void testFetchBySomeActivityTypeMap() {
+        def map = [activityType: "SPRTS"]
+        def activitiesList = StudentActivity.fetchBySomeActivityType(map)
+        assertTrue 0 < activitiesList.size()
+        activitiesList.list.each { result ->
+                                   assertEquals result.activityType.code,"SPRTS"
+                                   }
+    }
+
+
+    void testFetchBySomeActivityType() {
+        def activityType = "SPRTS"
+        def activitiesList = StudentActivity.fetchBySomeActivityType(activityType)
+        assertTrue 0 < activitiesList.size()
+        activitiesList.list.each { result ->
+                                   assertEquals result.activityType.code,"SPRTS"
+                                 }
+    }
+
+
     private def newValidForCreateStudentActivity() {
         def leadership = new Leadership(
                 code: "LEAD",

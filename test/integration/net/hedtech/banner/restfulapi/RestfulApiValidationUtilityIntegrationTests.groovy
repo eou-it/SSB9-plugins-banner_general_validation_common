@@ -51,6 +51,29 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
+    void testValidateSortField() {
+        def allowedSortFields = ["firstName", "lastName"]
+
+        // Valid sort field should not cause any exception
+        RestfulApiValidationUtility.validateSortField("firstName", allowedSortFields)
+
+        // Invalid sort field causes RestfulApiValidationException
+        try {
+            RestfulApiValidationUtility.validateSortField("dummy", allowedSortFields)
+        } catch (RestfulApiValidationException rve) {
+            assertEquals 400, rve.getHttpStatusCode()
+            def localizer = { mapToLocalize ->
+                this.message(mapToLocalize)
+            }
+            def map = rve.returnMap(localizer)
+            assertNotNull map.headers
+            assertEquals "Validation failed", map.headers["X-Status-Reason"]
+            assertNotNull map.message
+            assertNotNull map.errors
+        }
+    }
+
+
     void testCloneMapExcludingKeys() {
         def map = ["key1": "val1", "key2": "val2"]
 

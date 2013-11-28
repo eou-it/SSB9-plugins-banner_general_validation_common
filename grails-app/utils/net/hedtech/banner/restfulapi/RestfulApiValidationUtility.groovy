@@ -62,6 +62,15 @@ class RestfulApiValidationUtility {
     }
 
 
+    public static void validateSortField(String sortField, List allowedSortFields) {
+        if (sortField && allowedSortFields) {
+            if (!allowedSortFields.contains(sortField)) {
+                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSortField", [sortField])
+            }
+        }
+    }
+
+
     public static void copyProperties(def source, def target) {
         target?.metaClass.properties.each {
             if (source?.metaClass.hasProperty(source, it.name) && it.name != 'metaClass' && it.name != 'class')

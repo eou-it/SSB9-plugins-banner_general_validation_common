@@ -6,13 +6,17 @@ package net.hedtech.banner.general.utility
 import grails.util.Holders
 import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
+
 import java.text.ParseException
 import java.text.SimpleDateFormat
 
 class InformationTextPersonaListService {
     def sessionFactory
-
     def static webTailorRoleList = []
+    static final String DEFAULT_PERSONA = "DEFAULT"
 
     static Logger staticLog = Logger.getLogger( "net.hedtech.banner.general.utility.InformationTextPersonaListService" )
 
@@ -20,9 +24,49 @@ class InformationTextPersonaListService {
         if (Holders?.config.webTailorRoleList?.size() != 0) {
             webTailorRoleList = Holders?.config.webTailorRoleList
         }
+
+       /* webTailorRoleList <<  [
+            code: "DEFAULT",
+            description: "",
+            lastModified: "",
+            lastModifiedBy: ""
+        ]*/
+    }
+
+    private static boolean isDefaultPersonaAdded() {
+        return webTailorRoleList.any { it.code == DEFAULT_PERSONA }
+    }
+
+    private static void addDefaultPersonaIfNotExists() {
+       /* if(isDefaultPersonaAdded()) {
+            def defaultPersona = webTailorRoleList.find { it.code == DEFAULT_PERSONA }
+            MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
+            defaultPersona.description = messageSource.getMessage("InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale())
+        }
+        else {
+            MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
+            webTailorRoleList <<  [
+                    code: DEFAULT_PERSONA,
+                    description: messageSource.getMessage("InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale()),
+                    lastModified: "",
+                    lastModifiedBy: ""
+            ]
+        }*/
+
+        webTailorRoleList.removeAll{
+            it.code == DEFAULT_PERSONA
+        }
+        MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
+        webTailorRoleList <<  [
+                code: DEFAULT_PERSONA,
+                description: messageSource.getMessage("net.hedtech.banner.general.utility.InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale()),
+                lastModified: "",
+                lastModifiedBy: ""
+        ]
     }
 
     public static def getWebtailorRoleConfiguration() {
+        addDefaultPersonaIfNotExists();
         return webTailorRoleList;
     }
 

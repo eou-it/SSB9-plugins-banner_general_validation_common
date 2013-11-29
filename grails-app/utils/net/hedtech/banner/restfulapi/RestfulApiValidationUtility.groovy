@@ -71,10 +71,22 @@ class RestfulApiValidationUtility {
     }
 
 
-    public static void copyProperties(def source, def target) {
-        target?.metaClass.properties.each {
-            if (source?.metaClass.hasProperty(source, it.name) && it.name != 'metaClass' && it.name != 'class')
-                it.setProperty(target, source.metaClass.getProperty(source, it.name))
+    public static void throwValidationExceptionForObjectNotFound(String objectName, String objectId) {
+        throw new RestfulApiValidationException("default.not.found.message", [objectName, objectId])
+    }
+
+
+    public static void copyProperties(source, target) {
+        if (source && target) {
+            target.metaClass.properties.each {
+                if (source.metaClass.hasProperty(source, it.name) && it.name != 'metaClass' && it.name != 'class') {
+                    try {
+                        it.setProperty(target, source.metaClass.getProperty(source, it.name))
+                    } catch (GroovyRuntimeException e) {
+                        // May be read-only property
+                    }
+                }
+            }
         }
     }
 

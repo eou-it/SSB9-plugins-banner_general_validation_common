@@ -3,6 +3,7 @@
  ********************************************************************************* */
 package net.hedtech.banner.restfulapi
 
+import net.hedtech.banner.general.system.Term
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCase {
@@ -71,6 +72,22 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
             assertNotNull map.message
             assertNotNull map.errors
         }
+    }
+
+
+    void testThrowValidationExceptionForObjectNotFound() {
+        shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForObjectNotFound("Term", "201410") })
+    }
+
+
+    void testCopyProperties() {
+        def code = "201410"
+        def desc = "201410 term"
+        def source = new Term("code": code, "description": desc)
+        def target = new Term()
+        RestfulApiValidationUtility.copyProperties(source, target)
+        assertEquals code, target["code"]
+        assertEquals desc, target["description"]
     }
 
 

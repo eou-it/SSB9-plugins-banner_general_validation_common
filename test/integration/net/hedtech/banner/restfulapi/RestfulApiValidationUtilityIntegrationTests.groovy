@@ -4,6 +4,7 @@
 package net.hedtech.banner.restfulapi
 
 import net.hedtech.banner.general.system.Term
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCase {
@@ -72,6 +73,56 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
             assertNotNull map.message
             assertNotNull map.errors
         }
+    }
+
+
+    void testValidateCriteria() {
+        // Valid "field" "operator" "value"
+        def filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": "star"]]
+        RestfulApiValidationUtility.validateCriteria(filters)
+
+        // Invalid "value" in second filter, should cause exception
+        filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": null]]
+        shouldFail(RestfulApiValidationException) { RestfulApiValidationUtility.validateCriteria(filters) }
+
+        // All filters have valid "field"
+        def allowedSearchFields = ["firstName", "lastName"]
+        filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": "star"]]
+        RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields)
+
+        // Invalid "field" in second filter, should cause exception
+        allowedSearchFields = ["firstName", "middleName"]
+        shouldFail(RestfulApiValidationException) { RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields) }
+
+        // All filters have valid "operator"
+        allowedSearchFields = ["firstName", "lastName"]
+        def allowedOperators = [Operators.EQUALS, Operators.CONTAINS]
+        RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields, allowedOperators)
+
+        // Invalid "operator" in second filter, should cause exception
+        allowedSearchFields = ["firstName", "lastName"]
+        allowedOperators = [Operators.EQUALS, Operators.STARTS_WITH]
+        shouldFail(RestfulApiValidationException) { RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields, allowedOperators) }
+    }
+
+
+    void testValidateCriteriaMapVersion() {
+        // Valid "field" "operator" "value"
+        def filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": "star"]]
+        def map = [:]
+        RestfulApiValidationUtility.validateCriteria(filters, map)
+
+        // All filters have valid "field" and "operator"
+        map = ["firstName": [Operators.EQUALS, Operators.STARTS_WITH], "lastName": [Operators.EQUALS_IGNORE_CASE, Operators.CONTAINS]]
+        RestfulApiValidationUtility.validateCriteria(filters, map)
+
+        // Invalid "field" in second filter, should cause exception
+        map = ["firstName": [Operators.EQUALS, Operators.STARTS_WITH]]
+        shouldFail(RestfulApiValidationException) { RestfulApiValidationUtility.validateCriteria(filters, map) }
+
+        // Invalid "operator" in second filter, should cause exception
+        map = ["firstName": [Operators.EQUALS, Operators.STARTS_WITH], "lastName": [Operators.EQUALS_IGNORE_CASE, Operators.EQUALS]]
+        shouldFail(RestfulApiValidationException) { RestfulApiValidationUtility.validateCriteria(filters, map) }
     }
 
 

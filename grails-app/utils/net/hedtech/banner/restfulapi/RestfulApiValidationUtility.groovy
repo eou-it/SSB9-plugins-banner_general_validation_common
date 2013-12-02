@@ -70,6 +70,65 @@ class RestfulApiValidationUtility {
         }
     }
 
+    /**
+     * Validates each filter (criterion).
+     *
+     * Also validates field and operator used in each criterion on providing optional parameters "allowedSearchFields" and "allowedOperators".
+     * Note that if you have different set of operators for each field then this method should not be used.
+     *
+     * @param filters List of filters returned by QueryBuilder.createFilters method. Each filter is map with four keys "field", "operator", "value", "type".
+     * @param allowedSearchFields List of allowed values for "field" in each filter.
+     * @param allowedOperators List of allowed values for "operator" in each filter.
+     */
+    public static void validateCriteria(def filters, def allowedSearchFields = [], def allowedOperators = []) {
+        filters?.each {
+            String field = it.field
+            String operator = it.operator
+            String value = it.value
+            if (!field || !operator || !value) {
+                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidCriterion", ["$field $operator $value"])
+            } else {
+                // Validate field
+                if (allowedSearchFields && !allowedSearchFields.contains(field)) {
+                    throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSearchFieldInCriterion", ["$field $operator $value"])
+                }
+                // Validate operator
+                if (allowedOperators && !allowedOperators.contains(operator)) {
+                    throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidOperatorInCriterion", ["$field $operator $value"])
+                }
+            }
+        }
+    }
+
+    /**
+     * Validates each filter (criterion).  Also validates field and operator used in each criterion using second parameter "map".
+     * This method should be used, if the operators supported for each search field are different.
+     *
+     * @param filters List of filters returned by QueryBuilder.createFilters method. Each filter is map with four keys "field", "operator", "value", "type".
+     * @param map Map where all keys are allowed search fields.  For each key (field), the value is list of allowed operators.
+     */
+    public static void validateCriteria(def filters, Map map) {
+        filters?.each {
+            String field = it.field
+            String operator = it.operator
+            String value = it.value
+            if (!field || !operator || !value) {
+                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidCriterion", ["$field $operator $value"])
+            } else {
+                if (map) {
+                    if (map.containsKey(field)) {
+                        def allowedOperators = map[field]
+                        if (allowedOperators && !allowedOperators.contains(operator)) {
+                            throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidOperatorInCriterion", ["$field $operator $value"])
+                        }
+                    } else {
+                        throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSearchFieldInCriterion", ["$field $operator $value"])
+                    }
+                }
+            }
+        }
+    }
+
 
     public static void throwValidationExceptionForObjectNotFound(String objectName, String objectId) {
         throw new RestfulApiValidationException("default.not.found.message", [objectName, objectId])

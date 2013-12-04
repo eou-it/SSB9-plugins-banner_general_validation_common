@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 class InformationTextPersonaListService {
     def sessionFactory
     def static webTailorRoleList = []
-    static final String DEFAULT_PERSONA = "DEFAULT"
+    static final String PERSONA_DEFAULT = "DEFAULT"
 
     static Logger staticLog = Logger.getLogger( "net.hedtech.banner.general.utility.InformationTextPersonaListService" )
 
@@ -34,19 +34,19 @@ class InformationTextPersonaListService {
     }
 
     private static boolean isDefaultPersonaAdded() {
-        return webTailorRoleList.any { it.code == DEFAULT_PERSONA }
+        return webTailorRoleList.any { it.code == PERSONA_DEFAULT }
     }
 
     private static void addDefaultPersonaIfNotExists() {
        /* if(isDefaultPersonaAdded()) {
-            def defaultPersona = webTailorRoleList.find { it.code == DEFAULT_PERSONA }
+            def defaultPersona = webTailorRoleList.find { it.code == PERSONA_DEFAULT }
             MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
             defaultPersona.description = messageSource.getMessage("InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale())
         }
         else {
             MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
             webTailorRoleList <<  [
-                    code: DEFAULT_PERSONA,
+                    code: PERSONA_DEFAULT,
                     description: messageSource.getMessage("InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale()),
                     lastModified: "",
                     lastModifiedBy: ""
@@ -54,11 +54,11 @@ class InformationTextPersonaListService {
         }*/
 
         webTailorRoleList.removeAll{
-            it.code == DEFAULT_PERSONA
+            it.code == PERSONA_DEFAULT
         }
         MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
         webTailorRoleList <<  [
-                code: DEFAULT_PERSONA,
+                code: PERSONA_DEFAULT,
                 description: messageSource.getMessage("net.hedtech.banner.general.utility.InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale()),
                 lastModified: "",
                 lastModifiedBy: ""

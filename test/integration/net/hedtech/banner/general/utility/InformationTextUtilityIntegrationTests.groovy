@@ -4,15 +4,23 @@
 
 package net.hedtech.banner.general.utility
 
+import grails.util.Holders
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.core.context.SecurityContextHolder
 
 class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
 
     def selfServiceBannerAuthenticationProvider
-
+    private static final String PAGE_NAME = "TESTPAGE"
+    private static final String PERSONA_STUDENT = "STUDENT"
+    private static final String PERSONA_WEBUSER = "WEBUSER"
+    private static final String PERSONA_DEFAULT = "DEFAULT"
+    private static final String RECORD_BASELINE = "B"
+    private static final String RECORD_LOCAL = "L"
 
     protected void setUp() {
         if (!isSsbEnabled()) return
@@ -30,7 +38,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
         if (!isSsbEnabled()) return
         createBaselineWithSingleValueKey()
         setAuthentication()
-        def informationText = InformationTextUtility.getMessage("TESTPAGE", "key1")
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
         String expectedText = "Baseline text no 0"
         assertEquals(expectedText, informationText)
         logout()
@@ -40,7 +48,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
         if (!isSsbEnabled()) return
         createBaselineTestDataWithNotNullDate()
         setAuthentication()
-        def informationText = InformationTextUtility.getMessages("TESTPAGE")
+        def informationText = InformationTextUtility.getMessages(PAGE_NAME)
         String value1 = "Baseline text no 0\nBaseline text no 1\nBaseline text no 2\nBaseline text no 3"
         String value2 = "Baseline second text no 0\nBaseline second text no 1\nBaseline second text no 2\nBaseline second text no 3"
         assertEquals(value1, informationText.key1)
@@ -51,7 +59,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     void testSingleKeyWithoutValue() {
         if (!isSsbEnabled()) return
         setAuthentication()
-        def informationText = InformationTextUtility.getMessage("TESTPAGE", "key1")
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
         String expectedText = "key1"
         assertEquals(expectedText, informationText)
         logout()
@@ -61,7 +69,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
         if (!isSsbEnabled()) return
         createLocalWithSingleValueKey()
         setAuthentication()
-        def informationText = InformationTextUtility.getMessage("TESTPAGE", "key1")
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
         String expectedText = "Local text no 0"
         assertEquals(expectedText, informationText)
         logout()
@@ -72,7 +80,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
         createBaselineTestDataWithNotNullDate()
         createLocalTestDataWithNullDate()
         setAuthentication()
-        def informationText = InformationTextUtility.getMessages("TESTPAGE")
+        def informationText = InformationTextUtility.getMessages(PAGE_NAME)
         String expectedText = ""
         assertEquals(expectedText, informationText.key1)
         assertEquals(expectedText, informationText.key2)
@@ -84,7 +92,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
         createBaselineTestDataWithNotNullDate()
         createLocalTestDataWithNotNullDate()
         setAuthentication()
-        def informationText = InformationTextUtility.getMessages("TESTPAGE")
+        def informationText = InformationTextUtility.getMessages(PAGE_NAME)
         String value1 = "Local text no 0\nLocal text no 1\nLocal text no 2\nLocal text no 3"
         String value2 = "Local second text no 0\nLocal second text no 1\nLocal second text no 2\nLocal second text no 3"
         assertEquals(value1, informationText.key1)
@@ -97,7 +105,7 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
         createBaselineTestDataWithNotNullDate()
         createLocalTestDataWithSingleNullDate()
         setAuthentication()
-        def informationText = InformationTextUtility.getMessage("TESTPAGE", "key1")
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
         String expectedText = "Local text no 0\nLocal text no 1\nLocal text no 2"
         assertEquals(expectedText, informationText)
         logout()
@@ -108,12 +116,78 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
         createBaselineTestDataWithNotNullDate()
         createLocalTestDataWithFutureStartDate()
         setAuthentication()
-        def informationText = InformationTextUtility.getMessage("TESTPAGE", "key1")
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
         String expectedText = "Baseline text no 0\nBaseline text no 1\nBaseline text no 2\nBaseline text no 3"
         assertEquals(expectedText, informationText)
         logout()
     }
 
+
+    void testAnonymousUserSingleValue() {
+        if (!isSsbEnabled()) return
+        setAuthentication()
+        createSingleLocalTestDataForWebUser();
+        logout()
+        setAnonymousAuthentication()
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
+        String expectedText = "Local text no 0"
+        assertEquals(expectedText, informationText)
+        logout()
+    }
+
+    void testAnonymousUserMultipleValues() {
+        if (!isSsbEnabled()) return
+        setAuthentication()
+        createMultipleLocalTestDataForWebUser();
+        logout()
+        setAnonymousAuthentication()
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
+        println informationText
+        String expectedText = "Local text no 0\nLocal text no 1"
+        assertEquals(expectedText, informationText)
+        logout()
+    }
+
+    void testDefaultPersonaSingleValue() {
+        if (!isSsbEnabled()) return
+        setAuthentication()
+        createSingleDefaultLocalTestDataForUser();
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
+        String expectedText = "DEFAULT - Local text no 0"
+        assertEquals(expectedText, informationText)
+
+        createLocalWithSingleValueKey()
+        informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
+        expectedText = "Local text no 0"
+        assertEquals(expectedText, informationText)
+
+        logout()
+    }
+
+    void testDefaultPersonaMultipleValue() {
+        if (!isSsbEnabled()) return
+        setAuthentication()
+        createMultipleDefaultLocalTestDataForUser();
+        def informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
+        String expectedText = "DEFAULT - Local text no 0\n" +
+                "DEFAULT - Local text no 1"
+        assertEquals(expectedText, informationText)
+
+        createLocalTestDataWithNotNullDate()
+        informationText = InformationTextUtility.getMessage(PAGE_NAME, "key1")
+        expectedText = "Local text no 0\nLocal text no 1\nLocal text no 2\nLocal text no 3"
+        assertEquals(expectedText, informationText)
+
+        logout()
+    }
+
+    void setAnonymousAuthentication() {
+        List roles = new ArrayList();
+        GrantedAuthority grantedAuthority = new GrantedAuthorityImpl("ROLE_ANONYMOUS");
+        roles.add(grantedAuthority);
+        AnonymousAuthenticationToken auth = new AnonymousAuthenticationToken("anonymousUser", "anonymousUser", roles);
+        SecurityContextHolder.getContext().setAuthentication(auth)
+    }
 
     private def newValidForCreateInformationText() {
         def informationText = new InformationText(
@@ -156,21 +230,21 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     private def createBaselineWithSingleValueKey() {
-        createInfoTextTestData("B", "Baseline text no", "key1", new Date(), new Date(), 1)
+        createInfoTextTestData(RECORD_BASELINE, "Baseline text no", "key1", new Date(), new Date(), 1)
     }
 
     private def createBaselineTestDataWithNotNullDate() {
-        createInfoTextTestData("B", "Baseline text no", "key1", new Date(), new Date())
-        createInfoTextTestData("B", "Baseline second text no", "key2", new Date(), new Date())
+        createInfoTextTestData(RECORD_BASELINE, "Baseline text no", "key1", new Date(), new Date())
+        createInfoTextTestData(RECORD_BASELINE, "Baseline second text no", "key2", new Date(), new Date())
     }
 
     private def createLocalWithSingleValueKey() {
-        createInfoTextTestData("L", "Local text no", "key1", new Date(), new Date(), 1)
+        createInfoTextTestData(RECORD_LOCAL, "Local text no", "key1", new Date(), new Date(), 1)
     }
 
     def createLocalTestDataWithNotNullDate() {
-        createInfoTextTestData("L", "Local text no", "key1", new Date(), new Date())
-        createInfoTextTestData("L", "Local second text no", "key2", new Date(), new Date())
+        createInfoTextTestData(RECORD_LOCAL, "Local text no", "key1", new Date(), new Date())
+        createInfoTextTestData(RECORD_LOCAL, "Local second text no", "key2", new Date(), new Date())
     }
 
     def createLocalTestDataWithFutureStartDate() {
@@ -179,24 +253,39 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
         def startDate = calendar.getTime();
         calendar.add(Calendar.WEEK_OF_YEAR, 5)
         def endDate = calendar.getTime()
-        createInfoTextTestData("L", "Local text no", "key1", startDate, endDate)
+        createInfoTextTestData(RECORD_LOCAL, "Local text no", "key1", startDate, endDate)
 
     }
 
     def createLocalTestDataWithNullDate() {
-        createInfoTextTestData("L", "Local text no", "key1")
-        createInfoTextTestData("L", "Local text no", "key2")
+        createInfoTextTestData(RECORD_LOCAL, "Local text no", "key1")
+        createInfoTextTestData(RECORD_LOCAL, "Local text no", "key2")
     }
 
     def createLocalTestDataWithSingleNullDate() {
-        createInfoTextTestData("L", "Local text no", "key1", new Date(), new Date(), 4, true)
+        createInfoTextTestData(RECORD_LOCAL, "Local text no", "key1", new Date(), new Date(), 4, true)
     }
 
-    def createInfoTextTestData(sourceIndicator, text, label, startDate = null, endDate = null, recordsSize = 4, singleNullDateIndicator = false) {
-        def pageName = "TESTPAGE"
+    def createSingleLocalTestDataForWebUser() {
+        createInfoTextTestData(RECORD_LOCAL, "Local text no", "key1", new Date(), new Date(), 1, false, PERSONA_WEBUSER)
+    }
+
+    def createMultipleLocalTestDataForWebUser() {
+        createInfoTextTestData(RECORD_LOCAL, "Local text no", "key1", new Date(), new Date(), 3, true, PERSONA_WEBUSER)
+    }
+
+    def createSingleDefaultLocalTestDataForUser() {
+        createInfoTextTestData(RECORD_LOCAL, "DEFAULT - Local text no", "key1", new Date(), new Date(), 1, false, PERSONA_DEFAULT)
+    }
+
+    def createMultipleDefaultLocalTestDataForUser() {
+        createInfoTextTestData(RECORD_LOCAL, "DEFAULT - Local text no", "key1", new Date(), new Date(), 3, true, PERSONA_DEFAULT)
+    }
+
+    def createInfoTextTestData(sourceIndicator, text, label, startDate = null, endDate = null, recordsSize = 4, singleNullDateIndicator = false, persona = PERSONA_STUDENT) {
+        def pageName = PAGE_NAME
         def textType = "N"
         def sequenceNumber = 1
-        def persona = "STUDENT"
         def locale = "en_US"
         def comment = "Test data"
         recordsSize.times {
@@ -224,9 +313,8 @@ class InformationTextUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
     private def isSsbEnabled() {
-        ConfigurationHolder.config.ssbEnabled instanceof Boolean ? ConfigurationHolder.config.ssbEnabled : false
+        Holders.config.ssbEnabled instanceof Boolean ? Holders.config.ssbEnabled : false
     }
-
 }
 
 

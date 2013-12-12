@@ -8,6 +8,7 @@ import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.query.DynamicFinder
 import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
+import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -38,10 +39,11 @@ class TermService extends ServiceBase {
 
 
     def list(Map map) {
-
+        RestfulApiValidationUtility.correctMaxAndOffset(map,10,30)
         def filterMap = QueryBuilder.getFilterData(map)
         // If not using filters, defer to the ServiceBase or any other list implementation
         if (filterMap?.size() == 0 && !map.params && !map.criteria) return super.list(map)
+        validateInput(map)
 
         def termQuery = """from Term a"""
         def termList = new DynamicFinder(Term.class, termQuery, "a").find([params: filterMap.params, criteria: filterMap.criteria],
@@ -76,6 +78,19 @@ class TermService extends ServiceBase {
             }
         }
         return term
+    }
+
+
+    private void validateInput(Map args) {
+        if (args) {
+            def allowedSearchFields = ["code", "description"]
+            def allowedSortFields = ["code", "description"]
+            def allowedOperators = [Operators.EQUALS, Operators.EQUALS_IGNORE_CASE, Operators.CONTAINS, Operators.STARTS_WITH]
+            def filters = QueryBuilder.createFilters(args)
+            RestfulApiValidationUtility.validateCriteria(filters,allowedSearchFields,allowedOperators)
+            if(args?.sort)
+                RestfulApiValidationUtility.validateSortField(args.sort,allowedSortFields)
+        }
     }
 
 }

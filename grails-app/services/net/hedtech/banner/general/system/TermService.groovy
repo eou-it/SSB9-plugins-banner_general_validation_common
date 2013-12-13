@@ -138,7 +138,7 @@ class TermService extends ServiceBase {
     }
 
 
-    public static def createFilters(def map) {
+    private static def createFilters(def map) {
         def filterRE = /filter\[([0-9]+)\]\[(field|operator|value|type)\]=(.*)/
         def filters = [:]
         def matcher
@@ -160,6 +160,27 @@ class TermService extends ServiceBase {
         }
 
         return filters.values()
+    }
+
+
+    private static Date parseDate(def params, filter) {
+        if (filter.value == null) return null
+        //see if its numeric, if so, treat as millis since Epoch
+        try {
+            Long l = Long.valueOf(filter.value)
+            return new Date(l)
+        } catch (Exception e) {
+            //can't parse as a long
+        }
+        //try to parse as ISO 8601
+        try {
+            def cal = javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar(filter.value)
+            return cal.toGregorianCalendar().getTime()
+        } catch (Exception e) {
+            //can't parse as ISO 8601
+        }
+        //wasn't able to parse as a date
+        throw new Exception(params.pluralizedResourceName + filter + "exception")//BadDateFilterException(params.pluralizedResourceName,filter)
     }
 
 }

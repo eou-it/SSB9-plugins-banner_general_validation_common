@@ -8,7 +8,6 @@ import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.query.DynamicFinder
 import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
-import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -25,8 +24,7 @@ import net.hedtech.banner.service.ServiceBase
 class TermService extends ServiceBase {
 
     boolean transactional = true
-    def operatorConversions = ["gt": Operators.GREATER_THAN, "eq": Operators.EQUALS, "lt": Operators.LESS_THAN, "contains": Operators.CONTAINS]
-    // Operators must be converted from the ones that the restfulApi plugin uses to what the CriteriaBuilder expects.
+
 
     def list() {
         super.list()
@@ -39,11 +37,10 @@ class TermService extends ServiceBase {
 
 
     def list(Map map) {
-        RestfulApiValidationUtility.correctMaxAndOffset(map,10,30)
-        def filterMap = QueryBuilder.getFilterData(map)
+
+        def filterMap = getFilterData(map)
         // If not using filters, defer to the ServiceBase or any other list implementation
         if (filterMap?.size() == 0 && !map.params && !map.criteria) return super.list(map)
-        validateInput(map)
 
         def termQuery = """from Term a"""
         def termList = new DynamicFinder(Term.class, termQuery, "a").find([params: filterMap.params, criteria: filterMap.criteria],
@@ -55,7 +52,7 @@ class TermService extends ServiceBase {
 
     def count(Map map) {
 
-        def filterMap = QueryBuilder.getFilterData(map)
+        def filterMap = getFilterData(map)
 
         // If not using filters, defer to the ServiceBase or any other count implementation
         if (filterMap.size() == 0 && !map.params && !map.criteria) return super.count()
@@ -81,16 +78,88 @@ class TermService extends ServiceBase {
     }
 
 
-    private void validateInput(Map args) {
-        if (args) {
-            def allowedSearchFields = ["code", "description"]
-            def allowedSortFields = ["code", "description"]
-            def allowedOperators = [Operators.EQUALS, Operators.EQUALS_IGNORE_CASE, Operators.CONTAINS, Operators.STARTS_WITH]
-            def filters = QueryBuilder.createFilters(args)
-            RestfulApiValidationUtility.validateCriteria(filters,allowedSearchFields,allowedOperators)
-            if(args?.sort)
-                RestfulApiValidationUtility.validateSortField(args.sort,allowedSortFields)
+    /**
+     * prepare filter map for dynamic finder given map of criteria from zk page or restful API interface
+     * @param map
+     * @return map of filters ready for dynamic finder
+     */
+    private def getFilterData(Map map) {
+        def paramsMap = [:]
+        def criteriaMap = []
+        def pagingAndSortParams = [:]
+
+        def filtered = createFilters(map)
+
+        def hqlBuilderOperators = ["eq": Operators.EQUALS, "lt": Operators.LESS_THAN, "gt": Operators.GREATER_THAN]
+
+        // Prepare each restfulApi filter (putting it into maps for DynamicFinder)
+        filtered.each {
+            if (hqlBuilderOperators.containsKey(it["operator"])) {
+                // For backward compatibility convert old HQLBuilder operator to DynamicFinder operator
+                it["operator"] = hqlBuilderOperators[it["operator"]]
+            } else {
+                // filter[index][operator] value is from net.hedtech.banner.query.operators.Operators
+                // No validation done here.  Will be passed to DynamicFinder directly.
+            }
+
+            if (it.containsKey("type")) {
+                // URL parameter "filter[index][type]" exists.  Either "numeric" or "date".
+                if (it["type"] == "num" || it["type"] == "number") {
+                    it["value"] = it["value"].toLong()
+                } else if (it["type"] == "date") {
+                    it["value"] = parseDate(map, it)
+                }
+            }
+
+            if (it["operator"] == "contains" && !(it["value"].contains("%"))) it["value"] = "%${it["value"]}%"
+            else if (it["operator"] == "startswith" && !(it["value"].contains("%"))) it["value"] = "${it["value"]}%"
+
+            paramsMap.put(it["field"], it["value"])
+            criteriaMap.add([key: it["field"], binding: it["field"], operator: it["operator"]])
         }
+
+        // If criteria are passed in with the correct format already, just copy them.
+        if (map?.containsKey("params")) paramsMap.putAll(map.params)
+        if (map?.containsKey("criteria")) criteriaMap.addAll(map.criteria)
+
+        // pull out the pagination criteria
+        if (map?.containsKey("max")) pagingAndSortParams.put("max", map["max"].toInteger())
+        if (map?.containsKey("offset")) pagingAndSortParams.put("offset", map["offset"].toInteger())
+        // sort
+        if (map?.containsKey("sort")) {
+            pagingAndSortParams.put("sortColumn", map["sort"])
+            if (map?.containsKey("order")) pagingAndSortParams.put("sortDirection", map["order"])
+        } else if (map?.containsKey("sortCriteria") && map["sortCriteria"] instanceof Collection) {
+            pagingAndSortParams.put("sortCriteria", map["sortCriteria"])
+        }
+        if (map?.containsKey("pagingAndSortParams")) pagingAndSortParams.putAll(map.pagingAndSortParams)
+
+        return [params: paramsMap, criteria: criteriaMap, pagingAndSortParams: pagingAndSortParams]
+    }
+
+
+    public static def createFilters(def map) {
+        def filterRE = /filter\[([0-9]+)\]\[(field|operator|value|type)\]=(.*)/
+        def filters = [:]
+        def matcher
+        // find if the operator is contains or startswith
+
+        map.each {
+            if (it.key.startsWith('filter')) {
+                matcher = (it =~ filterRE)
+                if (matcher.count) {
+                    // Regex matches are broken up into parts for ease of understanding
+                    // toString is called to convert GStrings to strings, which is important to note.
+                    def filterNumber = "${matcher[0][1]}".toString()
+                    def key = "${matcher[0][2]}".toString()
+                    def value = "${matcher[0][3]}".toString()
+                    if (!filters.containsKey(filterNumber)) filters.put(filterNumber, [:])
+                    filters[filterNumber]?.put(key, value)
+                }
+            }
+        }
+
+        return filters.values()
     }
 
 }

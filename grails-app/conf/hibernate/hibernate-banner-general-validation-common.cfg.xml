@@ -81,6 +81,7 @@
         <mapping class="net.hedtech.banner.general.system.MailType"/>
         <mapping class="net.hedtech.banner.general.system.MajorMinorConcentration"/>
         <mapping class="net.hedtech.banner.general.system.MaritalStatus"/>
+        <mapping class="net.hedtech.banner.general.system.MealRateCode"/>
         <mapping class="net.hedtech.banner.general.system.MedicalCondition"/>
         <mapping class="net.hedtech.banner.general.system.MedicalEquipment"/>
         <mapping class="net.hedtech.banner.general.system.MeetingType"/>

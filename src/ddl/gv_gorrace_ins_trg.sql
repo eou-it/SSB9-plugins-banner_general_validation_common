@@ -1,8 +1,6 @@
--- *****************************************************************************
--- *                                                                           *
--- * Copyright 2013 Ellucian Company L.P. and its affiliates.                  *
--- *                                                                           *
--- *****************************************************************************
+REM *****************************************************************************
+REM * Copyright 2013 Ellucian Company L.P. and its affiliates.                  *
+REM *****************************************************************************
 REM
 REM gv_gorrace_ins_trg.sql
 REM
@@ -11,6 +9,7 @@ REM 1. Banner XE
 REM Generated trigger for Banner XE API support
 REM AUDIT TRAIL END
 REM
+
 CREATE OR REPLACE TRIGGER gorrace_view_create_trg
   INSTEAD OF INSERT ON gv_gorrace
 DECLARE

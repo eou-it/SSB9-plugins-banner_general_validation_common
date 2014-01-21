@@ -20,19 +20,19 @@ import javax.persistence.*
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMajor",
         query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
-           OR a.description like :filter )
+           OR UPPER(a.description) like :filter )
            AND a.validMajorIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidMinor",
         query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
-           OR a.description like :filter )
+           OR UPPER(a.description) like :filter )
            AND a.validMinorIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchAllByCodeDescriptionAndValidConcentration",
         query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
-           OR a.description like :filter )
+           OR UPPER(a.description) like :filter )
            AND a.validConcentratnIndicator = 'Y'
            ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeAndValidMajor",
@@ -50,9 +50,9 @@ import javax.persistence.*
 @NamedQuery(name = "MajorMinorConcentration.fetchBySomeAttributeFromExistingMajors",
         query = """FROM MajorMinorConcentration a
            WHERE ( a.code  like :filter
-           OR a.description like :filter )
+           OR UPPER(a.description) like :filter )
            AND a.code in :majors
-           ORDER by a.code """)  ,
+           ORDER by a.code """),
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeFromExistingMajors",
         query = """FROM MajorMinorConcentration a
            WHERE   a.code  = :filter
@@ -300,7 +300,7 @@ class MajorMinorConcentration implements Serializable {
         if (StringUtils.isBlank(filter)) {
             filter = "%"
         } else if (!(filter =~ /%/)) {
-            filter = filter.toUpperCase() + "%"
+            filter = "%" + filter.toUpperCase() + "%"
         } else filter = filter.toUpperCase()
 
         def result
@@ -405,7 +405,7 @@ class MajorMinorConcentration implements Serializable {
         if (StringUtils.isBlank(filter)) {
             filterText = "%"
         } else if (!(filter =~ /%/)) {
-            filterText = filter.toUpperCase() + "%"
+            filterText = "%" + filter.toUpperCase() + "%"
         } else filterText = filter.toUpperCase()
 
         def result
@@ -447,7 +447,7 @@ class MajorMinorConcentration implements Serializable {
         if (StringUtils.isBlank(filter)) {
             filterText = "%"
         } else if (!(filter =~ /%/)) {
-            filterText = filter.toUpperCase() + "%"
+            filterText = "%" + filter.toUpperCase() + "%"
         } else filterText = filter.toUpperCase()
         def result = []
         if (params.existingMajors?.size()) {
@@ -474,8 +474,8 @@ class MajorMinorConcentration implements Serializable {
                         .setParameterList('majors', params.existingMajors).list()
             }
         }
-        if (result.size()  == 1)   return result[0]
-        else  return null
+        if (result.size() == 1) return result[0]
+        else return null
     }
 
 }

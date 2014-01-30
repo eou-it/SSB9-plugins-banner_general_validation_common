@@ -24,13 +24,6 @@ class InformationTextPersonaListService {
         if (Holders?.config.webTailorRoleList?.size() != 0) {
             webTailorRoleList = Holders?.config.webTailorRoleList
         }
-
-       /* webTailorRoleList <<  [
-            code: "DEFAULT",
-            description: "",
-            lastModified: "",
-            lastModifiedBy: ""
-        ]*/
     }
 
     private static boolean isDefaultPersonaAdded() {
@@ -38,20 +31,6 @@ class InformationTextPersonaListService {
     }
 
     private static void addDefaultPersonaIfNotExists() {
-       /* if(isDefaultPersonaAdded()) {
-            def defaultPersona = webTailorRoleList.find { it.code == PERSONA_DEFAULT }
-            MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
-            defaultPersona.description = messageSource.getMessage("InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale())
-        }
-        else {
-            MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
-            webTailorRoleList <<  [
-                    code: PERSONA_DEFAULT,
-                    description: messageSource.getMessage("InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale()),
-                    lastModified: "",
-                    lastModifiedBy: ""
-            ]
-        }*/
 
         webTailorRoleList.removeAll{
             it.code == PERSONA_DEFAULT

@@ -8,7 +8,7 @@ package net.hedtech.banner.restfulapi
  *
  */
 class RestfulApiValidationUtility {
-
+    private final static List<String> ALLOWED_SORTORDER = ['ASC', 'DESC']
     /**
      * Check the values for "max" and "offset" in params map and corrects them if required.
      * Note this method updates the provided map so if that is not desired please send cloned map.
@@ -69,6 +69,16 @@ class RestfulApiValidationUtility {
             }
         }
     }
+
+
+    public static void validateSortOrder(String sortOrder) {
+        if (sortOrder) {
+            if (!ALLOWED_SORTORDER.contains(sortOrder.toUpperCase())) {
+                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSortOrder", [sortOrder])
+            }
+        }
+    }
+
 
     /**
      * Validates each filter (criterion).

@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.query.operators.Operators
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 /**
@@ -192,6 +193,54 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
         args << [id: "wwwwwww"]
         shouldFail(ApplicationException) {
             def term = termService.show(args)
+        }
+    }
+
+
+    void testTermListWithInvalidMax() {
+        def params = ["filter[0][field]": "code", "filter[0][value]": "20", "filter[0][operator]": "contains",
+                "max": "aswe", "offset": "2", "sort": "code", pluralizedResourceName: "terms"]
+
+        def term = termService.list(params)
+        assertEquals 10, term.size()
+    }
+
+
+    void testTermListWithInvalidOffset() {
+        def params = ["filter[0][field]": "code", "filter[0][value]": "20", "filter[0][operator]": "contains",
+                "max": "10", "offset": "ewet", "sort": "code", pluralizedResourceName: "terms"]
+
+        def term = termService.list(params)
+        assertEquals 10, term.size()
+    }
+
+
+    void testTermListWithInvalidSortOrder() {
+        def params = ["filter[0][field]": "code", "filter[0][value]": "201410", "filter[0][operator]": "lt",
+                "filter[1][field]": "description", "filter[1][value]": "fall%", "filter[1][operator]": "contains",
+                "max": "10", "offset": "2", "sort": "code", order: "ascer", pluralizedResourceName: "terms"]
+        shouldFail(RestfulApiValidationException) {
+            def term = termService.list(params)
+        }
+    }
+
+
+    void testTermListWithInvalidSortColumn() {
+        def params = ["filter[0][field]": "code", "filter[0][value]": "201410", "filter[0][operator]": "lt",
+                "filter[1][field]": "description", "filter[1][value]": "fall%", "filter[1][operator]": "contains",
+                "max": "10", "offset": "2", "sort": "code12", order: "asc", pluralizedResourceName: "terms"]
+        shouldFail(RestfulApiValidationException) {
+            def term = termService.list(params)
+        }
+    }
+
+
+    void testTermListWithInvalidSearchColumn() {
+        def params = ["filter[0][field]": "code12", "filter[0][value]": "201410", "filter[0][operator]": "lt",
+                "filter[1][field]": "description", "filter[1][value]": "fall%", "filter[1][operator]": "contains",
+                "max": "10", "offset": "2", "sort": "code", order: "asc", pluralizedResourceName: "terms"]
+        shouldFail(RestfulApiValidationException) {
+            def term = termService.list(params)
         }
     }
 

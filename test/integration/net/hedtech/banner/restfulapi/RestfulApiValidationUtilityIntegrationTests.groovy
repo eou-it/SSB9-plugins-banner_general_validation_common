@@ -77,6 +77,39 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
+    void testValidateSortOrder() {
+
+        // Valid sort order should not cause any exception for "asc"
+        RestfulApiValidationUtility.validateSortOrder("asc")
+
+        // Valid sort order should not cause any exception for "desc"
+        RestfulApiValidationUtility.validateSortOrder("desc")
+
+        // Valid sort order should not cause any exception for "ASC"
+        RestfulApiValidationUtility.validateSortOrder("ASC")
+
+        // Valid sort order should not cause any exception for "DESC"
+        RestfulApiValidationUtility.validateSortOrder("DESC")
+
+
+        // Invalid sort order causes RestfulApiValidationException
+        try {
+            RestfulApiValidationUtility.validateSortOrder("DESCO")
+            fail("Should have failed with RestfulApiValidationException")
+        } catch (RestfulApiValidationException rve) {
+            assertEquals 400, rve.getHttpStatusCode()
+            def localizer = { mapToLocalize ->
+                this.message(mapToLocalize)
+            }
+            def map = rve.returnMap(localizer)
+            assertNotNull map.headers
+            assertEquals "Validation failed", map.headers["X-Status-Reason"]
+            assertNotNull map.message
+            assertNotNull map.errors
+        }
+    }
+
+
     void testValidateCriteria() {
         // Valid "field" "operator" "value"
         def filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": "star"]]

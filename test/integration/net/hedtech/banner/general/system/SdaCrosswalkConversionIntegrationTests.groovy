@@ -243,6 +243,17 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchAllByDescriptionLikeAndInternalGroup() {
+        def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
+        save sdaCrosswalkConversion
+
+        def sdaCrosswalkConversions = SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup(i_success_description,i_success_internalGroup)
+        assertNotNull sdaCrosswalkConversions
+        assertEquals sdaCrosswalkConversions.size(), 1
+        assertEquals sdaCrosswalkConversion.description, sdaCrosswalkConversions[0].description
+    }
+
+
     private def newValidForCreateSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = new SdaCrosswalkConversion(
                 external: i_success_external,

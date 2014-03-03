@@ -38,7 +38,12 @@ query = """FROM SdaCrosswalkConversion a
 query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
            and a.internalGroup = :internalGroup
-           order by a.internalSequenceNumber """)
+           order by a.internalSequenceNumber """),
+@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup",
+        query = """FROM SdaCrosswalkConversion a
+           WHERE  UPPER(a.description) LIKE UPPER(:description)
+           AND a.internalGroup = :internalGroup
+           ORDER BY a.internal,a.internalSequenceNumber """)
 ])
 
 @Entity
@@ -133,18 +138,18 @@ class SdaCrosswalkConversion implements Serializable {
 
     public String toString() {
         """SdaCrosswalkConversion[
-					id=$id, 
-					version=$version, 
-					external=$external, 
-					internal=$internal, 
-					reportingDate=$reportingDate, 
-					translation=$translation, 
-					internalSequenceNumber=$internalSequenceNumber, 
-					internalGroup=$internalGroup, 
-					description=$description, 
-					systemRequestIndicator=$systemRequestIndicator, 
-					lastModified=$lastModified, 
-					lastModifiedBy=$lastModifiedBy, 
+					id=$id,
+					version=$version,
+					external=$external,
+					internal=$internal,
+					reportingDate=$reportingDate,
+					translation=$translation,
+					internalSequenceNumber=$internalSequenceNumber,
+					internalGroup=$internalGroup,
+					description=$description,
+					systemRequestIndicator=$systemRequestIndicator,
+					lastModified=$lastModified,
+					lastModifiedBy=$lastModifiedBy,
 					dataOrigin=$dataOrigin]"""
     }
 
@@ -219,7 +224,6 @@ class SdaCrosswalkConversion implements Serializable {
             sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndLessExternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).setString('external', external).list()
         }
         return sdax
-
     }
 
     public static List fetchAllByInternalAndInternalGroup(String internal, String internalGroup) {
@@ -228,7 +232,16 @@ class SdaCrosswalkConversion implements Serializable {
             sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).list()
         }
         return sdax
+    }
 
+    static List fetchAllByDescriptionLikeAndInternalGroup(String description, String internalGroup) {
+        def sdaCrosswalkConversions = []
+        SdaCrosswalkConversion.withSession {session ->
+            sdaCrosswalkConversions = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup')
+                    .setString('description', description)
+                    .setString('internalGroup', internalGroup).list()
+        }
+        return sdaCrosswalkConversions
     }
 
 }

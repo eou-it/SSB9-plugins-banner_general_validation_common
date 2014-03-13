@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Ignore
 
 /**
  * Service Integration  test for the 'term' model.
@@ -81,7 +82,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
 
     }
 
-
+    @Ignore
     void testTermListApiFilterByDate() {
         def term = Term.findByCode("201410")
         assertTrue term.lastModified >= new Date("01/01/2010")

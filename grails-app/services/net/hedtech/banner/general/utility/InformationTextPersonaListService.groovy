@@ -3,33 +3,60 @@
  ***************************************************************************** */
 package net.hedtech.banner.general.utility
 
-import groovy.sql.Sql
+import grails.util.Holders
 import org.apache.commons.lang.StringUtils
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 
 class InformationTextPersonaListService {
     def sessionFactory
-
     def static webTailorRoleList = []
+    static final String PERSONA_DEFAULT = "DEFAULT"
 
+    static Logger staticLog = Logger.getLogger( "net.hedtech.banner.general.utility.InformationTextPersonaListService" )
 
     static {
-        if (CH?.config.webTailorRoleList.size() != 0) {
-            webTailorRoleList = CH?.config.webTailorRoleList
+        if (Holders?.config.webTailorRoleList?.size() != 0) {
+            webTailorRoleList = Holders?.config.webTailorRoleList
         }
     }
 
-    public List fetchInformationTextPersonas(String filter) {
+    private static boolean isDefaultPersonaAdded() {
+        return webTailorRoleList.any { it.code == PERSONA_DEFAULT }
+    }
+
+    private static void addDefaultPersonaIfNotExists() {
+
+        webTailorRoleList.removeAll{
+            it.code == PERSONA_DEFAULT
+        }
+        MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
+        webTailorRoleList <<  [
+                code: PERSONA_DEFAULT,
+                description: messageSource.getMessage("net.hedtech.banner.general.utility.InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale()),
+                lastModified: "",
+                lastModifiedBy: ""
+        ]
+    }
+
+    public static def getWebtailorRoleConfiguration() {
+        addDefaultPersonaIfNotExists();
+        return webTailorRoleList;
+    }
+
+    public static List fetchInformationTextPersonas(String filter) {
         if (StringUtils.isBlank(filter)) {
             filter = "%"
         } else if (!(filter =~ /%/)) {
             filter += "%"
         }
 
-        List filteredWebTailorRoleList = filterAndOrderWebTailorRoleList(webTailorRoleList, filter)
+        List filteredWebTailorRoleList = filterAndOrderWebTailorRoleList(getWebtailorRoleConfiguration(), filter)
 
         List informationTextPersonaList = []
         filteredWebTailorRoleList?.each { webTailorRole ->
@@ -46,7 +73,7 @@ class InformationTextPersonaListService {
         return informationTextPersonaList
     }
 
-    private List filterAndOrderWebTailorRoleList(List webTailorRoleList, String filter) {
+    private static List filterAndOrderWebTailorRoleList(List webTailorRoleList, String filter) {
         String filterColumn = "code"
 
         String regEx = this.getRegEx(filter)
@@ -63,7 +90,7 @@ class InformationTextPersonaListService {
         return filteredResults
     }
 
-    private String getRegEx(String val) {
+    private static String getRegEx(String val) {
         val = val.toLowerCase()
 
         if (!val.startsWith("%")) {
@@ -82,15 +109,36 @@ class InformationTextPersonaListService {
         return regEx
     }
 
-    private Date getDate(String dateString, String format) {
+    private static Date getDate(String dateString, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format)
         sdf.setLenient(false)
         try {
             return sdf.parse(dateString)
         } catch (ParseException e) {
             // Ignore because its not the right format.
-            log.warn(" Date was not in the $format format")
+            staticLog.warn(" Date was not in the $format format")
         }
         return null
+    }
+
+
+    public static def fetchPersonas() {
+        def filter = "%"
+        def returnList = fetchInformationTextPersonas(filter)
+        def returnObj = [list: returnList]
+        return returnObj
+    }
+
+
+    public static def fetchPersonas(filter) {
+        def returnList = fetchInformationTextPersonas(filter)
+        def returnObj = [list: returnList]
+        return returnObj
+    }
+
+
+    public static InformationTextPersona fetchValidInformationTextPersona(String filter) {
+        def returnObj = fetchInformationTextPersonas(filter)[0]
+        return returnObj?.code ? returnObj : null
     }
 }

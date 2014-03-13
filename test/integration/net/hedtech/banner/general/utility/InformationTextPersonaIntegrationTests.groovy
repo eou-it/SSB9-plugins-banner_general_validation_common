@@ -1,12 +1,10 @@
 /*********************************************************************************
- Copyright 2010-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2010-2014 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 
 package net.hedtech.banner.general.utility
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
 
 class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
 
@@ -37,9 +35,9 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
                         lastModified: "19-OCT-98",
                         lastModifiedBy: ""
                 ]]
-        def personaList = InformationTextPersona.fetchInformationTextPersonas()
+        def personaList = InformationTextPersonaListService.fetchPersonas()
         int personaCount = personaList.list.size()
-        assertEquals(3, personaCount)
+        assertEquals(4, personaCount)
     }
 
     void testInformationTextPersonasWithFilter() {
@@ -62,9 +60,9 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
                         lastModified: "19-OCT-98",
                         lastModifiedBy: ""
                 ]]
-        def personaList = InformationTextPersona.fetchInformationTextPersonas('U')
+        def personaList = InformationTextPersonaListService.fetchPersonas('U')
         int personaCount = personaList.list.size()
-        assertEquals(2, personaCount)
+        assertEquals(3, personaCount)
     }
 
     void testInformationTextPersonasWithExactFilterMatch() {
@@ -87,7 +85,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
                         lastModified: "19-OCT-98",
                         lastModifiedBy: ""
                 ]]
-        def personaList = InformationTextPersona.fetchInformationTextPersonas('ALUMNI')
+        def personaList = InformationTextPersonaListService.fetchPersonas('ALUMNI')
         String persona = personaList.list[0].code
         assertEquals('ALUMNI', persona)
     }
@@ -112,7 +110,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
                         lastModified: "19-OCT-98",
                         lastModifiedBy: ""
                 ]]
-        def personaList = InformationTextPersona.fetchValidInformationTextPersona('U')
+        def personaList = InformationTextPersonaListService.fetchValidInformationTextPersona('U')
         String persona = personaList.code
         assertEquals("ALUMNI", persona)
     }

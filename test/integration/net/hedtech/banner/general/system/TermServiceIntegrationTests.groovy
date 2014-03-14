@@ -82,15 +82,14 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
 
     }
 
-    @Ignore
     void testTermListApiFilterByDate() {
-        def term = Term.findByCode("201410")
+        def term = Term.findByCode("201610")
         assertTrue term.lastModified >= new Date("01/01/2010")
         def params = ["filter[0][field]": "lastModified", "filter[0][value]": "2010-01-01T01:00:00-00:00", "filter[0][operator]": "gt", "filter[0][type]": "date"]
         def list = termService.list(params)
         assertTrue list.size() > 0
         assertTrue list[0] instanceof Term
-        assertNotNull list.find { it.code == "201410" }
+        assertNotNull list.find { it.code == "201610" }
     }
 
 

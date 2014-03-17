@@ -69,9 +69,9 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     }
 
-    @Ignore
+
     void testHoldTypeListApiFilterByDate() {
-        def params = ["filter[0][field]": "lastModified", "filter[0][value]": "2010-01-01T01:00:00-00:00", "filter[0][operator]": "gt", "filter[0][type]": "date"]
+        def params = ["filter[0][field]": "lastModified", "filter[0][value]": "2009-01-01T01:00:00-00:00", "filter[0][operator]": "gt", "filter[0][type]": "date"]
         def list = holdTypeService.list(params)
         assertTrue list.size() > 0
         assertTrue list[0] instanceof HoldType

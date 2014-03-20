@@ -9,6 +9,8 @@ package net.hedtech.banner.restfulapi
  */
 class RestfulApiValidationUtility {
 
+    private final static List<String> ALLOWED_SORTORDER = ['ASC', 'DESC']
+
     /**
      * Check the values for "max" and "offset" in params map and corrects them if required.
      * Note this method updates the provided map so if that is not desired please send cloned map.
@@ -158,6 +160,31 @@ class RestfulApiValidationUtility {
             }
         }
         return clonedMap
+    }
+
+
+    public static void validateSortOrder(String sortOrder) {
+        if (sortOrder) {
+            if (!ALLOWED_SORTORDER.contains(sortOrder.toUpperCase())) {
+                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSortOrder", [sortOrder])
+            }
+        }
+    }
+
+    /**
+     * This method can be used when it is necessary to distinguish between "api" and "qapi" requests with in service.list() method.
+     *
+     * @param params
+     * @return
+     */
+    public static boolean isQApiRequest(Map params) {
+        boolean qapiReq = false
+        if (params && params.action) {
+            if (params.action["POST"] == "list") {
+                qapiReq = true
+            }
+        }
+        return qapiReq
     }
 
 }

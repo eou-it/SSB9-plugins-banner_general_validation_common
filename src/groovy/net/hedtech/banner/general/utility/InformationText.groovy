@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2010-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2014 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.utility
 
@@ -12,6 +12,44 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GURINFO")
+@NamedQueries(value = [
+    @NamedQuery(name = "InformationText.fetchInfoTextByRole",
+        query = """ FROM InformationText a
+                               WHERE a.pageName = :pageName
+                               AND a.persona IN (:roleCode)
+                               AND a.locale = :locale
+                               AND a.sourceIndicator =
+                               (   SELECT nvl( MAX(sourceIndicator),:baseline)
+                                   FROM InformationText
+                                   WHERE pageName = a.pageName
+                                   AND label = a.label
+                                   AND sequenceNumber = a.sequenceNumber
+                                   AND persona = a.persona
+                                   AND locale = a.locale
+                                   AND sourceIndicator = :local
+                                   AND trunc(sysdate) BETWEEN trunc(NVL( startDate, (sysdate - 1) ) ) AND trunc( NVL( endDate, (sysdate + 1) ))
+                               )
+                               ORDER BY a.label, a.sequenceNumber """),
+    @NamedQuery(name = "InformationText.fetchInfoTextByRoleAndLabel",
+            query = """ FROM InformationText a
+                                   WHERE a.pageName = :pageName
+                                   AND a.persona IN (:roleCode)
+                                   AND a.locale = :locale
+                                   AND a.label = :labelText
+                                   AND a.sourceIndicator =
+                                   (   SELECT nvl( MAX(sourceIndicator),:baseline)
+                                       FROM InformationText
+                                       WHERE pageName = a.pageName
+                                       AND label = a.label
+                                       AND sequenceNumber = a.sequenceNumber
+                                       AND persona = a.persona
+                                       AND locale = a.locale
+                                       AND sourceIndicator = :local
+                                       AND trunc(sysdate) BETWEEN trunc(NVL( startDate, (sysdate - 1) ) ) AND trunc( NVL( endDate, (sysdate + 1) ))
+                                   )
+                                   ORDER BY a.label, a.sequenceNumber """)
+
+])
 class InformationText implements Serializable {
 
     @Id
@@ -216,5 +254,34 @@ class InformationText implements Serializable {
     def private static finderByAll = {
         def query = """FROM  InformationText a"""
         return new DynamicFinder(InformationText.class, query, "a")
+    }
+
+     public static List fetchInfoTextByRoles(String pageName, List<String> roleCode, String locale) {
+
+         InformationText.withSession {session ->
+             def infoText =  session.getNamedQuery('InformationText.fetchInfoTextByRole')
+                    .setString("pageName", pageName)
+                    .setParameterList("roleCode", roleCode)
+                    .setString("locale",locale)
+                    .setString("baseline",SourceIndicators.BASELINE.getCode())
+                    .setString("local",SourceIndicators.LOCAL.getCode())
+                    .list()
+
+            return infoText
+         }
+    }
+
+  public static List<InformationText> fetchInfoTextByRolesAndLabel(String pageName, List<String> roleCode, String locale, String label) {
+        InformationText.withSession {session ->
+            def infoText = session.getNamedQuery('InformationText.fetchInfoTextByRoleAndLabel')
+                    .setString("pageName", pageName)
+                    .setParameterList("roleCode", roleCode)
+                    .setString("locale",locale)
+                    .setString("labelText", label)
+                    .setString("baseline",SourceIndicators.BASELINE.getCode())
+                    .setString("local",SourceIndicators.LOCAL.getCode())
+                    .list()
+            return infoText
+        }
     }
 }

@@ -153,12 +153,12 @@ class InformationText implements Serializable {
     Long version
 
     //Static Literal constants defined for the query params
-    private static String PAGENAME = "pageName"
-    private static String ROLECODE = "roleCode"
-    private static String LOCALE ="locale"
-    private static String LABEL_TEXT = "labelText"
-    private static String BASE_LINE = "baseline"
-    private static String LOCAL ="local"
+    private static final String PAGENAME = "pageName"
+    private static final String ROLECODE = "roleCode"
+    private static final String LOCALE ="locale"
+    private static final String LABEL_TEXT = "labelText"
+    private static final String BASE_LINE = "baseline"
+    private static final String LOCAL ="local"
 
     public String toString() {
         """InformationText[

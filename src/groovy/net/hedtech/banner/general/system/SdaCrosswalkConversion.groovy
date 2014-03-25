@@ -51,9 +51,13 @@ query = """FROM SdaCrosswalkConversion a
 @Table(name = "GTVSDAX")
 class SdaCrosswalkConversion implements Serializable {
 
+    protected static final String INTERNAL_SEQUENCE_NUMBER = 'internalSequenceNumber'
+    protected static final String INTERNAL_GROUP = 'internalGroup'
+    protected static final String SYSTEM_REQUEST_INDICATOR = 'systemRequestIndicator'
     /**
      * Surrogate ID for GTVSDAX
      */
+
     @Id
     @Column(name = "GTVSDAX_SURROGATE_ID")
     @SequenceGenerator(name = "GTVSDAX_SEQ_GEN", allocationSize = 1, sequenceName = "GTVSDAX_SURROGATE_ID_SEQUENCE")
@@ -239,8 +243,8 @@ class SdaCrosswalkConversion implements Serializable {
 
     public static Map fetchReportingDates(Integer internalSequenceNumber, String internalGroup , String systemRequestIndicator){
         def sdaCrosswalkConversion = SdaCrosswalkConversion.withSession {session ->
-            session.getNamedQuery('SdaCrosswalkConversion.fetchReportingDates').setInteger('internalSequenceNumber',internalSequenceNumber)
-                    .setString('internalGroup',internalGroup).setString('systemRequestIndicator',systemRequestIndicator).list()
+            session.getNamedQuery('SdaCrosswalkConversion.fetchReportingDates').setInteger(INTERNAL_SEQUENCE_NUMBER,internalSequenceNumber)
+                    .setString(INTERNAL_GROUP,internalGroup).setString(SYSTEM_REQUEST_INDICATOR,systemRequestIndicator).list()
         }
         Map reportingDate = [:]
         if (sdaCrosswalkConversion) {

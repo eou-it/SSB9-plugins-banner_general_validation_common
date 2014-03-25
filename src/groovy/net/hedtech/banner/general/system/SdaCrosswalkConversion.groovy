@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -38,7 +38,13 @@ query = """FROM SdaCrosswalkConversion a
 query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
            and a.internalGroup = :internalGroup
-           order by a.internalSequenceNumber """)
+           order by a.internalSequenceNumber """),
+@NamedQuery(name = "SdaCrosswalkConversion.fetchReportingDates",
+        query = """SELECT a.internal,TRUNC(a.reportingDate) as reportingDate
+             FROM SdaCrosswalkConversion a WHERE a.internalSequenceNumber = :internalSequenceNumber
+                                        AND a.internalGroup = :internalGroup
+                                        AND a.systemRequestIndicator= :systemRequestIndicator """)
+
 ])
 
 @Entity
@@ -231,4 +237,17 @@ class SdaCrosswalkConversion implements Serializable {
 
     }
 
+    public static Map fetchReportingDates(Integer internalSequenceNumber, String internalGroup , String systemRequestIndicator){
+        def sdaCrosswalkConversion = SdaCrosswalkConversion.withSession {session ->
+            session.getNamedQuery('SdaCrosswalkConversion.fetchReportingDates').setInteger('internalSequenceNumber',internalSequenceNumber)
+                    .setString('internalGroup',internalGroup).setString('systemRequestIndicator',systemRequestIndicator).list()
+        }
+        Map reportingDate = [:]
+        if (sdaCrosswalkConversion) {
+            sdaCrosswalkConversion.each{
+                reportingDate.put(it[0], it[1])
+                }
+        }
+        return reportingDate
+    }
 }

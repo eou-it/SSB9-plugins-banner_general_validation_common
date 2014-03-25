@@ -152,6 +152,14 @@ class InformationText implements Serializable {
     @Column(name = "GURINFO_VERSION",precision = 19)
     Long version
 
+    //Static Literal constants defined for the query params
+    private static String PAGENAME = "pageName"
+    private static String ROLECODE = "roleCode"
+    private static String LOCALE ="locale"
+    private static String LABEL_TEXT = "labelText"
+    private static String BASE_LINE = "baseline"
+    private static String LOCAL ="local"
+
     public String toString() {
         """InformationText[
 					id=$id,
@@ -256,30 +264,47 @@ class InformationText implements Serializable {
         return new DynamicFinder(InformationText.class, query, "a")
     }
 
+    /**
+     * fetchInfoTextByRoles method returns info text for the given roles irrespective of the labels.
+     * @param pageName
+     * @param roleCode
+     * @param locale
+     * @return
+     */
+
      public static List fetchInfoTextByRoles(String pageName, List<String> roleCode, String locale) {
 
          InformationText.withSession {session ->
              def infoText =  session.getNamedQuery('InformationText.fetchInfoTextByRole')
-                    .setString("pageName", pageName)
-                    .setParameterList("roleCode", roleCode)
-                    .setString("locale",locale)
-                    .setString("baseline",SourceIndicators.BASELINE.getCode())
-                    .setString("local",SourceIndicators.LOCAL.getCode())
+                    .setString(PAGENAME, pageName)
+                    .setParameterList(ROLECODE, roleCode)
+                    .setString(LOCALE,locale)
+                    .setString(BASE_LINE,SourceIndicators.BASELINE.getCode())
+                    .setString(LOCAL,SourceIndicators.LOCAL.getCode())
                     .list()
 
             return infoText
          }
     }
 
-  public static List<InformationText> fetchInfoTextByRolesAndLabel(String pageName, List<String> roleCode, String locale, String label) {
+    /**
+     * fetchInfoTextByRolesAndLabel method returns info text for the given roles and
+     * specific label provided.
+     * @param pageName
+     * @param roleCode
+     * @param locale
+     * @param label
+     * @return
+     */
+   public static List<InformationText> fetchInfoTextByRolesAndLabel(String pageName, List<String> roleCode, String locale, String label) {
         InformationText.withSession {session ->
             def infoText = session.getNamedQuery('InformationText.fetchInfoTextByRoleAndLabel')
-                    .setString("pageName", pageName)
-                    .setParameterList("roleCode", roleCode)
-                    .setString("locale",locale)
-                    .setString("labelText", label)
-                    .setString("baseline",SourceIndicators.BASELINE.getCode())
-                    .setString("local",SourceIndicators.LOCAL.getCode())
+                    .setString(PAGENAME, pageName)
+                    .setParameterList(ROLECODE, roleCode)
+                    .setString(LOCALE,locale)
+                    .setString(LABEL_TEXT, label)
+                    .setString(BASE_LINE,SourceIndicators.BASELINE.getCode())
+                    .setString(LOCAL,SourceIndicators.LOCAL.getCode())
                     .list()
             return infoText
         }

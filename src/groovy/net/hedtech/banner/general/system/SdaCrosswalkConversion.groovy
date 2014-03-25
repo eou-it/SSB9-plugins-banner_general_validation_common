@@ -54,6 +54,8 @@ class SdaCrosswalkConversion implements Serializable {
     protected static final String INTERNAL_SEQUENCE_NUMBER = 'internalSequenceNumber'
     protected static final String INTERNAL_GROUP = 'internalGroup'
     protected static final String SYSTEM_REQUEST_INDICATOR = 'systemRequestIndicator'
+    protected static final String INTERNAL = 'internal'
+    protected static final String EXTERNAL = 'external'
     /**
      * Surrogate ID for GTVSDAX
      */
@@ -216,7 +218,7 @@ class SdaCrosswalkConversion implements Serializable {
     public static List fetchAllByInternalAndExternalAndInternalGroup(String internal, String external, String internalGroup) {
         def sdax
         SdaCrosswalkConversion.withSession {session ->
-            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndExternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).setString('external', external).list()
+            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndExternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).setString(EXTERNAL, external).list()
         }
         return sdax
 
@@ -226,7 +228,7 @@ class SdaCrosswalkConversion implements Serializable {
     public static List fetchAllByInternalAndLessExternalAndInternalGroup(String internal, String external, String internalGroup) {
         def sdax
         SdaCrosswalkConversion.withSession {session ->
-            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndLessExternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).setString('external', external).list()
+            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndLessExternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).setString(EXTERNAL, external).list()
         }
         return sdax
 
@@ -235,7 +237,7 @@ class SdaCrosswalkConversion implements Serializable {
     public static List fetchAllByInternalAndInternalGroup(String internal, String internalGroup) {
         def sdax
         SdaCrosswalkConversion.withSession {session ->
-            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).list()
+            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).list()
         }
         return sdax
 

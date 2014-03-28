@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -39,20 +39,27 @@ query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
            and a.internalGroup = :internalGroup
            order by a.internalSequenceNumber """),
-@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup",
-        query = """FROM SdaCrosswalkConversion a
-           WHERE  UPPER(a.description) LIKE UPPER(:description)
-           AND a.internalGroup = :internalGroup
-           ORDER BY a.internal,a.internalSequenceNumber """)
+@NamedQuery(name = "SdaCrosswalkConversion.fetchReportingDates",
+        query = """SELECT a.internal,TRUNC(a.reportingDate) as reportingDate
+             FROM SdaCrosswalkConversion a WHERE a.internalSequenceNumber = :internalSequenceNumber
+                                        AND a.internalGroup = :internalGroup
+                                        AND a.systemRequestIndicator= :systemRequestIndicator """)
+
 ])
 
 @Entity
 @Table(name = "GTVSDAX")
 class SdaCrosswalkConversion implements Serializable {
 
+    protected static final String INTERNAL_SEQUENCE_NUMBER = 'internalSequenceNumber'
+    protected static final String INTERNAL_GROUP = 'internalGroup'
+    protected static final String SYSTEM_REQUEST_INDICATOR = 'systemRequestIndicator'
+    protected static final String INTERNAL = 'internal'
+    protected static final String EXTERNAL = 'external'
     /**
      * Surrogate ID for GTVSDAX
      */
+
     @Id
     @Column(name = "GTVSDAX_SURROGATE_ID")
     @SequenceGenerator(name = "GTVSDAX_SEQ_GEN", allocationSize = 1, sequenceName = "GTVSDAX_SURROGATE_ID_SEQUENCE")
@@ -138,18 +145,18 @@ class SdaCrosswalkConversion implements Serializable {
 
     public String toString() {
         """SdaCrosswalkConversion[
-					id=$id,
-					version=$version,
-					external=$external,
-					internal=$internal,
-					reportingDate=$reportingDate,
-					translation=$translation,
-					internalSequenceNumber=$internalSequenceNumber,
-					internalGroup=$internalGroup,
-					description=$description,
-					systemRequestIndicator=$systemRequestIndicator,
-					lastModified=$lastModified,
-					lastModifiedBy=$lastModifiedBy,
+					id=$id, 
+					version=$version, 
+					external=$external, 
+					internal=$internal, 
+					reportingDate=$reportingDate, 
+					translation=$translation, 
+					internalSequenceNumber=$internalSequenceNumber, 
+					internalGroup=$internalGroup, 
+					description=$description, 
+					systemRequestIndicator=$systemRequestIndicator, 
+					lastModified=$lastModified, 
+					lastModifiedBy=$lastModifiedBy, 
 					dataOrigin=$dataOrigin]"""
     }
 
@@ -211,7 +218,7 @@ class SdaCrosswalkConversion implements Serializable {
     public static List fetchAllByInternalAndExternalAndInternalGroup(String internal, String external, String internalGroup) {
         def sdax
         SdaCrosswalkConversion.withSession {session ->
-            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndExternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).setString('external', external).list()
+            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndExternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).setString(EXTERNAL, external).list()
         }
         return sdax
 
@@ -221,27 +228,32 @@ class SdaCrosswalkConversion implements Serializable {
     public static List fetchAllByInternalAndLessExternalAndInternalGroup(String internal, String external, String internalGroup) {
         def sdax
         SdaCrosswalkConversion.withSession {session ->
-            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndLessExternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).setString('external', external).list()
+            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndLessExternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).setString(EXTERNAL, external).list()
         }
         return sdax
+
     }
 
     public static List fetchAllByInternalAndInternalGroup(String internal, String internalGroup) {
         def sdax
         SdaCrosswalkConversion.withSession {session ->
-            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup').setString('internal', internal).setString('internalGroup', internalGroup).list()
+            sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).list()
         }
         return sdax
+
     }
 
-    static List fetchAllByDescriptionLikeAndInternalGroup(String description, String internalGroup) {
-        def sdaCrosswalkConversions = []
-        SdaCrosswalkConversion.withSession {session ->
-            sdaCrosswalkConversions = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup')
-                    .setString('description', description)
-                    .setString('internalGroup', internalGroup).list()
+    public static Map fetchReportingDates(Integer internalSequenceNumber, String internalGroup , String systemRequestIndicator){
+        def sdaCrosswalkConversion = SdaCrosswalkConversion.withSession {session ->
+            session.getNamedQuery('SdaCrosswalkConversion.fetchReportingDates').setInteger(INTERNAL_SEQUENCE_NUMBER,internalSequenceNumber)
+                    .setString(INTERNAL_GROUP,internalGroup).setString(SYSTEM_REQUEST_INDICATOR,systemRequestIndicator).list()
         }
-        return sdaCrosswalkConversions
+        Map reportingDate = [:]
+        if (sdaCrosswalkConversion) {
+            sdaCrosswalkConversion.each{
+                reportingDate.put(it[0], it[1])
+                }
+        }
+        return reportingDate
     }
-
 }

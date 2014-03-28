@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2010-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2014 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.utility
 
@@ -12,6 +12,44 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GURINFO")
+@NamedQueries(value = [
+    @NamedQuery(name = "InformationText.fetchInfoTextByRole",
+        query = """ FROM InformationText a
+                               WHERE a.pageName = :pageName
+                               AND a.persona IN (:roleCode)
+                               AND a.locale = :locale
+                               AND a.sourceIndicator =
+                               (   SELECT nvl( MAX(sourceIndicator),:baseline)
+                                   FROM InformationText
+                                   WHERE pageName = a.pageName
+                                   AND label = a.label
+                                   AND sequenceNumber = a.sequenceNumber
+                                   AND persona = a.persona
+                                   AND locale = a.locale
+                                   AND sourceIndicator = :local
+                                   AND trunc(sysdate) BETWEEN trunc(NVL( startDate, (sysdate - 1) ) ) AND trunc( NVL( endDate, (sysdate + 1) ))
+                               )
+                               ORDER BY a.label, a.sequenceNumber """),
+    @NamedQuery(name = "InformationText.fetchInfoTextByRoleAndLabel",
+            query = """ FROM InformationText a
+                                   WHERE a.pageName = :pageName
+                                   AND a.persona IN (:roleCode)
+                                   AND a.locale = :locale
+                                   AND a.label = :labelText
+                                   AND a.sourceIndicator =
+                                   (   SELECT nvl( MAX(sourceIndicator),:baseline)
+                                       FROM InformationText
+                                       WHERE pageName = a.pageName
+                                       AND label = a.label
+                                       AND sequenceNumber = a.sequenceNumber
+                                       AND persona = a.persona
+                                       AND locale = a.locale
+                                       AND sourceIndicator = :local
+                                       AND trunc(sysdate) BETWEEN trunc(NVL( startDate, (sysdate - 1) ) ) AND trunc( NVL( endDate, (sysdate + 1) ))
+                                   )
+                                   ORDER BY a.label, a.sequenceNumber """)
+
+])
 class InformationText implements Serializable {
 
     @Id
@@ -113,6 +151,14 @@ class InformationText implements Serializable {
     @Version
     @Column(name = "GURINFO_VERSION",precision = 19)
     Long version
+
+    //Static Literal constants defined for the query params
+    private static final String PAGENAME = "pageName"
+    private static final String ROLECODE = "roleCode"
+    private static final String LOCALE ="locale"
+    private static final String LABEL_TEXT = "labelText"
+    private static final String BASE_LINE = "baseline"
+    private static final String LOCAL ="local"
 
     public String toString() {
         """InformationText[
@@ -216,5 +262,51 @@ class InformationText implements Serializable {
     def private static finderByAll = {
         def query = """FROM  InformationText a"""
         return new DynamicFinder(InformationText.class, query, "a")
+    }
+
+    /**
+     * fetchInfoTextByRoles method returns info text for the given roles irrespective of the labels.
+     * @param pageName
+     * @param roleCode
+     * @param locale
+     * @return
+     */
+
+     public static List fetchInfoTextByRoles(String pageName, List<String> roleCode, String locale) {
+
+         InformationText.withSession {session ->
+             def infoText =  session.getNamedQuery('InformationText.fetchInfoTextByRole')
+                    .setString(PAGENAME, pageName)
+                    .setParameterList(ROLECODE, roleCode)
+                    .setString(LOCALE,locale)
+                    .setString(BASE_LINE,SourceIndicators.BASELINE.getCode())
+                    .setString(LOCAL,SourceIndicators.LOCAL.getCode())
+                    .list()
+
+            return infoText
+         }
+    }
+
+    /**
+     * fetchInfoTextByRolesAndLabel method returns info text for the given roles and
+     * specific label provided.
+     * @param pageName
+     * @param roleCode
+     * @param locale
+     * @param label
+     * @return
+     */
+   public static List<InformationText> fetchInfoTextByRolesAndLabel(String pageName, List<String> roleCode, String locale, String label) {
+        InformationText.withSession {session ->
+            def infoText = session.getNamedQuery('InformationText.fetchInfoTextByRoleAndLabel')
+                    .setString(PAGENAME, pageName)
+                    .setParameterList(ROLECODE, roleCode)
+                    .setString(LOCALE,locale)
+                    .setString(LABEL_TEXT, label)
+                    .setString(BASE_LINE,SourceIndicators.BASELINE.getCode())
+                    .setString(LOCAL,SourceIndicators.LOCAL.getCode())
+                    .list()
+            return infoText
+        }
     }
 }

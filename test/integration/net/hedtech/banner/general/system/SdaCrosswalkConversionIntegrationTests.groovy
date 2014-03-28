@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -241,6 +241,16 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull sdaxs
         assertEquals sdaxs.size(), 1
     }
+
+    void testFetchReportingDates() {
+        def sdax = newValidForCreateSdaCrosswalkConversion()
+        save sdax
+
+        def sdaxs = SdaCrosswalkConversion.fetchReportingDates(i_success_internalSequenceNumber,i_success_internalGroup,i_success_systemRequestIndicator)
+        assertNotNull sdaxs
+        assertEquals sdaxs.size(), 1
+    }
+
 
 
     void testFetchAllByDescriptionLikeAndInternalGroup() {

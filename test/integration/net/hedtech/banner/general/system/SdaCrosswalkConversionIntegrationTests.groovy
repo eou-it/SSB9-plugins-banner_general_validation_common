@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
+import org.junit.Ignore
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
@@ -252,7 +253,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-
+    @Ignore
     void testFetchAllByDescriptionLikeAndInternalGroup() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         save sdaCrosswalkConversion

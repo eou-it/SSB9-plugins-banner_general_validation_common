@@ -256,4 +256,15 @@ class SdaCrosswalkConversion implements Serializable {
         }
         return reportingDate
     }
+
+    static List fetchAllByDescriptionLikeAndInternalGroup(String description, String internalGroup) {
+        def sdaCrosswalkConversions = []
+        SdaCrosswalkConversion.withSession {session ->
+            sdaCrosswalkConversions = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup')
+                    .setString('description', description)
+                    .setString('internalGroup', internalGroup).list()
+        }
+        return sdaCrosswalkConversions
+    }
+
 }

@@ -43,8 +43,12 @@ query = """FROM SdaCrosswalkConversion a
         query = """SELECT a.internal,TRUNC(a.reportingDate) as reportingDate
              FROM SdaCrosswalkConversion a WHERE a.internalSequenceNumber = :internalSequenceNumber
                                         AND a.internalGroup = :internalGroup
-                                        AND a.systemRequestIndicator= :systemRequestIndicator """)
-
+                                        AND a.systemRequestIndicator= :systemRequestIndicator """),
+@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup",
+        query = """FROM SdaCrosswalkConversion a
+           WHERE  UPPER(a.description) LIKE UPPER(:description)
+           AND a.internalGroup = :internalGroup
+           ORDER BY a.internal,a.internalSequenceNumber """)
 ])
 
 @Entity

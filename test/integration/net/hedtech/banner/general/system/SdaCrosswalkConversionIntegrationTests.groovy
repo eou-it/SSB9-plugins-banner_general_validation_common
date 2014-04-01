@@ -253,7 +253,6 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    @Ignore
     void testFetchAllByDescriptionLikeAndInternalGroup() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         save sdaCrosswalkConversion

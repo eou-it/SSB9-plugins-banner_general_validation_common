@@ -109,6 +109,7 @@
         <mapping class="net.hedtech.banner.general.system.SdaCrosswalkConversion"/>
         <mapping class="net.hedtech.banner.general.system.Site"/>
         <mapping class="net.hedtech.banner.general.system.SourceAndBackgroundInstitution"/>
+        <mapping class="net.hedtech.banner.general.system.SqlProcessParameter"/>
         <mapping class="net.hedtech.banner.general.system.State"/>
         <mapping class="net.hedtech.banner.general.system.StudentActivity"/>
         <mapping class="net.hedtech.banner.general.system.Subject"/>

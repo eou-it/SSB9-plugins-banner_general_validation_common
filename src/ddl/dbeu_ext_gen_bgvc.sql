@@ -55,6 +55,7 @@ execute dbeu_util.extend_table('GENERAL','GTVCMSC','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVCURR','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSQRU','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVSQPR','G',FALSE);
+execute dbeu_util.extend_table('GENERAL','GTVSQPA','G',FALSE);
 execute dbeu_util.extend_table('GENERAL','GTVUOMS','G',FALSE);
 
 execute dbeu_util.extend_table('GENERAL','GORRACE','G',TRUE);

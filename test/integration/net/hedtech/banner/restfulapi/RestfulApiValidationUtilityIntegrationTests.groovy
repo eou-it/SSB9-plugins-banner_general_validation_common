@@ -165,6 +165,11 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
+    void testThrowValidationExceptionForDefaultNotFound() {
+        shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForDefaultNotFound("Term") })
+    }
+
+
     void testCopyProperties() {
         def code = "201410"
         def desc = "201410 term"

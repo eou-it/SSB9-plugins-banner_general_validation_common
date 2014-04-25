@@ -82,7 +82,7 @@ class TermService extends ServiceBase {
             String termCode = map.id
             term = Term.findByCode(termCode)
             if (!term) {
-                RestfulApiValidationUtility.throwValidationExceptionForDefaultNotFound("Term")
+                throw new ApplicationException("api", new NotFoundException(id: "Term"))
             }
         }
         return term

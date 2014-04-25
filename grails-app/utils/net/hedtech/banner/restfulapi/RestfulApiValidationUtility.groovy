@@ -146,7 +146,7 @@ class RestfulApiValidationUtility {
 
 
     public static void throwValidationExceptionForDefaultNotFound(String objectName) {
-        throw new RestfulApiValidationException("default.not.found.message.api", [objectName])
+        throw new RestfulApiValidationException("api.not.found.message", [null, objectName])
     }
 
 

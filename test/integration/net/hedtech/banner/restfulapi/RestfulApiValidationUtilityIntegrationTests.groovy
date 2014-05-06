@@ -165,7 +165,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
 
 
     void testThrowValidationExceptionForDefaultNotFound() {
-        shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForDefaultNotFound("term.label") })
+        shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForDefaultNotFound("Term") })
     }
 
 

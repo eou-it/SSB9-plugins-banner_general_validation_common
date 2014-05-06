@@ -40,8 +40,7 @@ class RestfulApiValidationException extends RuntimeException {
         map.message = localize(code: messageCode, args: messageArgs)
 
         // object to be rendered as JSON or xml in the response body
-        map.errors = [[type: "validation", messageCode: messageCode, message: map.message]]
-
+        map.errors = [[type: "validation", messageCode: messageCode, message: localize(code: messageCode, args: messageArgs.collect { localize(code: it) } )]]
         return map
     }
 

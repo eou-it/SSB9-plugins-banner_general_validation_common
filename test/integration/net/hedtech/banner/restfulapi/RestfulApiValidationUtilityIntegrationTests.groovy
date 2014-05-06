@@ -62,7 +62,6 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         // Invalid sort field causes RestfulApiValidationException
         try {
             RestfulApiValidationUtility.validateSortField("dummy", allowedSortFields)
-            fail("Should have failed with RestfulApiValidationException")
         } catch (RestfulApiValidationException rve) {
             assertEquals 400, rve.getHttpStatusCode()
             def localizer = { mapToLocalize ->
@@ -166,7 +165,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
 
 
     void testThrowValidationExceptionForDefaultNotFound() {
-        shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForDefaultNotFound("Term") })
+        shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForDefaultNotFound("term.label") })
     }
 
 

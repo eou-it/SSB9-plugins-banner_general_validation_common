@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.query.operators.Operators
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Ignore
 
@@ -139,6 +140,55 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
         assertTrue list.size() > 0
         assertEquals 10, list.size()
         assertTrue list[0] instanceof Term
+    }
+
+
+    void testListCodeFilterSupportedOperators() {
+        def params = ["filter[0][field]": "code", "filter[0][operator]": "equals", "filter[0][value]": "201410"]
+        def list = termService.list(params)
+        assertTrue list.size() > 0
+
+        params = ["filter[0][field]": "code", "filter[0][operator]": "contains", "filter[0][value]": "2014"]
+        list = termService.list(params)
+        assertTrue list.size() > 0
+
+        params = ["filter[0][field]": "code", "filter[0][operator]": "startswith", "filter[0][value]": "2014"]
+        list = termService.list(params)
+        assertTrue list.size() > 0
+
+        params = ["filter[0][field]": "code", "filter[0][operator]": "lessthan", "filter[0][value]": "201410"]
+        list = termService.list(params)
+        assertTrue list.size() > 0
+
+        params = ["filter[0][field]": "code", "filter[0][operator]": "greaterthan", "filter[0][value]": "201410"]
+        list = termService.list(params)
+        assertTrue list.size() > 0
+    }
+
+
+    void testListDescriptionFilterSupportedOperators() {
+        def params = ["filter[0][field]": "description", "filter[0][operator]": "equals", "filter[0][value]": "Fall 2013(201410)"]
+        def list = termService.list(params)
+        assertTrue list.size() > 0
+
+        params = ["filter[0][field]": "description", "filter[0][operator]": "equalsignorecase", "filter[0][value]": "faLl 2013(201410)"]
+        list = termService.list(params)
+        assertTrue list.size() > 0
+
+        params = ["filter[0][field]": "description", "filter[0][operator]": "contains", "filter[0][value]": "fall"]
+        list = termService.list(params)
+        assertTrue list.size() > 0
+    }
+
+
+    void testListDescriptionFilterUnsupportedOperator() {
+        // Unsupported operator
+        def params = ["filter[0][field]": "description", "filter[0][operator]": "startswith", "filter[0][value]": "fall"]
+        shouldFail(RestfulApiValidationException) { termService.list(params) }
+
+        // Invalid operator (equalsignorecas - missing 'e' at end)
+        params = ["filter[0][field]": "description", "filter[0][operator]": "equalsignorecas", "filter[0][value]": "faLl 2013(201410)"]
+        shouldFail(RestfulApiValidationException) { termService.list(params) }
     }
 
 

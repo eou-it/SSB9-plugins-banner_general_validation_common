@@ -45,6 +45,8 @@ class TermService extends ServiceBase {
 
         def allowedFields = ["code"        : [Operators.EQUALS, Operators.CONTAINS, Operators.STARTS_WITH, "lt", Operators.LESS_THAN, "gt", Operators.GREATER_THAN],
                              "description" : [Operators.EQUALS, Operators.EQUALS_IGNORE_CASE, Operators.CONTAINS],
+                             "startDate"   : [Operators.EQUALS, "lt", Operators.LESS_THAN, Operators.LESS_THAN_EQUALS, "gt", Operators.GREATER_THAN, Operators.GREATER_THAN_EQUALS],
+                             "endDate"     : [Operators.EQUALS, "lt", Operators.LESS_THAN, Operators.LESS_THAN_EQUALS, "gt", Operators.GREATER_THAN, Operators.GREATER_THAN_EQUALS],
                              "lastModified": [Operators.EQUALS, "lt", Operators.LESS_THAN, "gt", Operators.GREATER_THAN]]
         RestfulApiValidationUtility.validateCriteria(QueryBuilder.createFilters(map), allowedFields)
 

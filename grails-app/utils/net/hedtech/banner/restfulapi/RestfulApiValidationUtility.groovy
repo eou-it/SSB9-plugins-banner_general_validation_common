@@ -88,15 +88,15 @@ class RestfulApiValidationUtility {
             String operator = it.operator
             String value = it.value
             if (!field || !operator || !value) {
-                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidCriterion", ["$field $operator $value"])
+                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidCriterion")
             } else {
                 // Validate field
                 if (allowedSearchFields && !allowedSearchFields.contains(field)) {
-                    throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSearchFieldInCriterion", ["$field $operator $value"])
+                    throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSearchFieldInCriterion")
                 }
                 // Validate operator
                 if (allowedOperators && !allowedOperators.contains(operator)) {
-                    throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidOperatorInCriterion", ["$field $operator $value"])
+                    throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidOperatorInCriterion")
                 }
             }
         }
@@ -115,16 +115,16 @@ class RestfulApiValidationUtility {
             String operator = it.operator
             String value = it.value
             if (!field || !operator || !value) {
-                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidCriterion", ["$field $operator $value"])
+                throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidCriterion")
             } else {
                 if (map) {
                     if (map.containsKey(field)) {
                         def allowedOperators = map[field]
                         if (allowedOperators && !allowedOperators.contains(operator)) {
-                            throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidOperatorInCriterion", ["$field $operator $value"])
+                            throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidOperatorInCriterion")
                         }
                     } else {
-                        throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSearchFieldInCriterion", ["$field $operator $value"])
+                        throw new RestfulApiValidationException("RestfulApiValidationUtility.invalidSearchFieldInCriterion")
                     }
                 }
             }

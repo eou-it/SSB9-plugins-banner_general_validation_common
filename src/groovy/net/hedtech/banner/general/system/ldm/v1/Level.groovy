@@ -4,13 +4,19 @@
 package net.hedtech.banner.general.system.ldm.v1
 
 /**
- * LDM decorator for level resource address.
+ * LDM decorator for /base/domain/academicLevel/v1/academicLevel.json-schema
+ *
  */
 class Level {
 
-    @Delegate private final net.hedtech.banner.general.system.Level level
+    @Delegate
+    private final net.hedtech.banner.general.system.Level level
+    String guid
 
-    def Level(net.hedtech.banner.general.system.Level level){
+
+    def Level(String guid, net.hedtech.banner.general.system.Level level) {
+        this.guid = guid
         this.level = level
     }
- }
+
+}

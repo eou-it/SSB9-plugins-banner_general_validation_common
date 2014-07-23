@@ -5,9 +5,9 @@ package net.hedtech.banner.ldm.level
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.Level
 import org.springframework.transaction.annotation.Transactional
-import net.hedtech.banner.ldm.overall.Guid
 
 /**
  * LevelCompositeService.
@@ -25,7 +25,7 @@ class LevelCompositeService {
         log.trace "get:Begin"
         def ldmLevel
         if (null != id) {
-            def entity = Guid.findByGuid(id)
+            def entity = GlobalUniqueIdentifier.findByGuid(id)
             if (!entity) {
                 throw new ApplicationException("api", new NotFoundException(id: Level.class.simpleName))
             }

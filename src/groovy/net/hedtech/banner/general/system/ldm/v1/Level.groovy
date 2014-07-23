@@ -4,7 +4,7 @@
 package net.hedtech.banner.general.system.ldm.v1
 
 /**
- * LDM decorator for /base/domain/academicLevel/v1/academicLevel.json-schema
+ * Decorator for Academic Level LDM (/base/domain/academicLevel/v1/academicLevel.json-schema)
  *
  */
 class Level {

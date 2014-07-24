@@ -13,7 +13,10 @@ import net.hedtech.banner.general.system.Subject
 import net.hedtech.banner.general.system.ldm.v1.SubjectDetail
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 
-
+/**
+ * LDM service class for the Subject resource, which exposes the
+ * methods get() and list() as Restfull services
+ */
 class SubjectCompositeService {
 
     private static final String LDM_NAME ="subjects"

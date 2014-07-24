@@ -3,18 +3,20 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v1
 
+import net.hedtech.banner.general.system.Level
+
 /**
  * Decorator for Academic Level LDM (/base/domain/academicLevel/v1/academicLevel.json-schema)
  *
  */
-class Level {
+class AcademicLevel {
 
     @Delegate
-    private final net.hedtech.banner.general.system.Level level
+    private final Level level
     String guid
 
 
-    def Level(String guid, net.hedtech.banner.general.system.Level level) {
+    def AcademicLevel(String guid, Level level) {
         this.guid = guid
         this.level = level
     }

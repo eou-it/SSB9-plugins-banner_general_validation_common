@@ -92,7 +92,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
 
     void testFetchByLdmNameAndDomainIdInvalidValues() {
         assertNull GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(null, i_success_domainId)
-        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(null, i_success_domainId)
+        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(i_success_ldmName, null)
     }
 
 
@@ -101,6 +101,23 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)
         assertNotNull globalUniqueIdentifier.id
         def globalUniqueIdentifier1 = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(i_success_ldmName, i_success_domainId)
+        assertNotNull globalUniqueIdentifier1
+        assertEquals globalUniqueIdentifier, globalUniqueIdentifier1
+    }
+
+
+    void testFetchByLdmNameAndGuidInvalidValues() {
+        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndGuid(null, i_success_guid)
+        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(i_success_ldmName, null)
+    }
+
+
+    void testFetchByLdmNameAndGuid() {
+        GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
+        globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)
+        assertNotNull globalUniqueIdentifier.id
+        assertNotNull globalUniqueIdentifier.guid
+        def globalUniqueIdentifier1 = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(i_success_ldmName, globalUniqueIdentifier.guid)
         assertNotNull globalUniqueIdentifier1
         assertEquals globalUniqueIdentifier, globalUniqueIdentifier1
     }

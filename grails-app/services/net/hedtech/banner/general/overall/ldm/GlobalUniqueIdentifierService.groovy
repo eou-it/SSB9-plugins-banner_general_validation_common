@@ -37,4 +37,15 @@ class GlobalUniqueIdentifierService extends ServiceBase {
     String fetchByLdmNameAndDomainId(ldmName, domainId){
         return  GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(ldmName, domainId)?.guid
     }
+
+    /**
+     * Finds the Enity GlobalUniqueIdentifier for given ldmName and guid
+     * @param ldmName
+     * @param guid
+     * @return
+     */
+    @Transactional(readOnly = true)
+    GlobalUniqueIdentifier findByLdmNameAndGuid(ldmName, guid){
+        return  GlobalUniqueIdentifier.findByLdmNameAndGuid(ldmName,guid)
+    }
 }

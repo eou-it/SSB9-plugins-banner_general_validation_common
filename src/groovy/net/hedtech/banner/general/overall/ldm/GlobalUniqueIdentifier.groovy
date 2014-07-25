@@ -14,7 +14,11 @@ import javax.persistence.*
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainId",
                 query = """FROM GlobalUniqueIdentifier a
                               WHERE a.ldmName = :ldmName
-                              AND a.domainId = :domainId""")
+                              AND a.domainId = :domainId"""),
+        @NamedQuery(name = "GlobalUniqueIdentifier.findByLdmNameAndGuid",
+                query = """FROM GlobalUniqueIdentifier a
+                              WHERE a.ldmName = :ldmName
+                              AND a.guid = :guid""")
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**

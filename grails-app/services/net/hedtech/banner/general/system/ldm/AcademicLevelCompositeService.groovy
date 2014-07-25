@@ -8,6 +8,7 @@ import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
+import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -16,9 +17,25 @@ import org.springframework.transaction.annotation.Transactional
  */
 
 @Transactional
-class LevelCompositeService {
+class AcademicLevelCompositeService {
 
     def levelService
+
+
+    List<AcademicLevel> list(Map map) {
+        List academicLevels = []
+        RestfulApiValidationUtility.correctMaxAndOffset(map, 10, 30)
+        List<Level> levels = levelService.list(map) as List
+        levels.each { level ->
+            academicLevels << new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId('academic-levels', level.id)?.guid, level)
+        }
+        return academicLevels
+    }
+
+
+    Long count() {
+        return Level.count()
+    }
 
 
     @Transactional(readOnly = true)
@@ -42,19 +59,21 @@ class LevelCompositeService {
         return ldmLevel
     }
 
+
     AcademicLevel fetchByAcademicLevelId(Long academicLevelId) {
-        if(null == academicLevelId) {
+        if (null == academicLevelId) {
             return null
         }
         return new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId('academic-levels', academicLevelId)?.guid, Level.get(academicLevelId) as Level)
     }
 
+
     AcademicLevel fetchByAcademicLevel(String academicLevelCode) {
-        if(!academicLevelCode) {
+        if (!academicLevelCode) {
             return null
         }
         Level levelCode = Level.findByCode(academicLevelCode)
-        if(!levelCode){
+        if (!levelCode) {
             return null
         }
         return new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId('academic-levels', levelCode.id)?.guid, levelCode)

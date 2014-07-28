@@ -20,4 +20,15 @@ class SubjectService extends ServiceBase{
 
     boolean transactional = true
 
+
+    /**
+     * Finds Subject for a give subjectCode
+     * @param subjectCode
+     * @return Subject - Entity
+     */
+    Subject fetchByCode(subjectCode){
+        Subject.findByCode(subjectCode)
+
+    }
+
 }

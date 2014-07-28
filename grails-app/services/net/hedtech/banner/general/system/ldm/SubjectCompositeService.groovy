@@ -31,8 +31,9 @@ class SubjectCompositeService {
      * @return SubjectDetail
      */
     SubjectDetail get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.findByLdmNameAndGuid(LDM_NAME,guid)
-        if (!globalUniqueIdentifier) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.findByGuid(guid)
+
+        if (globalUniqueIdentifier.ldmName!= LDM_NAME && globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
         }
         Subject subject = subjectService.get(globalUniqueIdentifier.domainId)
@@ -71,7 +72,7 @@ class SubjectCompositeService {
         if(null == domainId) {
             return null
         }
-        return new SubjectDetail(subjectService.get(domainId) as Subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, domainId)?.guid)
+        return new SubjectDetail(subjectService.get(domainId) as Subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, domainId))
     }
 
     /**
@@ -85,11 +86,11 @@ class SubjectCompositeService {
         if(!subjectCode) {
             return null
         }
-        Subject subject = subjectService.findByCode(subjectCode)
-        if(!gradingMode1){
+        Subject subject = subjectService.fetchByCode(subjectCode)
+        if(!subject){
             return null
         }
-        return new SubjectDetail(subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, subject.id)?.guid)
+        return new SubjectDetail(subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, subject.id))
     }
 
     /**

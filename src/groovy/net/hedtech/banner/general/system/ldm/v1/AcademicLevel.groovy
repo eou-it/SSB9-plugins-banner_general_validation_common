@@ -21,4 +21,21 @@ class AcademicLevel {
         this.level = level
     }
 
+
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (getClass() != o.class) return false
+        AcademicLevel that = (AcademicLevel) o
+        if (level != that.level) return false
+        if (guid != that.guid) return false
+        return true
+    }
+
+
+    int hashCode() {
+        int result
+        result = (level != null ? level.hashCode() : 0)
+        result = 31 * result + (guid != null ? guid.hashCode() : 0)
+        return result
+    }
 }

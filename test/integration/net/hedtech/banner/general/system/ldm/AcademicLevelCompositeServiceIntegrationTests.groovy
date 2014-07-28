@@ -10,9 +10,11 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system.ldm
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Ignore
 
 
 /**
@@ -27,6 +29,16 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     Level i_success_level
 
+    def i_success_code = "TZ"
+    def i_success_description = "Test Description"
+    def i_success_academicIndicator = true
+    def i_success_continuingEducationIndicator = true
+
+    def i_success_systemRequiredIndicator = true
+    def i_success_voiceResponseMessageNumber = 1
+
+    def i_success_electronicDataInterchangeEquivalent = "TT"
+
 
     void setUp() {
         formContext = ['GUAGMNU']
@@ -37,6 +49,14 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     private void initiializeDataReferences() {
         i_success_level = Level.findByCode('LW')
+    }
+
+
+    void testListWithoutPaginationParams() {
+        List academicLevels = academicLevelCompositeService.list([:])
+        assertNotNull academicLevels
+        assertFalse academicLevels.isEmpty()
+        assertTrue academicLevels.code.contains(i_success_level.code)
     }
 
 
@@ -52,6 +72,36 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
     void testCount() {
         assertNotNull i_success_level
         assertTrue academicLevelCompositeService.count() > 0
+    }
+
+
+    void testGetInvalidGuid() {
+        try {
+            academicLevelCompositeService.get('Invalid-guid')
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Ignore
+    void testGetInvalidNonExistentAcademicLevel() {
+        Level level = newValidForCreateLevel()
+        save level
+        assertNotNull level.id
+        AcademicLevel academicLevel = academicLevelCompositeService.fetchByAcademicLevelId(level.id)
+        assertNotNull academicLevel
+        assertNotNull academicLevel.guid
+        assertEquals academicLevel.id, level.id
+
+        level.delete(flush: true)
+        assertNull level.get(academicLevel.id)
+
+        try {
+            academicLevelCompositeService.get(academicLevel.guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
     }
 
 
@@ -98,5 +148,21 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertNull academicLevelCompositeService.fetchByAcademicLevel('A1')
     }
 
+
+    private def newValidForCreateLevel() {
+        def level = new Level(
+                code: i_success_code,
+                description: i_success_description,
+                acadInd: i_success_academicIndicator,
+                ceuInd: i_success_continuingEducationIndicator,
+                systemReqInd: i_success_systemRequiredIndicator,
+                vrMsgNo: i_success_voiceResponseMessageNumber,
+                ediEquiv: i_success_electronicDataInterchangeEquivalent,
+                lastModified: new Date(),
+                lastModifiedBy: "test",
+                dataOrigin: "Banner"
+        )
+        return level
+    }
 
 }

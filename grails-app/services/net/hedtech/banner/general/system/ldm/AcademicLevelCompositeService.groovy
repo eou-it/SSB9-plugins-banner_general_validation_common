@@ -21,13 +21,15 @@ class AcademicLevelCompositeService {
 
     def levelService
 
+    private static final String LDM_NAME = 'academic-levels'
+
 
     List<AcademicLevel> list(Map map) {
         List academicLevels = []
         RestfulApiValidationUtility.correctMaxAndOffset(map, 10, 30)
         List<Level> levels = levelService.list(map) as List
         levels.each { level ->
-            academicLevels << new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId('academic-levels', level.id)?.guid, level)
+            academicLevels << new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, level.id)?.guid, level)
         }
         return academicLevels
     }
@@ -44,7 +46,7 @@ class AcademicLevelCompositeService {
         def ldmLevel
         if (null != guid) {
             def entity = GlobalUniqueIdentifier.findByGuid(guid)
-            if (!entity) {
+            if (!entity && (entity?.ldmName != LDM_NAME)) {
                 throw new ApplicationException("api", new NotFoundException(id: Level.class.simpleName))
             }
             //Level studentLevel = Level.findByCode(entity.domainKey)
@@ -64,7 +66,7 @@ class AcademicLevelCompositeService {
         if (null == academicLevelId) {
             return null
         }
-        return new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId('academic-levels', academicLevelId)?.guid, Level.get(academicLevelId) as Level)
+        return new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, academicLevelId)?.guid, Level.get(academicLevelId) as Level)
     }
 
 
@@ -76,7 +78,7 @@ class AcademicLevelCompositeService {
         if (!levelCode) {
             return null
         }
-        return new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId('academic-levels', levelCode.id)?.guid, levelCode)
+        return new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, levelCode.id)?.guid, levelCode)
     }
 
 }

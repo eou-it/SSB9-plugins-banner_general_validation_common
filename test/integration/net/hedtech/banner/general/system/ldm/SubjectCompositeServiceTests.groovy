@@ -24,7 +24,9 @@ class SubjectCompositeServiceTests extends BaseIntegrationTestCase {
         subjectResource = Subject.findByCode('OPEN')
     }
 
-
+    /**
+     * Test case for List method
+     */
     void testList() {
         def paginationParams = [max: '20', offset: '0']
         List subjectList = subjectCompositeService.list(paginationParams)
@@ -33,12 +35,16 @@ class SubjectCompositeServiceTests extends BaseIntegrationTestCase {
         assertTrue subjectList.code.contains(subjectResource.code)
     }
 
-
+    /**
+     * Testcase for count method
+     */
     void testCount() {
         assertTrue subjectCompositeService.count() > 0
     }
 
-
+    /**
+     * Testcase for show method
+     */
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
         List subjectList = subjectCompositeService.list(paginationParams)
@@ -50,7 +56,9 @@ class SubjectCompositeServiceTests extends BaseIntegrationTestCase {
         assertEquals subjectList[0], subjectDetail
     }
 
-
+    /**
+     * Testcase for fetchBySubjectId method
+     */
     void testFetchBySubjectId() {
         def subjectDetail = subjectCompositeService.fetchBySubjectId(subjectResource.id)
         assertNotNull subjectDetail
@@ -60,6 +68,9 @@ class SubjectCompositeServiceTests extends BaseIntegrationTestCase {
 
     }
 
+    /**
+     * Testcase for fetchBySubjectCode
+     */
     void testFetchFetchBySubjectCode() {
         SubjectDetail subjectDetail = subjectCompositeService.fetchBySubjectCode(subjectResource.code)
         assertNotNull subjectDetail

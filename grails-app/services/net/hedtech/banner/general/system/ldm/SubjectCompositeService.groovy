@@ -31,9 +31,9 @@ class SubjectCompositeService {
      * @return SubjectDetail
      */
     SubjectDetail get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.findByGuid(guid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME,guid)
 
-        if (globalUniqueIdentifier.ldmName!= LDM_NAME && globalUniqueIdentifier) {
+        if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
         }
         Subject subject = subjectService.get(globalUniqueIdentifier.domainId)

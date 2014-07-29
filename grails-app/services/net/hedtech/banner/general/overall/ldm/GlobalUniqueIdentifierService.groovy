@@ -23,7 +23,7 @@ class GlobalUniqueIdentifierService extends ServiceBase {
      * @return GlobalUniqueIdentifier Entity
      */
     @Transactional(readOnly = true)
-    GlobalUniqueIdentifier findByGuid(guid){
+    GlobalUniqueIdentifier fetchByGuid(guid){
        return  GlobalUniqueIdentifier.findByGuid(guid)
     }
 
@@ -45,7 +45,11 @@ class GlobalUniqueIdentifierService extends ServiceBase {
      * @return
      */
     @Transactional(readOnly = true)
-    GlobalUniqueIdentifier findByLdmNameAndGuid(ldmName, guid){
-        return  GlobalUniqueIdentifier.findByLdmNameAndGuid(ldmName,guid)
+    GlobalUniqueIdentifier fetchByLdmNameAndGuid(ldmName, guid){
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
+        if(globalUniqueIdentifier.ldmName!= ldmName){
+            globalUniqueIdentifier = null
+        }
+        return  globalUniqueIdentifier
     }
 }

@@ -47,7 +47,7 @@ class GlobalUniqueIdentifierService extends ServiceBase {
     @Transactional(readOnly = true)
     GlobalUniqueIdentifier fetchByLdmNameAndGuid(ldmName, guid){
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
-        if(globalUniqueIdentifier.ldmName!= ldmName){
+        if(globalUniqueIdentifier?.ldmName != ldmName){
             globalUniqueIdentifier = null
         }
         return  globalUniqueIdentifier

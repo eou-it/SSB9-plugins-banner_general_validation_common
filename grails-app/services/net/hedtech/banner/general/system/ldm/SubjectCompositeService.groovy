@@ -37,22 +37,6 @@ class SubjectCompositeService {
     }
 
 
-    def getSubjectByGuid(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
-
-        if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
-        }
-
-        Subject subject = subjectService.get(globalUniqueIdentifier.domainId)
-
-        if (!subject) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
-        }
-
-        return [subject: subject, globalUniqueIdentifier: globalUniqueIdentifier]
-    }
-
     /**
      * Responsible for returning the list of Subject Resources
      * which is exposed as POST Restfull Webservice having the
@@ -69,6 +53,25 @@ class SubjectCompositeService {
         }
 
         return subjectList
+    }
+
+
+    /**
+     *  Returns Subject Map containg key as Subject Entity and value as GlobalUniqueIdentifier
+     *  Entity for a given GUID
+     * @param guid
+     * @return Map
+     */
+    def getSubjectByGuid(String guid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
+        if (!globalUniqueIdentifier) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
+        }
+        Subject subject = subjectService.get(globalUniqueIdentifier.domainId)
+        if (!subject) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
+        }
+        return [subject: subject, globalUniqueIdentifier: globalUniqueIdentifier]
     }
 
     /**

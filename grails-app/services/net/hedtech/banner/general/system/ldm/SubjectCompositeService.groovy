@@ -24,8 +24,8 @@ class SubjectCompositeService {
     def globalUniqueIdentifierService
 
     /**
-     * Responsible for returning the Subject Resource for a
-     * given GUID, which is exposed as GET Restfull Webservice having the
+     * Responsible for returning the Subject Resource for a given
+     * GUID, which is exposed as GET Restfull Webservice having the
      * End Point  /api/subjects/<<GUID>>
      * @param guid - String
      * @return SubjectDetail

@@ -11,10 +11,14 @@ import javax.persistence.*
 @Entity
 @Table(name = "GORGUID")
 @NamedQueries(value = [
-        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainId",
-                query = """FROM GlobalUniqueIdentifier a
+    @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainId",
+        query = """FROM GlobalUniqueIdentifier a
                               WHERE a.ldmName = :ldmName
-                              AND a.domainId = :domainId""")
+                              AND a.domainId = :domainId"""),
+    @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndGuid",
+        query = """FROM GlobalUniqueIdentifier a
+                              WHERE a.ldmName = :ldmName
+                              AND a.guid = :guid""")
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**

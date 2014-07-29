@@ -11,14 +11,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "GORGUID")
 @NamedQueries(value = [
-    @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainId",
-        query = """FROM GlobalUniqueIdentifier a
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainId",
+                query = """FROM GlobalUniqueIdentifier a
                               WHERE a.ldmName = :ldmName
-                              AND a.domainId = :domainId"""),
-    @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndGuid",
-        query = """FROM GlobalUniqueIdentifier a
-                              WHERE a.ldmName = :ldmName
-                              AND a.guid = :guid""")
+                              AND a.domainId = :domainId""")
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**
@@ -149,15 +145,4 @@ class GlobalUniqueIdentifier implements Serializable {
         return globalUniqueIdentifier
     }
 
-
-    static GlobalUniqueIdentifier fetchByLdmNameAndGuid(String ldmName, String guid) {
-        def globalUniqueIdentifier = null
-        if (!ldmName || !guid) return globalUniqueIdentifier
-        GlobalUniqueIdentifier.withSession { session ->
-            globalUniqueIdentifier = session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndGuid')
-                    .setString('ldmName', ldmName)
-                    .setString('guid', guid).uniqueResult()
-        }
-        return globalUniqueIdentifier
-    }
 }

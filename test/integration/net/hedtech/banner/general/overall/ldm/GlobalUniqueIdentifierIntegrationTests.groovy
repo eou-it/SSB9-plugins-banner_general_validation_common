@@ -90,28 +90,6 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testFetchByLdmNameAndDomainIdInvalidValues() {
-        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(null, i_success_domainId)
-        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(i_success_ldmName, null)
-    }
-
-
-    void testFetchByLdmNameAndDomainId() {
-        GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
-        globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)
-        assertNotNull globalUniqueIdentifier.id
-        def globalUniqueIdentifier1 = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(i_success_ldmName, i_success_domainId)
-        assertNotNull globalUniqueIdentifier1
-        assertEquals globalUniqueIdentifier, globalUniqueIdentifier1
-    }
-
-
-    void testFetchByLdmNameAndGuidInvalidValues() {
-        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndGuid(null, i_success_guid)
-        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(i_success_ldmName, null)
-    }
-
-
     void testFetchByLdmNameAndGuid() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)

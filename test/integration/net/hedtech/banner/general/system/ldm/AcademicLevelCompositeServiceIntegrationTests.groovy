@@ -14,8 +14,6 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.junit.Ignore
-
 
 /**
  * AcademicLevelCompositeServiceIntegrationTests.
@@ -84,7 +82,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
     }
 
 
-    @Ignore
+
     void testGetInvalidNonExistentAcademicLevel() {
         Level level = newValidForCreateLevel()
         save level

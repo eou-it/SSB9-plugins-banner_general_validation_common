@@ -31,16 +31,26 @@ class SubjectCompositeService {
      * @return SubjectDetail
      */
     SubjectDetail get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME,guid)
+        def map = getSubjectByGuid(guid)
+
+        return new SubjectDetail(map.subject, map.globalUniqueIdentifier.guid);
+    }
+
+
+    def getSubjectByGuid(String guid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
 
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
         }
+
         Subject subject = subjectService.get(globalUniqueIdentifier.domainId)
+
         if (!subject) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
         }
-        return new SubjectDetail(subject, globalUniqueIdentifier.guid );
+
+        return [subject: subject, globalUniqueIdentifier: globalUniqueIdentifier]
     }
 
     /**

@@ -31,16 +31,26 @@ class CollegeCompositeService {
      * @return CollegeDetail
      */
     CollegeDetail get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.findByGuid(guid)
+        def map = getCollegeByGuid(guid)
 
-        if (globalUniqueIdentifier.ldmName != LDM_NAME && globalUniqueIdentifier) {
+        return new CollegeDetail(map.college, map.globalUniqueIdentifier.guid);
+    }
+
+
+    def getCollegeByGuid(String guid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
+
+        if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
         }
+
         College college = collegeService.get(globalUniqueIdentifier.domainId)
+
         if (!college) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
         }
-        return new CollegeDetail(college, globalUniqueIdentifier.guid );
+
+        return [college: college, globalUniqueIdentifier: globalUniqueIdentifier]
     }
 
     /**

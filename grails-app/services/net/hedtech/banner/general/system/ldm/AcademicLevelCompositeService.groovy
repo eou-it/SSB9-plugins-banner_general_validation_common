@@ -44,26 +44,17 @@ class AcademicLevelCompositeService {
 
     @Transactional(readOnly = true)
     AcademicLevel get(String guid) {
-        Level level = getAcademicLevelByGuid(guid)
-
-        return new AcademicLevel(level, guid);
-    }
-
-
-    Level getAcademicLevelByGuid(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
-
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Level.class.simpleName))
         }
 
         Level level = levelService.get(globalUniqueIdentifier.domainId)
-
         if (!level) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Level.class.simpleName))
         }
 
-        return level
+        return new AcademicLevel(level, globalUniqueIdentifier.guid);
     }
 
 

@@ -19,7 +19,7 @@ import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
  */
 class SubjectCompositeService {
 
-    private static final String LDM_NAME ="subjects"
+    private static final String LDM_NAME = "subjects"
     def subjectService
     def globalUniqueIdentifierService
 
@@ -31,11 +31,18 @@ class SubjectCompositeService {
      * @return SubjectDetail
      */
     SubjectDetail get(String guid) {
-        Subject subject = getSubjectByGuid(guid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
+        if (!globalUniqueIdentifier) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
+        }
 
-        return new SubjectDetail(subject, guid);
+        Subject subject = subjectService.get(globalUniqueIdentifier.domainId)
+        if (!subject) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
+        }
+
+        return new SubjectDetail(subject, globalUniqueIdentifier.guid);
     }
-
 
     /**
      * Responsible for returning the list of Subject Resources
@@ -55,26 +62,6 @@ class SubjectCompositeService {
         return subjectList
     }
 
-
-    /**
-     *  Returns Subject Map containg key as Subject Entity and value as GlobalUniqueIdentifier
-     *  Entity for a given GUID
-     * @param guid
-     * @return Map
-     */
-    Subject getSubjectByGuid(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
-        if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
-        }
-        Subject subject = subjectService.get(globalUniqueIdentifier.domainId)
-        if (!subject) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
-        }
-
-        return subject
-    }
-
     /**
      * Utility method which returns a SubjectDetail Decorator object for a
      * given domainId, this api is a Utility method which can be  used
@@ -83,7 +70,7 @@ class SubjectCompositeService {
      * @return
      */
     SubjectDetail fetchBySubjectId(Long domainId) {
-        if(null == domainId) {
+        if (null == domainId) {
             return null
         }
         return new SubjectDetail(subjectService.get(domainId) as Subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, domainId))
@@ -97,11 +84,11 @@ class SubjectCompositeService {
      * @return
      */
     SubjectDetail fetchBySubjectCode(String subjectCode) {
-        if(!subjectCode) {
+        if (!subjectCode) {
             return null
         }
         Subject subject = subjectService.fetchByCode(subjectCode)
-        if(!subject){
+        if (!subject) {
             return null
         }
         return new SubjectDetail(subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, subject.id))
@@ -115,7 +102,6 @@ class SubjectCompositeService {
     Long count() {
         return subjectService.count()
     }
-
 
 
 }

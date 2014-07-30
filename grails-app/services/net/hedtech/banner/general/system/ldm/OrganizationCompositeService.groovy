@@ -31,12 +31,6 @@ class OrganizationCompositeService {
      * @return
      */
     Organization get(String guid) {
-        College college = getCollegeByGuid(guid)
-        return new Organization(guid, college.code, college.description, OrganizationType.COLLEGE.value);
-    }
-
-
-    College getCollegeByGuid(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(COLLEGE_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
@@ -47,7 +41,7 @@ class OrganizationCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
         }
 
-        return college
+        return new Organization(guid, college, OrganizationType.COLLEGE.value);
     }
 
     /**

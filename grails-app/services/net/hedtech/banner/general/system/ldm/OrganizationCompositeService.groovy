@@ -31,12 +31,12 @@ class OrganizationCompositeService {
      * @return
      */
     Organization get(String guid) {
-        def map = getCollegeByGuid(guid)
-        return new Organization(map.globalUniqueIdentifier.guid, map.college.code, map.college.description, OrganizationType.COLLEGE.value);
+        College college = getCollegeByGuid(guid)
+        return new Organization(guid, college.code, college.description, OrganizationType.COLLEGE.value);
     }
 
 
-    def getCollegeByGuid(String guid) {
+    College getCollegeByGuid(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(COLLEGE_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
@@ -47,7 +47,7 @@ class OrganizationCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
         }
 
-        return [college: college, globalUniqueIdentifier: globalUniqueIdentifier]
+        return college
     }
 
     /**

@@ -44,13 +44,13 @@ class AcademicLevelCompositeService {
 
     @Transactional(readOnly = true)
     AcademicLevel get(String guid) {
-        def map = getAcademicLevelByGuid(guid)
+        Level level = getAcademicLevelByGuid(guid)
 
-        return new AcademicLevel(map.level, map.globalUniqueIdentifier.guid);
+        return new AcademicLevel(level, guid);
     }
 
 
-    def getAcademicLevelByGuid(String guid) {
+    Level getAcademicLevelByGuid(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
 
         if (!globalUniqueIdentifier) {
@@ -63,7 +63,7 @@ class AcademicLevelCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Level.class.simpleName))
         }
 
-        return [level: level, globalUniqueIdentifier: globalUniqueIdentifier]
+        return level
     }
 
 

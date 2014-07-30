@@ -31,9 +31,9 @@ class SubjectCompositeService {
      * @return SubjectDetail
      */
     SubjectDetail get(String guid) {
-        def map = getSubjectByGuid(guid)
+        Subject subject = getSubjectByGuid(guid)
 
-        return new SubjectDetail(map.subject, map.globalUniqueIdentifier.guid);
+        return new SubjectDetail(subject, guid);
     }
 
 
@@ -62,7 +62,7 @@ class SubjectCompositeService {
      * @param guid
      * @return Map
      */
-    def getSubjectByGuid(String guid) {
+    Subject getSubjectByGuid(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
@@ -71,7 +71,8 @@ class SubjectCompositeService {
         if (!subject) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
         }
-        return [subject: subject, globalUniqueIdentifier: globalUniqueIdentifier]
+
+        return subject
     }
 
     /**

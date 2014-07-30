@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional
 class GlobalUniqueIdentifierService extends ServiceBase {
 
     static final String API ="api"
-
+    static final int MAX_DEFAULT= 10
+    static final int MAX_UPPER_LIMIT = 30
     /**
      * Finds GlobalUniqueIdentifier for a given guid
      * @param guid

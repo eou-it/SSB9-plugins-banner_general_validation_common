@@ -3,6 +3,7 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Subject
 import net.hedtech.banner.general.system.ldm.v1.SubjectDetail
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -54,6 +55,15 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         def subjectDetail = subjectCompositeService.get(subjectList[0].guid)
         assertNotNull subjectDetail
         assertEquals subjectList[0], subjectDetail
+    }
+    /**
+     * Testcase for show method with ApplicationException
+     */
+    void testGetWithInvalidGuid() {
+        shouldFail( ApplicationException  ) {
+            subjectCompositeService.get(null)
+        }
+
     }
 
     /**

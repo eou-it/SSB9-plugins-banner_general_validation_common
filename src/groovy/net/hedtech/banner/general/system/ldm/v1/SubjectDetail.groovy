@@ -14,7 +14,6 @@ class SubjectDetail {
 
 
     @Delegate
-
     private final Subject subject
     String guid
 

@@ -11,4 +11,16 @@ import net.hedtech.banner.service.ServiceBase
  **/
 class CollegeService extends ServiceBase {
 
+    boolean transactional = true
+
+    /**
+     * Finds College for a give collegeCode
+     * @param collegeCode
+     * @return College - Entity
+     */
+    College fetchByCode(collegeCode){
+        College.findByCode(collegeCode)
+
+    }
+
 }

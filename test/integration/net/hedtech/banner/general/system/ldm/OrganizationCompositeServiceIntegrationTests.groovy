@@ -21,7 +21,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
 
     private void initiializeDataReferences() {
-        college = College.findByCode('OPEN')
+        college = College.findByCode('AH')
     }
 
     /**
@@ -29,10 +29,10 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      */
     void testList() {
         def paginationParams = [max: '20', offset: '0']
-        List collegeList = organizationCompositeService.list(paginationParams)
-        assertNotNull collegeList
-        assertFalse collegeList.isEmpty()
-        assertTrue collegeList.code.contains(college.code)
+        List organizationList = organizationCompositeService.list(paginationParams)
+        assertNotNull organizationList
+        assertFalse organizationList.isEmpty()
+        assertTrue organizationList.code.contains(college.code)
     }
 
     /**
@@ -47,24 +47,24 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      */
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
-        List collegeList = organizationCompositeService.list(paginationParams)
-        assertNotNull collegeList
-        assertTrue collegeList.size() > 0
-        assertNotNull collegeList[0].guid
-        def collegeDetail = organizationCompositeService.get(collegeList[0].guid)
-        assertNotNull collegeDetail
-        assertEquals collegeList[0], collegeDetail
+        List organizationList = organizationCompositeService.list(paginationParams)
+        assertNotNull organizationList
+        assertTrue organizationList.size() > 0
+        assertNotNull organizationList[0].guid
+        def organization = organizationCompositeService.get(organizationList[0].guid)
+        assertNotNull organization
+        assertEquals organizationList[0].code, organization.code
     }
 
     /**
      * Testcase for fetchByCollegeId method
      */
     void testFetchByCollegeId() {
-        def collegeDetail = organizationCompositeService.fetchByCollegeId(college.id)
-        assertNotNull collegeDetail
-        assertEquals college.id, collegeDetail.id
-        assertEquals college.code, collegeDetail.code
-        assertEquals college.description, collegeDetail.description
+        def organization = organizationCompositeService.fetchByCollegeId(college.id)
+        assertNotNull organization
+        assertEquals college.id, organization.id
+        assertEquals college.code, organization.code
+        assertEquals college.description, organization.description
 
     }
 
@@ -72,11 +72,11 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      * Testcase for fetchByCollegeCode
      */
     void testFetchFetchByCollegeCode() {
-        Organization collegeDetail = organizationCompositeService.fetchByCollegeCode(college.code)
-        assertNotNull collegeDetail
-        assertEquals college.id, collegeDetail.id
-        assertEquals college.code, collegeDetail.code
-        assertEquals college.description, collegeDetail.description
+        Organization organization = organizationCompositeService.fetchByCollegeCode(college.code)
+        assertNotNull organization
+        assertEquals college.id, organization.id
+        assertEquals college.code, organization.code
+        assertEquals college.description, organization.description
     }
 
 }

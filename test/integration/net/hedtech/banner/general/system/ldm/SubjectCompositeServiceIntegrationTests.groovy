@@ -7,7 +7,7 @@ import net.hedtech.banner.general.system.Subject
 import net.hedtech.banner.general.system.ldm.v1.SubjectDetail
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
-class SubjectCompositeServiceTests extends BaseIntegrationTestCase {
+class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     Subject subjectResource
     def subjectCompositeService

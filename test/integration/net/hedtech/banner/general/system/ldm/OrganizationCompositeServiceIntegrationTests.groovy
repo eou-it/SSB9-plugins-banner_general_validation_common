@@ -4,13 +4,13 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.general.system.College
-import net.hedtech.banner.general.system.ldm.v1.CollegeDetail
+import net.hedtech.banner.general.system.ldm.v1.Organization
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
-class CollegeCompositeServiceTests extends BaseIntegrationTestCase {
+class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
-    College collegeResource
-    def collegeCompositeService
+    College college
+    def organizationCompositeService
 
 
     void setUp() {
@@ -21,7 +21,7 @@ class CollegeCompositeServiceTests extends BaseIntegrationTestCase {
 
 
     private void initiializeDataReferences() {
-        collegeResource = College.findByCode('OPEN')
+        college = College.findByCode('OPEN')
     }
 
     /**
@@ -29,17 +29,17 @@ class CollegeCompositeServiceTests extends BaseIntegrationTestCase {
      */
     void testList() {
         def paginationParams = [max: '20', offset: '0']
-        List collegeList = collegeCompositeService.list(paginationParams)
+        List collegeList = organizationCompositeService.list(paginationParams)
         assertNotNull collegeList
         assertFalse collegeList.isEmpty()
-        assertTrue collegeList.code.contains(collegeResource.code)
+        assertTrue collegeList.code.contains(college.code)
     }
 
     /**
      * Testcase for count method
      */
     void testCount() {
-        assertTrue collegeCompositeService.count() > 0
+        assertTrue organizationCompositeService.count() > 0
     }
 
     /**
@@ -47,11 +47,11 @@ class CollegeCompositeServiceTests extends BaseIntegrationTestCase {
      */
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
-        List collegeList = collegeCompositeService.list(paginationParams)
+        List collegeList = organizationCompositeService.list(paginationParams)
         assertNotNull collegeList
-        assertTrue collegeList.size()> 0
+        assertTrue collegeList.size() > 0
         assertNotNull collegeList[0].guid
-        def collegeDetail = collegeCompositeService.get(collegeList[0].guid)
+        def collegeDetail = organizationCompositeService.get(collegeList[0].guid)
         assertNotNull collegeDetail
         assertEquals collegeList[0], collegeDetail
     }
@@ -60,11 +60,11 @@ class CollegeCompositeServiceTests extends BaseIntegrationTestCase {
      * Testcase for fetchByCollegeId method
      */
     void testFetchByCollegeId() {
-        def collegeDetail = collegeCompositeService.fetchByCollegeId(collegeResource.id)
+        def collegeDetail = organizationCompositeService.fetchByCollegeId(college.id)
         assertNotNull collegeDetail
-        assertEquals collegeResource.id, collegeDetail.id
-        assertEquals collegeResource.code , collegeDetail.code
-        assertEquals collegeResource.description, collegeDetail.description
+        assertEquals college.id, collegeDetail.id
+        assertEquals college.code, collegeDetail.code
+        assertEquals college.description, collegeDetail.description
 
     }
 
@@ -72,11 +72,11 @@ class CollegeCompositeServiceTests extends BaseIntegrationTestCase {
      * Testcase for fetchByCollegeCode
      */
     void testFetchFetchByCollegeCode() {
-        CollegeDetail collegeDetail = collegeCompositeService.fetchByCollegeCode(collegeResource.code)
+        Organization collegeDetail = organizationCompositeService.fetchByCollegeCode(college.code)
         assertNotNull collegeDetail
-        assertEquals collegeResource.id, collegeDetail.id
-        assertEquals collegeResource.code, collegeDetail.code
-        assertEquals collegeResource.description, collegeDetail.description
-
+        assertEquals college.id, collegeDetail.id
+        assertEquals college.code, collegeDetail.code
+        assertEquals college.description, collegeDetail.description
     }
+
 }

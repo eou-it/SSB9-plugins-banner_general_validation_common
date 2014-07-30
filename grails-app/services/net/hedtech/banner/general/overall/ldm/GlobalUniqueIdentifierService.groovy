@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class GlobalUniqueIdentifierService extends ServiceBase {
 
-    static final int MAX = 10
-    static final int OFFSET = 10
     static final String API ="api"
 
     /**

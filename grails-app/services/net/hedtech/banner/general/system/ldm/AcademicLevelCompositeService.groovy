@@ -49,7 +49,7 @@ class AcademicLevelCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Level.class.simpleName))
         }
 
-        Level level = levelService.get(globalUniqueIdentifier.domainId)
+        Level level = Level.get(globalUniqueIdentifier.domainId)
         if (!level) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Level.class.simpleName))
         }

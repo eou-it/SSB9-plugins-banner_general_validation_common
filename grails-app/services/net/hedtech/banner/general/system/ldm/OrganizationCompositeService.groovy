@@ -36,7 +36,7 @@ class OrganizationCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
         }
 
-        College college = collegeService.get(globalUniqueIdentifier.domainId)
+        College college = College.get(globalUniqueIdentifier.domainId)
         if (!college) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
         }

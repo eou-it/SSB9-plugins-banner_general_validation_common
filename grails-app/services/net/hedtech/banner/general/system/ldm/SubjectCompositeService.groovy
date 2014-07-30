@@ -36,7 +36,7 @@ class SubjectCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
         }
 
-        Subject subject = subjectService.get(globalUniqueIdentifier.domainId)
+        Subject subject = Subject.get(globalUniqueIdentifier.domainId)
         if (!subject) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
         }

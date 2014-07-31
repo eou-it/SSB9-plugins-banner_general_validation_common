@@ -31,7 +31,7 @@ class AcademicLevelCompositeService {
         RestfulApiValidationUtility.correctMaxAndOffset(map, 10, 30)
         List<Level> levels = levelService.list(map) as List
         levels.each { level ->
-            academicLevels << new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, level.id)?.guid, level)
+            academicLevels << new AcademicLevel(level, GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, level.id)?.guid)
         }
         return academicLevels
     }
@@ -58,23 +58,27 @@ class AcademicLevelCompositeService {
     }
 
 
-    AcademicLevel fetchByAcademicLevelId(Long academicLevelId) {
-        if (null == academicLevelId) {
+    AcademicLevel fetchByLevelId(Long domainId) {
+        if (null == domainId) {
             return null
         }
-        return new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, academicLevelId)?.guid, Level.get(academicLevelId) as Level)
+        Level level = levelService.get(domainId)
+        if (!level) {
+            return null
+        }
+        return new AcademicLevel(levelService.get(domainId) as Level, GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, domainId)?.guid)
     }
 
 
-    AcademicLevel fetchByAcademicLevel(String academicLevelCode) {
-        if (!academicLevelCode) {
-            return null
-        }
-        Level levelCode = Level.findByCode(academicLevelCode)
+    AcademicLevel fetchByLevelCode(String levelCode) {
         if (!levelCode) {
             return null
         }
-        return new AcademicLevel(GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, levelCode.id)?.guid, levelCode)
+        Level level = Level.findByCode(levelCode)
+        if (!level) {
+            return null
+        }
+        return new AcademicLevel(level, GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(LDM_NAME, level.id)?.guid)
     }
 
 }

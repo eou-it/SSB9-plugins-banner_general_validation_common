@@ -87,7 +87,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         Level level = newValidForCreateLevel()
         save level
         assertNotNull level.id
-        AcademicLevel academicLevel = academicLevelCompositeService.fetchByAcademicLevelId(level.id)
+        AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelId(level.id)
         assertNotNull academicLevel
         assertNotNull academicLevel.guid
         assertEquals academicLevel.id, level.id
@@ -118,7 +118,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     void testFetchByAcademicLevelId() {
-        AcademicLevel academicLevel = academicLevelCompositeService.fetchByAcademicLevelId(i_success_level.id)
+        AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelId(i_success_level.id)
         assertNotNull academicLevel
         assertEquals i_success_level.id, academicLevel.id
         assertEquals i_success_level.code, academicLevel.code
@@ -127,12 +127,12 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     void testFetchByAcademicLevelIdInvalid() {
-        assertNull academicLevelCompositeService.fetchByAcademicLevelId(null)
+        assertNull academicLevelCompositeService.fetchByLevelId(null)
     }
 
 
     void testFetchByAcademicLevel() {
-        AcademicLevel academicLevel = academicLevelCompositeService.fetchByAcademicLevel(i_success_level.code)
+        AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelCode(i_success_level.code)
         assertNotNull academicLevel
         assertEquals i_success_level.id, academicLevel.id
         assertEquals i_success_level.code, academicLevel.code
@@ -142,8 +142,8 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     void testFetchByAcademicLevelInvalid() {
-        assertNull academicLevelCompositeService.fetchByAcademicLevel(null)
-        assertNull academicLevelCompositeService.fetchByAcademicLevel('A1')
+        assertNull academicLevelCompositeService.fetchByLevelCode(null)
+        assertNull academicLevelCompositeService.fetchByLevelCode('A1')
     }
 
 

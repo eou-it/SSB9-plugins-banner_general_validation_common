@@ -77,7 +77,7 @@ class SubjectCompositeService {
         if (!subject) {
             return null
         }
-        return new SubjectDetail(subjectService.get(domainId) as Subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, domainId))
+        return new SubjectDetail(subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, domainId))
     }
 
     /**

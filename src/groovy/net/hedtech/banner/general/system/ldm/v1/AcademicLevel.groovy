@@ -16,9 +16,9 @@ class AcademicLevel {
     String guid
 
 
-    def AcademicLevel(String guid, Level level) {
-        this.guid = guid
+    def AcademicLevel(Level level, String guid) {
         this.level = level
+        this.guid = guid
     }
 
 

@@ -46,7 +46,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      * Testcase for show method
      */
     void testGet() {
-        def paginationParams = [max: '1', offset: '0']
+        def paginationParams = [max: '20', offset: '0']
         List organizationList = organizationCompositeService.list(paginationParams)
         assertNotNull organizationList
         assertTrue organizationList.size() > 0

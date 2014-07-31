@@ -30,6 +30,7 @@ class OrganizationCompositeService {
      * @param guid
      * @return
      */
+    @Transactional(readOnly = true)
     Organization get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(COLLEGE_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {

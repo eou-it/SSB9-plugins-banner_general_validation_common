@@ -54,7 +54,7 @@ class OrganizationCompositeService {
     def list(Map map) {
         def organizations = []
 
-        RestfulApiValidationUtility.correctMaxAndOffset(map, 10, 30)
+        RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
         List<College> colleges = collegeService.list(map) as List
         colleges.each { college ->

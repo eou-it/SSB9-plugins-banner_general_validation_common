@@ -28,7 +28,7 @@ class AcademicLevelCompositeService {
 
     List<AcademicLevel> list(Map map) {
         List academicLevels = []
-        RestfulApiValidationUtility.correctMaxAndOffset(map, 10, 30)
+        RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         List<Level> levels = levelService.list(map) as List
         levels.each { level ->
             academicLevels << new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid)

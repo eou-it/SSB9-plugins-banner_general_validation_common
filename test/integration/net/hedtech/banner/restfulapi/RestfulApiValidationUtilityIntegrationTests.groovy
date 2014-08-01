@@ -35,7 +35,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         assertEquals "0", params["offset"]
 
         // "max" will added with value maxDefault
-        Integer maxDefault = 10
+        Integer maxDefault = RestfulApiValidationUtility.MAX_DEFAULT
         params = [:]
         RestfulApiValidationUtility.correctMaxAndOffset(params, maxDefault)
         assertEquals maxDefault.toString(), params["max"]
@@ -46,7 +46,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         assertEquals maxDefault.toString(), params["max"]
 
         // Exceeding "max" will be corrected to maxUpperLimit
-        Integer maxUpperLimit = 30
+        Integer maxUpperLimit = RestfulApiValidationUtility.MAX_UPPER_LIMIT
         params = [max: "40"]
         RestfulApiValidationUtility.correctMaxAndOffset(params, maxDefault, maxUpperLimit)
         assertEquals maxUpperLimit.toString(), params["max"]

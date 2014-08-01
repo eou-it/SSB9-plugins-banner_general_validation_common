@@ -53,7 +53,7 @@ class SubjectCompositeService {
      */
     List<SubjectDetail> list(Map map) {
         List subjectList = []
-        RestfulApiValidationUtility.correctMaxAndOffset(map, GlobalUniqueIdentifierService.MAX_DEFAULT, GlobalUniqueIdentifierService.MAX_UPPER_LIMIT)
+        RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         List<Subject> subjects = subjectService.list(map) as List
         subjects.each { subject ->
             subjectList << new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id))

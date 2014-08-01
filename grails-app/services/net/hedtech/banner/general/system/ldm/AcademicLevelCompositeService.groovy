@@ -10,6 +10,7 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
+import grails.util.GrailsNameUtils
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -46,12 +47,12 @@ class AcademicLevelCompositeService {
     AcademicLevel get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Level.class.simpleName))
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(AcademicLevel.class.simpleName)))
         }
 
         Level level = Level.get(globalUniqueIdentifier.domainId)
         if (!level) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Level.class.simpleName))
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(AcademicLevel.class.simpleName)))
         }
 
         return new AcademicLevel(level, globalUniqueIdentifier.guid);

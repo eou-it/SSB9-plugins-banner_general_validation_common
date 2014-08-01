@@ -90,6 +90,15 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    void testFetchByLdmNameAndGuidForInvalidLdmName() {
+        GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
+        globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)
+        assertNotNull globalUniqueIdentifier.id
+        assertNotNull globalUniqueIdentifier.guid
+        assertNull GlobalUniqueIdentifier.fetchByLdmNameAndGuid('invalid-ldm-name', globalUniqueIdentifier.guid)
+    }
+
+
     void testFetchByLdmNameAndGuid() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)

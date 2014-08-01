@@ -31,7 +31,7 @@ class SubjectCompositeService {
      * @return SubjectDetail
      */
     SubjectDetail get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, guid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Subject.class.simpleName))
         }
@@ -56,7 +56,7 @@ class SubjectCompositeService {
         RestfulApiValidationUtility.correctMaxAndOffset(map, GlobalUniqueIdentifierService.MAX_DEFAULT, GlobalUniqueIdentifierService.MAX_UPPER_LIMIT)
         List<Subject> subjects = subjectService.list(map) as List
         subjects.each { subject ->
-            subjectList << new SubjectDetail(subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, subject.id))
+            subjectList << new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id))
         }
 
         return subjectList
@@ -77,7 +77,7 @@ class SubjectCompositeService {
         if (!subject) {
             return null
         }
-        return new SubjectDetail(subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, domainId))
+        return new SubjectDetail(subjectService.get(domainId) as Subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, domainId))
     }
 
     /**
@@ -95,7 +95,7 @@ class SubjectCompositeService {
         if (!subject) {
             return null
         }
-        return new SubjectDetail(subject, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, subject.id))
+        return new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id))
     }
 
     /**

@@ -16,39 +16,4 @@ class GlobalUniqueIdentifierService extends ServiceBase {
     static final String API ="api"
     static final int MAX_DEFAULT= 10
     static final int MAX_UPPER_LIMIT = 30
-    /**
-     * Finds GlobalUniqueIdentifier for a given guid
-     * @param guid
-     * @return GlobalUniqueIdentifier Entity
-     */
-    @Transactional(readOnly = true)
-    GlobalUniqueIdentifier fetchByGuid(guid){
-       return  GlobalUniqueIdentifier.findByGuid(guid)
-    }
-
-    /**
-     * Finds Guid for given ldmName and domainId
-     * @param ldmName
-     * @param domainId
-     * @return String - guid
-     */
-    @Transactional(readOnly = true)
-    String fetchByLdmNameAndDomainId(ldmName, domainId){
-        return  GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(ldmName, domainId)?.guid
-    }
-
-    /**
-     * Finds the Enity GlobalUniqueIdentifier for given ldmName and guid
-     * @param ldmName
-     * @param guid
-     * @return
-     */
-    @Transactional(readOnly = true)
-    GlobalUniqueIdentifier fetchByLdmNameAndGuid(ldmName, guid){
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
-        if(globalUniqueIdentifier?.ldmName != ldmName){
-            globalUniqueIdentifier = null
-        }
-        return  globalUniqueIdentifier
-    }
 }

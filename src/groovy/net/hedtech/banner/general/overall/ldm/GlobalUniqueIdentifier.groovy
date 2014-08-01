@@ -10,12 +10,6 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GORGUID")
-@NamedQueries(value = [
-        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainId",
-                query = """FROM GlobalUniqueIdentifier a
-                              WHERE a.ldmName = :ldmName
-                              AND a.domainId = :domainId""")
-])
 class GlobalUniqueIdentifier implements Serializable {
     /**
      * Surrogate ID for GORGUID
@@ -77,7 +71,7 @@ class GlobalUniqueIdentifier implements Serializable {
     String dataOrigin
 
     static constraints = {
-        guid(nullable: false, maxSize:  36)
+        guid(nullable: false, maxSize: 36)
         ldmName(nullable: false, maxSize: 100)
         domainId(nullable: false)
         domainKey(nullable: true, maxSize: 100)
@@ -85,6 +79,9 @@ class GlobalUniqueIdentifier implements Serializable {
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
     }
+
+    static readonlyProperties = ['guid']
+
 
     public String toString() {
         """GlobalUniqueIdentifier[
@@ -132,13 +129,10 @@ class GlobalUniqueIdentifier implements Serializable {
     }
 
 
-    static GlobalUniqueIdentifier fetchByLdmNameAndDomainId(String ldmName, Long domainId) {
-        def globalUniqueIdentifier = null
-        if (!ldmName || null == domainId) return globalUniqueIdentifier
-        GlobalUniqueIdentifier.withSession { session ->
-            globalUniqueIdentifier = session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainId')
-                    .setString('ldmName', ldmName)
-                    .setLong('domainId', domainId).uniqueResult()
+    static GlobalUniqueIdentifier fetchByLdmNameAndGuid(ldmName, guid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
+        if (globalUniqueIdentifier?.ldmName != ldmName) {
+            globalUniqueIdentifier = null
         }
         return globalUniqueIdentifier
     }

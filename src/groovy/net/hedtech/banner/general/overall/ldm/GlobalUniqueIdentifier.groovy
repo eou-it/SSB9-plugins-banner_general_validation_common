@@ -86,8 +86,6 @@ class GlobalUniqueIdentifier implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
-    static readonlyProperties = ['guid']
-
     public String toString() {
         """GlobalUniqueIdentifier[
 		            id=$id,

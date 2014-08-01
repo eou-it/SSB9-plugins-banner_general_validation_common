@@ -56,7 +56,7 @@ class SubjectCompositeService {
         RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         List<Subject> subjects = subjectService.list(map) as List
         subjects.each { subject ->
-            subjectList << new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id))
+            subjectList << new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id).guid)
         }
 
         return subjectList
@@ -77,7 +77,7 @@ class SubjectCompositeService {
         if (!subject) {
             return null
         }
-        return new SubjectDetail(subjectService.get(domainId) as Subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, domainId))
+        return new SubjectDetail(subjectService.get(domainId) as Subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, domainId).guid)
     }
 
     /**
@@ -95,7 +95,7 @@ class SubjectCompositeService {
         if (!subject) {
             return null
         }
-        return new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id))
+        return new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id).guid)
     }
 
     /**

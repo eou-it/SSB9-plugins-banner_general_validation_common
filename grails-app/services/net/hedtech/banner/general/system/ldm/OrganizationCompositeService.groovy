@@ -58,7 +58,7 @@ class OrganizationCompositeService {
 
         List<College> colleges = collegeService.list(map) as List
         colleges.each { college ->
-            organizations << new Organization(globalUniqueIdentifierService.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, college.id), college, OrganizationType.COLLEGE.value)
+            organizations << new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value)
         }
 
         return organizations
@@ -82,7 +82,7 @@ class OrganizationCompositeService {
         if (!college) {
             return null
         }
-        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, domainId), college, OrganizationType.COLLEGE.value)
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, domainId).guid, college, OrganizationType.COLLEGE.value)
     }
 
 
@@ -94,7 +94,7 @@ class OrganizationCompositeService {
         if (!college) {
             return null
         }
-        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, college.id), college, OrganizationType.COLLEGE.value)
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value)
     }
 
 }

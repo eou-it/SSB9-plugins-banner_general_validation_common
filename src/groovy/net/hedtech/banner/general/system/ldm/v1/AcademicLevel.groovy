@@ -16,7 +16,7 @@ class AcademicLevel {
     String guid
 
 
-    def AcademicLevel(Level level, String guid) {
+    AcademicLevel(Level level, String guid) {
         this.level = level
         this.guid = guid
     }
@@ -37,5 +37,11 @@ class AcademicLevel {
         result = (level != null ? level.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
         return result
+    }
+
+    public String toString() {
+        """AcademicLevel[
+                    level=$level,
+                    guid=$guid]"""
     }
 }

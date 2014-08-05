@@ -2,16 +2,27 @@
  Copyright 2014 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall
-
 import org.hibernate.annotations.Type
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = 'GOVROLE')
-class Role implements Serializable {
+class UserRole implements Serializable {
+
+    /**
+     * SURROGATE ID: Immutable unique key
+     */
+    @Id
+    @Column(name = "GOVROLE_SURROGATE_ID")
+    Long id
+
+    /**
+     * VERSION: Optimistic lock token.
+     */
+    @Version
+    @Column(name = "GOVROLE_VERSION")
+    Long version
 
     /**
      * Internal identification number of the person
@@ -79,7 +90,7 @@ class Role implements Serializable {
     boolean equals(o) {
         if (this.is(o)) return true
         if (getClass() != o.class) return false
-        Role role = (Role) o
+        UserRole role = (UserRole) o
         if (alumniIndicator != role.alumniIndicator) return false
         if (employeeIndicator != role.employeeIndicator) return false
         if (facultyIndicator != role.facultyIndicator) return false
@@ -109,7 +120,7 @@ class Role implements Serializable {
 
 
     public String toString() {
-        """Role[
+        """UserRole[
                 pidm=$pidm,
                 studentIndicator=$studentIndicator,
                 facultyIndicator=$facultyIndicator,

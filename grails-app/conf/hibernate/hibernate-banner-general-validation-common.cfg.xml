@@ -17,6 +17,8 @@
        <session-factory>
            <property name="dialect">org.hibernate.dialect.Oracle10gDialect</property>
            <mapping class="net.hedtech.banner.general.crossproduct.Bank"/>
+           <mapping class="net.hedtech.banner.general.overall.IntegrationConfiguration"/>
+           <mapping class="net.hedtech.banner.general.overall.Role"/>
            <mapping class="net.hedtech.banner.general.system.AcademicYear"/>
            <mapping class="net.hedtech.banner.general.system.ActivityCategory"/>
            <mapping class="net.hedtech.banner.general.system.ActivityType"/>

@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system.ldm
+import net.hedtech.banner.query.QueryBuilder
+import net.hedtech.banner.query.operators.Operators
+import net.hedtech.banner.query.DynamicFinder
 
 /** *******************************************************************************
  Copyright 2014 Ellucian Company L.P. and its affiliates.
@@ -54,7 +57,15 @@ class SubjectCompositeService {
     List<SubjectDetail> list(Map map) {
         List subjectList = []
         RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        List<Subject> subjects = subjectService.list(map) as List
+        def filters = QueryBuilder.createFilters(map)
+        def allowedSearchFields = ['code', 'description']
+        def allowedOperators = [Operators.EQUALS, Operators.EQUALS_IGNORE_CASE, Operators.CONTAINS, Operators.STARTS_WITH]
+        RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields, allowedOperators)
+        RestfulApiValidationUtility.validateSortField(map.sort,allowedSearchFields)
+        def filterMap = QueryBuilder.getFilterData(map)
+        def query = """from Subject a"""
+        DynamicFinder dynamicFinder = new DynamicFinder(Subject.class, query, "a")
+        List<Subject> subjects = dynamicFinder.find([params: filterMap.params, criteria: filterMap.criteria], filterMap.pagingAndSortParams)
         subjects.each { subject ->
             subjectList << new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id).guid)
         }

@@ -25,4 +25,6 @@ class Organization {
         this.organizationType = organizationType
     }
 
+    def Organization() {}
+
 }

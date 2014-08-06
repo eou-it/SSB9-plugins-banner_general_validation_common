@@ -9,4 +9,14 @@ class CampusService extends ServiceBase {
 
     boolean transactional = true
 
+    /**
+     * Finds Campus for a give ccampusCode
+     * @param campusCode
+     * @return Campus - Entity
+     */
+    Campus fetchByCode(campusCode){
+        Campus.findByCode(campusCode)
+
+    }
+
 }

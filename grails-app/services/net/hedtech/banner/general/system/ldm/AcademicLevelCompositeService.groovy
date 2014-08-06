@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
+import grails.util.GrailsNameUtils
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
@@ -10,7 +11,6 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
-import grails.util.GrailsNameUtils
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -27,6 +27,7 @@ class AcademicLevelCompositeService {
     private static final String LDM_NAME = 'academic-levels'
 
 
+    @Transactional(readOnly = true)
     List<AcademicLevel> list(Map map) {
         List academicLevels = []
         RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)

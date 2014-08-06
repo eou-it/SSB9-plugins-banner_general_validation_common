@@ -1,13 +1,6 @@
-/** *****************************************************************************
- © 2014 SunGard Higher Education.  All Rights Reserved.
-
- CONFIDENTIAL BUSINESS INFORMATION
-
- THIS PROGRAM IS PROPRIETARY INFORMATION OF SUNGARD HIGHER EDUCATION
- AND IS NOT TO BE COPIED, REPRODUCED, LENT, OR DISPOSED OF,
- NOR USED FOR ANY PURPOSE OTHER THAN THAT WHICH IT IS SPECIFICALLY PROVIDED
- WITHOUT THE WRITTEN PERMISSION OF THE SAID COMPANY
- ****************************************************************************** */
+/** *******************************************************************************
+ Copyright 2014 Ellucian Company L.P. and its affiliates.
+ ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
@@ -143,7 +136,11 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     void testFetchByAcademicLevelInvalid() {
         assertNull academicLevelCompositeService.fetchByLevelCode(null)
-        assertNull academicLevelCompositeService.fetchByLevelCode('A1')
+
+        def invalidLevelCode = 'A1'
+        if (!Level.findByCode(invalidLevelCode)){
+            assertNull academicLevelCompositeService.fetchByLevelCode(invalidLevelCode)
+        }
     }
 
 
@@ -155,10 +152,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
                 ceuInd: i_success_continuingEducationIndicator,
                 systemReqInd: i_success_systemRequiredIndicator,
                 vrMsgNo: i_success_voiceResponseMessageNumber,
-                ediEquiv: i_success_electronicDataInterchangeEquivalent,
-                lastModified: new Date(),
-                lastModifiedBy: "test",
-                dataOrigin: "Banner"
+                ediEquiv: i_success_electronicDataInterchangeEquivalent
         )
         return level
     }

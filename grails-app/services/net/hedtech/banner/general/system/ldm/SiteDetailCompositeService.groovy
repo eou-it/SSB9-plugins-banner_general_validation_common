@@ -117,7 +117,7 @@ class SiteDetailCompositeService {
         }
         List<College> colleges = collegeService.list(paginationParams) as List
         organization = new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, colleges[0].id).guid, colleges[0], OrganizationType.COLLEGE.value)
-        return new SiteDetail(GlobalUniqueIdentifier.findByLdmNameAndDomainId(CAMPUS_LDM_NAME, campus.id).guid, campus, organization, buildings)
+        return new SiteDetail(GlobalUniqueIdentifier.findByLdmNameAndDomainId(CAMPUS_LDM_NAME, campus.id)?.guid, campus, organization, buildings)
     }
 
 }

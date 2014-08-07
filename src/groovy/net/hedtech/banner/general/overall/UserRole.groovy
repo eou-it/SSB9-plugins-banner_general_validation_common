@@ -86,6 +86,7 @@ class UserRole implements Serializable {
     @Type(type = "yes_no")
     Boolean studentAidForCanadaIndicator = false
 
+    static readonlyProperties = ['pidm']
 
     boolean equals(o) {
         if (this.is(o)) return true

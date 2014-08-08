@@ -9,17 +9,28 @@ import org.springframework.beans.factory.InitializingBean
 class LdmService implements InitializingBean {
 
     List<IntegrationConfiguration> rules = []
+    private static HashMap ldmFieldToBannerDomainPropertyMap = [
+            abreviation: 'code',
+            title      : 'description'
+    ]
+
 
     void afterPropertiesSet() {
-        def ldmObject = this.class.simpleName.substring( 0, this.class.simpleName.indexOf( "CompositeService" ) ).toLowerCase() //Get the ldm name from the service name.
-        LdmService.log.debug "Getting LDM defaults for ${this.class.simpleName}"
-        def rules = IntegrationConfiguration.findAllByProcessCodeAndSettingNameLike('LDM',ldmObject + '.%')
+        def ldmObject = this.class.simpleName.substring(0, this.class.simpleName.indexOf("CompositeService")).toLowerCase() //Get the ldm name from the service name.
+        LdmService.log.debug "Getting LDM defaults for ${ this.class.simpleName }"
+        def rules = IntegrationConfiguration.findAllByProcessCodeAndSettingNameLike('LDM', ldmObject + '.%')
         this.rules = parseRules(rules)
     }
+
 
     private def parseRules(def rules) {
         rules.each { rule ->
             this.rules << new LdmConfigurationValue(rule)
         }
+    }
+
+
+    static String fetchBannerDomainPropertyForLdmField(String ldmField) {
+        return ldmFieldToBannerDomainPropertyMap[ldmField]
     }
 }

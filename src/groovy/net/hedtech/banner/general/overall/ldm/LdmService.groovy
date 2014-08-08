@@ -10,8 +10,8 @@ class LdmService implements InitializingBean {
 
     List<IntegrationConfiguration> rules = []
     private static HashMap ldmFieldToBannerDomainPropertyMap = [
-            abreviation: 'code',
-            title      : 'description'
+            abbreviation: 'code',
+            title       : 'description'
     ]
 
 

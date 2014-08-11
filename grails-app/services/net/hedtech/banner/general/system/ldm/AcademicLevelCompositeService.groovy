@@ -8,6 +8,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
+import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -28,10 +29,14 @@ class AcademicLevelCompositeService {
 
 
     @Transactional(readOnly = true)
-    List<AcademicLevel> list(Map map) {
+    List<AcademicLevel> list(Map params) {
         List academicLevels = []
-        RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        List<Level> levels = levelService.list(map) as List
+        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+        List allowedSortFields = ['abbreviation', 'title']
+        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
+        RestfulApiValidationUtility.validateSortOrder(params.order)
+        params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)
+        List<Level> levels = levelService.list(params) as List
         levels.each { level ->
             academicLevels << new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid)
         }

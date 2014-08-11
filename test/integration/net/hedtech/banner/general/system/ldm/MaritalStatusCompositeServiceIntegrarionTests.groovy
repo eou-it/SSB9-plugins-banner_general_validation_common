@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
+import net.hedtech.banner.general.system.ldm.v1.MaritalStatusParentCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 
@@ -112,17 +113,17 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         if (maritalStatus != null) {
             switch (maritalStatus) {
                 case "S":
-                    return "Single"
+                    return MaritalStatusParentCategory.SINGLE.value
                 case "M":
-                    return "Married"
+                    return MaritalStatusParentCategory.MARRIED.value
                 case "D":
-                    return "Divorced"
+                    return MaritalStatusParentCategory.DIVORCED.value
                 case "W":
-                    return "Widowed"
+                    return MaritalStatusParentCategory.WIDOWED.value
                 case "P":
-                    return "Separated"
+                    return MaritalStatusParentCategory.SEPARATED.value
                 case "R":
-                    return "Married"
+                    return MaritalStatusParentCategory.MARRIED.value
                 default:
                     return null
             }

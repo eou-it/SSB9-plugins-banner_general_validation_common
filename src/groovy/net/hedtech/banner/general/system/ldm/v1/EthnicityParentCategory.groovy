@@ -4,14 +4,14 @@
 package net.hedtech.banner.general.system.ldm.v1
 
 /**
- * LDM Enumerations for marital-status.parentCategory property
- * Refer /test/data/metadata/base/domain/marital-status/marital-status.json-schema
+ * LDM Enumerations for ethnicities.parentCategory property
+ * Refer /test/data/metadata/base/domain/ethnicities/ethnicities.json-schema
  */
-public enum MaritalStatusParentCategory {
+public enum EthnicityParentCategory {
 
-    SINGLE("Single"), MARRIED("Married"), DIVORCED("Divorced"), WIDOWED("Widowed"), SEPARATED("Separated")
+    HISPANIC("Hispanic"), NON_HISPANIC("Non-Hispanic")
 
-    MaritalStatusParentCategory(String value) { this.value = value }
+    EthnicityParentCategory(String value) { this.value = value }
 
     private final String value
 

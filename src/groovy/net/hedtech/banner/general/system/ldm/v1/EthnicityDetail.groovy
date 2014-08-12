@@ -28,7 +28,7 @@ class EthnicityDetail {
     boolean equals(o) {
         if (this.is(o)) return true
         if (getClass() != o.class) return false
-        Ethnicity that = (Ethnicity) o
+        EthnicityDetail that = (EthnicityDetail) o
         if (ethnicity != that.ethnicity) return false
         if (guid != that.guid) return false
         if (parentCategory != that.parentCategory) return false

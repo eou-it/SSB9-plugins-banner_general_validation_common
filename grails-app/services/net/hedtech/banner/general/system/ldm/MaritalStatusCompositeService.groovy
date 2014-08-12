@@ -48,7 +48,6 @@ class MaritalStatusCompositeService {
     }
 
 
-    @Transactional(readOnly = true)
     MaritalStatusDetail get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(MARITAL_STATUS_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {

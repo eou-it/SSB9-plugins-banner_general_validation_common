@@ -13,13 +13,13 @@ import net.hedtech.banner.general.system.Race
 class RaceDetail {
 
     @Delegate
-    private final Race race
+    private final Race raceDecorator
     String guid
     String parentCategory
 
 
     RaceDetail(Race race, String guid, String parentCategory) {
-        this.race = race
+        this.raceDecorator = race
         this.guid = guid
         this.parentCategory = parentCategory
     }
@@ -28,8 +28,8 @@ class RaceDetail {
     boolean equals(o) {
         if (this.is(o)) return true
         if (getClass() != o.class) return false
-        Race that = (Race) o
-        if (race != that.race) return false
+        RaceDetail that = (RaceDetail) o
+        if (raceDecorator != that.raceDecorator) return false
         if (guid != that.guid) return false
         if (parentCategory != that.parentCategory) return false
         return true
@@ -38,16 +38,21 @@ class RaceDetail {
 
     int hashCode() {
         int result
-        result = (race != null ? race.hashCode() : 0)
+        result = (raceDecorator != null ? raceDecorator.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
         result = 31 * result + (parentCategory != null ? parentCategory.hashCode() : 0)
         return result
     }
 
 
+/*    private Race getRace(){
+        return race
+    }*/
+
+
     public String toString() {
         """RaceDetail[
-                    race=$race,
+                    raceDecorator=$raceDecorator,
                     guid=$guid,
                     parentCategory=$parentCategory]"""
     }

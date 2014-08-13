@@ -3,6 +3,7 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.College
 import net.hedtech.banner.general.system.ldm.v1.Organization
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -54,6 +55,16 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         def organization = organizationCompositeService.get(organizationList[0].guid)
         assertNotNull organization
         assertEquals organizationList[0].code, organization.code
+    }
+
+    /**
+     * Testcase for show method with ApplicationException
+     */
+    void testGetWithInvalidGuid() {
+        shouldFail( ApplicationException  ) {
+            organizationCompositeService.get(null)
+        }
+
     }
 
     /**

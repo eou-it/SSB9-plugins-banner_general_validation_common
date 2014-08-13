@@ -3,6 +3,7 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Campus
 import net.hedtech.banner.general.system.ldm.v1.SiteDetail
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -54,6 +55,16 @@ class SiteDetailCompositeServiceIntegrationTests extends BaseIntegrationTestCase
         def site = siteDetailCompositeService.get(siteList[0].guid)
         assertNotNull site
         assertEquals siteList[0].code, site.code
+    }
+
+    /**
+     * Testcase for show method with ApplicationException
+     */
+    void testGetWithInvalidGuid() {
+        shouldFail( ApplicationException  ) {
+            siteDetailCompositeService.get(null)
+        }
+
     }
 
     /**

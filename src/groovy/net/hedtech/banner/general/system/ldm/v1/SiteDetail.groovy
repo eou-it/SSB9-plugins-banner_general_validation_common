@@ -21,4 +21,35 @@ class SiteDetail {
         this.campus = campus
     }
 
+    /**
+     * Equals method to compare the two SiteDetail
+     * Objects
+     * @param o
+     * @return
+     */
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (getClass() != o.class) return false
+
+        SiteDetail that = (SiteDetail) o
+
+        if (guid != that.guid) return false
+        if (campus != that.campus) return false
+
+        return true
+    }
+
+    /**
+     *  returns hash code
+     * @return int
+     */
+    int hashCode() {
+        int result
+        result = (campus != null ? campus.hashCode() : 0)
+        result = 31 * result + (guid != null ? guid.hashCode() : 0)
+        return result
+    }
+
+
+
 }

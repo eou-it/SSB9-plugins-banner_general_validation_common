@@ -7,9 +7,13 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
+import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.College
 import net.hedtech.banner.general.system.ldm.v1.Organization
 import net.hedtech.banner.general.system.ldm.v1.OrganizationType
+import net.hedtech.banner.query.DynamicFinder
+import net.hedtech.banner.query.QueryBuilder
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,7 +23,13 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class OrganizationCompositeService {
 
-    private static final String COLLEGE_LDM_NAME = "colleges"
+    private static final String LDM_NAME = "colleges"
+    private static final String ABBREVIATION ='abbreviation'
+    private static final String TITLE ='title'
+    private static final String CODE ="code"
+    private static final String DESCRIPTION ="description"
+    private static final String QUERY = """from College a"""
+    private static final String ENTITY ="a"
 
     def collegeService
     def globalUniqueIdentifierService
@@ -32,7 +42,7 @@ class OrganizationCompositeService {
      */
     @Transactional(readOnly = true)
     Organization get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(COLLEGE_LDM_NAME, guid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
         }
@@ -56,9 +66,21 @@ class OrganizationCompositeService {
 
         RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
-        List<College> colleges = collegeService.list(map) as List
+        List allowedSortFields = ['abbreviation', 'title']
+        RestfulApiValidationUtility.validateSortField(map.sort, allowedSortFields)
+        RestfulApiValidationUtility.validateSortOrder(map.order)
+        map.sort = LdmService.fetchBannerDomainPropertyForLdmField(map.sort)
+        def filters = QueryBuilder.createFilters(map)
+        def allowedSearchFields = [CODE, DESCRIPTION]
+        def allowedOperators = [Operators.EQUALS, Operators.EQUALS_IGNORE_CASE, Operators.CONTAINS, Operators.STARTS_WITH]
+        RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields, allowedOperators)
+        RestfulApiValidationUtility.validateSortField(map.sort,allowedSearchFields)
+        def filterMap = QueryBuilder.getFilterData(map)
+        DynamicFinder dynamicFinder = new DynamicFinder(College.class, QUERY, ENTITY)
+        List<College> colleges = dynamicFinder.find([params: filterMap.params, criteria: filterMap.criteria], filterMap.pagingAndSortParams)
+
         colleges.each { college ->
-            organizations << new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value)
+            organizations << new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value)
         }
 
         return organizations
@@ -82,7 +104,7 @@ class OrganizationCompositeService {
         if (!college) {
             return null
         }
-        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, domainId).guid, college, OrganizationType.COLLEGE.value)
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, domainId).guid, college, OrganizationType.COLLEGE.value)
     }
 
 
@@ -94,7 +116,7 @@ class OrganizationCompositeService {
         if (!college) {
             return null
         }
-        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value)
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value)
     }
 
 }

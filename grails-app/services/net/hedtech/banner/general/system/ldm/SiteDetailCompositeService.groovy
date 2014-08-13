@@ -9,6 +9,7 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.system.Campus
 import net.hedtech.banner.general.system.College
+import net.hedtech.banner.general.system.Site
 import net.hedtech.banner.general.system.ldm.v1.Organization
 import net.hedtech.banner.general.system.ldm.v1.OrganizationType
 import net.hedtech.banner.general.system.ldm.v1.SiteDetail
@@ -41,12 +42,12 @@ class SiteDetailCompositeService {
         def buildings = []
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(CAMPUS_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: SiteDetail.class.simpleName))
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Site.class.simpleName))
         }
 
         Campus campus = Campus.get(globalUniqueIdentifier.domainId)
         if (!campus) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: SiteDetail.class.simpleName))
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Site.class.simpleName))
         }
 
         List<College> colleges = collegeService.list(paginationParams) as List

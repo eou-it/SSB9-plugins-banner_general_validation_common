@@ -3,7 +3,8 @@
  *******************************************************************************/
 package net.hedtech.banner.general.overall
 
-
+import org.hibernate.CacheMode
+import org.hibernate.annotations.CacheConcurrencyStrategy
 
 import javax.persistence.*
 
@@ -11,10 +12,28 @@ import javax.persistence.*
  * Integration configuration rules table
  */
 
+
+@Cacheable(true)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="ldmEnumeration")
 @Entity
 @Table(name = "GV_GORICCR")
+@NamedQueries(value = [
+        @NamedQuery(name = "IntegrationConfiguration.fetchAllByProcessCode",
+                query = """FROM IntegrationConfiguration a
+                              WHERE a.processCode = :processCode"""),
+        @NamedQuery(name = "IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue",
+                query = """FROM IntegrationConfiguration a
+                              WHERE a.processCode = :processCode
+                              and a.settingName = :settingName
+                              and a.translationValue = :translationValue"""),
+        @NamedQuery(name = "IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue",
+                query = """FROM IntegrationConfiguration a
+                              WHERE a.processCode = :processCode
+                              and a.settingName = :settingName
+                              and a.value = :value""")
+])
 class IntegrationConfiguration implements Serializable {
-
+    static final String LDM_CACHE_REGION_NAME = "ldmEnumeration"
     /**
      * Surrogate ID for GORICCR
      */
@@ -88,10 +107,10 @@ class IntegrationConfiguration implements Serializable {
 
     public String toString() {
         """IntegrationConfigurationRule[
-					id=$id, 
+					id=$id,
 					version=$version,
-					lastModified=$lastModified, 
-					lastModifiedBy=$lastModifiedBy, 
+					lastModified=$lastModified,
+					lastModifiedBy=$lastModifiedBy,
 					dataOrigin=$dataOrigin,
                     processCode=$processCode,
                     settingName=$settingName,
@@ -149,6 +168,46 @@ class IntegrationConfiguration implements Serializable {
         sequenceNumber(nullable: true)
         translationValue(nullable: true, maxSize: 200)
     }
+
+    static List<IntegrationConfiguration> fetchAllByProcessCode(String processCode) {
+        List<IntegrationConfiguration> integrationList = null
+        if (!processCode ) return integrationList
+        integrationList = IntegrationConfiguration.withSession { session ->
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCode')
+                    .setString('processCode', processCode).setCacheMode(CacheMode.IGNORE).list()
+        }
+        return integrationList
+
+    }
+
+    static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode,String settingName, String translationValue) {
+        List<IntegrationConfiguration> integrationList = null
+        if (!processCode ) return integrationList
+        integrationList = IntegrationConfiguration.withSession { session ->
+            System.out.println("Inside IntegrationConfiguration >>sessionFactory.getCurrentSession().getCacheMode()" + session.getCacheMode());
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue')
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('translationValue', translationValue).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+
+
+        }
+        return integrationList
+
+    }
+
+    static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndValue(String processCode,String settingName, String value) {
+        List<IntegrationConfiguration> integrationList = null
+        if (!processCode ) return integrationList
+        integrationList = IntegrationConfiguration.withSession { session ->
+            System.out.println("Inside IntegrationConfiguration >>sessionFactory.getCurrentSession().getCacheMode()" + session.getCacheMode());
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+
+
+        }
+        return integrationList
+
+    }
+
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = []

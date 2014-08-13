@@ -1,4 +1,6 @@
 package net.hedtech.banner.general.system.ldm
+
+import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.query.DynamicFinder
@@ -23,6 +25,13 @@ import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 class SubjectCompositeService {
 
     private static final String LDM_NAME = "subjects"
+    private static final String ABBREVIATION ='abbreviation'
+    private static final String TITLE ='title'
+    private static final String CODE ="code"
+    private static final String DESCRIPTION ="description"
+    private static final String QUERY = """from Subject a"""
+    private static final String ENTITY ="a"
+
     def subjectService
     def globalUniqueIdentifierService
 
@@ -57,14 +66,17 @@ class SubjectCompositeService {
     List<SubjectDetail> list(Map map) {
         List subjectList = []
         RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+        List allowedSortFields = ['abbreviation', 'title']
+        RestfulApiValidationUtility.validateSortField(map.sort, allowedSortFields)
+        RestfulApiValidationUtility.validateSortOrder(map.order)
+        map.sort = LdmService.fetchBannerDomainPropertyForLdmField(map.sort)
         def filters = QueryBuilder.createFilters(map)
-        def allowedSearchFields = ['code', 'description']
+        def allowedSearchFields = [CODE, DESCRIPTION]
         def allowedOperators = [Operators.EQUALS, Operators.EQUALS_IGNORE_CASE, Operators.CONTAINS, Operators.STARTS_WITH]
         RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields, allowedOperators)
         RestfulApiValidationUtility.validateSortField(map.sort,allowedSearchFields)
         def filterMap = QueryBuilder.getFilterData(map)
-        def query = """from Subject a"""
-        DynamicFinder dynamicFinder = new DynamicFinder(Subject.class, query, "a")
+        DynamicFinder dynamicFinder = new DynamicFinder(Subject.class, QUERY, ENTITY)
         List<Subject> subjects = dynamicFinder.find([params: filterMap.params, criteria: filterMap.criteria], filterMap.pagingAndSortParams)
         subjects.each { subject ->
             subjectList << new SubjectDetail(subject, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, subject.id).guid)

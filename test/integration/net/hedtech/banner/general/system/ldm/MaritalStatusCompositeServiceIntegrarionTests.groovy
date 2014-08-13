@@ -60,6 +60,14 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
     }
 
 
+    void testGetNullGuid() {
+        try {
+            maritalStatusCompositeService.get(null)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
         def maritalStatusDetails = maritalStatusCompositeService.list(paginationParams)
@@ -69,7 +77,12 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertNotNull maritalStatusDetails[0].guid
         def maritalStatusDetail = maritalStatusCompositeService.get(maritalStatusDetails[0].guid)
         assertNotNull maritalStatusDetail
-        assertEquals maritalStatusDetails[0], maritalStatusDetail
+        assertNotNull maritalStatusDetail.code
+        assertEquals maritalStatusDetail.code, maritalStatusDetails[0].code
+        assertNotNull maritalStatusDetail.parentCategory
+        assertEquals maritalStatusDetail.parentCategory, maritalStatusDetails[0].parentCategory
+        assertNotNull maritalStatusDetail.guid
+        assertEquals maritalStatusDetail.guid, maritalStatusDetails[0].guid
     }
 
 

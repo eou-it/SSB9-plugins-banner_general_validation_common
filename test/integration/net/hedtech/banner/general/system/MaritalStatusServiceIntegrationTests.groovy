@@ -2,7 +2,7 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
-class MaritalStatusServiceTests extends BaseIntegrationTestCase {
+class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def maritalStatusService
 

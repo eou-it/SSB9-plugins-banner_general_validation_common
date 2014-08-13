@@ -38,8 +38,6 @@ class SiteDetailCompositeService {
      */
     @Transactional(readOnly = true)
     SiteDetail get(String guid) {
-        Organization organization
-        def buildings = []
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(CAMPUS_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Site.class.simpleName))
@@ -49,11 +47,7 @@ class SiteDetailCompositeService {
         if (!campus) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: Site.class.simpleName))
         }
-
-        List<College> colleges = collegeService.list(paginationParams) as List
-        organization = new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, colleges[0].id).guid, colleges[0], OrganizationType.COLLEGE.value)
-
-        return new SiteDetail(guid, campus, organization, buildings);
+        return new SiteDetail(guid, campus);
     }
 
     /**
@@ -64,15 +58,11 @@ class SiteDetailCompositeService {
      */
     def list(Map map) {
         def sites = []
-        Organization organization
-        def buildings = []
 
         RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        List<College> colleges = collegeService.list(paginationParams) as List
         List<Campus> campuses = campusService.list(map) as List
         campuses.each { campus ->
-            organization = new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, colleges[0].id).guid, colleges[0], OrganizationType.COLLEGE.value)
-            sites << new SiteDetail(GlobalUniqueIdentifier.findByLdmNameAndDomainId(CAMPUS_LDM_NAME, campus.id).guid, campus, organization, buildings)
+            sites << new SiteDetail(GlobalUniqueIdentifier.findByLdmNameAndDomainId(CAMPUS_LDM_NAME, campus.id).guid, campus)
          }
 
         return sites
@@ -89,9 +79,6 @@ class SiteDetailCompositeService {
 
 
     SiteDetail fetchByCampusId(Long domainId) {
-        Organization organization
-        def buildings = []
-
         if (null == domainId) {
             return null
         }
@@ -99,16 +86,11 @@ class SiteDetailCompositeService {
         if (!campus) {
             return null
         }
-        List<College> colleges = collegeService.list(paginationParams) as List
-        organization = new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, colleges[0].id).guid, colleges[0], OrganizationType.COLLEGE.value)
-        return new SiteDetail(GlobalUniqueIdentifier.findByLdmNameAndDomainId(CAMPUS_LDM_NAME, domainId).guid, campus, organization, buildings)
+        return new SiteDetail(GlobalUniqueIdentifier.findByLdmNameAndDomainId(CAMPUS_LDM_NAME, domainId).guid, campus)
     }
 
 
     SiteDetail fetchByCampusCode(String campusCode) {
-        Organization organization
-        def buildings = []
-
         if (!campusCode) {
             return null
         }
@@ -116,9 +98,7 @@ class SiteDetailCompositeService {
         if (!campus) {
             return null
         }
-        List<College> colleges = collegeService.list(paginationParams) as List
-        organization = new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, colleges[0].id).guid, colleges[0], OrganizationType.COLLEGE.value)
-        return new SiteDetail(GlobalUniqueIdentifier.findByLdmNameAndDomainId(CAMPUS_LDM_NAME, campus.id)?.guid, campus, organization, buildings)
+        return new SiteDetail(GlobalUniqueIdentifier.findByLdmNameAndDomainId(CAMPUS_LDM_NAME, campus.id)?.guid, campus)
     }
 
 }

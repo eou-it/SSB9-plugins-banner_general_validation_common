@@ -15,16 +15,6 @@ class SiteDetail {
     private final Campus campus
 
     String guid
-    Organization organization
-    def buildings = []
-
-
-    def SiteDetail(String guid, def campus, Organization organization, def buildings) {
-        this.guid = guid
-        this.campus = campus
-        this.organization = organization
-        this.buildings = buildings
-    }
 
     def SiteDetail(String guid, def campus) {
         this.guid = guid

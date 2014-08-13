@@ -61,11 +61,11 @@ class LdmService implements InitializingBean{
      * The cached is specific to the query, data will be fetched based  the query
      * @param processCode
      * @param ldmType
-     * @param translationValue
+     * @param value
      * @return
      */
-    IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue(String processCode, String ldmType, String translationValue ){
-        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue('LDM',ldmType,translationValue).get(0)
+    IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue(String processCode, String ldmType, String value){
+        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue('LDM',ldmType,value).get(0)
         LdmService.log.debug ("ldmEnumeration MissCount--"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug ("ldmEnumeration HitCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
         LdmService.log.debug ("ldmEnumeration PutCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())

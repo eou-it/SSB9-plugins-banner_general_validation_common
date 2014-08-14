@@ -40,16 +40,19 @@ class LdmService implements InitializingBean{
     }
 
     /**
-     * Added for supporting secondary level cache on GV_GORICCR View
-     * The cached is specific to the query, data will be fetched based  the query
+     * Added for supporting secondary level cache on GV_GORICCR View, the cached is specific to the query and
+     * data will be fetched based  the query, this method is used for  fetch the Banner Value by passing
+     * the LDM Value i.e. can be used to fetch rule probably  during the CREATE and UPDATE API’s,
+     * wherein the request payload containing the LDM Value can be passes to this method to get the corresponding
+     * Banner Type before creating/updating the record in Banner
      * @param processCode
-     * @param ldmType
+     * @param settingName
      * @param translationValue
      * @return
      */
-    IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String ldmType, String translationValue ){
+    IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue ){
         System.out.println("After sessionFactory.getCurrentSession().getCacheMode()" + sessionFactory.getCurrentSession().getCacheMode());
-        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM',ldmType,translationValue).get(0)
+        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM',settingName,translationValue).get(0)
         LdmService.log.debug ("ldmEnumeration MissCount--"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug ("ldmEnumeration HitCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
         LdmService.log.debug ("ldmEnumeration PutCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
@@ -57,15 +60,18 @@ class LdmService implements InitializingBean{
     }
 
     /**
-     * Added for supporting secondary level cache on GV_GORICCR View
-     * The cached is specific to the query, data will be fetched based  the query
+     * Added for supporting secondary level cache on GV_GORICCR View, the cached is specific to the query and
+     * data will be fetched based on the query, this method is used for  fetch the LDM Value by passing
+     * the Banner Value i.e. can be used to fetch rule probably during the SHOW  and LIST API’ s,
+     * wherein before sending the response  to LDM the  Banner Value can be passes to this method to
+     * get the LDM Type for including in the response.
      * @param processCode
-     * @param ldmType
+     * @param settingName
      * @param value
      * @return
      */
-    IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue(String processCode, String ldmType, String value){
-        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue('LDM',ldmType,value).get(0)
+    IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue(String processCode, String settingName, String value){
+        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue('LDM',settingName,value).get(0)
         LdmService.log.debug ("ldmEnumeration MissCount--"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug ("ldmEnumeration HitCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
         LdmService.log.debug ("ldmEnumeration PutCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())

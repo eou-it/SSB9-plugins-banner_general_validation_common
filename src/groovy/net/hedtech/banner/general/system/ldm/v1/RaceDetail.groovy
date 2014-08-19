@@ -45,11 +45,6 @@ class RaceDetail {
     }
 
 
-/*    private Race getRace(){
-        return race
-    }*/
-
-
     public String toString() {
         """RaceDetail[
                     raceDecorator=$raceDecorator,

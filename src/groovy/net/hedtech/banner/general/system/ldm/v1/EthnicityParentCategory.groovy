@@ -1,11 +1,10 @@
-/*******************************************************************************
- Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
- ****************************************************************************** */
+/*********************************************************************************
+ Copyright 2014 Ellucian Company L.P. and its affiliates.
+ **********************************************************************************/
 package net.hedtech.banner.general.system.ldm.v1
 
 /**
- * LDM Enumerations for ethnicities.parentCategory property
- * Refer /test/data/metadata/base/domain/ethnicities/ethnicities.json-schema
+ * CDM Enumerations for ethnicities.parentCategory property
  */
 public enum EthnicityParentCategory {
 

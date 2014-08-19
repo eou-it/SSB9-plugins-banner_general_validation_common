@@ -116,7 +116,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     }
 
 
-    void testFetchByGradingMode() {
+    void testFetchByEthnicityCode() {
         EthnicityDetail ethnicityDetail = ethnicityCompositeService.fetchByEthnicityCode(i_success_ethnicity.code)
         assertNotNull ethnicityDetail
         assertEquals i_success_ethnicity.id, ethnicityDetail.id

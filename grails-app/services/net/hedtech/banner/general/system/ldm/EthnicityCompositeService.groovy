@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 
 
 /**
- * Service used to support "ethnicities" resource for LDM
+ * Service used to support "ethnicities" resource for CDM
  */
 @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 class EthnicityCompositeService {

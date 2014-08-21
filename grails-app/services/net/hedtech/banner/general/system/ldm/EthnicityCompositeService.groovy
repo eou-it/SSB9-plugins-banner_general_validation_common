@@ -39,7 +39,7 @@ class EthnicityCompositeService {
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)
         List<Ethnicity> ethnicityList = ethnicityService.list(params) as List
         ethnicityList.each { ethnicity ->
-            ethnicityDetailList << new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity.code), new Metadata(ethnicity.dataOrigin))
+            ethnicityDetailList << new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity), new Metadata(ethnicity.dataOrigin))
         }
         return ethnicityDetailList
     }
@@ -61,7 +61,7 @@ class EthnicityCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(Ethnicity.class.simpleName)))
         }
 
-        return new EthnicityDetail(ethnicity, globalUniqueIdentifier.guid, getLdmEthnicity(ethnicity.code), new Metadata(ethnicity.dataOrigin));
+        return new EthnicityDetail(ethnicity, globalUniqueIdentifier.guid, getLdmEthnicity(ethnicity), new Metadata(ethnicity.dataOrigin));
     }
 
 
@@ -73,7 +73,7 @@ class EthnicityCompositeService {
         if (!ethnicity) {
             return null
         }
-        return new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicityId)?.guid, getLdmEthnicity(ethnicity.code), new Metadata(ethnicity.dataOrigin))
+        return new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicityId)?.guid, getLdmEthnicity(ethnicity), new Metadata(ethnicity.dataOrigin))
     }
 
 
@@ -84,15 +84,15 @@ class EthnicityCompositeService {
             if (!ethnicity) {
                 return ethnicityDetail
             }
-            ethnicityDetail = new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity))
+            ethnicityDetail = new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity), new Metadata(ethnicity.dataOrigin))
         }
         return ethnicityDetail
     }
 
     def getLdmEthnicity(def ethnicity) {
         if (ethnicity != null) {
-            return ethnicity.ethnic == 1 ? EthnicityParentCategory.NON_HISPANIC.value :
-                    (ethnicity.ethnic == 2 ? EthnicityParentCategory.HISPANIC.value : null)
+            return ethnicity.ethnic == "1" ? EthnicityParentCategory.NON_HISPANIC.value :
+                    (ethnicity.ethnic == "2" ? EthnicityParentCategory.HISPANIC.value : null)
         }
         return null
     }

@@ -109,7 +109,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals i_success_ethnicity.code, ethnicityDetail.code
         assertEquals i_success_ethnicity.description, ethnicityDetail.description
         assertEquals i_success_ethnicity.dataOrigin, ethnicityDetail.metadata.dataOrigin
-        assertEquals getLdmEthnicity(i_success_ethnicity.code), ethnicityDetail.parentCategory
+        assertEquals getLdmEthnicity(i_success_ethnicity), ethnicityDetail.parentCategory
     }
 
 
@@ -126,14 +126,14 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals i_success_ethnicity.code, ethnicityDetail.code
         assertEquals i_success_ethnicity.description, ethnicityDetail.description
         assertEquals i_success_ethnicity.dataOrigin, ethnicityDetail.metadata.dataOrigin
-        assertEquals getLdmEthnicity(i_success_ethnicity.code), ethnicityDetail.parentCategory
+        assertEquals getLdmEthnicity(i_success_ethnicity), ethnicityDetail.parentCategory
     }
 
-    //TODO: Move this function to common place
-    // Return LDM enumeration value for the corresponding ethnicity code.
+
     def getLdmEthnicity(def ethnicity) {
         if (ethnicity != null) {
-            return EthnicityParentCategory.HISPANIC.value
+            return ethnicity.ethnic == "1" ? EthnicityParentCategory.NON_HISPANIC.value :
+                    (ethnicity.ethnic == "2" ? EthnicityParentCategory.HISPANIC.value : null)
         }
         return null
     }

@@ -12,7 +12,7 @@ class RestfulApiValidationUtility {
     private final static List<String> ALLOWED_SORTORDER = ['ASC', 'DESC']
 
     public static final Integer MAX_DEFAULT= 10
-    public static final Integer MAX_UPPER_LIMIT = 30
+    public static final Integer MAX_UPPER_LIMIT = 500
 
     /**
      * Check the values for "max" and "offset" in params map and corrects them if required.

@@ -15,11 +15,13 @@ class SubjectDetail {
 
     @Delegate
     private final Subject subject
+    Metadata metadata
     String guid
 
 
-    SubjectDetail(Subject subject, String guid) {
+    SubjectDetail(Subject subject, String guid, Metadata metadata) {
         this.subject = subject
+        this.metadata = metadata
         this.guid = guid
     }
 
@@ -34,7 +36,7 @@ class SubjectDetail {
         if (getClass() != o.class) return false
 
         SubjectDetail that = (SubjectDetail) o
-
+        if (metadata != that.metadata) return false
         if (guid != that.guid) return false
         if (subject != that.subject) return false
 
@@ -49,7 +51,16 @@ class SubjectDetail {
         int result
         result = (subject != null ? subject.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
         return result
+    }
+
+
+    public String toString() {
+        """SubjectDetail[
+                    subject=$subject,
+                    guid=$guid,
+                    metadata=$metadata]"""
     }
 
 }

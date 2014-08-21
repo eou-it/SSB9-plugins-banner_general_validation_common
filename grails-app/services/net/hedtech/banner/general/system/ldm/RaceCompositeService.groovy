@@ -10,6 +10,7 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Race
+import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v1.RaceDetail
 import net.hedtech.banner.general.system.ldm.v1.RaceParentCategory
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -38,7 +39,7 @@ class RaceCompositeService {
         params.sort = ldmPropertyToDomainPropertyMap[params.sort]
         List<Race> raceList = raceService.list(params) as List
         raceList.each { race ->
-            raceDetailList << new RaceDetail(race, GlobalUniqueIdentifier.findByLdmNameAndDomainId(RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race))
+            raceDetailList << new RaceDetail(race, GlobalUniqueIdentifier.findByLdmNameAndDomainId(RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race), new Metadata(race.dataOrigin))
         }
         return raceDetailList
     }
@@ -60,13 +61,19 @@ class RaceCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(Race.class.simpleName)))
         }
 
-        return new RaceDetail(race, globalUniqueIdentifier.guid, getLdmRace(race.race));
+        return new RaceDetail(race, globalUniqueIdentifier.guid, getLdmRace(race.race), new Metadata(race.dataOrigin));
     }
 
 
     RaceDetail fetchByRaceId(Long raceId) {
+        if (null == raceId) {
+            return null
+        }
         Race race = raceService.get(raceId) as Race
-        return new RaceDetail(race, GlobalUniqueIdentifier.findByLdmNameAndDomainId(RACE_LDM_NAME, raceId)?.guid, getLdmRace(race.race))
+        if (!race) {
+            return null
+        }
+        return new RaceDetail(race, GlobalUniqueIdentifier.findByLdmNameAndDomainId(RACE_LDM_NAME, raceId)?.guid, getLdmRace(race.race), new Metadata(race.dataOrigin))
     }
 
 
@@ -77,7 +84,7 @@ class RaceCompositeService {
             if (!race) {
                 return raceDetail
             }
-            raceDetail = new RaceDetail(race, GlobalUniqueIdentifier.findByLdmNameAndDomainId(RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race))
+            raceDetail = new RaceDetail(race, GlobalUniqueIdentifier.findByLdmNameAndDomainId(RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race), new Metadata(race.dataOrigin))
         }
         return raceDetail
     }

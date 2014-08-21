@@ -9,6 +9,7 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.College
+import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v1.Organization
 import net.hedtech.banner.general.system.ldm.v1.OrganizationType
 import net.hedtech.banner.query.DynamicFinder
@@ -52,7 +53,7 @@ class OrganizationCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: College.class.simpleName))
         }
 
-        return new Organization(guid, college, OrganizationType.COLLEGE.value);
+        return new Organization(guid, college, OrganizationType.COLLEGE.value, new Metadata(college.dataOrigin));
     }
 
     /**
@@ -80,7 +81,7 @@ class OrganizationCompositeService {
         List<College> colleges = dynamicFinder.find([params: filterMap.params, criteria: filterMap.criteria], filterMap.pagingAndSortParams)
 
         colleges.each { college ->
-            organizations << new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value)
+            organizations << new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value, new Metadata(college.dataOrigin))
         }
 
         return organizations
@@ -104,7 +105,7 @@ class OrganizationCompositeService {
         if (!college) {
             return null
         }
-        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, domainId).guid, college, OrganizationType.COLLEGE.value)
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, domainId).guid, college, OrganizationType.COLLEGE.value, new Metadata(college.dataOrigin))
     }
 
 
@@ -116,7 +117,7 @@ class OrganizationCompositeService {
         if (!college) {
             return null
         }
-        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value)
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, college.id).guid, college, OrganizationType.COLLEGE.value, new Metadata(college.dataOrigin))
     }
 
 }

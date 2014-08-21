@@ -38,7 +38,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    void testList() {
+    void testListWithPagination() {
         def paginationParams = [max: '2', offset: '0']
         List races = raceCompositeService.list(paginationParams)
         assertNotNull races
@@ -49,7 +49,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     void testCount() {
         assertNotNull i_success_race
-        assertTrue raceCompositeService.count() > 0
+        assertEquals Race.count(), raceCompositeService.count()
     }
 
 
@@ -86,6 +86,8 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetail.guid, raceDetails[0].guid
         assertNotNull raceDetail.parentCategory
         assertEquals raceDetail.parentCategory, raceDetails[0].parentCategory
+        assertNotNull raceDetail.metadata
+        assertEquals raceDetail.metadata, raceDetails[0].metadata
         assertEquals raceDetails[0], raceDetail
     }
 
@@ -105,6 +107,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_race.id, raceDetail.id
         assertEquals i_success_race.race, raceDetail.race
         assertEquals i_success_race.description, raceDetail.description
+        assertEquals i_success_race.dataOrigin, raceDetail.metadata.dataOrigin
         assertEquals getLdmRace(i_success_race.race), raceDetail.parentCategory
     }
 
@@ -121,6 +124,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_race.id, raceDetail.id
         assertEquals i_success_race.race, raceDetail.race
         assertEquals i_success_race.description, raceDetail.description
+        assertEquals i_success_race.dataOrigin, raceDetail.metadata.dataOrigin
         assertEquals getLdmRace(i_success_race.race), raceDetail.parentCategory
     }
 

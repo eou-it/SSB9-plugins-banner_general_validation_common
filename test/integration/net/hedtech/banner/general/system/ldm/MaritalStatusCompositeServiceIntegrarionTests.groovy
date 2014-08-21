@@ -36,7 +36,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
     }
 
 
-    void testList() {
+    void testListWithPagination() {
         def paginationParams = [max: '4', offset: '0']
         List maritalStatuses = maritalStatusCompositeService.list(paginationParams)
         assertNotNull maritalStatuses
@@ -47,7 +47,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
 
     void testCount() {
         assertNotNull i_success_maritalStatus
-        assertTrue maritalStatusCompositeService.count() > 0
+        assertEquals MaritalStatus.count(), maritalStatusCompositeService.count()
     }
 
 
@@ -83,6 +83,8 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertEquals maritalStatusDetail.parentCategory, maritalStatusDetails[0].parentCategory
         assertNotNull maritalStatusDetail.guid
         assertEquals maritalStatusDetail.guid, maritalStatusDetails[0].guid
+        assertNotNull maritalStatusDetail.metadata
+        assertEquals maritalStatusDetail.metadata.dataOrigin, maritalStatusDetails[0].metadata.dataOrigin
     }
 
 
@@ -101,6 +103,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertEquals i_success_maritalStatus.id, maritalStatusDetail.id
         assertEquals i_success_maritalStatus.code, maritalStatusDetail.code
         assertEquals i_success_maritalStatus.description, maritalStatusDetail.description
+        assertEquals i_success_maritalStatus.dataOrigin, maritalStatusDetail.metadata.dataOrigin
         assertEquals getLdmMaritalStatus(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
     }
 
@@ -117,6 +120,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertEquals i_success_maritalStatus.id, maritalStatusDetail.id
         assertEquals i_success_maritalStatus.code, maritalStatusDetail.code
         assertEquals i_success_maritalStatus.description, maritalStatusDetail.description
+        assertEquals i_success_maritalStatus.dataOrigin, maritalStatusDetail.metadata.dataOrigin
         assertEquals getLdmMaritalStatus(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
     }
 

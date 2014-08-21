@@ -28,7 +28,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Test case for List method
      */
-    void testList() {
+    void testListWithPagination() {
         def paginationParams = [max: '20', offset: '0']
         List subjectList = subjectCompositeService.list(paginationParams)
         assertNotNull subjectList
@@ -40,7 +40,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
      * Testcase for count method
      */
     void testCount() {
-        assertTrue subjectCompositeService.count() > 0
+        assertEquals Subject.count(), subjectCompositeService.count()
     }
 
     /**
@@ -55,6 +55,10 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         def subjectDetail = subjectCompositeService.get(subjectList[0].guid)
         assertNotNull subjectDetail
         assertEquals subjectList[0], subjectDetail
+        assertEquals subjectList[0].guid, subjectDetail.guid
+        assertEquals subjectList[0].code, subjectDetail.code
+        assertEquals subjectList[0].description, subjectDetail.description
+        assertEquals subjectList[0].metadata.dataOrigin, subjectDetail.metadata.dataOrigin
     }
     /**
      * Testcase for show method with ApplicationException
@@ -75,7 +79,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals subjectResource.id, subjectDetail.id
         assertEquals subjectResource.code , subjectDetail.code
         assertEquals subjectResource.description, subjectDetail.description
-
+        assertEquals subjectResource.dataOrigin, subjectDetail.metadata.dataOrigin
     }
 
     /**
@@ -87,6 +91,6 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals subjectResource.id, subjectDetail.id
         assertEquals subjectResource.code, subjectDetail.code
         assertEquals subjectResource.description, subjectDetail.description
-
+        assertEquals subjectResource.dataOrigin, subjectDetail.metadata.dataOrigin
     }
 }

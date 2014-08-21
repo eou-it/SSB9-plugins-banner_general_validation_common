@@ -13,6 +13,7 @@ import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
 import net.hedtech.banner.general.system.ldm.v1.EthnicityParentCategory
+import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -38,7 +39,7 @@ class EthnicityCompositeService {
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)
         List<Ethnicity> ethnicityList = ethnicityService.list(params) as List
         ethnicityList.each { ethnicity ->
-            ethnicityDetailList << new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity.code))
+            ethnicityDetailList << new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity.code), new Metadata(ethnicity.dataOrigin))
         }
         return ethnicityDetailList
     }
@@ -60,13 +61,19 @@ class EthnicityCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(Ethnicity.class.simpleName)))
         }
 
-        return new EthnicityDetail(ethnicity, globalUniqueIdentifier.guid, getLdmEthnicity(ethnicity.code));
+        return new EthnicityDetail(ethnicity, globalUniqueIdentifier.guid, getLdmEthnicity(ethnicity.code), new Metadata(ethnicity.dataOrigin));
     }
 
 
     EthnicityDetail fetchByEthnicityId(Long ethnicityId) {
+        if (null == ethnicityId) {
+            return null
+        }
         Ethnicity ethnicity = ethnicityService.get(ethnicityId) as Ethnicity
-        return new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicityId)?.guid, getLdmEthnicity(ethnicity.code))
+        if (!ethnicity) {
+            return null
+        }
+        return new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicityId)?.guid, getLdmEthnicity(ethnicity.code), new Metadata(ethnicity.dataOrigin))
     }
 
 
@@ -77,7 +84,7 @@ class EthnicityCompositeService {
             if (!ethnicity) {
                 return ethnicityDetail
             }
-            ethnicityDetail = new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity.code))
+            ethnicityDetail = new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity.code), new Metadata(ethnicity.dataOrigin))
         }
         return ethnicityDetail
     }

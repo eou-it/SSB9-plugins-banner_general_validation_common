@@ -16,12 +16,14 @@ class MaritalStatusDetail {
     private final MaritalStatus maritalStatus
     String guid
     String parentCategory
+    Metadata metadata
 
 
-    MaritalStatusDetail(MaritalStatus maritalStatus, String guid, String parentCategory) {
+    MaritalStatusDetail(MaritalStatus maritalStatus, String guid, String parentCategory, Metadata metadata) {
         this.maritalStatus = maritalStatus
         this.guid = guid
         this.parentCategory = parentCategory
+        this.metadata = metadata
     }
 
 
@@ -32,6 +34,7 @@ class MaritalStatusDetail {
         if (maritalStatus != that.maritalStatus) return false
         if (guid != that.guid) return false
         if (parentCategory != that.parentCategory) return false
+        if (metadata != that.metadata) return false
         return true
     }
 
@@ -41,6 +44,7 @@ class MaritalStatusDetail {
         result = (maritalStatus != null ? maritalStatus.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
         result = 31 * result + (parentCategory != null ? parentCategory.hashCode() : 0)
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
         return result
     }
 
@@ -49,6 +53,7 @@ class MaritalStatusDetail {
         """MaritalStatusDetail[
                     maritalStatus=$maritalStatus,
                     guid=$guid,
+                    metadata=$metadata,
                     parentCategory=$parentCategory]"""
     }
 }

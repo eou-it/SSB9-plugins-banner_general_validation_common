@@ -12,6 +12,7 @@ import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusParentCategory
+import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -37,7 +38,7 @@ class MaritalStatusCompositeService {
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)
         List<MaritalStatus> maritalStatusList = maritalStatusService.list(params) as List
         maritalStatusList.each { maritalStatus ->
-            maritalStatusDetailList << new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid, getLdmMaritalStatus(maritalStatus.code))
+            maritalStatusDetailList << new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
         }
         return maritalStatusDetailList
     }
@@ -59,13 +60,19 @@ class MaritalStatusCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(MaritalStatus.class.simpleName)))
         }
 
-        return new MaritalStatusDetail(maritalStatus, globalUniqueIdentifier.guid, getLdmMaritalStatus(maritalStatus.code));
+        return new MaritalStatusDetail(maritalStatus, globalUniqueIdentifier.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin));
     }
 
 
     MaritalStatusDetail fetchByMaritalStatusId(Long maritalStatusId) {
+        if (null == maritalStatusId) {
+            return null
+        }
         MaritalStatus maritalStatus = maritalStatusService.get(maritalStatusId) as MaritalStatus
-        return new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatusId)?.guid, getLdmMaritalStatus(maritalStatus.code))
+        if (!maritalStatus) {
+            return null
+        }
+        return new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatusId)?.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
     }
 
 
@@ -76,7 +83,7 @@ class MaritalStatusCompositeService {
             if (!maritalStatus) {
                 return maritalStatusDetail
             }
-            maritalStatusDetail = new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid, getLdmMaritalStatus(maritalStatus.code))
+            maritalStatusDetail = new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
         }
         return maritalStatusDetail
     }

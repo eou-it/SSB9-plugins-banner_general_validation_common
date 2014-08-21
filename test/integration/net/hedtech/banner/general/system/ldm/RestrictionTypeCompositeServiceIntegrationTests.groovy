@@ -37,7 +37,7 @@ class RestrictionTypeCompositeServiceIntegrationTests extends BaseIntegrationTes
     }
 
 
-    void testList() {
+    void testListWithPagination() {
         def paginationParams = [max: '2', offset: '0']
         List restrictionTypes = restrictionTypeCompositeService.list(paginationParams)
         assertNotNull restrictionTypes
@@ -48,7 +48,7 @@ class RestrictionTypeCompositeServiceIntegrationTests extends BaseIntegrationTes
 
     void testCount() {
         assertNotNull i_success_holdType
-        assertTrue restrictionTypeCompositeService.count() > 0
+        assertEquals HoldType.count(), restrictionTypeCompositeService.count()
     }
 
 
@@ -91,17 +91,17 @@ class RestrictionTypeCompositeServiceIntegrationTests extends BaseIntegrationTes
     }
 
 
-    void testFetchByHoldTypeIdInvalid() {
+    void testFetchByRestrictionTypeIdInvalid() {
         try {
-            restrictionTypeCompositeService.fetchByHoldTypeId(null)
+            restrictionTypeCompositeService.fetchByRestrictionTypeId(null)
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
     }
 
 
-    void testFetchByHoldTypeId() {
-        RestrictionType restrictionType = restrictionTypeCompositeService.fetchByHoldTypeId(i_success_holdType.id)
+    void testFetchByRestrictionTypeId() {
+        RestrictionType restrictionType = restrictionTypeCompositeService.fetchByRestrictionTypeId(i_success_holdType.id)
         assertNotNull restrictionType
         assertEquals i_success_holdType.id, restrictionType.id
         assertEquals i_success_holdType.code, restrictionType.code
@@ -110,14 +110,14 @@ class RestrictionTypeCompositeServiceIntegrationTests extends BaseIntegrationTes
     }
 
 
-    void testFetchByHoldTypeInvalid() {
-        assertNull restrictionTypeCompositeService.fetchByHoldTypeCode(null)
-        assertNull restrictionTypeCompositeService.fetchByHoldTypeCode('Q')
+    void testFetchByRestrictionTypeInvalid() {
+        assertNull restrictionTypeCompositeService.fetchByRestrictionTypeCode(null)
+        assertNull restrictionTypeCompositeService.fetchByRestrictionTypeCode('Q')
     }
 
 
-    void testFetchByHoldTypeCode() {
-        RestrictionType restrictionType = restrictionTypeCompositeService.fetchByHoldTypeCode(i_success_holdType.code)
+    void testFetchByRestrictionTypeCode() {
+        RestrictionType restrictionType = restrictionTypeCompositeService.fetchByRestrictionTypeCode(i_success_holdType.code)
         assertNotNull restrictionType
         assertEquals i_success_holdType.id, restrictionType.id
         assertEquals i_success_holdType.code, restrictionType.code

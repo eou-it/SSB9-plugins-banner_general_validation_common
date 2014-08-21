@@ -39,7 +39,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     }
 
 
-    void testList() {
+    void testListWithPagination() {
         def paginationParams = [max: '2', offset: '0']
         List ethnicities = ethnicityCompositeService.list(paginationParams)
         assertNotNull ethnicities
@@ -50,7 +50,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
 
     void testCount() {
         assertNotNull i_success_ethnicity
-        assertTrue ethnicityCompositeService.count() > 0
+        assertEquals Ethnicity.count(), ethnicityCompositeService.count()
     }
 
 
@@ -87,6 +87,8 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals ethnicityDetails[0].parentCategory, ethnicityDetail.parentCategory
         assertNotNull ethnicityDetail.guid
         assertEquals ethnicityDetails[0].guid, ethnicityDetail.guid
+        assertNotNull ethnicityDetail.metadata
+        assertEquals ethnicityDetails[0].metadata.dataOrigin, ethnicityDetail.metadata.dataOrigin
         assertEquals ethnicityDetails[0], ethnicityDetail
     }
 
@@ -106,6 +108,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals i_success_ethnicity.id, ethnicityDetail.id
         assertEquals i_success_ethnicity.code, ethnicityDetail.code
         assertEquals i_success_ethnicity.description, ethnicityDetail.description
+        assertEquals i_success_ethnicity.dataOrigin, ethnicityDetail.metadata.dataOrigin
         assertEquals getLdmEthnicity(i_success_ethnicity.code), ethnicityDetail.parentCategory
     }
 
@@ -122,6 +125,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals i_success_ethnicity.id, ethnicityDetail.id
         assertEquals i_success_ethnicity.code, ethnicityDetail.code
         assertEquals i_success_ethnicity.description, ethnicityDetail.description
+        assertEquals i_success_ethnicity.dataOrigin, ethnicityDetail.metadata.dataOrigin
         assertEquals getLdmEthnicity(i_success_ethnicity.code), ethnicityDetail.parentCategory
     }
 

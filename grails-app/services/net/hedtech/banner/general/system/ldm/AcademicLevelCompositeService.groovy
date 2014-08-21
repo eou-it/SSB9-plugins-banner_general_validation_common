@@ -11,6 +11,7 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
+import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional
 class AcademicLevelCompositeService {
 
     def levelService
-    def globalUniqueIdentifierService
 
     private static final String LDM_NAME = 'academic-levels'
 
@@ -38,7 +38,7 @@ class AcademicLevelCompositeService {
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)
         List<Level> levels = levelService.list(params) as List
         levels.each { level ->
-            academicLevels << new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid)
+            academicLevels << new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid, new Metadata(level.dataOrigin))
         }
         return academicLevels
     }
@@ -61,7 +61,7 @@ class AcademicLevelCompositeService {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(AcademicLevel.class.simpleName)))
         }
 
-        return new AcademicLevel(level, globalUniqueIdentifier.guid);
+        return new AcademicLevel(level, globalUniqueIdentifier.guid, new Metadata(level.dataOrigin));
     }
 
 
@@ -73,7 +73,7 @@ class AcademicLevelCompositeService {
         if (!level) {
             return null
         }
-        return new AcademicLevel(levelService.get(domainId) as Level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, domainId)?.guid)
+        return new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, domainId)?.guid, new Metadata(level.dataOrigin))
     }
 
 
@@ -85,7 +85,7 @@ class AcademicLevelCompositeService {
         if (!level) {
             return null
         }
-        return new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid)
+        return new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid, new Metadata(level.dataOrigin))
     }
 
 }

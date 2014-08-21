@@ -5,7 +5,7 @@ package net.hedtech.banner.general.system.ldm.v1
 
 
 /**
- * CDM decorator for the metadata property which is present in all the CDM json schemas
+ * CDM decorator for the 'metadata' property which is present in all the CDM json schemas
  */
 class Metadata {
 

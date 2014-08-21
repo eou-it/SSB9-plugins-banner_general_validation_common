@@ -51,7 +51,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
     }
 
 
-    void testList() {
+    void testListWithPagination() {
         def paginationParams = [max: '20', offset: '0']
         List academicLevels = academicLevelCompositeService.list(paginationParams)
         assertNotNull academicLevels
@@ -62,7 +62,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     void testCount() {
         assertNotNull i_success_level
-        assertTrue academicLevelCompositeService.count() > 0
+        assertEquals Level.count(), academicLevelCompositeService.count()
     }
 
 
@@ -107,6 +107,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertNotNull academicLevel
         assertEquals academicLevels[0].guid, academicLevel.guid
         assertEquals academicLevels[0].code, academicLevel.code
+        assertEquals academicLevels[0].metadata, academicLevel.metadata
     }
 
 
@@ -116,6 +117,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_level.id, academicLevel.id
         assertEquals i_success_level.code, academicLevel.code
         assertEquals i_success_level.description, academicLevel.description
+        assertEquals i_success_level.dataOrigin, academicLevel.metadata.dataOrigin
     }
 
 
@@ -130,6 +132,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_level.id, academicLevel.id
         assertEquals i_success_level.code, academicLevel.code
         assertEquals i_success_level.description, academicLevel.description
+        assertEquals i_success_level.dataOrigin, academicLevel.metadata.dataOrigin
     }
 
 

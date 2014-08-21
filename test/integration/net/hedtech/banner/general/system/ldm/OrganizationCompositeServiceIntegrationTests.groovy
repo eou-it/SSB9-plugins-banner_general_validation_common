@@ -28,7 +28,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     /**
      * Test case for List method
      */
-    void testList() {
+    void testListWithPagination() {
         def paginationParams = [max: '20', offset: '0']
         List organizationList = organizationCompositeService.list(paginationParams)
         assertNotNull organizationList
@@ -40,7 +40,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      * Testcase for count method
      */
     void testCount() {
-        assertTrue organizationCompositeService.count() > 0
+        assertEquals College.count(), organizationCompositeService.count()
     }
 
     /**
@@ -55,6 +55,10 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         def organization = organizationCompositeService.get(organizationList[0].guid)
         assertNotNull organization
         assertEquals organizationList[0].code, organization.code
+        assertEquals organizationList[0].description, organization.description
+        assertEquals organizationList[0].metadata.dataOrigin, organization.metadata.dataOrigin
+        assertEquals organizationList[0].guid, organization.guid
+        assertEquals organizationList[0].organizationType, organization.organizationType
     }
 
     /**
@@ -76,7 +80,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         assertEquals college.id, organization.id
         assertEquals college.code, organization.code
         assertEquals college.description, organization.description
-
+        assertEquals college.dataOrigin, organization.metadata.dataOrigin
     }
 
     /**
@@ -88,6 +92,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         assertEquals college.id, organization.id
         assertEquals college.code, organization.code
         assertEquals college.description, organization.description
+        assertEquals college.dataOrigin, organization.metadata.dataOrigin
     }
 
 }

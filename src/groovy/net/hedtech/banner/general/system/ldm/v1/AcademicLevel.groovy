@@ -13,12 +13,14 @@ class AcademicLevel {
 
     @Delegate
     private final Level level
+    Metadata metadata
     String guid
 
 
-    AcademicLevel(Level level, String guid) {
+    AcademicLevel(Level level, String guid, Metadata metadata) {
         this.level = level
         this.guid = guid
+        this.metadata = metadata
     }
 
 
@@ -27,6 +29,7 @@ class AcademicLevel {
         if (getClass() != o.class) return false
         AcademicLevel that = (AcademicLevel) o
         if (level != that.level) return false
+        if (metadata != that.metadata) return false
         if (guid != that.guid) return false
         return true
     }
@@ -36,12 +39,14 @@ class AcademicLevel {
         int result
         result = (level != null ? level.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
         return result
     }
 
     public String toString() {
         """AcademicLevel[
                     level=$level,
-                    guid=$guid]"""
+                    guid=$guid,
+                    metadata=$metadata]"""
     }
 }

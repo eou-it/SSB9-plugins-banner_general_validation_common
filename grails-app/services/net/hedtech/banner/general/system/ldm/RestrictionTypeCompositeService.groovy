@@ -64,13 +64,19 @@ class RestrictionTypeCompositeService {
     }
 
 
-    RestrictionType fetchByHoldTypeId(Long holdTypeId) {
+    RestrictionType fetchByRestrictionTypeId(Long holdTypeId) {
+        if (null == holdTypeId) {
+            return null
+        }
         HoldType holdType = holdTypeService.get(holdTypeId) as HoldType
+        if (!holdType) {
+            return null
+        }
         return new RestrictionType(holdType, GlobalUniqueIdentifier.findByLdmNameAndDomainId(RESTRICTION_TYPE_LDM_NAME, holdTypeId)?.guid, new Metadata(holdType.dataOrigin))
     }
 
 
-    RestrictionType fetchByHoldTypeCode(String holdTypeCode) {
+    RestrictionType fetchByRestrictionTypeCode(String holdTypeCode) {
         RestrictionType restrictionType = null
         if (holdTypeCode) {
             HoldType holdType = HoldType.findByCode(holdTypeCode)

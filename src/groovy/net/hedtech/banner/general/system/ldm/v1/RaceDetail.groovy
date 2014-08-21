@@ -16,12 +16,14 @@ class RaceDetail {
     private final Race raceDecorator
     String guid
     String parentCategory
+    Metadata metadata
 
 
-    RaceDetail(Race race, String guid, String parentCategory) {
+    RaceDetail(Race race, String guid, String parentCategory, Metadata metadata) {
         this.raceDecorator = race
         this.guid = guid
         this.parentCategory = parentCategory
+        this.metadata = metadata
     }
 
 
@@ -32,6 +34,7 @@ class RaceDetail {
         if (raceDecorator != that.raceDecorator) return false
         if (guid != that.guid) return false
         if (parentCategory != that.parentCategory) return false
+        if (metadata != that.metadata) return false
         return true
     }
 
@@ -41,6 +44,7 @@ class RaceDetail {
         result = (raceDecorator != null ? raceDecorator.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
         result = 31 * result + (parentCategory != null ? parentCategory.hashCode() : 0)
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
         return result
     }
 
@@ -49,6 +53,7 @@ class RaceDetail {
         """RaceDetail[
                     raceDecorator=$raceDecorator,
                     guid=$guid,
+                    metadata=$metadata,
                     parentCategory=$parentCategory]"""
     }
 }

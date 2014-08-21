@@ -16,13 +16,14 @@ class Organization {
 
     String guid
     String organizationType
-    def sites = []
+    Metadata metadata
 
 
-    def Organization(String guid, def underlyingDomain, String organizationType) {
+    def Organization(String guid, def underlyingDomain, String organizationType, Metadata metadata) {
         this.guid = guid
         this.underlyingDomain = underlyingDomain
         this.organizationType = organizationType
+        this.metadata = metadata
     }
 
     /**
@@ -39,7 +40,7 @@ class Organization {
 
         if (guid != that.guid) return false
         if (underlyingDomain != that.underlyingDomain) return false
-
+        if (metadata != that.metadata) return false
         return true
     }
 
@@ -51,6 +52,16 @@ class Organization {
         int result
         result = (underlyingDomain != null ? underlyingDomain.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
         return result
+    }
+
+
+    public String toString() {
+        """Organization[
+                    underlyingDomain=$underlyingDomain,
+                    guid=$guid,
+                    organizationType=$organizationType,
+                    metadata=$metadata]"""
     }
 }

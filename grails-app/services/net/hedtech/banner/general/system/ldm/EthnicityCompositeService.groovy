@@ -84,16 +84,15 @@ class EthnicityCompositeService {
             if (!ethnicity) {
                 return ethnicityDetail
             }
-            ethnicityDetail = new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity.code), new Metadata(ethnicity.dataOrigin))
+            ethnicityDetail = new EthnicityDetail(ethnicity, GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid, getLdmEthnicity(ethnicity))
         }
         return ethnicityDetail
     }
 
-    //TODO: Move this function to common place
-    // Return LDM enumeration value for the corresponding ethnicity code.
     def getLdmEthnicity(def ethnicity) {
         if (ethnicity != null) {
-            return EthnicityParentCategory.HISPANIC.value
+            return ethnicity.ethnic == 1 ? EthnicityParentCategory.NON_HISPANIC.value :
+                    (ethnicity.ethnic == 2 ? EthnicityParentCategory.HISPANIC.value : null)
         }
         return null
     }

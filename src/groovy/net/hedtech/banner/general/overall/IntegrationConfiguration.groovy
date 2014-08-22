@@ -194,7 +194,10 @@ class IntegrationConfiguration implements Serializable {
 
     }
 
-    static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndValue(String processCode,String settingName, String value) {
+    /**
+     * @deprecated  Primary key of table prevents this ever returning a list. {@link #fetchByProcessCodeAndSettingNameAndValue(String processCode,String settingName, String value)}
+     */
+    @Deprecated static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndValue(String processCode,String settingName, String value) {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode ) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
@@ -208,7 +211,19 @@ class IntegrationConfiguration implements Serializable {
 
     }
 
+    static IntegrationConfiguration fetchByProcessCodeAndSettingNameAndValue(String processCode,String settingName, String value) {
+        List<IntegrationConfiguration> integrationList = null
+        if (!processCode ) return integrationList
+        integrationList = IntegrationConfiguration.withSession { session ->
+            System.out.println("Inside IntegrationConfiguration >>sessionFactory.getCurrentSession().getCacheMode()" + session.getCacheMode());
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
 
+
+        }
+        return integrationList?.get(0)
+
+    }
     //Read Only fields that should be protected against update
     public static readonlyProperties = []
 

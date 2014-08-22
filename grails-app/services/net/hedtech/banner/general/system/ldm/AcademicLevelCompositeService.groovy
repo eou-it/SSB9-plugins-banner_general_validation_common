@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional
  * This class supports Level (Course) service for LDM.
  */
 
-@Transactional
 class AcademicLevelCompositeService {
 
     def levelService
@@ -50,8 +49,15 @@ class AcademicLevelCompositeService {
     }
 
 
-    @Transactional(readOnly = true, propagation=Propagation.NOT_SUPPORTED)
+    @Transactional(readOnly = true)
     AcademicLevel get(String guid) {
+        return getByGuid(guid)
+    }
+
+    /**
+     * This non-transactional method is created exclusively for CourseCompositeService to avoid Transaction rolled back issue
+     */
+    AcademicLevel getByGuid(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(AcademicLevel.class.simpleName)))

@@ -13,6 +13,7 @@ import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -49,7 +50,7 @@ class AcademicLevelCompositeService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation=Propagation.NOT_SUPPORTED)
     AcademicLevel get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {

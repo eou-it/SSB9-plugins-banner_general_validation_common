@@ -13,7 +13,6 @@ import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -21,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
  * This class supports Level (Course) service for LDM.
  */
 
+@Transactional
 class AcademicLevelCompositeService {
 
     def levelService
@@ -51,14 +51,8 @@ class AcademicLevelCompositeService {
 
     @Transactional(readOnly = true)
     AcademicLevel get(String guid) {
-        return getByGuid(guid)
-    }
-
-    /**
-     * This non-transactional method is created exclusively for CourseCompositeService to avoid Transaction rolled back issue
-     */
-    AcademicLevel getByGuid(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
+
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(AcademicLevel.class.simpleName)))
         }

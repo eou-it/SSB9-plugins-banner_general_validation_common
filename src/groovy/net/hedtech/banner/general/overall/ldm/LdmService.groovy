@@ -3,14 +3,15 @@
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import org.springframework.beans.factory.InitializingBean
 
-class LdmService implements InitializingBean{
+class LdmService implements InitializingBean {
 
     def sessionFactory
 
-   //<TO-DO> has to removed after the Composit Service extending this service has fully integrated with secondary level cache
+    //<TO-DO> has to removed after the Composit Service extending this service has fully integrated with secondary level cache
     List<IntegrationConfiguration> rules = []
 
 
@@ -21,21 +22,22 @@ class LdmService implements InitializingBean{
 
     //<TO-DO> LdmService should not implement InitializingBean and this method has to be  removed after integrated with secondary level cache,
     void afterPropertiesSet() {
-        def ldmObject = this.class.simpleName.substring(0, this.class.simpleName.indexOf("CompositeService")).toLowerCase() //Get the ldm name from the service name.
-        LdmService.log.debug "Getting LDM defaults for ${ this.class.simpleName }"
-        def rules = IntegrationConfiguration.findAllByProcessCodeAndSettingNameLike('LDM', ldmObject + '.%')
-        this.rules = parseRules(rules)
+        def ldmObject = this.class.simpleName.substring( 0, this.class.simpleName.indexOf( "CompositeService" ) ).toLowerCase()
+        //Get the ldm name from the service name.
+        LdmService.log.debug "Getting LDM defaults for ${this.class.simpleName}"
+        def rules = IntegrationConfiguration.findAllByProcessCodeAndSettingNameLike( 'LDM', ldmObject + '.%' )
+        this.rules = parseRules( rules )
     }
 
     //<TO-DO> This method has to be removed after the Composit Service extending this service has fully integrated with secondary level cache
-    private def parseRules(def rules) {
-        rules.each { rule ->
-            this.rules << new LdmConfigurationValue(rule)
+    private def parseRules( def rules ) {
+        rules.each {rule ->
+            this.rules << new LdmConfigurationValue( rule )
         }
     }
 
     //<TO-DO> This method has to be removed after the Composit Service extending this service has fully integrated with secondary level cache
-    static String fetchBannerDomainPropertyForLdmField(String ldmField) {
+    static String fetchBannerDomainPropertyForLdmField( String ldmField ) {
         return ldmFieldToBannerDomainPropertyMap[ldmField]
     }
 
@@ -50,12 +52,12 @@ class LdmService implements InitializingBean{
      * @param translationValue
      * @return
      */
-    IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue ){
-        System.out.println("After sessionFactory.getCurrentSession().getCacheMode()" + sessionFactory.getCurrentSession().getCacheMode());
-        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM',settingName,translationValue).get(0)
-        LdmService.log.debug ("ldmEnumeration MissCount--"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
-        LdmService.log.debug ("ldmEnumeration HitCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
-        LdmService.log.debug ("ldmEnumeration PutCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
+    IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue( String processCode, String settingName, String translationValue ) {
+        System.out.println( "After sessionFactory.getCurrentSession().getCacheMode()" + sessionFactory.getCurrentSession().getCacheMode() );
+        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue( 'LDM', settingName, translationValue ).get( 0 )
+        LdmService.log.debug( "ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getMissCount() )
+        LdmService.log.debug( "ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getHitCount() )
+        LdmService.log.debug( "ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getPutCount() )
         return integrationConfig
     }
 
@@ -70,12 +72,21 @@ class LdmService implements InitializingBean{
      * @param value
      * @return
      */
-    IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue(String processCode, String settingName, String value){
-        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue('LDM',settingName,value).get(0)
-        LdmService.log.debug ("ldmEnumeration MissCount--"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
-        LdmService.log.debug ("ldmEnumeration HitCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
-        LdmService.log.debug ("ldmEnumeration PutCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
+    IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue( String processCode, String settingName, String value ) {
+        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue( 'LDM', settingName, value ).get( 0 )
+        LdmService.log.debug( "ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getMissCount() )
+        LdmService.log.debug( "ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getHitCount() )
+        LdmService.log.debug( "ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getPutCount() )
         return integrationConfig
+    }
+
+    /**
+     * This method ensures that application exception includes BusinessLogicValidationException message which returns with http status code 400.
+     * @param e ApplicationException
+     */
+    static void throwBusinessLogicValidationException( ApplicationException e ) {
+        String wrappedExceptionMsg = e.getWrappedException()
+        throw new ApplicationException( e.getEntityClassName(), wrappedExceptionMsg.substring( wrappedExceptionMsg.indexOf( '@@' ), wrappedExceptionMsg.length() - 2 ) + ':BusinessLogicValidationException@@' )
     }
 
 }

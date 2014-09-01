@@ -86,7 +86,23 @@ class LdmService implements InitializingBean {
      */
     static void throwBusinessLogicValidationException( ApplicationException e ) {
         String wrappedExceptionMsg = e.getWrappedException()
-        throw new ApplicationException( e.getEntityClassName(), wrappedExceptionMsg.substring( wrappedExceptionMsg.indexOf( '@@' ), wrappedExceptionMsg.length() - 2 ) + ':BusinessLogicValidationException@@' )
+        if (!wrappedExceptionMsg.contains( 'BusinessLogicValidationException' ) || e.wrappedException instanceof NotFoundException) {
+            throw new ApplicationException( e.getEntityClassName(),
+                                            wrappedExceptionMsg.substring( wrappedExceptionMsg.indexOf( '@@' ), wrappedExceptionMsg.length() - 2 ) + ':BusinessLogicValidationException@@' )
+        } else {
+            throw e
+        }
+    }
+
+    /**
+     * This method sets the data origin if passed along with metadata in the payload.
+     *
+     * @param domainModel Domain object
+     * @param map json payload
+     */
+    static void setDataOrigin( domainModel, map ) {
+        if (map?.metadata && map?.metadata?.dataOrigin)
+            domainModel.dataOrigin = map?.metadata?.dataOrigin
     }
 
 }

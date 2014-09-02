@@ -85,13 +85,16 @@ class LdmService implements InitializingBean {
      * This method ensures that application exception includes BusinessLogicValidationException message which returns with http status code 400.
      * @param e ApplicationException
      */
-    static void throwBusinessLogicValidationException( ApplicationException e ) {
-        String wrappedExceptionMsg = e.getWrappedException()
-        if (!wrappedExceptionMsg.contains( 'BusinessLogicValidationException' ) || e.wrappedException instanceof NotFoundException) {
-            throw new ApplicationException( e.getEntityClassName(),
-                                            wrappedExceptionMsg.substring( wrappedExceptionMsg.indexOf( '@@' ), wrappedExceptionMsg.length() - 2 ) + ':BusinessLogicValidationException@@' )
+    static void throwBusinessLogicValidationException(ApplicationException ae) {
+        if (ae.wrappedException instanceof NotFoundException) {
+            throw new ApplicationException(ae.getEntityClassName(), "@@r1:${GlobalUniqueIdentifierService.API}.not.found.message:${ae.wrappedException.id}:BusinessLogicValidationException@@")
+        } else if (ae.getType() == "RuntimeException") {
+            if (ae.wrappedException.message.startsWith("@@r1")) {
+                String wrappedExceptionMsg = ae.wrappedException.message
+                throw new ApplicationException(ae.getEntityClassName(), wrappedExceptionMsg.substring(0, wrappedExceptionMsg.length() - 2) + ':BusinessLogicValidationException@@')
+            }
         } else {
-            throw e
+            throw ae
         }
     }
 
@@ -102,8 +105,10 @@ class LdmService implements InitializingBean {
      * @param map json payload
      */
     static void setDataOrigin( domainModel, map ) {
-        if (map?.metadata && map?.metadata?.dataOrigin)
+        if (!domainModel) return
+        if (map?.metadata && map?.metadata?.dataOrigin) {
             domainModel.dataOrigin = map?.metadata?.dataOrigin
+        }
     }
 
 }

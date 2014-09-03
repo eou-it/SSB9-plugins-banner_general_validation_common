@@ -87,7 +87,7 @@ class LdmService implements InitializingBean {
      */
     static void throwBusinessLogicValidationException(ApplicationException ae) {
         if (ae.wrappedException instanceof NotFoundException) {
-            throw new ApplicationException(ae.getEntityClassName(), "@@r1:not.found.message:${ae.wrappedException.id}:${ae.wrappedException.id}:BusinessLogicValidationException@@")
+            throw new ApplicationException(ae.getEntityClassName(), "@@r1:not.found.message:${ae.getUserFriendlyName()}:${ae.wrappedException.id}:BusinessLogicValidationException@@")
         } else if (ae.getType() == "RuntimeException" && ae.wrappedException.message.startsWith("@@r1")) {
             String wrappedExceptionMsg = ae.wrappedException.message
             throw new ApplicationException(ae.getEntityClassName(), wrappedExceptionMsg.substring(0, wrappedExceptionMsg.length() - 2) + ':BusinessLogicValidationException@@')

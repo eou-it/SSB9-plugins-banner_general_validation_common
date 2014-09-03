@@ -8,10 +8,10 @@ package net.hedtech.banner.general.system.ldm.v1
  */
 public enum RecurrenceFrequency {
 
-    Daily('Daily'),
-    Weekly('Weekly'),
-    Monthly('Monthly'),
-    Yearly('Yearly')
+    Daily( 'Daily' ),
+    Weekly( 'Weekly' ),
+    Monthly( 'Monthly' ),
+    Yearly( 'Yearly' )
 
 
     RecurrenceFrequency( String value ) {
@@ -22,5 +22,11 @@ public enum RecurrenceFrequency {
 
 
     public String getValue() {return value}
+
+
+    @Override
+    public String toString() {
+        getValue()
+    }
 
 }

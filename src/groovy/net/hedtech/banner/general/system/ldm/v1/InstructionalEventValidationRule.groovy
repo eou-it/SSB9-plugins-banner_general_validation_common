@@ -8,10 +8,10 @@ package net.hedtech.banner.general.system.ldm.v1
  */
 public enum InstructionalEventValidationRule {
 
-    INSTRUCTOR_AVAILABILITY('Instructor Availability'),
-    INSTRUCTOR_CAPACITY('Instructor Capacity'),
-    ROOM_AVAILABILITY('Room Availability'),
-    ROOM_CAPACITY('Room Capacity')
+    INSTRUCTOR_AVAILABILITY( 'Instructor Availability' ),
+    INSTRUCTOR_CAPACITY( 'Instructor Capacity' ),
+    ROOM_AVAILABILITY( 'Room Availability' ),
+    ROOM_CAPACITY( 'Room Capacity' )
 
 
     InstructionalEventValidationRule( String value ) {
@@ -22,5 +22,11 @@ public enum InstructionalEventValidationRule {
 
 
     public String getValue() {return value}
+
+
+    @Override
+    public String toString() {
+        getValue()
+    }
 
 }

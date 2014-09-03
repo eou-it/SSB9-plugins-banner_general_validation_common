@@ -8,8 +8,8 @@ package net.hedtech.banner.general.system.ldm.v1
  */
 public enum InstructionalEventValidationRuleStatus {
 
-    Active('Active'),
-    Inactive('Inactive')
+    Active( 'Active' ),
+    Inactive( 'Inactive' )
 
 
     InstructionalEventValidationRuleStatus( String value ) {
@@ -20,5 +20,11 @@ public enum InstructionalEventValidationRuleStatus {
 
 
     public String getValue() {return value}
+
+
+    @Override
+    public String toString() {
+        getValue()
+    }
 
 }

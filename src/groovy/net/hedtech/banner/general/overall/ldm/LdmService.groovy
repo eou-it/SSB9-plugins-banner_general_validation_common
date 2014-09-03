@@ -74,7 +74,8 @@ class LdmService implements InitializingBean {
      * @return
      */
     IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue( String processCode, String settingName, String value ) {
-        IntegrationConfiguration integrationConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue( 'LDM', settingName, value ).get( 0 )
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue( 'LDM', settingName, value )
+        IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get( 0 ) : null
         LdmService.log.debug( "ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getMissCount() )
         LdmService.log.debug( "ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getHitCount() )
         LdmService.log.debug( "ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getPutCount() )

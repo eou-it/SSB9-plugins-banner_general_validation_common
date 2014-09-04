@@ -28,7 +28,7 @@ class RaceCompositeService {
     def raceService
     private static final String RACE_LDM_NAME = 'races'
     static final String PROCESS_CODE = "LDM"
-    static final String RACE_PARENT_CATEGORY = ""
+    static final String RACE_PARENT_CATEGORY = "race.parentCategory"
 
     List<RaceDetail> list(Map params) {
         List raceDetailList = []
@@ -94,7 +94,7 @@ class RaceCompositeService {
 
     def getLdmRace(def race) {
         if (race != null) {
-            IntegrationConfiguration rule = fetchAllByProcessCodeAndSettingNameAndTranslationValue(PROCESS_CODE, PERSON_RACE_PARENT_CATEGORY, race)
+            IntegrationConfiguration rule = fetchAllByProcessCodeAndSettingNameAndTranslationValue(PROCESS_CODE, RACE_PARENT_CATEGORY, race)
             return rule?.translationValue
         }
         return null

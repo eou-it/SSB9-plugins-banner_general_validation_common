@@ -17,6 +17,10 @@ class LdmService {
             title       : 'description'
     ]
 
+    static String fetchBannerDomainPropertyForLdmField( String ldmField ) {
+        return ldmFieldToBannerDomainPropertyMap[ldmField]
+    }
+
     /**
      * Added for supporting secondary level cache on GV_GORICCR View, the cached is specific to the query and
      * data will be fetched based  the query, this method is used for  fetch the Banner Value by passing

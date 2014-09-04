@@ -27,7 +27,7 @@ class UserRole implements Serializable {
     /**
      * Internal identification number of the person
      */
-    @Column(name = "SPRIDEN_PIDM")
+    @Column(name = "GOVROLE_PIDM")
     Integer pidm
 
     /**

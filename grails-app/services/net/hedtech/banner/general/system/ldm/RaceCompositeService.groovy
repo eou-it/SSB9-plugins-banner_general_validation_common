@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import grails.util.GrailsNameUtils
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.overall.ldm.LdmService
@@ -19,13 +20,15 @@ import org.springframework.transaction.annotation.Transactional
 
 
 /**
- * Service used to support "ethnicities" resource for LDM
+ * Service used to support "races" resource for LDM
  */
 @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 class RaceCompositeService {
 
     def raceService
     private static final String RACE_LDM_NAME = 'races'
+    static final String PROCESS_CODE = "LDM"
+    static final String RACE_PARENT_CATEGORY = ""
 
     List<RaceDetail> list(Map params) {
         List raceDetailList = []
@@ -89,11 +92,10 @@ class RaceCompositeService {
         return raceDetail
     }
 
-    //TODO: Move this function to common place
-    // Return LDM enumeration value for the corresponding race code.
     def getLdmRace(def race) {
         if (race != null) {
-            return RaceParentCategory.WHITE.value
+            IntegrationConfiguration rule = fetchAllByProcessCodeAndSettingNameAndTranslationValue(PROCESS_CODE, PERSON_RACE_PARENT_CATEGORY, race)
+            return rule?.translationValue
         }
         return null
     }

@@ -8,39 +8,14 @@ import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import org.springframework.beans.factory.InitializingBean
 
-class LdmService implements InitializingBean {
+class LdmService {
 
     def sessionFactory
-
-    //<TO-DO> has to removed after the Composit Service extending this service has fully integrated with secondary level cache
-    List<IntegrationConfiguration> rules = []
-
 
     private static HashMap ldmFieldToBannerDomainPropertyMap = [
             abbreviation: 'code',
             title       : 'description'
     ]
-
-    //<TO-DO> LdmService should not implement InitializingBean and this method has to be  removed after integrated with secondary level cache,
-    void afterPropertiesSet() {
-        def ldmObject = this.class.simpleName.substring( 0, this.class.simpleName.indexOf( "CompositeService" ) ).toLowerCase()
-        //Get the ldm name from the service name.
-        LdmService.log.debug "Getting LDM defaults for ${this.class.simpleName}"
-        def rules = IntegrationConfiguration.findAllByProcessCodeAndSettingNameLike( 'LDM', ldmObject + '.%' )
-        this.rules = parseRules( rules )
-    }
-
-    //<TO-DO> This method has to be removed after the Composit Service extending this service has fully integrated with secondary level cache
-    private def parseRules( def rules ) {
-        rules.each {rule ->
-            this.rules << new LdmConfigurationValue( rule )
-        }
-    }
-
-    //<TO-DO> This method has to be removed after the Composit Service extending this service has fully integrated with secondary level cache
-    static String fetchBannerDomainPropertyForLdmField( String ldmField ) {
-        return ldmFieldToBannerDomainPropertyMap[ldmField]
-    }
 
     /**
      * Added for supporting secondary level cache on GV_GORICCR View, the cached is specific to the query and
@@ -54,7 +29,6 @@ class LdmService implements InitializingBean {
      * @return
      */
     IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue ){
-        System.out.println("After sessionFactory.getCurrentSession().getCacheMode()" + sessionFactory.getCurrentSession().getCacheMode());
         List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM',settingName,translationValue)
         IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
         LdmService.log.debug ("ldmEnumeration MissCount--"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())

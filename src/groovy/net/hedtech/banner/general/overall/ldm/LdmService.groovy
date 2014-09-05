@@ -2,11 +2,9 @@
  Copyright 2014 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
-
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
-import org.springframework.beans.factory.InitializingBean
 
 class LdmService {
 
@@ -14,7 +12,8 @@ class LdmService {
 
     private static HashMap ldmFieldToBannerDomainPropertyMap = [
             abbreviation: 'code',
-            title       : 'description'
+            title       : 'description',
+            number: 'roomNumber'
     ]
 
     static String fetchBannerDomainPropertyForLdmField( String ldmField ) {

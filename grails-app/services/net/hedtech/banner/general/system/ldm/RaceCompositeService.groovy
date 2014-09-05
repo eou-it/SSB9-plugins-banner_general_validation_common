@@ -95,7 +95,7 @@ class RaceCompositeService extends LdmService {
     def getLdmRace(def race) {
         if (race != null) {
             IntegrationConfiguration rule = findAllByProcessCodeAndSettingNameAndValue(PROCESS_CODE, RACE_PARENT_CATEGORY, race)
-            return rule?.translationValue == 'UPDATE ME' ? null : rule?.translationValue
+            return RaceParentCategory.RACE_PARENT_CATEGORY.contains(rule?.translationValue) ? rule?.translationValue : null
         }
         return null
     }

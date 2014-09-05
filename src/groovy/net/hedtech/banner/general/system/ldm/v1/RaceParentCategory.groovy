@@ -8,14 +8,14 @@ package net.hedtech.banner.general.system.ldm.v1
  */
 public enum RaceParentCategory {
 
-    AFRICAN_AMERICAN("African American"),
-    ALASKA_NATIVE("Alaska Native"),
-    AMERICAN_INDIAN("American Indian"),
-    ASIAN("Asian"),
-    BLACK("Black"),
-    NATIVE_HAWAIIAN("Native Hawaiian"),
-    OTHER_PACIFIC_ISLANDER("Other Pacific Islander"),
-    WHITE("White")
+    private static final List<String> RACE_PARENT_CATEGORY = ["African American",
+                                                                "Alaska Native",
+                                                                "American Indian",
+                                                                "Asian",
+                                                                "Black",
+                                                                "Native Hawaiian",
+                                                                "Other Pacific Islander",
+                                                                "White"]
 
     RaceParentCategory(String value) { this.value = value }
 

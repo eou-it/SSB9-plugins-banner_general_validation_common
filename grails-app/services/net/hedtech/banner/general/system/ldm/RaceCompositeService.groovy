@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional
  * Service used to support "races" resource for LDM
  */
 @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-class RaceCompositeService {
+class RaceCompositeService extends LdmService {
 
     def raceService
     private static final String RACE_LDM_NAME = 'races'
@@ -94,7 +94,7 @@ class RaceCompositeService {
 
     def getLdmRace(def race) {
         if (race != null) {
-            IntegrationConfiguration rule = fetchAllByProcessCodeAndSettingNameAndTranslationValue(PROCESS_CODE, RACE_PARENT_CATEGORY, race)
+            IntegrationConfiguration rule = findAllByProcessCodeAndSettingNameAndValue(PROCESS_CODE, RACE_PARENT_CATEGORY, race)
             return rule?.translationValue
         }
         return null

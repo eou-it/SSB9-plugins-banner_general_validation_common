@@ -221,7 +221,7 @@ class IntegrationConfiguration implements Serializable {
 
 
         }
-        return integrationList?.get(0)
+        return integrationList?.size() > 0 ? integrationList?.get(0) : null
 
     }
     //Read Only fields that should be protected against update

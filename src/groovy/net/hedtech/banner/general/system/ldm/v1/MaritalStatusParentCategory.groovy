@@ -9,7 +9,7 @@ package net.hedtech.banner.general.system.ldm.v1
  */
 public enum MaritalStatusParentCategory {
 
-    SINGLE("Single"), MARRIED("Married"), DIVORCED("Divorced"), WIDOWED("Widowed"), SEPARATED("Separated")
+    static final List<String> MARITAL_STATUS_PARENT_CATEGORY = ["Single", "Married", "Divorced", "Widowed", "Separated"]
 
     MaritalStatusParentCategory(String value) { this.value = value }
 

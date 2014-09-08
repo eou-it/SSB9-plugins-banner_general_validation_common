@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import grails.util.GrailsNameUtils
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.overall.ldm.LdmService
@@ -22,10 +23,12 @@ import org.springframework.transaction.annotation.Transactional
  * Service used to support "marital-status" resource for LDM media types
  */
 @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-class MaritalStatusCompositeService {
+class MaritalStatusCompositeService extends LdmService {
 
     def maritalStatusService
     private static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
+    static final String PROCESS_CODE = "LDM"
+    static final String MARITAL_STATUS_PARENT_CATEGORY = "maritalStatus.parentCategory"
 
     List<MaritalStatusDetail> list(Map params) {
         List maritalStatusDetailList = []
@@ -88,26 +91,10 @@ class MaritalStatusCompositeService {
         return maritalStatusDetail
     }
 
-    //TODO: Move this function to common place
-    // Return LDM enumeration value for this marital status code.
     def getLdmMaritalStatus(def maritalStatus) {
         if (maritalStatus != null) {
-            switch (maritalStatus) {
-                case "S":
-                    return MaritalStatusParentCategory.SINGLE.value
-                case "M":
-                    return MaritalStatusParentCategory.MARRIED.value
-                case "D":
-                    return MaritalStatusParentCategory.DIVORCED.value
-                case "W":
-                    return MaritalStatusParentCategory.WIDOWED.value
-                case "P":
-                    return MaritalStatusParentCategory.SEPARATED.value
-                case "R":
-                    return MaritalStatusParentCategory.MARRIED.value
-                default:
-                    MaritalStatusCompositeService.log.warn "Banner marital status code ${maritalStatus} not found."
-            }
+            IntegrationConfiguration rule = findAllByProcessCodeAndSettingNameAndValue(PROCESS_CODE, MARITAL_STATUS_PARENT_CATEGORY, maritalStatus)
+            return MaritalStatusParentCategory.MARITAL_STATUS_PARENT_CATEGORY.contains(rule?.translationValue) ? rule?.translationValue : null
         }
         return null
     }

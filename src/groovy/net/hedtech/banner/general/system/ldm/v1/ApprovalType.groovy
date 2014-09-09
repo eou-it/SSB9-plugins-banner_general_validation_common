@@ -4,15 +4,17 @@
 package net.hedtech.banner.general.system.ldm.v1
 
 /**
- * Enumerations for instructional events validation rule status
+ * Enumerations for instructional events approval type.
  */
-public enum InstructionalEventValidationRuleStatus {
+public enum ApprovalType {
 
-    Active( 'Active' ),
-    Inactive( 'Inactive' )
+    INSTRUCTOR_AVAILABILITY( 'Instructor Availability' ),
+    INSTRUCTOR_CAPACITY( 'Instructor Capacity' ),
+    ROOM_AVAILABILITY( 'Room Availability' ),
+    ROOM_CAPACITY( 'Room Capacity' )
 
 
-    InstructionalEventValidationRuleStatus( String value ) {
+    ApprovalType( String value ) {
         this.value = value
     }
 

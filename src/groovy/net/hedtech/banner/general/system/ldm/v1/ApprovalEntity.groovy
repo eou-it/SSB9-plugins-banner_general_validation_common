@@ -4,17 +4,15 @@
 package net.hedtech.banner.general.system.ldm.v1
 
 /**
- * Enumerations for instructional events validation rule
+ * Enumerations for instructional events validation rule status
  */
-public enum InstructionalEventValidationRule {
+public enum ApprovalEntity {
 
-    INSTRUCTOR_AVAILABILITY( 'Instructor Availability' ),
-    INSTRUCTOR_CAPACITY( 'Instructor Capacity' ),
-    ROOM_AVAILABILITY( 'Room Availability' ),
-    ROOM_CAPACITY( 'Room Capacity' )
+    User( 'User' ),
+    System( 'System' )
 
 
-    InstructionalEventValidationRule( String value ) {
+    ApprovalEntity( String value ) {
         this.value = value
     }
 

@@ -6,6 +6,10 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+
 class LdmService {
 
     def sessionFactory
@@ -86,6 +90,20 @@ class LdmService {
         if (map?.metadata && map?.metadata?.dataOrigin) {
             domainModel.dataOrigin = map?.metadata?.dataOrigin
         }
+    }
+
+
+    static Date convertString2Date(String strDate) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd")
+        dateFormat.lenient = false
+
+        Date date
+        try {
+            date = dateFormat.parse(strDate)
+        } catch (ParseException pe) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, "@@r1:date.invalid.format.message:BusinessLogicValidationException@@")
+        }
+        return date
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2014 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall
 
@@ -169,6 +169,9 @@ class IntegrationConfiguration implements Serializable {
         translationValue(nullable: true, maxSize: 200)
     }
 
+    //Read Only fields that should be protected against update
+    public static readonlyProperties = ['processCode','settingName']
+
     static List<IntegrationConfiguration> fetchAllByProcessCode(String processCode) {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode ) return integrationList
@@ -224,7 +227,5 @@ class IntegrationConfiguration implements Serializable {
         return integrationList?.size() > 0 ? integrationList?.get(0) : null
 
     }
-    //Read Only fields that should be protected against update
-    public static readonlyProperties = []
 
 }

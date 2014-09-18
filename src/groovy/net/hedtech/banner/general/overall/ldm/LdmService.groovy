@@ -2,9 +2,11 @@
  Copyright 2014 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
+
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
+import net.hedtech.banner.utility.MessageResolver
 
 import java.text.DateFormat
 import java.text.ParseException
@@ -13,12 +15,14 @@ import java.text.SimpleDateFormat
 class LdmService {
 
     def sessionFactory
+    String timeFormat = ''
 
     private static HashMap ldmFieldToBannerDomainPropertyMap = [
             abbreviation: 'code',
             title       : 'description',
-            number: 'roomNumber'
+            number      : 'roomNumber'
     ]
+
 
     static String fetchBannerDomainPropertyForLdmField( String ldmField ) {
         return ldmFieldToBannerDomainPropertyMap[ldmField]
@@ -35,12 +39,12 @@ class LdmService {
      * @param translationValue
      * @return
      */
-    IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue ){
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM',settingName,translationValue)
-        IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
-        LdmService.log.debug ("ldmEnumeration MissCount--"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
-        LdmService.log.debug ("ldmEnumeration HitCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
-        LdmService.log.debug ("ldmEnumeration PutCount --"+sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
+    IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue( String processCode, String settingName, String translationValue ) {
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue( 'LDM', settingName, translationValue )
+        IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get( 0 ) : null
+        LdmService.log.debug( "ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getMissCount() )
+        LdmService.log.debug( "ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getHitCount() )
+        LdmService.log.debug( "ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getPutCount() )
         return integrationConfig
     }
 
@@ -68,12 +72,12 @@ class LdmService {
      * This method ensures that application exception includes BusinessLogicValidationException message which returns with http status code 400.
      * @param e ApplicationException
      */
-    static void throwBusinessLogicValidationException(ApplicationException ae) {
+    static void throwBusinessLogicValidationException( ApplicationException ae ) {
         if (ae.wrappedException instanceof NotFoundException) {
-            throw new ApplicationException(ae.getEntityClassName(), "@@r1:not.found.message:${ae.getUserFriendlyName()}:${ae.wrappedException.id}:BusinessLogicValidationException@@")
-        } else if (ae.getType() == "RuntimeException" && ae.wrappedException.message.startsWith("@@r1")) {
+            throw new ApplicationException( ae.getEntityClassName(), "@@r1:not.found.message:${ae.getUserFriendlyName()}:${ae.wrappedException.id}:BusinessLogicValidationException@@" )
+        } else if (ae.getType() == "RuntimeException" && ae.wrappedException.message.startsWith( "@@r1" )) {
             String wrappedExceptionMsg = ae.wrappedException.message
-            throw new ApplicationException(ae.getEntityClassName(), wrappedExceptionMsg.substring(0, wrappedExceptionMsg.length() - 2) + ':BusinessLogicValidationException@@')
+            throw new ApplicationException( ae.getEntityClassName(), wrappedExceptionMsg.substring( 0, wrappedExceptionMsg.length() - 2 ) + ':BusinessLogicValidationException@@' )
         } else {
             throw ae
         }
@@ -93,17 +97,32 @@ class LdmService {
     }
 
 
-    static Date convertString2Date(String strDate) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd")
+    static Date convertString2Date( String strDate ) {
+        DateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd" )
         dateFormat.lenient = false
 
         Date date
         try {
-            date = dateFormat.parse(strDate)
+            date = dateFormat.parse( strDate )
         } catch (ParseException pe) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, "@@r1:date.invalid.format.message:BusinessLogicValidationException@@")
+            throw new ApplicationException( GlobalUniqueIdentifierService.API, "@@r1:date.invalid.format.message:BusinessLogicValidationException@@" )
         }
         return date
+    }
+
+
+    public String getTimeInHHmmFormat( String time ) {
+        if (time.length() != getTimeFormat().length())
+            throw new ApplicationException( GlobalUniqueIdentifierService.API, "@@r1:time.invalid.format.message:BusinessLogicValidationException@@" )
+
+        String[] timesArray = time.split( ':' )
+        List patternList = getTimeFormat()?.toLowerCase().split( ':' ) as List
+        return timesArray[patternList.indexOf( 'HH' )] + timesArray[patternList.indexOf( 'mm' )]
+    }
+
+
+    public String getTimeFormat() {
+        return timeFormat ?: (timeFormat = MessageResolver.message("default.time.format"))
     }
 
 }

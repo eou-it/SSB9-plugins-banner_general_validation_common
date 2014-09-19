@@ -112,12 +112,14 @@ class LdmService {
 
 
     public String getTimeInHHmmFormat( String time ) {
-        if (time.length() != getTimeFormat().length())
-            throw new ApplicationException( GlobalUniqueIdentifierService.API, "@@r1:time.invalid.format.message:BusinessLogicValidationException@@" )
+        if(time) {
+            if (time?.length() != getTimeFormat()?.length())
+                throw new ApplicationException( GlobalUniqueIdentifierService.API, "@@r1:time.invalid.format.message:BusinessLogicValidationException@@" )
 
-        String[] timesArray = time.split( ':' )
-        List patternList = getTimeFormat()?.toLowerCase().split( ':' ) as List
-        return timesArray[patternList.indexOf( 'HH' )] + timesArray[patternList.indexOf( 'mm' )]
+            String[] timesArray = time?.split( ':' )
+            List patternList = getTimeFormat()?.toLowerCase().split( ':' ) as List
+            return timesArray[patternList.indexOf( 'hh' )] + timesArray[patternList.indexOf( 'mm' )]
+        }
     }
 
 

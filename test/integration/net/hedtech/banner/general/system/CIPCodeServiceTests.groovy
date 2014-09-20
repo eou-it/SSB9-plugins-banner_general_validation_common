@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -30,7 +30,7 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
 
 	@Test
     void testCreateCIPCode() {
-        def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT",
+        def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT", publicationYear: 2010,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
 
         cipCode = CIPCodeService.create(cipCode)
@@ -40,7 +40,7 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
 
 	@Test
     void testUpdateCIPCode() {
-        def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT",
+        def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT", publicationYear: 2010,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
         cipCode = CIPCodeService.create(cipCode)
 
@@ -55,7 +55,7 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
 
 	@Test
     void testDeleteCIPCode() {
-        def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT",
+        def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT", publicationYear: 2010,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
         cipCode = CIPCodeService.create(cipCode)
         assertNotNull "CIP Code ID is null in CIP Code Delete Service Test", cipCode.id

@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -98,7 +98,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
     void testNullValidationFailure() {
         def cipCode = new CIPCode()
         assertFalse "CIP Code should have failed validation", cipCode.validate()
-        assertErrorsFor cipCode, 'nullable', ['code', 'description']
+        assertErrorsFor cipCode, 'nullable', ['code', 'description', 'publicationYear']
     }
 
 	@Test
@@ -112,7 +112,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
 
 
     private def newCIPCode() {
-        new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT",
+        new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT", publicationYear: 2010,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
     }
 

@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 package net.hedtech.banner.general.system
@@ -88,9 +88,15 @@ class CIPCode implements Serializable {
     @Column(name = "STVCIPC_SP04_PROGRAM_CDE", length = 5)
     String sp04Program
 
+    /**
+     * PUBLICATION YEAR: The year the CIP code was published.
+     */
+    @Column(name = "STVCIPC_PUB_YEAR", precision = 4)
+    Integer publicationYear
+
 
     public String toString() {
-        "CIPCode[id=$id, code=$code, description=$description, lastModified=$lastModified, cipcAIndicator=$cipcAIndicator, cipcBIndicator=$cipcBIndicator, cipcCIndicator=$cipcCIndicator, sp04Program=$sp04Program, lastModifiedBy=$lastModifiedBy, version=$version, dataOrigin=$dataOrigin]"
+        "CIPCode[id=$id, code=$code, description=$description, lastModified=$lastModified, cipcAIndicator=$cipcAIndicator, cipcBIndicator=$cipcBIndicator, cipcCIndicator=$cipcCIndicator, sp04Program=$sp04Program, publicationYear=$publicationYear, lastModifiedBy=$lastModifiedBy, version=$version, dataOrigin=$dataOrigin]"
     }
 
     static constraints = {
@@ -100,6 +106,7 @@ class CIPCode implements Serializable {
         cipcBIndicator(nullable: true)
         cipcCIndicator(nullable: true)
         sp04Program(nullable: true, maxSize: 5)
+        publicationYear(nullable: false)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
@@ -123,6 +130,7 @@ class CIPCode implements Serializable {
         if (lastModified != cipCode.lastModified) return false
         if (lastModifiedBy != cipCode.lastModifiedBy) return false
         if (sp04Program != cipCode.sp04Program) return false
+        if (publicationYear != cipCode.publicationYear) return false
         if (version != cipCode.version) return false
 
         return true
@@ -143,6 +151,7 @@ class CIPCode implements Serializable {
         result = 31 * result + (cipcBIndicator != null ? cipcBIndicator.hashCode() : 0)
         result = 31 * result + (cipcCIndicator != null ? cipcCIndicator.hashCode() : 0)
         result = 31 * result + (sp04Program != null ? sp04Program.hashCode() : 0)
+        result = 31 * result + (publicationYear != null ? publicationYear.hashCode() : 0)
         return result
     }
 

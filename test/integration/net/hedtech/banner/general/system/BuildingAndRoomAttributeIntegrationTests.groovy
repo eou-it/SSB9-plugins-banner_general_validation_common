@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     def buildingAndRoomAttributeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateBuildingAndRoomAttribute() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         save buildingAndRoomAttribute
@@ -31,6 +37,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateBuildingAndRoomAttribute() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         save buildingAndRoomAttribute
@@ -62,6 +69,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         save buildingAndRoomAttribute
@@ -87,6 +95,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteBuildingAndRoomAttribute() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         save buildingAndRoomAttribute
@@ -97,12 +106,14 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         assertTrue "BuildingAndRoomAttribute could not be validated as expected due to ${buildingAndRoomAttribute.errors}", buildingAndRoomAttribute.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def buildingAndRoomAttribute = new BuildingAndRoomAttribute()
         assertFalse "BuildingAndRoomAttribute should have failed validation", buildingAndRoomAttribute.validate()
@@ -111,6 +122,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def buildingAndRoomAttribute = new BuildingAndRoomAttribute(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')

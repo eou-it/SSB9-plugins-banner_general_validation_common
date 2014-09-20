@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -30,17 +33,20 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "Otsego County Description Too Long for Field"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidCounty() {
         def county = newValidForCreateCounty()
         county.save(failOnError: true, flush: true)
@@ -49,6 +55,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidCounty() {
         def county = newInvalidForCreateCounty()
         shouldFail {
@@ -57,6 +64,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidCounty() {
         def county = newValidForCreateCounty()
         county.save(failOnError: true, flush: true)
@@ -75,6 +83,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidCounty() {
         def county = newValidForCreateCounty()
         county.save(failOnError: true, flush: true)
@@ -91,6 +100,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def county = newValidForCreateCounty()
         county.save(failOnError: true, flush: true)
@@ -111,6 +121,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCounty() {
         def county = newValidForCreateCounty()
         county.save(failOnError: true, flush: true)
@@ -121,12 +132,14 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def county = newValidForCreateCounty()
         assertTrue "County could not be validated as expected due to ${county.errors}", county.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def county = new County()
         assertFalse "County should have failed validation", county.validate()
@@ -141,6 +154,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def county = new County(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')

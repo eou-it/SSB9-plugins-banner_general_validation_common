@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -7,17 +10,20 @@ class DegreeServiceIntegrationTests extends BaseIntegrationTestCase {
     def degreeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateDegree() {
         def degree = newDegree("TT")
         degree = degreeService.create([domainModel: degree])
@@ -26,12 +32,14 @@ class DegreeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def degrees = degreeService.list()
         assertTrue degrees.size() > 0
     }
 
 
+	@Test
     void testUpdateDegree() {
         def degree = newDegree("TT")
         degree = degreeService.create([domainModel: degree])
@@ -45,6 +53,7 @@ class DegreeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteDegree() {
         def degree = newDegree("TT")
         degree = degreeService.create([domainModel: degree])

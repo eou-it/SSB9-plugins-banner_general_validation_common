@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system;
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -14,12 +17,14 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
     def disabilityAssistanceService;
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreate() {
         def disabilityAssistance = new DisabilityAssistance(code: "zz", description: "unit-test", lastModified: new Date(),
                 lastModifiedBy: "psykes", dataOrigin: "Banner")
@@ -31,6 +36,7 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdate() {
 
         def disabilityAssistance = new DisabilityAssistance(code: "yy", description: "unit-test", lastModified: new Date(),
@@ -53,6 +59,7 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDelete() {
 
         def disabilityAssistance = new DisabilityAssistance(code: "xx", description: "unit-test", lastModified: new Date(),
@@ -70,6 +77,7 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
 
         def disabilityAssistance = new DisabilityAssistance()

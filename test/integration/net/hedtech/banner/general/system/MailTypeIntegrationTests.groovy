@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -35,17 +38,20 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_displayWebIndicator = true
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -54,6 +60,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidMailType() {
         def mailType = newInvalidForCreateMailType()
         shouldFail(ValidationException) {
@@ -62,6 +69,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -83,6 +91,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -101,6 +110,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -122,6 +132,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -132,12 +143,14 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def mailType = newInvalidForCreateMailType()
         assertFalse "MailType could not be validated as expected due to ${mailType.errors}", mailType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def mailType = new MailType()
         assertFalse "MailType should have failed validation", mailType.validate()

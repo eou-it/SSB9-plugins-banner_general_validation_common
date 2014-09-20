@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     def degreeLevelService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateDegreeLevel() {
         def degreeLevel = newDegreeLevel()
         save degreeLevel
@@ -31,6 +37,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateDegreeLevel() {
         def degreeLevel = newDegreeLevel()
         save degreeLevel
@@ -60,6 +67,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def degreeLevel = newDegreeLevel()
         save degreeLevel
@@ -84,6 +92,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteDegreeLevel() {
         def degreeLevel = newDegreeLevel()
         save degreeLevel
@@ -94,12 +103,14 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def degreeLevel = newDegreeLevel()
         assertTrue "DegreeLevel could not be validated as expected due to ${degreeLevel.errors}", degreeLevel.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def degreeLevel = new DegreeLevel()
         assertFalse "DegreeLevel should have failed validation", degreeLevel.validate()
@@ -108,6 +119,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def degreeLevel = new DegreeLevel(
                 code: 'XXXX',

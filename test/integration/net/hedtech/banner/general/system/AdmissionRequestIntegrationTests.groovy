@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     def admissionRequestService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateAdmissionRequest() {
         def admissionRequest = newAdmissionRequest()
         save admissionRequest
@@ -31,6 +37,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateAdmissionRequest() {
         def admissionRequest = newAdmissionRequest()
         save admissionRequest
@@ -69,6 +76,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def admissionRequest = newAdmissionRequest()
         save admissionRequest
@@ -96,6 +104,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteAdmissionRequest() {
         def admissionRequest = newAdmissionRequest()
         save admissionRequest
@@ -106,12 +115,14 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def admissionRequest = newAdmissionRequest()
         assertTrue "AdmissionRequest could not be validated as expected due to ${admissionRequest.errors}", admissionRequest.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def admissionRequest = new AdmissionRequest(
                 code: null,
@@ -123,6 +134,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def admissionRequest = new AdmissionRequest(
                 code: 'XXXXXX',
@@ -133,6 +145,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeAdmissionRequest() {
         def admissionRequestList = AdmissionRequest.fetchBySomeAdmissionRequest()
         assertTrue admissionRequestList.list.size() > 5

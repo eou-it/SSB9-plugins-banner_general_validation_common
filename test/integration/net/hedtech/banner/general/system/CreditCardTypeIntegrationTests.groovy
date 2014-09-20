@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -37,17 +40,20 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_externalMerchantId = "TTTTT"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidCreditCardType() {
         def creditCardType = newValidForCreateCreditCardType()
         creditCardType.save(failOnError: true, flush: true)
@@ -56,6 +62,7 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidCreditCardType() {
         def creditCardType = newInvalidForCreateCreditCardType()
         shouldFail(ValidationException) {
@@ -64,6 +71,7 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidCreditCardType() {
         def creditCardType = newValidForCreateCreditCardType()
         creditCardType.save(failOnError: true, flush: true)
@@ -86,6 +94,7 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidCreditCardType() {
         def creditCardType = newValidForCreateCreditCardType()
         creditCardType.save(failOnError: true, flush: true)
@@ -104,6 +113,7 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -121,6 +131,7 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def creditCardType = newValidForCreateCreditCardType()
         creditCardType.save(failOnError: true, flush: true)
@@ -142,6 +153,7 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCreditCardType() {
         def creditCardType = newValidForCreateCreditCardType()
         creditCardType.save(failOnError: true, flush: true)
@@ -152,12 +164,14 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def creditCardType = newInvalidForCreateCreditCardType()
         assertFalse "CreditCardType could not be validated as expected due to ${creditCardType.errors}", creditCardType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def creditCardType = new CreditCardType()
         assertFalse "CreditCardType should have failed validation", creditCardType.validate()
@@ -173,6 +187,7 @@ class CreditCardTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def creditCardType = new CreditCardType(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

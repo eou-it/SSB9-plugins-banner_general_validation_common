@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -14,15 +17,18 @@ class MedicalEquipmentServiceTests extends BaseIntegrationTestCase {
     def MedicalEquipmentService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
+	@Test
     void testCreateMedicalEquipment() {
         def medicalEquipment = new MedicalEquipment(code: "TT", description: "TT",
                 lastModified: new Date(), lastModifiedBy: "horizon", dataOrigin: "Banner")
@@ -31,6 +37,7 @@ class MedicalEquipmentServiceTests extends BaseIntegrationTestCase {
         assertNotNull "Medical Equipment Code is null in MedicalEquipment Create Service Test", medicalEquipment.code
     }
 
+	@Test
     void testUpdateMedicalEquipment() {
         def medicalEquipment = new MedicalEquipment(code: "TT", description: "TT",
                 lastModified: new Date(), lastModifiedBy: "horizon", dataOrigin: "Banner")
@@ -45,6 +52,7 @@ class MedicalEquipmentServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteMedicalEquipment() {
         def medicalEquipment = new MedicalEquipment(code: "TT", description: "TT",
                 lastModified: new Date(), lastModifiedBy: "horizon", dataOrigin: "Banner")

@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -35,17 +38,20 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_planToAttendenceIndicator = true
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -54,6 +60,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidRsvp() {
         def rsvp = newInvalidForCreateRsvp()
         shouldFail(ValidationException) {
@@ -62,6 +69,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -84,6 +92,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -102,6 +111,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -123,6 +133,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -133,12 +144,14 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def rsvp = newInvalidForCreateRsvp()
         assertFalse "Rsvp could not be validated as expected due to ${rsvp.errors}", rsvp.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def rsvp = new Rsvp()
         assertFalse "Rsvp should have failed validation", rsvp.validate()

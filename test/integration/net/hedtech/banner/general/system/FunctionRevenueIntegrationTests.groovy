@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -31,17 +34,20 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -50,6 +56,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidFunctionRevenue() {
         def functionRevenue = newInvalidForCreateFunctionRevenue()
         shouldFail(ValidationException) {
@@ -58,6 +65,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -76,6 +84,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -92,6 +101,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -112,6 +122,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -122,12 +133,14 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def functionRevenue = newInvalidForCreateFunctionRevenue()
         assertFalse "FunctionRevenue could not be validated as expected due to ${functionRevenue.errors}", functionRevenue.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def functionRevenue = new FunctionRevenue()
         assertFalse "FunctionRevenue should have failed validation", functionRevenue.validate()

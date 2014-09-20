@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -15,12 +18,14 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     def collegeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreateCollege() {
         def entity = newCollege()
         save entity
@@ -29,6 +34,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateCollege() {
         def entity = newCollege()
         save entity
@@ -46,6 +52,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def entity = newCollege()
         save entity
@@ -64,6 +71,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCollege() {
         def college = newCollege()
         save college
@@ -75,12 +83,14 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def college = newCollege()
         assertTrue "College could not be validated as expected due to ${college.errors}", college.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def college = new College()
         assertFalse "College should have failed validation", college.validate()
@@ -91,6 +101,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def college = new College(code: "TTXX", description: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 addressStreetLine1: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -111,6 +122,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testFetchBySomeAttribute() {
         def college = College.fetchBySomeAttribute()
         def collegeList = college.get("list")

@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,15 +15,18 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
 
     def originatorService
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
+	@Test
     void testCreateOriginator() {
         def originator = newOriginator()
         save originator
@@ -28,6 +34,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull originator.id
     }
 
+	@Test
     void testUpdateOriginator() {
         def originator = newOriginator()
         save originator
@@ -52,6 +59,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "UUUUU", originator.description
     }
 
+	@Test
     void testOptimisticLock() {
         def originator = newOriginator()
         save originator
@@ -74,6 +82,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+	@Test
     void testDeleteOriginator() {
         def originator = newOriginator()
         save originator
@@ -83,11 +92,13 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
         assertNull Originator.get(id)
     }
 
+	@Test
     void testValidation() {
         def originator = newOriginator()
         assertTrue "Originator could not be validated as expected due to ${originator.errors}", originator.validate()
     }
 
+	@Test
     void testNullValidationFailure() {
         def originator = new Originator()
         assertFalse "Originator should have failed validation", originator.validate()
@@ -101,6 +112,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def originator = new Originator(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
@@ -124,6 +136,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
     /**
      * A test to exercise 'code' primary key in HoldType
      */
+	@Test
     void testPrimaryKeyOnCode() {
         def originator = newOriginator()
         def duplicateObj = newOriginator()
@@ -141,6 +154,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
     /**
      * A test to exercise the findBy method for Originator
      */
+	@Test
     void testFindOriginator() {
         def originator = newOriginator()
         save originator

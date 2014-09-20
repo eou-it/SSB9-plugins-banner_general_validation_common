@@ -3,6 +3,9 @@
  **********************************************************************************/
 
 package net.hedtech.banner.general.utility
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -64,17 +67,20 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_comment = "TTTT"
 
 
-    protected void setUp( ) {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown( ) {
+    @After
+    public void tearDown( ) {
         super.tearDown()
     }
 
 
+    @Test
     void testCreateValidInformationText( ) {
         def informationText = newValidForCreateInformationText()
         informationText.save( failOnError: true, flush: true )
@@ -86,6 +92,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testCreateInvalidInformationText( ) {
         def informationText = newInvalidForCreateInformationText()
         informationText.pageName = i_failure_pageName
@@ -98,6 +105,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testUpdateValidInformationText( ) {
         def informationText = newValidForCreateInformationText()
         informationText.save( failOnError: true, flush: true )
@@ -146,6 +154,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testUpdateInvalidInformationText( ) {
         def informationText = newValidForCreateInformationText()
         informationText.save( failOnError: true, flush: true )
@@ -163,6 +172,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testDates( ) {
         def time = new SimpleDateFormat( 'HHmmss' )
         def hour = new SimpleDateFormat( 'HH' )
@@ -187,6 +197,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testOptimisticLock( ) {
         def informationText = newValidForCreateInformationText()
         informationText.save( failOnError: true, flush: true )
@@ -208,6 +219,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testDeleteInformationText( ) {
         def informationText = newValidForCreateInformationText()
         informationText.save( failOnError: true, flush: true )
@@ -218,6 +230,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testNullValidationFailure( ) {
         def informationText = new InformationText()
         assertFalse informationText.validate()
@@ -241,6 +254,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testMaxSizeValidationFailures( ) {
         def informationText = new InformationText(
                 pageName: 'X' * 201,
@@ -256,6 +270,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testInListValidationFailures( ) {
         def informationText = new InformationText(
                 sourceIndicator: 'A',
@@ -266,6 +281,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testMaxValidationFailures( ) {
         def informationText = new InformationText(
                 sequenceNumber: 100000
@@ -275,6 +291,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testMinValidationFailures( ) {
         def informationText = new InformationText(
                 sequenceNumber: -100

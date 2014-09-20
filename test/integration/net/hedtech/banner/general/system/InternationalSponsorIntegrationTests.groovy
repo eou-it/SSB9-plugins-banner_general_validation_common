@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidInternationalSponsor() {
         def internationalSponsor = newValidForCreateInternationalSponsor()
         internationalSponsor.save(failOnError: true, flush: true)
@@ -30,6 +36,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidInternationalSponsor() {
         def internationalSponsor = newValidForCreateInternationalSponsor()
         internationalSponsor.save(failOnError: true, flush: true)
@@ -48,6 +55,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -65,6 +73,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def internationalSponsor = newValidForCreateInternationalSponsor()
         internationalSponsor.save(failOnError: true, flush: true)
@@ -85,6 +94,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteInternationalSponsor() {
         def internationalSponsor = newValidForCreateInternationalSponsor()
         internationalSponsor.save(failOnError: true, flush: true)
@@ -95,12 +105,14 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def internationalSponsor = new InternationalSponsor()
         assertFalse "InternationalSponsor could not be validated as expected due to ${internationalSponsor.errors}", internationalSponsor.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def internationalSponsor = new InternationalSponsor()
         assertFalse "InternationalSponsor should have failed validation", internationalSponsor.validate()
@@ -115,6 +127,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def internationalSponsor = new InternationalSponsor(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')

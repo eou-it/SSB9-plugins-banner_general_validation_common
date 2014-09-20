@@ -2,21 +2,27 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class ProxyAccessSystemIntegrationTests extends BaseIntegrationTestCase {
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
+	@Test
     void testCreateProxyAccessSystem() {
         def proxyAccessSystem = newProxyAccessSystem()
         save proxyAccessSystem
@@ -24,6 +30,7 @@ class ProxyAccessSystemIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull proxyAccessSystem.id
     }
 
+	@Test
     void testUpdateProxyAccessSystem() {
         def proxyAccessSystem = newProxyAccessSystem()
         save proxyAccessSystem
@@ -51,6 +58,7 @@ class ProxyAccessSystemIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "R", proxyAccessSystem.systemReqInd
     }
 
+	@Test
     void testOptimisticLock() {
         def proxyAccessSystem = newProxyAccessSystem()
         save proxyAccessSystem
@@ -74,6 +82,7 @@ class ProxyAccessSystemIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+	@Test
     void testDeleteProxyAccessSystem() {
         def proxyAccessSystem = newProxyAccessSystem()
         save proxyAccessSystem
@@ -83,11 +92,13 @@ class ProxyAccessSystemIntegrationTests extends BaseIntegrationTestCase {
         assertNull ProxyAccessSystem.get(id)
     }
 
+	@Test
     void testValidation() {
         def proxyAccessSystem = newProxyAccessSystem()
         assertTrue "ProxyAccessSystem could not be validated as expected due to ${proxyAccessSystem.errors}", proxyAccessSystem.validate()
     }
 
+	@Test
     void testNullValidationFailure() {
         def proxyAccessSystem = new ProxyAccessSystem()
         assertFalse "ProxyAccessSystem should have failed validation", proxyAccessSystem.validate()
@@ -95,6 +106,7 @@ class ProxyAccessSystemIntegrationTests extends BaseIntegrationTestCase {
         assertNoErrorsFor proxyAccessSystem, []
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def proxyAccessSystem = new ProxyAccessSystem()
         assertFalse "ProxyAccessSystem should have failed validation", proxyAccessSystem.validate()

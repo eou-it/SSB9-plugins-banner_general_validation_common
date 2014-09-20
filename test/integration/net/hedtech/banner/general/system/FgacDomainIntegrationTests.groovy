@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     def fgacDomainService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateFgacDomain() {
         def fgacDomain = newFgacDomain()
         save fgacDomain
@@ -31,6 +37,7 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateFgacDomain() {
         def fgacDomain = newFgacDomain()
         save fgacDomain
@@ -56,6 +63,7 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def fgacDomain = newFgacDomain()
         save fgacDomain
@@ -79,6 +87,7 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteFgacDomain() {
         def fgacDomain = newFgacDomain()
         save fgacDomain
@@ -89,12 +98,14 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def fgacDomain = newFgacDomain()
         assertTrue "FgacDomain could not be validated as expected due to ${fgacDomain.errors}", fgacDomain.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def fgacDomain = new FgacDomain()
         assertFalse "FgacDomain should have failed validation", fgacDomain.validate()

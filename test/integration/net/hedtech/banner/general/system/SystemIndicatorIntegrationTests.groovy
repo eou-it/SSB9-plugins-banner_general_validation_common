@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -31,18 +34,21 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidSystemIndicator() {
         def systemIndicator = newValidForCreateSystemIndicator()
         save systemIndicator
@@ -51,6 +57,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidSystemIndicator() {
         def systemIndicator = newValidForCreateSystemIndicator()
         save systemIndicator
@@ -69,6 +76,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def systemIndicator = newValidForCreateSystemIndicator()
         save systemIndicator
@@ -89,6 +97,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteSystemIndicator() {
         def systemIndicator = newValidForCreateSystemIndicator()
         save systemIndicator
@@ -100,6 +109,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testNullValidationFailure() {
         def systemIndicator = new SystemIndicator()
         assertFalse "SystemIndicator should have failed validation", systemIndicator.validate()
@@ -112,6 +122,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def systemIndicator = new SystemIndicator(code: u_failure_code, description: u_failure_description)
         assertFalse "SystemIndicator should have failed validation", systemIndicator.validate()

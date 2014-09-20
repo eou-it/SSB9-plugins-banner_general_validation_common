@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class RaceIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateRace() {
         def race = newRace()
         race.save(failOnError: true, flush: true)
@@ -30,6 +36,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateRace() {
         def race = newRace()
         race.save(failOnError: true, flush: true)
@@ -55,6 +62,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "2", race?.regulatoryRace?.code
     }
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -72,6 +80,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def race = newRace()
         race.save(failOnError: true, flush: true)
@@ -94,6 +103,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteRace() {
         def race = newRace()
         race.save(failOnError: true, flush: true)
@@ -104,12 +114,14 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def race = new Race()
         assertFalse "Race could not be validated as expected due to ${race.errors}", race.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def race = new Race()
         assertFalse "Race should have failed validation", race.validate()
@@ -119,12 +131,14 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchAllLikeRaceOrDescription() {
         def races = Race.fetchAllLikeRaceOrDescription("AA")
         assertNotNull  races
         assertTrue races.size() > 1
     }
 
+	@Test
     void testFetchAllByRegulatoryRaceSuccess() {
         Race race = newRace()
         race.save(failOnError: true, flush: true)
@@ -136,6 +150,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchAllByRegulatoryRaceForInvalidValues() {
         List<Race> quiredRacelist = Race.fetchAllByRegulatoryRace('INVALID')
         assertTrue quiredRacelist.isEmpty()

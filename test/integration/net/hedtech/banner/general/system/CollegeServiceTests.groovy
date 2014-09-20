@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -15,17 +18,20 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     def collegeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateCollege() {
         def college = collegeService.create(newCollege("TT"))
         assertNotNull "College returned from collegeService.create has null id", college.id
@@ -33,6 +39,7 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateCollege() {
         def college = collegeService.create(newCollege("TT"))
         assertNotNull college.id
@@ -46,6 +53,7 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCollege() {
         def college = collegeService.create(newCollege("TT"))
         assertNotNull "College returned from collegeService.create has null id", college.id
@@ -59,6 +67,7 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testSaveInvalid() {
         try {
             // note: this will be invalid for both code and description, resulting in two errors

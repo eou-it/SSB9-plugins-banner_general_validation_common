@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -14,15 +17,18 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
     def CIPCodeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
+	@Test
     void testCreateCIPCode() {
         def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT",
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
@@ -32,6 +38,7 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
         assertNotNull "CIP Code Code is null in CIP Code Create Service Test", cipCode.code
     }
 
+	@Test
     void testUpdateCIPCode() {
         def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT",
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
@@ -46,6 +53,7 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCIPCode() {
         def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT",
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")

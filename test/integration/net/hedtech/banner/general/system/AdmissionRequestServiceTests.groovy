@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -7,17 +10,20 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
     def admissionRequestService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateAdmissionRequest() {
         def admissionRequest = new AdmissionRequest(code: "TT", description: "TT", displayWebIndicator:"False", voiceResponseEligIndicator:"T", voiceResponseMsgNumber:"1", tableName:"T")
         admissionRequest = admissionRequestService.create([domainModel: admissionRequest])
@@ -25,6 +31,7 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateAdmissionRequest() {
         def admissionRequest = new AdmissionRequest(code: "TT", description: "TT", displayWebIndicator:"False", voiceResponseEligIndicator:"T", voiceResponseMsgNumber:"1", tableName:"T")
         admissionRequest = admissionRequestService.create([domainModel: admissionRequest])
@@ -38,6 +45,7 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteAdmissionRequest() {
         def admissionRequest = new AdmissionRequest(code: "TT", description: "TT", displayWebIndicator:"False", voiceResponseEligIndicator:"T", voiceResponseMsgNumber:"1", tableName:"T")
         admissionRequest = admissionRequestService.create([domainModel: admissionRequest])
@@ -49,6 +57,7 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def admissionRequest = admissionRequestService.list()
         assertTrue admissionRequest.size() > 0

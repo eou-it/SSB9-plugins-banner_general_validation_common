@@ -2,17 +2,22 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class PartitionIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreate() {
         def partition = newPartition()
         partition.save()
@@ -20,12 +25,14 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def pCodes = Partition.list()
         assertTrue pCodes.size() > 0
     }
 
 
+	@Test
     void testDelete() {
         def pCode = savePartitionCode()
         def id = pCode.id
@@ -34,6 +41,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdate() {
         def pCode = savePartitionCode()
         pCode.description = "Updated by Dan"
@@ -44,6 +52,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFindAllByCode() {
         savePartitionCode()
         def pCodes = Partition.findAllByCode("1111")
@@ -51,6 +60,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFindAllByDescription() {
         savePartitionCode()
         def pCodes = Partition.findAllByDescription("unit-test")
@@ -58,6 +68,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidationFail() {
         def partition = new Partition(code: "exceeds_length", description: "unit-test", schedulerNumber: 1,
                 lastModifiedBy: "test", lastModified: new Date(), campusCode: "any", dataOrigin: "Horizon")
@@ -65,6 +76,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidationSuccess() {
         def partition = new Partition(code: "1111", description: "unit-test", schedulerNumber: 1,
                 lastModifiedBy: "test", lastModified: new Date(), campusCode: "any", dataOrigin: "Horizon")

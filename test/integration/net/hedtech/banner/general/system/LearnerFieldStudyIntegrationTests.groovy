@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -19,15 +22,18 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
     // No Invalid Scenario required
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
+	@Test
     void testCreateValidLearnerFieldStudy() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         save learnerFieldStudy
@@ -35,6 +41,7 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull learnerFieldStudy.id
     }
 
+	@Test
     void testUpdateValidLearnerFieldStudy() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         save learnerFieldStudy
@@ -55,6 +62,7 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
         assertEquals false, learnerFieldStudy.systemRequiredIndicator
     }
 
+	@Test
     void testOptimisticLock() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         save learnerFieldStudy
@@ -75,6 +83,7 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+	@Test
     void testDeleteLearnerFieldStudy() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         save learnerFieldStudy
@@ -84,11 +93,13 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
         assertNull LearnerFieldStudy.get(id)
     }
 
+	@Test
     void testValidation() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         assertTrue "LearnerFieldStudy could not be validated as expected due to ${learnerFieldStudy.errors}", learnerFieldStudy.validate()
     }
 
+	@Test
     void testNullValidationFailure() {
         def learnerFieldStudy = new LearnerFieldStudy()
         assertFalse "LearnerFieldStudy should have failed validation", learnerFieldStudy.validate()

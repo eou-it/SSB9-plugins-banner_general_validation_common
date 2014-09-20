@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -31,17 +34,20 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -50,6 +56,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidFunctionType() {
         def functionType = newInvalidForCreateFunctionType()
         shouldFail(ValidationException) {
@@ -58,6 +65,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -77,6 +85,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -93,6 +102,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -113,6 +123,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -123,12 +134,14 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def functionType = newInvalidForCreateFunctionType()
         assertFalse "FunctionType could not be validated as expected due to ${functionType.errors}", functionType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def functionType = new FunctionType()
         assertFalse "FunctionType should have failed validation", functionType.validate()

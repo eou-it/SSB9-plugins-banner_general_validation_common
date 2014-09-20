@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -19,12 +22,14 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
 
     def i_success_displayWebIndicator = true
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreateSubject() {
         def subject = newValidForCreateSubject()
 
@@ -34,6 +39,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull(subject.id)
     }
 
+	@Test
     void testUpdateSubject() {
         def subject = newValidForCreateSubject()
         if (!subject.save(flush: true, failOnError: true)) {
@@ -56,6 +62,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         assertEquals(1, subject.version)
     }
 
+	@Test
     void testDeleteSubject() {
         def subject = newValidForCreateSubject()
         if (!subject.save(flush: true, failOnError: true)) {
@@ -68,6 +75,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         assertNull(found)
     }
 
+	@Test
     void testOptimisticLock() {
         def subject = newValidForCreateSubject()
         save subject
@@ -89,6 +97,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+	@Test
     void testValidation() {
         def subject = new Subject()
         //should not pass validation since none of the required values are provided
@@ -101,6 +110,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         assertTrue(subject.validate())
     }
 
+	@Test
     void testNullValidationFailure() {
         def subject = new Subject()
         assertFalse "Subject should have failed validation", subject.validate()
@@ -116,6 +126,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def subject = new Subject(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')

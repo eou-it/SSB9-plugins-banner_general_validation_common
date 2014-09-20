@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system;
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -15,7 +18,8 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
     def disabilityService
     def medicalEquipmentService
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
@@ -23,6 +27,7 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Tests the ability to create and persist a new Disability instance.
      */
+	@Test
     void testCreateDisability() {
         def disability = newDisability()
         save disability
@@ -32,6 +37,7 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Tests the ability to update a Description.
      */
+	@Test
     void testUpdateDisability() {
         def disability = newDisability()
         save disability
@@ -53,6 +59,7 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Test optimistic locking.
      */
+	@Test
     void testOptimisticLock() {
         def disability = newDisability()
         save disability
@@ -79,6 +86,7 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Tests the ability to delete a Disability.
      */
+	@Test
     void testDeleteDisability() {
         def disability = newDisability()
         save disability
@@ -89,11 +97,13 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
         assertNull disability.get(id)
     }
 
+	@Test
     void testValidation() {
         def disability = newDisability()
         assertTrue "Disability could not be validated as expected due to ${disability.errors}", disability.validate()
     }
 
+	@Test
     void testNullValidationFailure() {
         def disability = new Disability()
         //should not pass validation since none of the required values are provided
@@ -101,6 +111,7 @@ class DisabilityIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor disability, 'nullable', ['code', 'description']
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def disability = new Disability(
                 code: 'XXXXXXXXXX',

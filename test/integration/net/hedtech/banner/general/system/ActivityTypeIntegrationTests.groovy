@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -26,17 +29,20 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_systemRequiredIndicator = "N"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidActivityType() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -45,6 +51,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidActivityType() {
         def activityType = newInvalidForCreateActivityType()
         shouldFail(ValidationException) {
@@ -53,6 +60,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidActivityType() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -74,6 +82,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidActivityType() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -92,6 +101,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -109,6 +119,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -130,6 +141,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteActivityType() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -140,12 +152,14 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def activityType = newInvalidForCreateActivityType()
         assertFalse "ActivityType could not be validated as expected due to ${activityType.errors}", activityType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def activityType = new ActivityType()
         assertFalse "ActivityType should have failed validation", activityType.validate()
@@ -161,6 +175,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def activityType = new ActivityType(
                 systemRequiredIndicator: 'XXX')

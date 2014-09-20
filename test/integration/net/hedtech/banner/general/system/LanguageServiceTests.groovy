@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -7,17 +10,20 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
     def languageService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateLanguage() {
         def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -26,6 +32,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateLanguage() {
         def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -40,6 +47,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteLanguage() {
         def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -53,6 +61,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def language = languageService.list()
         assertTrue language.size() > 0

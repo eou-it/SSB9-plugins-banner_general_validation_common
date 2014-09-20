@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -14,17 +17,20 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     def medicalConditionService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() throws Exception {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreate() {
         def medCond = newMedicalCondition()
         save medCond
@@ -32,6 +38,7 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdate() {
 
         def medCond = newMedicalCondition()
@@ -49,6 +56,7 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDelete() {
 
         def medCond = newMedicalCondition()
@@ -64,6 +72,7 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Tests validation of constraints.
      */
+	@Test
     void testValidation() {
 
         def medicalCondition = new MedicalCondition()
@@ -80,6 +89,7 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
 
         def originalSize = MedicalCondition.count()

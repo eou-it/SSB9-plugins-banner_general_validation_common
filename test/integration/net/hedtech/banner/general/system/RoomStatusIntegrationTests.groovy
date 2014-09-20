@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -34,17 +37,20 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_inactiveIndicator = "Y"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidRoomStatus() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -53,6 +59,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidRoomStatus() {
         def roomStatus = newInvalidForCreateRoomStatus()
         shouldFail {
@@ -61,6 +68,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidRoomStatus() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -83,6 +91,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidRoomStatus() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -101,6 +110,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -122,6 +132,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteRoomStatus() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -132,12 +143,14 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def roomStatus = newValidForCreateRoomStatus()
         assertTrue "RoomStatus could not be validated as expected due to ${roomStatus.errors}", roomStatus.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def roomStatus = new RoomStatus()
         assertFalse "RoomStatus should have failed validation", roomStatus.validate()
@@ -153,6 +166,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def roomStatus = new RoomStatus(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     def buildingService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateBuilding() {
         def building = newBuilding()
         save building
@@ -31,6 +37,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateBuilding() {
         def building = newBuilding()
         save building
@@ -59,6 +66,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def building = newBuilding()
         save building
@@ -83,6 +91,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteBuilding() {
         def building = newBuilding()
         save building
@@ -93,12 +102,14 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def building = newBuilding()
         assertTrue "Building could not be validated as expected due to ${building.errors}", building.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def building = new Building()
         assertFalse "Building should have failed validation", building.validate()
@@ -106,6 +117,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def building = new Building(
                 code: 'XXXXXXXX',

@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -7,17 +10,20 @@ class MaritalStatusServiceTests extends BaseIntegrationTestCase {
     def maritalStatusService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateMaritalStatus() {
         def maritalStatus = new MaritalStatus(electronicDataInterchangeEquivalent: "T", financeConversion: "T",
                                               code: "T", description: "TT")
@@ -26,6 +32,7 @@ class MaritalStatusServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateMaritalStatus() {
         def maritalStatus = new MaritalStatus(electronicDataInterchangeEquivalent: "T", financeConversion: "T",
                                               code: "T", description: "TT")
@@ -40,6 +47,7 @@ class MaritalStatusServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteMaritalStatus() {
         def maritalStatus = new MaritalStatus(electronicDataInterchangeEquivalent: "T", financeConversion: "T",
                                               code: "T", description: "TT")
@@ -52,6 +60,7 @@ class MaritalStatusServiceTests extends BaseIntegrationTestCase {
 
     }
 
+	@Test
     void testList(){
         def maritalStatus = maritalStatusService.list()
         assertTrue maritalStatus.size() > 0

@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -15,12 +18,14 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     def departmentService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreateDepartment() {
         def department = newDepartment()
         save department
@@ -28,6 +33,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateDepartment() {
         def department = newDepartment()
         save department
@@ -47,6 +53,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def department = newDepartment()
         save department
@@ -71,6 +78,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteDepartment() {
         def department = newDepartment()
         save department
@@ -81,12 +89,14 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
         assertNull department.get(id)
     }
 
+	@Test
     void testValidation() {
         def department = newDepartment()
         //should not pass validation since none of the required values are provided
         assertTrue "Department could not be validated as expected due to ${department.errors}", department.validate()
     }
 
+	@Test
     void testNullValidationFailure() {
         def department = new Department()
         //should not pass validation since none of the required values are provided
@@ -95,6 +105,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def department = new Department(
                 code: 'XXXXXXXXXX',
@@ -105,6 +116,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testFetchBySomeAttribute() {
         def department = Department.fetchBySomeAttribute()
         def departmentList = department.get("list")

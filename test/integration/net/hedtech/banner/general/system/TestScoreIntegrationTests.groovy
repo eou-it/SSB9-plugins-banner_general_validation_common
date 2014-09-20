@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -15,18 +18,21 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     def testScoreService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testValidation() {
         def testScore = newTestScore()
         assertTrue "TestScore could not be validated as expected due to ${testScore.errors}", testScore.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def testScore = new TestScore()
         assertFalse "TestScore should have failed validation", testScore.validate()
@@ -39,6 +45,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def testScore = new TestScore(code: "TTXXX", description: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 numberPositions: 22567,
@@ -56,6 +63,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testCreateTestScore() {
         def entity = newTestScore()
         save entity
@@ -64,6 +72,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateTestScore() {
         def entity = newTestScore()
         save entity
@@ -81,6 +90,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def entity = newTestScore()
         save entity
@@ -99,6 +109,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteTestScore() {
         def testScore = newTestScore()
         save testScore

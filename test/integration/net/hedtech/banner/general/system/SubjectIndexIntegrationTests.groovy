@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -31,17 +34,20 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "TTTTT TTTTT TTTTT TTTTT TTTTT TTTTT"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -50,6 +56,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidSubjectIndex() {
         def subjectIndex = newInvalidForCreateSubjectIndex()
         shouldFail(ValidationException) {
@@ -58,6 +65,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -77,6 +85,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -93,6 +102,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -113,6 +123,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -123,6 +134,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def subjectIndex = new SubjectIndex()
         assertFalse "SubjectIndex should have failed validation", subjectIndex.validate()

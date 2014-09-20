@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -8,17 +11,20 @@ class CampusServiceTests extends BaseIntegrationTestCase {
     def campusService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateCampus() {
         def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
@@ -26,6 +32,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateCampus() {
         def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
@@ -39,6 +46,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCampus() {
         def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
@@ -50,6 +58,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def campus = campusService.list()
         assertTrue campus.size() > 0

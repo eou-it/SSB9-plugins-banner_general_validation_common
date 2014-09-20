@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.crossproduct.Bank
@@ -81,17 +84,20 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     def u_failure_standardCodeIso = "TTT"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCurrencyConversionValidCreate() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)
@@ -104,6 +110,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
+	@Test
     void testCurrencyConversionInvalidCreate() {
         def currencyConversion = newInvalidForCreateCurrencyConversion()
         shouldFail(ApplicationException) {
@@ -112,6 +119,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
+	@Test
     void testCurrencyConversionValidUpdate() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)
@@ -152,6 +160,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
+	@Test
     void testCurrencyConversionInvalidUpdate() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)
@@ -181,6 +190,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
+	@Test
     void testCurrencyConversionDelete() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)
@@ -191,6 +201,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
+	@Test
     void testReadOnly() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)

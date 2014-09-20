@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ import java.text.SimpleDateFormat
 
 class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidInstitutionalHonor() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -31,6 +37,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidInstitutionalHonor() {
         def institutionalHonor = newInvalidForCreateInstitutionalHonor()
         shouldFail(ValidationException) {
@@ -39,6 +46,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidInstitutionalHonor() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -67,6 +75,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidInstitutionalHonor() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -89,6 +98,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -105,6 +115,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -125,6 +136,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteInstitutionalHonor() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -135,12 +147,14 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def institutionalHonor = newInvalidForCreateInstitutionalHonor()
         assertFalse "InstitutionalHonor could not be validated as expected due to ${institutionalHonor.errors}", institutionalHonor.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def institutionalHonor = new InstitutionalHonor()
         assertFalse "InstitutionalHonor should have failed validation", institutionalHonor.validate()
@@ -158,6 +172,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def institutionalHonor = new InstitutionalHonor(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

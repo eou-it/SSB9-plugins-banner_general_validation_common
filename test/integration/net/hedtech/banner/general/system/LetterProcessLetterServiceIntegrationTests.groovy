@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -9,16 +12,19 @@ class LetterProcessLetterServiceIntegrationTests extends BaseIntegrationTestCase
 
     def letterProcessLetterService
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateLetterProcessLetter() {
 
         def letterProcessLetter = newLetterProcessLetter()
@@ -27,6 +33,7 @@ class LetterProcessLetterServiceIntegrationTests extends BaseIntegrationTestCase
         assertNotNull "LetterProcessLetter ID is null in LetterProcessLetter Service Tests Create", letterProcessLetter.id
     }
 
+	@Test
     void testUpdate() {
         def letterProcessLetter = newLetterProcessLetter()
         letterProcessLetter = letterProcessLetterService.create(letterProcessLetter)
@@ -54,6 +61,7 @@ class LetterProcessLetterServiceIntegrationTests extends BaseIntegrationTestCase
         assertEquals iletterAlt, letterProcessLetter.letterAlt
     }
 
+	@Test
     void testLetterProcessLetterDelete() {
         def letterProcessLetter = newLetterProcessLetter()
         letterProcessLetter = letterProcessLetterService.create(letterProcessLetter)

@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -46,7 +46,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 0L, building.version
         assertEquals "TTTTT", building.code
         assertEquals "TTTTT", building.description
-        assertEquals 1, building.voiceResponseMsgNumber
+        assertEquals 1, building.voiceResponseMsgNumber, 0
 
         //Update the entity
         building.code = "UUUUU"
@@ -61,7 +61,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 1L, building?.version
         assertEquals "UUUUU", building.code
         assertEquals "UUUUU", building.description
-        assertEquals 0, building.voiceResponseMsgNumber
+        assertEquals 0, building.voiceResponseMsgNumber, 0
 
     }
 

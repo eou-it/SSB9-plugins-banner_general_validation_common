@@ -52,7 +52,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "TTTTT", holdType.description
         assertTrue holdType.accountsReceivableHoldIndicator
         assertTrue holdType.enrollmentVerificationHoldIndicator
-        assertEquals 1, holdType.voiceResponseMessageNumber
+        assertEquals 1, holdType.voiceResponseMessageNumber, 0
         assertTrue holdType.displayWebIndicator
         assertTrue holdType.applicationHoldIndicator
         assertTrue  holdType.complianceHoldIndicator

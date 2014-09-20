@@ -47,7 +47,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "TTTT", meetingType.code
         assertEquals "TTTTT", meetingType.description
         assertEquals true, meetingType.systemRequiredIndicator
-        assertEquals 1, meetingType.voiceResponseMsgNumber
+        assertEquals 1, meetingType.voiceResponseMsgNumber, 0
 
         //Update the entity
         meetingType.code = "UUUU"
@@ -64,7 +64,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "UUUU", meetingType.code
         assertEquals "UUUUU", meetingType.description
         assertEquals false, meetingType.systemRequiredIndicator
-        assertEquals 0, meetingType.voiceResponseMsgNumber
+        assertEquals 0, meetingType.voiceResponseMsgNumber, 0
 
     }
 

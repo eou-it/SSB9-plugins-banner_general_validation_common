@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 
@@ -46,6 +46,8 @@ grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
         form: 'application/x-www-form-urlencoded',
         multipartForm: 'multipart/form-data'
 ]
+
+grails.databinding.useSpringBinder=true
 
 // The default codec used to encode data with ${}
 grails.views.default.codec = "html" // none, html, base64  **** Charlie note: Setting this to html will ensure html is escaped, to prevent XSS attack ****

@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -46,7 +46,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 0L, buildingAndRoomAttribute.version
         assertEquals "TTTT", buildingAndRoomAttribute.code
         assertEquals "TTTTT", buildingAndRoomAttribute.description
-        assertEquals 1, buildingAndRoomAttribute.schedulerNumber
+        assertEquals 1, buildingAndRoomAttribute.schedulerNumber, 0
         assertEquals true, buildingAndRoomAttribute.autoSchedulerIndicator
 
         //Update the entity
@@ -64,7 +64,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 1L, buildingAndRoomAttribute?.version
         assertEquals "UUUU", buildingAndRoomAttribute.code
         assertEquals "UUUUU", buildingAndRoomAttribute.description
-        assertEquals 0, buildingAndRoomAttribute.schedulerNumber
+        assertEquals 0, buildingAndRoomAttribute.schedulerNumber, 0
         assertFalse buildingAndRoomAttribute.autoSchedulerIndicator
     }
 

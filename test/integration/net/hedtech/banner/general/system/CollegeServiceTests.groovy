@@ -1,8 +1,9 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.After
 
@@ -67,7 +68,7 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+	@Ignore
     void testSaveInvalid() {
         try {
             // note: this will be invalid for both code and description, resulting in two errors

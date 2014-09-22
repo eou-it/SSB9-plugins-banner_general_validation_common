@@ -1,8 +1,6 @@
 /** *****************************************************************************
  Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
-
-
 import net.hedtech.banner.configuration.ApplicationConfigurationUtils as ConfigFinder
 import grails.plugins.springsecurity.SecurityConfigType
 
@@ -27,7 +25,7 @@ def locationAdder = ConfigFinder.&addLocation.curry(grails.config.locations)
         customRepresentationConfig: "grails-app/conf/CustomRepresentationConfig.groovy",
 ].each { envName, defaultFileName -> locationAdder(envName, defaultFileName) }
 
-
+grails.databinding.useSpringBinder=true
 
 grails.project.groupId = "net.hedtech" // used when deploying to a maven repo
 
@@ -46,8 +44,6 @@ grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
         form: 'application/x-www-form-urlencoded',
         multipartForm: 'multipart/form-data'
 ]
-
-grails.databinding.useSpringBinder=true
 
 // The default codec used to encode data with ${}
 grails.views.default.codec = "html" // none, html, base64  **** Charlie note: Setting this to html will ensure html is escaped, to prevent XSS attack ****

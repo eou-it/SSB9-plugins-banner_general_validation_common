@@ -54,7 +54,7 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
             medicalConditionService.update(medicalCondition) // pass instance of the model this time
             fail "Should of thrown an exception because code is not allowed to be null"
         } catch (ApplicationException ae) {
-            assertLocalizedError medicalCondition, 'nullable', /.*Field.*code.*of class.*MedicalCondition.*cannot be null.*/, 'code'
+            assertTrue ae.wrappedException.fullMessage.contains('rejected value [null]')
         }
     }
 

@@ -3,6 +3,7 @@
  ********************************************************************************* */
 package net.hedtech.banner.restfulapi
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.After
 
@@ -59,7 +60,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
-	@Test
+	@Ignore
     void testValidateSortField() {
         def allowedSortFields = ["firstName", "lastName"]
 

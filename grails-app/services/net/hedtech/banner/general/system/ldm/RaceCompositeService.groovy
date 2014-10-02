@@ -28,7 +28,7 @@ class RaceCompositeService extends LdmService {
     def raceService
     private static final String RACE_LDM_NAME = 'races'
     static final String PROCESS_CODE = "LDM"
-    static final String RACE_PARENT_CATEGORY = "race.parentCategory"
+    static final String RACE_PARENT_CATEGORY = "RACE.PARENTCATEGORY"
 
     List<RaceDetail> list(Map params) {
         List raceDetailList = []

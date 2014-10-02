@@ -28,7 +28,7 @@ class MaritalStatusCompositeService extends LdmService {
     def maritalStatusService
     private static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
     static final String PROCESS_CODE = "LDM"
-    static final String MARITAL_STATUS_PARENT_CATEGORY = "maritalStatus.parentCategory"
+    static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
 
     List<MaritalStatusDetail> list(Map params) {
         List maritalStatusDetailList = []

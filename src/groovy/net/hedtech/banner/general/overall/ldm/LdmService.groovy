@@ -124,7 +124,7 @@ class LdmService {
 
 
     public String getTimeFormat() {
-        return timeFormat ?: (timeFormat = MessageResolver.message("default.time.format"))
+        return timeFormat ?: (timeFormat = MessageResolver.message("default.time.withSeconds.format"))
     }
 
 }

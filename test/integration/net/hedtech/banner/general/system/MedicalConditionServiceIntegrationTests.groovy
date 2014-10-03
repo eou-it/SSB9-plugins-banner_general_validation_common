@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.exceptions.*
 
@@ -14,12 +17,14 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
 
     def medicalConditionService      // injected by Spring
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreate() {
         def medicalCondition = new MedicalCondition(code: "zz", description: "integration-test")
         medicalCondition = medicalConditionService.create(medicalCondition)
@@ -27,12 +32,14 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
     }
 
 
+	@Test
     void testCreateWithParams() {
         def medicalCondition = medicalConditionService.create([code: "zz", description: "integration-test"])
         assertNotNull medicalCondition.id
     }
 
 
+	@Test
     void testUpdate() {
         def medicalCondition = new MedicalCondition(code: "zz", description: "integration-test")
         medicalCondition = medicalConditionService.create(medicalCondition)
@@ -47,11 +54,12 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
             medicalConditionService.update(medicalCondition) // pass instance of the model this time
             fail "Should of thrown an exception because code is not allowed to be null"
         } catch (ApplicationException ae) {
-            assertLocalizedError medicalCondition, 'nullable', /.*Field.*code.*of class.*MedicalCondition.*cannot be null.*/, 'code'
+            assertTrue ae.wrappedException.fullMessage.contains('rejected value [null]')
         }
     }
 
 
+	@Test
     void testDelete() {
         def medicalCondition = new MedicalCondition(code: "zz", description: "integration-test")
         medicalCondition = medicalConditionService.create(medicalCondition)

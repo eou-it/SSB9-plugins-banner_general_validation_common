@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -14,15 +17,18 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
     def DisabilityService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
+	@Test
     void testCreateDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
@@ -31,6 +37,7 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
         assertNotNull "Disability Code is null in Disability Create Service Test", disability.code
     }
 
+	@Test
     void testUpdateDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
@@ -44,6 +51,7 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
         assertEquals "ZZ", disabilityUpdate.description
     }
 
+	@Test
     void testDeleteDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")

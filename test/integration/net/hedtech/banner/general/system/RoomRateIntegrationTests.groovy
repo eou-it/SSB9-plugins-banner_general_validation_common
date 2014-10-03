@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -43,17 +46,20 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidRoomRate() {
         def roomRate = newValidForCreateRoomRate()
         roomRate.save(failOnError: true, flush: true)
@@ -62,6 +68,7 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidRoomRate() {
         def roomRate = newInvalidForCreateRoomRate()
         shouldFail {
@@ -70,6 +77,7 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidRoomRate() {
         def roomRate = newValidForCreateRoomRate()
         roomRate.save(failOnError: true, flush: true)
@@ -97,6 +105,7 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidRoomRate() {
         def roomRate = newValidForCreateRoomRate()
         roomRate.save(failOnError: true, flush: true)
@@ -119,6 +128,7 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def roomRate = newValidForCreateRoomRate()
         roomRate.save(failOnError: true, flush: true)
@@ -142,6 +152,7 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteRoomRate() {
         def roomRate = newValidForCreateRoomRate()
         roomRate.save(failOnError: true, flush: true)
@@ -152,12 +163,14 @@ class RoomRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def roomRate = newValidForCreateRoomRate()
         assertTrue "RoomRate could not be validated as expected due to ${roomRate.errors}", roomRate.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def roomRate = new RoomRate()
         assertFalse "RoomRate should have failed validation", roomRate.validate()

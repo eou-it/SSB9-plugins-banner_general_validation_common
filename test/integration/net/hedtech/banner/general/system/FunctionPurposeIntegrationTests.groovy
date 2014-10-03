@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -31,17 +34,20 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidFunctionPurpose() {
         def functionPurpose = newValidForCreateFunctionPurpose()
         save functionPurpose
@@ -51,6 +57,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testUpdateValidFunctionPurpose() {
         def functionPurpose = newValidForCreateFunctionPurpose()
         save functionPurpose
@@ -70,6 +77,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testOptimisticLock() {
         def functionPurpose = newValidForCreateFunctionPurpose()
         save functionPurpose
@@ -90,6 +98,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteFunctionPurpose() {
         def functionPurpose = newValidForCreateFunctionPurpose()
         save functionPurpose
@@ -100,6 +109,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def functionPurpose = newInvalidForCreateFunctionPurpose()
         functionPurpose.code = u_failure_code
@@ -109,6 +119,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def functionPurpose = new FunctionPurpose()
         assertFalse "FunctionPurpose should have failed validation", functionPurpose.validate()

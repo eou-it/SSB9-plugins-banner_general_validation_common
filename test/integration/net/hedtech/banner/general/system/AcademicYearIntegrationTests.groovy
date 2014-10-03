@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -22,12 +25,14 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
     def academicYearService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreateAcademicYear() {
         def academicYear = newValidForCreateAcademicYear()
 
@@ -35,6 +40,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull academicYear.id
     }
 
+	@Test
     void testUpdateAcademicYear() {
         def academicYear = newValidForCreateAcademicYear()
         save academicYear
@@ -54,6 +60,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteAcademicYear() {
         def academicYear = newValidForCreateAcademicYear()
         save academicYear
@@ -66,6 +73,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testOptimisticLock() {
         def academicYear = newValidForCreateAcademicYear()
         save academicYear
@@ -86,6 +94,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+	@Test
     void testValidation() {
         def academicYear = new AcademicYear()
         //should not pass validation since none of the required values are provided
@@ -101,6 +110,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
         assertTrue academicYear.validate()
     }
 
+	@Test
     void testNullValidationFailure() {
         def academicYear = new AcademicYear()
         assertFalse "AcademicYear should have failed validation", academicYear.validate()
@@ -115,6 +125,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def academicYear = new AcademicYear(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

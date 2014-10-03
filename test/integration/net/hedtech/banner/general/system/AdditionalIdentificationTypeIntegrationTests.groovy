@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateAdditionalIdentificationType() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         save additionalIdentificationType
@@ -34,6 +40,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
+	@Test
     void testUpdateAdditionalIdentificationType() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         save additionalIdentificationType
@@ -59,6 +66,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -76,6 +84,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
+	@Test
     void testOptimisticLock() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         save additionalIdentificationType
@@ -95,6 +104,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
+	@Test
     void testDeleteAdditionalIdentificationType() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         save additionalIdentificationType
@@ -105,12 +115,14 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
+	@Test
     void testValidation() {
         def additionalIdentificationType = new AdditionalIdentificationType()
         assertFalse "AdditionalIdentificationType could not be validated as expected due to ${additionalIdentificationType.errors}", additionalIdentificationType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def additionalIdentificationType = new AdditionalIdentificationType()
         assertFalse "AdditionalIdentificationType should be valid", additionalIdentificationType.validate()
@@ -119,6 +131,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def additionalIdentificationType = new AdditionalIdentificationType(
                 code: 'XXXXX',
@@ -129,6 +142,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
+	@Test
     void testInListValidationFailure() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         additionalIdentificationType.searchBypass = "T"

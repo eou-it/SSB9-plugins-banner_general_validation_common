@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class DegreeIntegrationTests extends BaseIntegrationTestCase {
     def degreeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateDegree() {
         def degree = newDegree()
         save degree
@@ -31,6 +37,7 @@ class DegreeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateDegree() {
         def degree = newDegree()
         save degree
@@ -77,6 +84,7 @@ class DegreeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def degree = newDegree()
         save degree
@@ -107,6 +115,7 @@ class DegreeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteDegree() {
         def degree = newDegree()
         save degree
@@ -117,12 +126,14 @@ class DegreeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def degree = newDegree()
         assertTrue "Degree could not be validated as expected due to ${degree.errors}", degree.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def degree = new Degree()
         assertFalse "Degree should have failed validation", degree.validate()
@@ -131,6 +142,7 @@ class DegreeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def degree = new Degree(
                 code: 'XXXXXXXX',

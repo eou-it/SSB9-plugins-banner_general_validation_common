@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -38,7 +41,8 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_systemRequiredIndicator = "O"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
         initializeTestDataForReferences()
@@ -58,10 +62,12 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
 
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
+	@Test
     void testCreateValidAddressType() {
         def addressType = newValidForCreateAddressType()
         save addressType
@@ -71,6 +77,7 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testUpdateValidAddressType() {
         def addressType = newValidForCreateAddressType()
         save addressType
@@ -99,6 +106,7 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testOptimisticLock() {
         def addressType = newValidForCreateAddressType()
         save addressType
@@ -119,6 +127,7 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+	@Test
     void testDeleteAddressType() {
         def addressType = newValidForCreateAddressType()
         save addressType
@@ -128,6 +137,7 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNull AddressType.get(id)
     }
 
+	@Test
     void testValidation() {
         def addressType = newInvalidForCreateAddressType()
         addressType.systemRequiredIndicator = "X"
@@ -135,6 +145,7 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor addressType, 'inList', ['systemRequiredIndicator']
     }
 
+	@Test
     void testNullValidationFailure() {
         def addressType = new AddressType()
         assertFalse "AddressType should have failed validation", addressType.validate()
@@ -150,6 +161,7 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def addressType = new AddressType(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -24,17 +27,20 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     def i_success_studentExchangeVisitorInformationSystemEquivalent = "TTTTT"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidMajorMinorConcentration() {
         def majorMinorConcentration = newValidForCreateMajorMinorConcentration()
         save majorMinorConcentration
@@ -43,6 +49,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidMajorMinorConcentration() {
         def majorMinorConcentration = newValidForCreateMajorMinorConcentration()
         save majorMinorConcentration
@@ -88,6 +95,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def majorMinorConcentration = newValidForCreateMajorMinorConcentration()
         save majorMinorConcentration
@@ -108,6 +116,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteMajorMinorConcentration() {
         def majorMinorConcentration = newValidForCreateMajorMinorConcentration()
         save majorMinorConcentration
@@ -118,12 +127,14 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def majorMinorConcentration = newValidForCreateMajorMinorConcentration()
         assertTrue "MajorMinorConcentration could not be validated as expected due to ${majorMinorConcentration.errors}", majorMinorConcentration.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def majorMinorConcentration = new MajorMinorConcentration()
         assertFalse "MajorMinorConcentration should have failed validation", majorMinorConcentration.validate()
@@ -147,6 +158,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def majorMinorConcentration = new MajorMinorConcentration(
                 description: 'Update Description, this one will violate the maxSize constraint',
@@ -157,6 +169,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testFetchBySomeAttribute() {
         // test no filter, no parms
         def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute()
@@ -164,6 +177,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeAttributeWithFilter() {
         // test with filter, no parms
         def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute("MATH")
@@ -177,6 +191,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeAttributeFieldOfStudy() {
         // test no filter, with parms
         def majorMinorConcentrations = MajorMinorConcentration.fetchBySomeAttribute([fieldOfStudy: "MAJOR"])
@@ -190,6 +205,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeAttributeFieldOfStudyWithFilter() {
         // test with filter and parms
 
@@ -225,6 +241,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchValidMajor() {
         // test no filter, with parms
 
@@ -246,6 +263,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchInValidMajor() {
         // test no filter, with parms
         assertNull MajorMinorConcentration.findByCode("M")
@@ -279,6 +297,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeAttributeForTypeWithFilter() {
         // test no filter, with parms
 
@@ -313,6 +332,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeAttributeForTypeWithOutFilter() {
         // test no filter, with parms
 
@@ -343,6 +363,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchValidType() {
         // test no filter, with parms
         def major = MajorMinorConcentration.findByCode("MIS")
@@ -377,6 +398,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchFromExistingBySomeAttributeForType() {
         // test no filter, with parms
         def majorsList = ['MIS', 'MATH', 'BIOL']
@@ -405,6 +427,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchValidateFromExistingBySomeAttributeForType() {
         // test no filter, with parms
         def majorsList = ['MIS', 'MATH', 'BIOL']

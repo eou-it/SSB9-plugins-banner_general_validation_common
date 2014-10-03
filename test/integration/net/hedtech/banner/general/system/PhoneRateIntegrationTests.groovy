@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -42,17 +45,20 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "Test Failure Description for invalid update"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidPhoneRate() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -61,6 +67,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidPhoneRate() {
         def phoneRate = newInvalidForCreatePhoneRate()
         shouldFail {
@@ -69,6 +76,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidPhoneRate() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -97,6 +105,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidPhoneRate() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -119,6 +128,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -142,6 +152,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeletePhoneRate() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -152,12 +163,14 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def phoneRate = newValidForCreatePhoneRate()
         assertTrue "PhoneRate could not be validated as expected due to ${phoneRate.errors}", phoneRate.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def phoneRate = new PhoneRate()
         assertFalse "PhoneRate should have failed validation", phoneRate.validate()

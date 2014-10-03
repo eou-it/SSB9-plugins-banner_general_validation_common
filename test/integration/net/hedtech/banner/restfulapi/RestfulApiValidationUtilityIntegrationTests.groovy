@@ -2,6 +2,10 @@
  Copyright 2010-2013 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.restfulapi
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.general.system.Term
 import net.hedtech.banner.query.operators.Operators
@@ -9,17 +13,20 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCorrectMaxAndOffset() {
         // No "max" will be added in the absence of maxDefault
         def params = [:]
@@ -53,6 +60,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
+	@Ignore
     void testValidateSortField() {
         def allowedSortFields = ["firstName", "lastName"]
 
@@ -77,6 +85,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
+	@Test
     void testValidateCriteria() {
         // Valid "field" "operator" "value"
         def filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": "star"]]
@@ -107,6 +116,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
+	@Test
     void testValidateCriteriaMapVersion() {
         // Valid "field" "operator" "value"
         def filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": "star"]]
@@ -127,11 +137,13 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
+	@Test
     void testThrowValidationExceptionForObjectNotFound() {
         shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForObjectNotFound("Term", "201410") })
     }
 
 
+	@Test
     void testCopyProperties() {
         def code = "201410"
         def desc = "201410 term"
@@ -143,6 +155,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
+	@Test
     void testCloneMapExcludingKeys() {
         def map = ["key1": "val1", "key2": "val2"]
 

@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     def functionService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateFunction() {
         def function = newFunction()
         save function
@@ -31,6 +37,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateFunction() {
         def function = newFunction()
         save function
@@ -59,6 +66,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def function = newFunction()
         save function
@@ -83,6 +91,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteFunction() {
         def function = newFunction()
         save function
@@ -93,12 +102,14 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def function = newFunction()
         assertTrue "Function could not be validated as expected due to ${function.errors}", function.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def function = new Function()
         assertFalse "Function should have failed validation", function.validate()
@@ -107,6 +118,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def function = new Function()
         assertFalse "Function should have failed validation", function.validate()

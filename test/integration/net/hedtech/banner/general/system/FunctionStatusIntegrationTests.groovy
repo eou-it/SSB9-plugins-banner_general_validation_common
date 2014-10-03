@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -32,17 +35,20 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 	def u_failure_code = "1234567890"
 	def u_failure_description = "1234567890123456789012345678901234567890"
 
-	protected void setUp() {
+    @Before
+    public void setUp() {
 		formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
 		super.setUp()
 	}
 
 
-	protected void tearDown() {
+    @After
+    public void tearDown() {
 		super.tearDown()
 	}
 
 
+    @Test
 	void testCreateValidFunctionStatus() {
 		def functionStatus = newValidForCreateFunctionStatus()
 		save functionStatus
@@ -51,7 +57,7 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 	}
 
 
-
+    @Test
 	void testUpdateValidFunctionStatus() {
 		def functionStatus = newValidForCreateFunctionStatus()
 		save functionStatus
@@ -74,6 +80,7 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testOptimisticLock() {
 		def functionStatus = newValidForCreateFunctionStatus()
 		save functionStatus
@@ -94,7 +101,9 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-	void testDeleteFunctionStatus() {
+
+    @Test
+    void testDeleteFunctionStatus() {
 		def functionStatus = newValidForCreateFunctionStatus()
 		save functionStatus
 		def id = functionStatus.id
@@ -105,6 +114,7 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testNullValidationFailure() {
         def functionStatus = new FunctionStatus()
         assertFalse "FunctionStatus should have failed validation", functionStatus.validate()
@@ -120,6 +130,7 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def functionStatus = new FunctionStatus(code:u_failure_code, description: u_failure_description, activeIndicator:'XXX' )
 		assertFalse "FunctionStatus should have failed validation", functionStatus.validate()

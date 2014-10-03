@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class SiteIntegrationTests extends BaseIntegrationTestCase {
     def siteService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateSite() {
         def site = newSite()
         save site
@@ -31,6 +37,7 @@ class SiteIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateSite() {
         def site = newSite()
         save site
@@ -83,6 +90,7 @@ class SiteIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def site = newSite()
         save site
@@ -115,6 +123,7 @@ class SiteIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteSite() {
         def site = newSite()
         save site
@@ -125,12 +134,14 @@ class SiteIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def site = newSite()
         assertTrue "Site could not be validated as expected due to ${site.errors}", site.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def site = new Site()
         assertFalse "Site should have failed validation", site.validate()
@@ -157,6 +168,7 @@ class SiteIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def site = new Site(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

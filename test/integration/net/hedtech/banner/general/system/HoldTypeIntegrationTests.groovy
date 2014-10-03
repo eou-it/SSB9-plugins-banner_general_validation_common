@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -12,17 +15,20 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
     def holdTypeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateHoldType() {
         def holdType = newHoldType()
         save holdType
@@ -31,6 +37,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateHoldType() {
         def holdType = newHoldType()
         save holdType
@@ -45,7 +52,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "TTTTT", holdType.description
         assertTrue holdType.accountsReceivableHoldIndicator
         assertTrue holdType.enrollmentVerificationHoldIndicator
-        assertEquals 1, holdType.voiceResponseMessageNumber
+        assertEquals 1, holdType.voiceResponseMessageNumber, 0
         assertTrue holdType.displayWebIndicator
         assertTrue holdType.applicationHoldIndicator
         assertTrue  holdType.complianceHoldIndicator
@@ -60,6 +67,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def holdType = newHoldType()
         save holdType
@@ -81,6 +89,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteHoldType() {
         def holdType = newHoldType()
         save holdType
@@ -91,12 +100,14 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def holdType = newHoldType()
         assertTrue "HoldType could not be validated as expected due to ${holdType.errors}", holdType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def holdType = new HoldType()
         assertFalse "HoldType should have failed validation", holdType.validate()
@@ -121,6 +132,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def holdType = new HoldType(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
@@ -154,6 +166,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
     /**
      * A test to exercise 'code' primary key in HoldType
      */
+	@Test
     void testPrimaryKeyOnCode() {
         def holdType = newHoldType()
         def duplicateObj = newHoldType()
@@ -171,6 +184,7 @@ class HoldTypeIntegrationTests extends BaseIntegrationTestCase {
     /**
      * A test to exercise the findBy method for HoldType
      */
+	@Test
     void testFindHoldType() {
         def holdType = newHoldType()
         save holdType

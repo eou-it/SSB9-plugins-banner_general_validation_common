@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -7,17 +10,20 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
     def citizenTypeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateCitizenType() {
         def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
@@ -25,6 +31,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateCitizenType() {
         def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
@@ -38,6 +45,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCitizenType() {
         def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
@@ -50,6 +58,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def citizenType = citizenTypeService.list()
         assertTrue citizenType.size() > 0

@@ -4,12 +4,7 @@
 package net.hedtech.banner.general.utility
 
 public enum SourceIndicators {
-    BASELINE("B") {
-
-    },
-    LOCAL("L") {
-
-    };
+    BASELINE("B"),LOCAL("L");
     private String indicatorCode = null
 
     private SourceIndicators(String indicatorCode) {

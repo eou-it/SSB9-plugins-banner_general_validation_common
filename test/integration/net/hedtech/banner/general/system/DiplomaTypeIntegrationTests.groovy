@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class DiplomaTypeIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidDiplomaType() {
         def diplomaType = newDiplomaType()
         diplomaType.save(failOnError: true, flush: true)
@@ -30,6 +36,7 @@ class DiplomaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateDiplomaType() {
         def diplomaType = newDiplomaType()
         diplomaType.save(failOnError: true, flush: true)
@@ -51,6 +58,7 @@ class DiplomaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -68,6 +76,7 @@ class DiplomaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def diplomaType = newDiplomaType()
         save diplomaType
@@ -89,6 +98,7 @@ class DiplomaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteDiplomaType() {
         def diplomaType = newDiplomaType()
         diplomaType.save(failOnError: true, flush: true)
@@ -99,12 +109,14 @@ class DiplomaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def diplomaType = new DiplomaType()
         assertFalse "DiplomaType could not be validated as expected due to ${diplomaType.errors}", diplomaType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def diplomaType = new DiplomaType()
         assertFalse "DiplomaType should have failed validation", diplomaType.validate()
@@ -113,6 +125,7 @@ class DiplomaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def diplomaType = new DiplomaType(code: "XXXX", description: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 electronicDataInterchangeEquivalent: 'XXXXX')

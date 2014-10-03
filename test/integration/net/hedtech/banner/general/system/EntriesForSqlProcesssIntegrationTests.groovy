@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -46,17 +49,20 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -65,6 +71,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newInvalidForCreateEntriesForSqlProcesss()
         shouldFail(ValidationException) {
@@ -73,6 +80,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -100,6 +108,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -122,6 +131,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
@@ -149,6 +159,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -172,6 +183,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -182,12 +194,14 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def entriesForSqlProcesss = newInvalidForCreateEntriesForSqlProcesss()
         assertFalse "EntriesForSqlProcesss could not be validated as expected due to ${entriesForSqlProcesss.errors}", entriesForSqlProcesss.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def entriesForSqlProcesss = new EntriesForSqlProcesss()
         assertFalse "EntriesForSqlProcesss should have failed validation", entriesForSqlProcesss.validate()

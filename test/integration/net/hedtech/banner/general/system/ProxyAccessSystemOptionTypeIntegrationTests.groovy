@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -12,15 +15,18 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
  */
 class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
+	@Test
     void testCreateProxyAccessSystemOptionType() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         save proxyAccessSystemOptionType
@@ -28,6 +34,7 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         assertNotNull proxyAccessSystemOptionType.id
     }
 
+	@Test
     void testUpdateProxyAccessSystemOptionType() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         save proxyAccessSystemOptionType
@@ -55,6 +62,7 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         assertEquals "R", proxyAccessSystemOptionType.sytemLevelCode
     }
 
+	@Test
     void testOptimisticLock() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         save proxyAccessSystemOptionType
@@ -78,6 +86,7 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         }
     }
 
+	@Test
     void testDeleteProxyAccessSystemOptionType() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         save proxyAccessSystemOptionType
@@ -87,11 +96,13 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         assertNull ProxyAccessSystemOptionType.get(id)
     }
 
+	@Test
     void testValidation() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         assertTrue "ProxyAccessSystemOptionType could not be validated as expected due to ${proxyAccessSystemOptionType.errors}", proxyAccessSystemOptionType.validate()
     }
 
+	@Test
     void testNullValidationFailure() {
         def proxyAccessSystemOptionType = new ProxyAccessSystemOptionType()
         assertFalse "ProxyAccessSystemOptionType should have failed validation", proxyAccessSystemOptionType.validate()
@@ -99,6 +110,7 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         assertNoErrorsFor proxyAccessSystemOptionType, []
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def proxyAccessSystemOptionType = new ProxyAccessSystemOptionType()
         assertFalse "ProxyAccessSystemOptionType should have failed validation", proxyAccessSystemOptionType.validate()

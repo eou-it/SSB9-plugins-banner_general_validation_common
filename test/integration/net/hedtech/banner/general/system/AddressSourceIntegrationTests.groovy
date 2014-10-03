@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -30,17 +33,20 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "WWWWW"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidAddressSource() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -49,6 +55,7 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidAddressSource() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -67,6 +74,7 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -87,6 +95,7 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteAddressSource() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -98,6 +107,7 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testNullValidationFailure() {
         def addressSource = new AddressSource()
         assertFalse "AddressSource should have failed validation", addressSource.validate()

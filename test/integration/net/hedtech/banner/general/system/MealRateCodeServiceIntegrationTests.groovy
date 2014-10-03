@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -7,17 +10,20 @@ class MealRateCodeServiceIntegrationTests extends BaseIntegrationTestCase {
     def mealRateCodeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateMealRateCode() {
         def mealRateCode = newMealRateCode()
         mealRateCode = mealRateCodeService.create([domainModel: mealRateCode])
@@ -25,6 +31,7 @@ class MealRateCodeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateMealRateCode() {
         def mealRateCode = newMealRateCode()
         mealRateCode = mealRateCodeService.create([domainModel: mealRateCode])
@@ -38,6 +45,7 @@ class MealRateCodeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteMealRateCode() {
         def mealRateCode = newMealRateCode()
         mealRateCode = mealRateCodeService.create([domainModel: mealRateCode])
@@ -50,6 +58,7 @@ class MealRateCodeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def mealRateCode = mealRateCodeService.list()
         assertTrue mealRateCode.size() > 0

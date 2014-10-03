@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -31,17 +34,20 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -50,6 +56,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidTargetAudience() {
         def targetAudience = newInvalidForCreateTargetAudience()
         shouldFail(ValidationException) {
@@ -58,6 +65,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -77,6 +85,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -93,6 +102,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -113,6 +123,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -123,12 +134,14 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def targetAudience = newInvalidForCreateTargetAudience()
         assertFalse "TargetAudience could not be validated as expected due to ${targetAudience.errors}", targetAudience.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def targetAudience = new TargetAudience()
         assertFalse "TargetAudience should have failed validation", targetAudience.validate()

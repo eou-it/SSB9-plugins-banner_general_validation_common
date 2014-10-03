@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -31,17 +34,20 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "UFFFF"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidParticipantType() {
         def participantType = newValidForCreateParticipantType()
         save participantType
@@ -50,6 +56,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidParticipantType() {
         def participantType = newInvalidForCreateParticipantType()
         participantType.code = null
@@ -59,6 +66,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidParticipantType() {
         def participantType = newValidForCreateParticipantType()
         save participantType
@@ -78,6 +86,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidParticipantType() {
         def participantType = newValidForCreateParticipantType()
         save participantType
@@ -95,6 +104,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def participantType = newValidForCreateParticipantType()
         participantType.save(failOnError: true, flush: true)
@@ -115,6 +125,7 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteParticipantType() {
         def participantType = newValidForCreateParticipantType()
         save participantType
@@ -125,12 +136,14 @@ class ParticipantTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def participantType = newInvalidForCreateParticipantType()
         assertTrue "ParticipantType could not be validated as expected due to ${participantType.errors}", participantType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def participantType = new ParticipantType()
         assertFalse "ParticipantType should have failed validation", participantType.validate()

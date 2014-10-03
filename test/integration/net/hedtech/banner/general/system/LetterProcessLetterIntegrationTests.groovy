@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException as OptimisticLock
 
@@ -10,17 +13,20 @@ import groovy.sql.Sql
 
 class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateLetterProcessLetter() {
         def letterProcessLetter = createLetterProcessLetter()
         save letterProcessLetter
@@ -29,6 +35,7 @@ class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateLetterProcessLetter() {
         def letterProcessLetter = createLetterProcessLetter()
         save letterProcessLetter
@@ -63,6 +70,7 @@ class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def letterProcessLetter = createLetterProcessLetter()
         save letterProcessLetter
@@ -89,6 +97,7 @@ class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteLetterProcessLetter() {
         def letterProcessLetter = createLetterProcessLetter()
         save letterProcessLetter
@@ -99,12 +108,14 @@ class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def letterProcessLetter = createLetterProcessLetter()
         assertTrue "LetterProcessLetter could not be validated as expected due to ${letterProcessLetter.errors}", letterProcessLetter.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def letterProcessLetter = new LetterProcessLetter()
         assertFalse "LetterProcessLetter should have failed validation", letterProcessLetter.validate()
@@ -124,6 +135,7 @@ class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def letterProcessLetter = new LetterProcessLetter(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

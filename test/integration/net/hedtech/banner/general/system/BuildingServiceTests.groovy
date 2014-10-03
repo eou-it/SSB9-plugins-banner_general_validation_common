@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -7,17 +10,20 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
     def buildingService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateBuilding() {
         def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -26,6 +32,7 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateBuilding() {
         def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -40,6 +47,7 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteBuilding() {
         def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -53,6 +61,7 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def building = buildingService.list()
         assertTrue building.size() > 0

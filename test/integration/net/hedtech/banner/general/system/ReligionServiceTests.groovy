@@ -1,4 +1,7 @@
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -7,17 +10,20 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
     def religionService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateReligion() {
         def religion = new Religion(code: "T", description: "TT")
         religion = religionService.create([domainModel: religion])
@@ -25,6 +31,7 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateReligion() {
         def religion = new Religion(code: "T", description: "TT")
         religion = religionService.create([domainModel: religion])
@@ -38,6 +45,7 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteReligion() {
         def religion = new Religion(code: "T", description: "TT")
         religion = religionService.create([domainModel: religion])
@@ -50,6 +58,7 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def religion = religionService.list()
         assertTrue religion.size() > 0

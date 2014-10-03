@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -12,17 +15,20 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     def integrationPartnerService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateIntegrationPartner() {
         def integrationPartner = newIntegrationPartner()
         save integrationPartner
@@ -31,6 +37,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateIntegrationPartner() {
         def integrationPartner = newIntegrationPartner()
         save integrationPartner
@@ -56,6 +63,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def integrationPartner = newIntegrationPartner()
         save integrationPartner
@@ -80,6 +88,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteIntegrationPartner() {
         def integrationPartner = newIntegrationPartner()
         save integrationPartner
@@ -90,12 +99,14 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def integrationPartner = newIntegrationPartner()
         assertTrue "IntegrationPartner could not be validated as expected due to ${integrationPartner.errors}", integrationPartner.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def integrationPartner = new IntegrationPartner()
         assertFalse "IntegrationPartner should have failed validation", integrationPartner.validate()
@@ -103,6 +114,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def integrationPartner = new IntegrationPartner(
                 code: 'XXXXXXX',

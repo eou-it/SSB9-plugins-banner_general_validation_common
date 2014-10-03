@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException as OptimisticLock
 
@@ -39,7 +42,8 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
         initializeTestDataForReferences()
@@ -62,11 +66,13 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidFunctionEmphasis() {
         def functionEmphasis = newValidForCreateFunctionEmphasis()
         save functionEmphasis
@@ -75,6 +81,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidFunctionEmphasis() {
         def functionEmphasis = newValidForCreateFunctionEmphasis()
         save functionEmphasis
@@ -103,6 +110,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testOptimisticLock() {
         def functionEmphasis = newValidForCreateFunctionEmphasis()
         save functionEmphasis
@@ -123,6 +131,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteFunctionEmphasis() {
         def functionEmphasis = newValidForCreateFunctionEmphasis()
         save functionEmphasis
@@ -133,6 +142,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def functionEmphasis = newInvalidForCreateFunctionEmphasis()
         functionEmphasis.code = u_failure_code
@@ -142,6 +152,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def functionEmphasis = new FunctionEmphasis()
         assertFalse "FunctionEmphasis should have failed validation", functionEmphasis.validate()

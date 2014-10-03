@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -31,17 +34,20 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidEventType() {
         def eventType = newValidForCreateEventType()
         save eventType
@@ -50,6 +56,7 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidEventType() {
         def eventType = newValidForCreateEventType()
         save eventType
@@ -69,6 +76,7 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testOptimisticLock() {
         def eventType = newValidForCreateEventType()
         save eventType
@@ -89,6 +97,7 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteEventType() {
         def eventType = newValidForCreateEventType()
         save eventType
@@ -100,6 +109,7 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
+	@Test
     void testNullValidationFailure() {
         def eventType = new EventType()
         assertFalse "EventType should have failed validation", eventType.validate()
@@ -114,6 +124,7 @@ class EventTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def eventType = new EventType(code: u_failure_code,
                 description: u_failure_description)

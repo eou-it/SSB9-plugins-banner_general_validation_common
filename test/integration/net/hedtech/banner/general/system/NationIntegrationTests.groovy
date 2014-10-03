@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     def nationService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateNation() {
         def nation = newNation()
         save nation
@@ -31,6 +37,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateNation() {
         def nation = newNation()
         save nation
@@ -81,6 +88,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def nation = newNation()
         save nation
@@ -114,6 +122,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteNation() {
         def nation = newNation()
         save nation
@@ -124,12 +133,14 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def nation = newNation()
         assertTrue "Nation could not be validated as expected due to ${nation.errors}", nation.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def nation = new Nation()
         assertFalse "Nation should have failed validation", nation.validate()
@@ -157,6 +168,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def nation = new Nation(
                 capital: 'XXXXXXXXXXXXXXXXXXXXXX',
@@ -173,6 +185,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchByNation() {
         def nationList = Nation.fetchBySomeNation()
         assertTrue nationList.list.size() > 5

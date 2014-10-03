@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -22,17 +25,20 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "This is invalid description and it should fail the test"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidStudentActivity() {
         def studentActivity = newValidForCreateStudentActivity()
         studentActivity.save(failOnError: true, flush: true)
@@ -41,6 +47,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidStudentActivity() {
         def studentActivity = newInvalidForCreateStudentActivity()
         shouldFail(ValidationException) {
@@ -49,6 +56,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidStudentActivity() {
         def studentActivity = newValidForCreateStudentActivity()
         studentActivity.save(failOnError: true, flush: true)
@@ -99,6 +107,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidStudentActivity() {
         def studentActivity = newValidForCreateStudentActivity()
         studentActivity.save(failOnError: true, flush: true)
@@ -116,6 +125,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -133,6 +143,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def studentActivity = newValidForCreateStudentActivity()
         studentActivity.save(failOnError: true, flush: true)
@@ -153,6 +164,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteStudentActivity() {
         def studentActivity = newValidForCreateStudentActivity()
         studentActivity.save(failOnError: true, flush: true)
@@ -163,12 +175,14 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def studentActivity = newInvalidForCreateStudentActivity()
         assertFalse "StudentActivity could not be validated as expected due to ${studentActivity.errors}", studentActivity.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def studentActivity = new StudentActivity()
         assertFalse "StudentActivity should have failed validation", studentActivity.validate()
@@ -186,6 +200,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def studentActivity = new StudentActivity(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
@@ -194,6 +209,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchAllByActivityType() {
         def activityType = "SPRTS"
         def activitiesList = StudentActivity.fetchAllByActivityType(activityType)
@@ -205,6 +221,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeActivityTypeMap() {
         def map = [activityType: "SPRTS"]
         def activitiesList = StudentActivity.fetchBySomeActivityType(map)
@@ -215,6 +232,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeActivityType() {
         def map = [activityType: "SPRTS"]
         def activitiesList = StudentActivity.fetchBySomeActivityType("%", map)
@@ -225,6 +243,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchByActivityAndActivityTypeValid() {
         def activity = "130"
         def activityType = "SPRTS"
@@ -241,6 +260,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchByActivityAndActivityTypeInvalid() {
         def activity = "101"
         def activityType = "SPRTS"
@@ -249,6 +269,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchValidActivityForActivityTypeValid() {
         def activity = "130"
         def map = [activityType: "SPRTS"]
@@ -257,6 +278,7 @@ class StudentActivityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchValidActivityForActivityTypeInvalid() {
         def activity = "101"
         def map = [activityType: "SPRTS"]

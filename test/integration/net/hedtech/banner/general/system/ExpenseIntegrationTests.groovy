@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -31,17 +34,20 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidExpense() {
         def expense = newValidForCreateExpense()
         expense.save(failOnError: true, flush: true)
@@ -50,6 +56,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidExpense() {
         def expense = newInvalidForCreateExpense()
         shouldFail(ValidationException) {
@@ -58,6 +65,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidExpense() {
         def expense = newValidForCreateExpense()
         expense.save(failOnError: true, flush: true)
@@ -76,6 +84,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidExpense() {
         def expense = newValidForCreateExpense()
         expense.save(failOnError: true, flush: true)
@@ -92,6 +101,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def expense = newValidForCreateExpense()
         expense.save(failOnError: true, flush: true)
@@ -112,6 +122,7 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteExpense() {
         def expense = newValidForCreateExpense()
         expense.save(failOnError: true, flush: true)
@@ -122,12 +133,14 @@ class ExpenseIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def expense = newInvalidForCreateExpense()
         assertFalse "Expense could not be validated as expected due to ${expense.errors}", expense.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def expense = new Expense()
         assertFalse "Expense should have failed validation", expense.validate()

@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -13,12 +16,14 @@ class InstitutionalDescriptionIntegrationTests extends BaseIntegrationTestCase {
     def institutionalDescriptionService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testFindByKey() {
         def institutionalDescription = InstitutionalDescription.fetchByKey()
 
@@ -27,6 +32,7 @@ class InstitutionalDescriptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testServiceFindByKey() {
         def institutionalDescription = institutionalDescriptionService.findByKey()
 

@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class ReligionIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateReligion() {
         def religion = newReligion()
         religion.save(failOnError: true, flush: true)
@@ -34,6 +40,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateReligion() {
         def religion = newReligion()
         religion.save(failOnError: true, flush: true)
@@ -52,6 +59,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -69,6 +77,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def religion = newReligion()
         religion.save(failOnError: true, flush: true)
@@ -89,6 +98,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteReligion() {
         def religion = newReligion()
         religion.save(failOnError: true, flush: true)
@@ -99,12 +109,14 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def religion = new Religion()
         assertFalse "Religion could not be validated as expected due to ${religion.errors}", religion.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def religion = new Religion()
         assertFalse "Religion should have failed validation", religion.validate()
@@ -113,6 +125,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def religion = new Religion(
                 code: "TTTTT",

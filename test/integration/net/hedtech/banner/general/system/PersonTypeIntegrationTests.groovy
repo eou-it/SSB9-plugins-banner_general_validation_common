@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreatePersonType() {
         def personType = newPersonType()
         save personType
@@ -30,6 +36,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdatePersonType() {
         def personType = newPersonType()
         save personType
@@ -56,6 +63,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -73,6 +81,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def personType = newPersonType()
         save personType
@@ -96,6 +105,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeletePersonType() {
         def personType = newPersonType()
         save personType
@@ -106,12 +116,14 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def personType = new PersonType()
         assertFalse "PersonType could not be validated as expected due to ${personType.errors}", personType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def personType = new PersonType()
         assertFalse "PersonType should have failed validation", personType.validate()
@@ -119,6 +131,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def personType = new PersonType(
                 code: 'XXXXX',

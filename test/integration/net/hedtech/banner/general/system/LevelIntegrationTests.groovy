@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -28,12 +31,14 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
     def levelService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreateLevel() {
         def level = newValidForCreateLevel()
 
@@ -43,6 +48,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull(level.id)
     }
 
+	@Test
     void testUpdateLevel() {
         def level = newValidForCreateLevel()
         if (!level.save(flush: true, failOnError: true)) {
@@ -65,6 +71,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         assertEquals(1, level.version)
     }
 
+	@Test
     void testDeleteLevel() {
         def level = newValidForCreateLevel()
         if (!level.save(flush: true, failOnError: true)) {
@@ -78,6 +85,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def level = newValidForCreateLevel()
         save level
@@ -97,6 +105,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+	@Test
     void testValidation() {
         def level = new Level()
         //should not pass validation since none of the required values are provided
@@ -116,6 +125,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         assertTrue(level.validate())
     }
 
+	@Test
     void testNullValidationFailure() {
         def level = new Level()
         assertFalse "Level should have failed validation", level.validate()
@@ -134,6 +144,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def level = new Level(
                 description: 'This description is longet then allowed, it should throw maxSize error',

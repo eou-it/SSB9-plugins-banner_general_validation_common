@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class CitizenTypeIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateCitizenType() {
         def citizenType = newCitizenType()
         citizenType.save(failOnError: true, flush: true)
@@ -36,6 +42,7 @@ class CitizenTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateCitizenType() {
         def citizenType = newCitizenType()
         citizenType.save(failOnError: true, flush: true)
@@ -60,6 +67,7 @@ class CitizenTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -77,6 +85,7 @@ class CitizenTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def citizenType = newCitizenType()
         citizenType.save(failOnError: true, flush: true)
@@ -97,6 +106,7 @@ class CitizenTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCitizenType() {
         def citizenType = newCitizenType()
         citizenType.save(failOnError: true, flush: true)
@@ -107,12 +117,14 @@ class CitizenTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def citizenType = new CitizenType()
         assertFalse "CitizenType could not be validated as expected due to ${citizenType.errors}", citizenType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def citizenType = new CitizenType()
         assertFalse "CitizenType should have failed validation", citizenType.validate()
@@ -121,6 +133,7 @@ class CitizenTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def citizenType = new CitizenType(
                 code: "TTTTT",

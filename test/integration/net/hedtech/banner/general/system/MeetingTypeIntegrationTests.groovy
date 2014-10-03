@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     def meetingTypeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateMeetingType() {
         def meetingType = newMeetingType()
         save meetingType
@@ -31,6 +37,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateMeetingType() {
         def meetingType = newMeetingType()
         save meetingType
@@ -40,7 +47,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "TTTT", meetingType.code
         assertEquals "TTTTT", meetingType.description
         assertEquals true, meetingType.systemRequiredIndicator
-        assertEquals 1, meetingType.voiceResponseMsgNumber
+        assertEquals 1, meetingType.voiceResponseMsgNumber, 0
 
         //Update the entity
         meetingType.code = "UUUU"
@@ -57,11 +64,12 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "UUUU", meetingType.code
         assertEquals "UUUUU", meetingType.description
         assertEquals false, meetingType.systemRequiredIndicator
-        assertEquals 0, meetingType.voiceResponseMsgNumber
+        assertEquals 0, meetingType.voiceResponseMsgNumber, 0
 
     }
 
 
+	@Test
     void testOptimisticLock() {
         def meetingType = newMeetingType()
         save meetingType
@@ -87,6 +95,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteMeetingType() {
         def meetingType = newMeetingType()
         save meetingType
@@ -97,12 +106,14 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def meetingType = newMeetingType()
         assertTrue "MeetingType could not be validated as expected due to ${meetingType.errors}", meetingType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def meetingType = new MeetingType()
         assertFalse "MeetingType should have failed validation", meetingType.validate()
@@ -110,6 +121,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def meetingType = new MeetingType(
                 code: 'XXXXXX',

@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateUnitOfMeasure() {
         def unitOfMeasure = newUnitOfMeasure()
         unitOfMeasure.save(failOnError: true, flush: true)
@@ -34,6 +40,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateUnitOfMeasure() {
         def unitOfMeasure = newUnitOfMeasure()
         unitOfMeasure.save(failOnError: true, flush: true)
@@ -51,6 +58,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -68,6 +76,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def unitOfMeasure = newUnitOfMeasure()
         unitOfMeasure.save(failOnError: true, flush: true)
@@ -88,6 +97,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteUnitOfMeasure() {
         def unitOfMeasure = newUnitOfMeasure()
         unitOfMeasure.save(failOnError: true, flush: true)
@@ -98,12 +108,14 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def unitOfMeasure = new UnitOfMeasure()
         assertFalse "UnitOfMeasure could not be validated as expected due to ${unitOfMeasure.errors}", unitOfMeasure.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def unitOfMeasure = new UnitOfMeasure()
         assertFalse "UnitOfMeasure should have failed validation", unitOfMeasure.validate()
@@ -111,6 +123,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def unitOfMeasure = new UnitOfMeasure(
                 code: "TTTTT",

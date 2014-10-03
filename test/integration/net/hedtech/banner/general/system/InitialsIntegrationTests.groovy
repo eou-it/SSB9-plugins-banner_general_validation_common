@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -45,17 +48,20 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_emailAddress = "TTTTT"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -64,6 +70,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidInitials() {
         def initials = newInvalidForCreateInitials()
         initials.code = null
@@ -73,6 +80,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -100,6 +108,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -123,6 +132,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -144,6 +154,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -167,6 +178,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -177,6 +189,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def initials = newInvalidForCreateInitials()
         initials.code = null
@@ -184,6 +197,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def initials = new Initials()
         assertFalse "Initials should have failed validation", initials.validate()
@@ -201,6 +215,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def initials = new Initials(
                 title2: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ import java.text.SimpleDateFormat
 
 class ZipIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidZip() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -31,6 +37,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidZip() {
         def zip = newInvalidForCreateZip()
         shouldFail(ValidationException) {
@@ -39,6 +46,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidZip() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -61,6 +69,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidZip() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -78,6 +87,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -94,6 +104,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -114,6 +125,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteZip() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -124,12 +136,14 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def zip = newInvalidForCreateZip()
         assertFalse "Zip could not be validated as expected due to ${zip.errors}", zip.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def zip = new Zip()
         assertFalse "Zip should have failed validation", zip.validate()
@@ -147,6 +161,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchSearchInstitutionType() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -170,6 +185,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFetchBySomeCode() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)

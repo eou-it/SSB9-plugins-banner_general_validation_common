@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -31,17 +34,20 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "TTTTT"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -50,6 +56,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidRating() {
         def rating = newInvalidForCreateRating()
         rating.code = null
@@ -59,6 +66,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -78,6 +86,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -95,6 +104,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def rating = newValidForCreateRating()
         save rating
@@ -115,6 +125,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -125,12 +136,14 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def rating = newInvalidForCreateRating()
         assertTrue "Rating could not be validated as expected due to ${rating.errors}", rating.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def rating = new Rating()
         assertFalse "Rating should have failed validation", rating.validate()

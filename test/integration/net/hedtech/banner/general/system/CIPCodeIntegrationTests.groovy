@@ -1,7 +1,10 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -15,12 +18,14 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
     def cipCodeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreateCIPCode() {
         def cipCode = newCIPCode()
         save cipCode
@@ -28,6 +33,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateCIPCode() {
         def cipCode = newCIPCode()
         save cipCode
@@ -46,6 +52,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 1, cipCode.version
     }
 
+	@Test
     void testOptimisticLock() {
         def cipCode = newCIPCode()
         save cipCode
@@ -69,6 +76,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+	@Test
     void testDeleteCIPCode() {
         def cipCode = newCIPCode()
         save cipCode
@@ -79,18 +87,21 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
         assertNull CIPCode.get(id)
     }
 
+	@Test
     void testValidation() {
         def cipCode = newCIPCode()
         //should not pass validation since none of the required values are provided
         assertTrue "CIP Code could not be validated as expected due to ${cipCode.errors}", cipCode.validate()
     }
 
+	@Test
     void testNullValidationFailure() {
         def cipCode = new CIPCode()
         assertFalse "CIP Code should have failed validation", cipCode.validate()
-        assertErrorsFor cipCode, 'nullable', ['code', 'description']
+        assertErrorsFor cipCode, 'nullable', ['code', 'description', 'publicationYear']
     }
 
+	@Test
     void testMaxSizeValidationFailures() {
         def cipCode = new CIPCode(
                 code: 'XXXXXXXXXX',
@@ -101,7 +112,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
 
 
     private def newCIPCode() {
-        new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT",
+        new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT", publicationYear: 2010,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
     }
 

@@ -2,17 +2,22 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+	@Test
     void testCreate() {
         def imc = newInstructionalMethod()
         imc.save()
@@ -21,12 +26,14 @@ class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testList() {
         def imcs = InstructionalMethod.list()
         assertTrue imcs.size() > 0
     }
 
 
+	@Test
     void testDelete() {
         def imc = saveInstructionalMethod()
         def id = imc.id
@@ -35,6 +42,7 @@ class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdate() {
         def imc = saveInstructionalMethod()
         imc.description = "Updated by Dan"
@@ -45,6 +53,7 @@ class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFindAllByCode() {
         saveInstructionalMethod()
         def imcs = InstructionalMethod.findAllByCode("1111")
@@ -52,6 +61,7 @@ class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFindAllByDescription() {
         saveInstructionalMethod()
         def imcs = InstructionalMethod.findAllByDescription("unit-test")
@@ -59,6 +69,7 @@ class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testFindAllByVoiceResponseMessageNumber() {
         saveInstructionalMethod()
         def imcs = InstructionalMethod.findAllByVoiceResponseMessageNumber(new BigDecimal(22))
@@ -66,6 +77,7 @@ class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidationFail() {
         def imc = new InstructionalMethod(code: "exceeds_length", description: "unit-test",
                 lastModifiedBy: "test", lastModified: new Date(), dataOrigin: "Horizon")
@@ -73,6 +85,7 @@ class InstructionalMethodIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidationSuccess() {
         def imc = new InstructionalMethod(code: "1111", description: "unit-test",
                 voiceResponseMessageNumber: new BigDecimal(22),

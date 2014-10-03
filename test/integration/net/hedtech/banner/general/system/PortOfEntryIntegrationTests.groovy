@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidPortOfEntry() {
         def portOfEntry = newValidForCreatePortOfEntry()
         portOfEntry.save(failOnError: true, flush: true)
@@ -30,6 +36,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidPortOfEntry() {
         def portOfEntry = newValidForCreatePortOfEntry()
         portOfEntry.save(failOnError: true, flush: true)
@@ -51,6 +58,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -68,6 +76,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def portOfEntry = newValidForCreatePortOfEntry()
         portOfEntry.save(failOnError: true, flush: true)
@@ -89,6 +98,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeletePortOfEntry() {
         def portOfEntry = newValidForCreatePortOfEntry()
         portOfEntry.save(failOnError: true, flush: true)
@@ -99,12 +109,14 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def portOfEntry = new PortOfEntry()
         assertFalse "PortOfEntry could not be validated as expected due to ${portOfEntry.errors}", portOfEntry.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def portOfEntry = new PortOfEntry()
         assertFalse "PortOfEntry should have failed validation", portOfEntry.validate()
@@ -120,6 +132,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def portOfEntry = new PortOfEntry(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

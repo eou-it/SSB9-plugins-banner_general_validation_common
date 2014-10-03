@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -11,17 +14,20 @@ import java.text.SimpleDateFormat
 
 class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateRegulatoryRace() {
         def regulatoryRace = newRegulatoryRace()
         save regulatoryRace
@@ -30,6 +36,7 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateRegulatoryRace() {
         def regulatoryRace = newRegulatoryRace()
         save regulatoryRace
@@ -59,6 +66,7 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -76,6 +84,7 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def regulatoryRace = newRegulatoryRace()
         save regulatoryRace
@@ -100,6 +109,7 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteRegulatoryRace() {
         def regulatoryRace = newRegulatoryRace()
         save regulatoryRace
@@ -110,12 +120,14 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def regulatoryRace = new RegulatoryRace()
         assertFalse "RegulatoryRace could not be validated as expected due to ${regulatoryRace.errors}", regulatoryRace.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def regulatoryRace = new RegulatoryRace()
         assertFalse "RegulatoryRace should have failed validation", regulatoryRace.validate()
@@ -123,6 +135,7 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def regulatoryRace = new RegulatoryRace(
                 code: 'XXXX',
@@ -131,6 +144,7 @@ class RegulatoryRaceIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor(regulatoryRace, 'maxSize', ['code', 'description'])
     }
 
+	@Test
     void testFetchAllByRegulatoryRaceSuccess() {
             RegulatoryRace regulatoryRace = newRegulatoryRace()
             save regulatoryRace

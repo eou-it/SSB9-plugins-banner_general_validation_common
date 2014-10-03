@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -117,17 +120,20 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_achFileNumber = 1
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidBank() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -136,6 +142,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidBank() {
         def bank = newInvalidForCreateBank()
         shouldFail(ValidationException) {
@@ -144,6 +151,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidBank() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -220,6 +228,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidBank() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -275,6 +284,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -304,6 +314,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -342,6 +353,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteBank() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -352,12 +364,14 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def bank = newInvalidForCreateBank()
         assertFalse "Bank could not be validated as expected due to ${bank.errors}", bank.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def bank = new Bank()
         assertFalse "Bank should have failed validation", bank.validate()
@@ -393,6 +407,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def bank = new Bank(
                 chartOfAccounts: 'XXX',

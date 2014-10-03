@@ -2,6 +2,9 @@
  Copyright 2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -82,17 +85,20 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_standardCodeIso = "TTT"
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateValidCurrencyConversion() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversion.save(failOnError: true, flush: true)
@@ -101,6 +107,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testCreateInvalidCurrencyConversion() {
         def currencyConversion = newInvalidForCreateCurrencyConversion()
         shouldFail(ValidationException) {
@@ -109,6 +116,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateValidCurrencyConversion() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversion.save(failOnError: true, flush: true)
@@ -160,6 +168,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateInvalidCurrencyConversion() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversion.save(failOnError: true, flush: true)
@@ -198,6 +207,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -226,6 +236,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversion.save(failOnError: true, flush: true)
@@ -255,6 +266,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteCurrencyConversion() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversion.save(failOnError: true, flush: true)
@@ -265,12 +277,14 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def currencyConversion = newInvalidForCreateCurrencyConversion()
         assertFalse "CurrencyConversion could not be validated as expected due to ${currencyConversion.errors}", currencyConversion.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def currencyConversion = new CurrencyConversion()
         assertFalse "CurrencyConversion should have failed validation", currencyConversion.validate()
@@ -298,6 +312,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def currencyConversion = new CurrencyConversion(
                 currencyConversion: 'XXXXX',
@@ -315,6 +330,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testInListValidationFailures() {
         def currencyConversion = new CurrencyConversion(
                 statusIndicator: "#",

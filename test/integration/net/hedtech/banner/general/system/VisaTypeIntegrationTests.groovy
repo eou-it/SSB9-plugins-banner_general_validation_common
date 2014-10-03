@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     def visaTypeService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateVisaType() {
         def visaType = newVisaType()
         save visaType
@@ -31,6 +37,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateVisaType() {
         def visaType = newVisaType()
         save visaType
@@ -69,6 +76,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def visaType = newVisaType()
         save visaType
@@ -96,6 +104,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteVisaType() {
         def visaType = newVisaType()
         save visaType
@@ -106,12 +115,14 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def visaType = newVisaType()
         assertTrue "VisaType could not be validated as expected due to ${visaType.errors}", visaType.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def visaType = new VisaType()
         assertFalse "VisaType should have failed validation", visaType.validate()
@@ -120,6 +131,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def visaType = new VisaType(
                 code: 'XXXX',

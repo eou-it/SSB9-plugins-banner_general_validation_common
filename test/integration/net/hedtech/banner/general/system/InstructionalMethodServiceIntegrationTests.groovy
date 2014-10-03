@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
@@ -14,17 +17,20 @@ class InstructionalMethodServiceIntegrationTests extends BaseIntegrationTestCase
     def instructionalMethodService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateInstructionalMethod() {
         def instructionalMethod = newInstructionalMethod("1111")
         instructionalMethod = instructionalMethodService.create([domainModel: instructionalMethod])
@@ -33,11 +39,13 @@ class InstructionalMethodServiceIntegrationTests extends BaseIntegrationTestCase
     }
 
 
+	@Test
     void testList() {
         assertTrue 0 < instructionalMethodService.list().size()
     }
 
 
+	@Test
     void testUpdateInstructionalMethod() {
         def instructionalMethod = newInstructionalMethod("1111")
         instructionalMethod = instructionalMethodService.create([domainModel: instructionalMethod])
@@ -51,6 +59,7 @@ class InstructionalMethodServiceIntegrationTests extends BaseIntegrationTestCase
     }
 
 
+	@Test
     void testDeleteInstructionalMethod() {
         def instructionalMethod = newInstructionalMethod("1111")
         instructionalMethod = instructionalMethodService.create([domainModel: instructionalMethod])

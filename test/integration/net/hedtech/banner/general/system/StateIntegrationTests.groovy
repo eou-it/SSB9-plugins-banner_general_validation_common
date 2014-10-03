@@ -2,6 +2,9 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.Before
+import org.junit.Test
+import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
@@ -12,17 +15,20 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     def stateService
 
 
-    protected void setUp() {
+	@Before
+	public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-    protected void tearDown() {
+	@After
+	public void tearDown() {
         super.tearDown()
     }
 
 
+	@Test
     void testCreateState() {
         def state = newState()
         save state
@@ -31,6 +37,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testUpdateState() {
         def state = newState()
         save state
@@ -65,6 +72,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testOptimisticLock() {
         def state = newState()
         save state
@@ -91,6 +99,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testDeleteState() {
         def state = newState()
         save state
@@ -101,12 +110,14 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testValidation() {
         def state = newState()
         assertTrue "State could not be validated as expected due to ${state.errors}", state.validate()
     }
 
 
+	@Test
     void testNullValidationFailure() {
         def state = new State()
         assertFalse "State should have failed validation", state.validate()
@@ -126,6 +137,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+	@Test
     void testMaxSizeValidationFailures() {
         def state = new State(
                 ediEquiv: 'XXXX',

@@ -5,23 +5,27 @@ package net.hedtech.banner.general.system
 
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 
 class RaceServiceIntegrationTests extends BaseIntegrationTestCase{
 
     def raceService
 
-    protected void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-
-    protected void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-
+    @Test
     void testCreateRace() {
         def race = newRace()
         race = raceService.create([domainModel:race])
@@ -29,7 +33,7 @@ class RaceServiceIntegrationTests extends BaseIntegrationTestCase{
         assertNotNull race.id
     }
 
-
+    @Test
     void testUpdateRace() {
         def race = newRace()
         race = raceService.create([domainModel:race])
@@ -42,7 +46,7 @@ class RaceServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals "ZZ", raceUpdate.description
     }
 
-
+    @Test
     void testDeleteRace() {
         def race = newRace()
         race = raceService.create([domainModel:race])
@@ -55,6 +59,7 @@ class RaceServiceIntegrationTests extends BaseIntegrationTestCase{
 
     }
 
+    @Test
     void testList(){
         def race = raceService.list()
         assertTrue race.size() > 0

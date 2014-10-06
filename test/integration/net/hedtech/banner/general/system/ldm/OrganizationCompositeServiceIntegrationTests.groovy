@@ -7,13 +7,15 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.College
 import net.hedtech.banner.general.system.ldm.v1.Organization
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 
 class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     College college
     def organizationCompositeService
 
-
+    @Before
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
@@ -28,6 +30,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     /**
      * Test case for List method
      */
+    @Test
     void testListWithPagination() {
         def paginationParams = [max: '20', offset: '0']
         List organizationList = organizationCompositeService.list(paginationParams)
@@ -39,6 +42,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     /**
      * Testcase for count method
      */
+    @Test
     void testCount() {
         assertEquals College.count(), organizationCompositeService.count()
     }
@@ -46,6 +50,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     /**
      * Testcase for show method
      */
+    @Test
     void testGet() {
         def paginationParams = [max: '20', offset: '0']
         List organizationList = organizationCompositeService.list(paginationParams)
@@ -64,6 +69,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     /**
      * Testcase for show method with ApplicationException
      */
+    @Test
     void testGetWithInvalidGuid() {
         shouldFail( ApplicationException  ) {
             organizationCompositeService.get(null)
@@ -74,6 +80,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     /**
      * Testcase for fetchByCollegeId method
      */
+    @Test
     void testFetchByCollegeId() {
         def organization = organizationCompositeService.fetchByCollegeId(college.id)
         assertNotNull organization
@@ -86,6 +93,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     /**
      * Testcase for fetchByCollegeCode
      */
+    @Test
     void testFetchFetchByCollegeCode() {
         Organization organization = organizationCompositeService.fetchByCollegeCode(college.code)
         assertNotNull organization

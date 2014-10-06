@@ -8,6 +8,8 @@ import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusParentCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 
 
 class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestCase {
@@ -15,7 +17,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
     MaritalStatus i_success_maritalStatus
     def maritalStatusCompositeService
 
-
+    @Before
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
@@ -27,7 +29,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         i_success_maritalStatus = MaritalStatus.findByCode('M')
     }
 
-
+    @Test
     void testListWithoutPaginationParams() {
         List maritalStatuses = maritalStatusCompositeService.list([:])
         assertNotNull maritalStatuses
@@ -35,7 +37,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertTrue maritalStatuses.size() > 0
     }
 
-
+    @Test
     void testListWithPagination() {
         def paginationParams = [max: '4', offset: '0']
         List maritalStatuses = maritalStatusCompositeService.list(paginationParams)
@@ -44,13 +46,13 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertTrue maritalStatuses.size() == 4
     }
 
-
+    @Test
     void testCount() {
         assertNotNull i_success_maritalStatus
         assertEquals MaritalStatus.count(), maritalStatusCompositeService.count()
     }
 
-
+    @Test
     void testGetInvalidGuid() {
         try {
             maritalStatusCompositeService.get('Invalid-guid')
@@ -59,7 +61,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         }
     }
 
-
+    @Test
     void testGetNullGuid() {
         try {
             maritalStatusCompositeService.get(null)
@@ -68,6 +70,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         }
     }
 
+    @Test
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
         def maritalStatusDetails = maritalStatusCompositeService.list(paginationParams)
@@ -87,7 +90,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertEquals maritalStatusDetail.metadata.dataOrigin, maritalStatusDetails[0].metadata.dataOrigin
     }
 
-
+    @Test
     void testFetchByGradingModeIdInvalid() {
         try {
             maritalStatusCompositeService.fetchByMaritalStatusId(null)
@@ -96,7 +99,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         }
     }
 
-
+    @Test
     void testFetchByGradingModeId() {
         MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.fetchByMaritalStatusId(i_success_maritalStatus.id)
         assertNotNull maritalStatusDetail
@@ -104,16 +107,16 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertEquals i_success_maritalStatus.code, maritalStatusDetail.code
         assertEquals i_success_maritalStatus.description, maritalStatusDetail.description
         assertEquals i_success_maritalStatus.dataOrigin, maritalStatusDetail.metadata.dataOrigin
-        assertEquals getLdmMaritalStatus(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
+        assertEquals maritalStatusCompositeService.getLdmMaritalStatus(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
     }
 
-
+    @Test
     void testFetchByGradingModeInvalid() {
         assertNull maritalStatusCompositeService.fetchByMaritalStatusCode(null)
         assertNull maritalStatusCompositeService.fetchByMaritalStatusCode('Q')
     }
 
-
+    @Test
     void testFetchByGradingMode() {
         MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.fetchByMaritalStatusCode(i_success_maritalStatus.code)
         assertNotNull maritalStatusDetail
@@ -121,7 +124,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
         assertEquals i_success_maritalStatus.code, maritalStatusDetail.code
         assertEquals i_success_maritalStatus.description, maritalStatusDetail.description
         assertEquals i_success_maritalStatus.dataOrigin, maritalStatusDetail.metadata.dataOrigin
-        assertEquals getLdmMaritalStatus(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
+        assertEquals maritalStatusCompositeService.getLdmMaritalStatus(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
     }
 
     //TODO: Move this function to common place

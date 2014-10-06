@@ -10,6 +10,8 @@ import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
 import net.hedtech.banner.general.system.ldm.v1.EthnicityParentCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 
 
 class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
@@ -17,7 +19,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     Ethnicity i_success_ethnicity
     def ethnicityCompositeService
 
-
+    @Before
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
@@ -30,7 +32,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         i_success_ethnicity = Ethnicity.findByCode('TT')
     }
 
-
+    @Test
     void testListWithoutPaginationParams() {
         List ethnicities = ethnicityCompositeService.list([:])
         assertNotNull ethnicities
@@ -38,7 +40,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertTrue ethnicities.size() > 0
     }
 
-
+    @Test
     void testListWithPagination() {
         def paginationParams = [max: '2', offset: '0']
         List ethnicities = ethnicityCompositeService.list(paginationParams)
@@ -47,13 +49,13 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertTrue ethnicities.size() == 2
     }
 
-
+    @Test
     void testCount() {
         assertNotNull i_success_ethnicity
         assertEquals Ethnicity.count(), ethnicityCompositeService.count()
     }
 
-
+    @Test
     void testGetInvalidGuid() {
         try {
             ethnicityCompositeService.get('Invalid-guid')
@@ -62,7 +64,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         }
     }
 
-
+    @Test
     void testGetNullGuid() {
         try {
             ethnicityCompositeService.get(null)
@@ -71,7 +73,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         }
     }
 
-
+    @Test
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
         def ethnicityDetails = ethnicityCompositeService.list(paginationParams)
@@ -92,7 +94,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals ethnicityDetails[0], ethnicityDetail
     }
 
-
+    @Test
     void testFetchByEthnicityIdInvalid() {
         try {
             ethnicityCompositeService.fetchByEthnicityId(null)
@@ -101,7 +103,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         }
     }
 
-
+    @Test
     void testFetchByEthnicityId() {
         EthnicityDetail ethnicityDetail = ethnicityCompositeService.fetchByEthnicityId(i_success_ethnicity.id)
         assertNotNull ethnicityDetail
@@ -112,13 +114,13 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals getLdmEthnicity(i_success_ethnicity), ethnicityDetail.parentCategory
     }
 
-
+    @Test
     void testFetchByEthnicityInvalid() {
         assertNull ethnicityCompositeService.fetchByEthnicityCode(null)
         assertNull ethnicityCompositeService.fetchByEthnicityCode('Q')
     }
 
-
+    @Test
     void testFetchByEthnicityCode() {
         EthnicityDetail ethnicityDetail = ethnicityCompositeService.fetchByEthnicityCode(i_success_ethnicity.code)
         assertNotNull ethnicityDetail

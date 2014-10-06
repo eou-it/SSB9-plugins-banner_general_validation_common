@@ -7,6 +7,8 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 
 /**
  * AcademicLevelCompositeServiceIntegrationTests.
@@ -30,7 +32,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     def i_success_electronicDataInterchangeEquivalent = "TT"
 
-
+    @Before
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
@@ -42,7 +44,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         i_success_level = Level.findByCode('LW')
     }
 
-
+    @Test
     void testListWithoutPaginationParams() {
         List academicLevels = academicLevelCompositeService.list([:])
         assertNotNull academicLevels
@@ -50,7 +52,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertTrue academicLevels.code.contains(i_success_level.code)
     }
 
-
+    @Test
     void testListWithPagination() {
         def paginationParams = [max: '20', offset: '0']
         List academicLevels = academicLevelCompositeService.list(paginationParams)
@@ -59,13 +61,13 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertTrue academicLevels.code.contains(i_success_level.code)
     }
 
-
+    @Test
     void testCount() {
         assertNotNull i_success_level
         assertEquals Level.count(), academicLevelCompositeService.count()
     }
 
-
+    @Test
     void testGetInvalidGuid() {
         try {
             academicLevelCompositeService.get('Invalid-guid')
@@ -75,7 +77,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
     }
 
 
-
+    @Test
     void testGetInvalidNonExistentAcademicLevel() {
         Level level = newValidForCreateLevel()
         save level
@@ -95,7 +97,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         }
     }
 
-
+    @Test
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
         List academicLevels = academicLevelCompositeService.list(paginationParams)
@@ -110,7 +112,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals academicLevels[0].metadata, academicLevel.metadata
     }
 
-
+    @Test
     void testFetchByAcademicLevelId() {
         AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelId(i_success_level.id)
         assertNotNull academicLevel
@@ -120,12 +122,12 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_level.dataOrigin, academicLevel.metadata.dataOrigin
     }
 
-
+    @Test
     void testFetchByAcademicLevelIdInvalid() {
         assertNull academicLevelCompositeService.fetchByLevelId(null)
     }
 
-
+    @Test
     void testFetchByAcademicLevel() {
         AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelCode(i_success_level.code)
         assertNotNull academicLevel
@@ -135,8 +137,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_level.dataOrigin, academicLevel.metadata.dataOrigin
     }
 
-
-
+    @Test
     void testFetchByAcademicLevelInvalid() {
         assertNull academicLevelCompositeService.fetchByLevelCode(null)
 

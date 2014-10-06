@@ -4,6 +4,8 @@
 package net.hedtech.banner.general.overall.ldm
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
@@ -15,13 +17,13 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
 
     Long u_success_domainId = 2L
 
-
-    protected void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
-
+    @Test
     void testCreateGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         save globalUniqueIdentifier
@@ -33,7 +35,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_domainKey, globalUniqueIdentifier.domainKey
     }
 
-
+    @Test
     void testUpdateGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         save globalUniqueIdentifier
@@ -48,7 +50,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_domainId, globalUniqueIdentifier.domainId
     }
 
-
+    @Test
     void testDeleteGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         save globalUniqueIdentifier
@@ -59,7 +61,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertNull GlobalUniqueIdentifier.get(id)
     }
 
-
+    @Test
     void testOptimisticLock() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         save globalUniqueIdentifier
@@ -70,7 +72,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-
+    @Test
     void testNullableConstraints() {
         GlobalUniqueIdentifier globalUniqueIdentifier = new GlobalUniqueIdentifier()
         assertFalse globalUniqueIdentifier.validate()
@@ -78,7 +80,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertNoErrorsFor globalUniqueIdentifier, ['domainKey']
     }
 
-
+    @Test
     void testMaxSizeConstraints() {
         GlobalUniqueIdentifier globalUniqueIdentifier = new GlobalUniqueIdentifier(
                 guid: 'A' * 37,
@@ -89,7 +91,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor globalUniqueIdentifier, 'maxSize', ['guid', 'ldmName', 'domainKey']
     }
 
-
+    @Test
     void testFetchByLdmNameAndGuidForInvalidLdmName() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)
@@ -98,7 +100,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertNull GlobalUniqueIdentifier.fetchByLdmNameAndGuid('invalid-ldm-name', globalUniqueIdentifier.guid)
     }
 
-
+    @Test
     void testFetchByLdmNameAndGuid() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)

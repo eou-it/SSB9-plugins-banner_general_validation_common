@@ -1,6 +1,8 @@
 package net.hedtech.banner.general.overall.ldm
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 
 class GlobalUniqueIdentifierServiceIntegrationTests extends BaseIntegrationTestCase {
 
@@ -13,13 +15,13 @@ class GlobalUniqueIdentifierServiceIntegrationTests extends BaseIntegrationTestC
 
     def globalUniqueIdentifierService
 
-
-    protected void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
-
+    @Test
     void testCreateGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         globalUniqueIdentifier = globalUniqueIdentifierService.create([domainModel: globalUniqueIdentifier])
@@ -31,7 +33,7 @@ class GlobalUniqueIdentifierServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_domainKey, globalUniqueIdentifier.domainKey
     }
 
-
+    @Test
     void testUpdateGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         globalUniqueIdentifier = globalUniqueIdentifierService.create([domainModel: globalUniqueIdentifier])
@@ -46,7 +48,7 @@ class GlobalUniqueIdentifierServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals u_success_domainId, globalUniqueIdentifier.domainId
     }
 
-
+    @Test
     void testDeleteGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
         globalUniqueIdentifier = globalUniqueIdentifierService.create([domainModel: globalUniqueIdentifier])

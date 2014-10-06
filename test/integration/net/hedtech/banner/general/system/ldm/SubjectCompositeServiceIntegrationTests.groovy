@@ -7,13 +7,15 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Subject
 import net.hedtech.banner.general.system.ldm.v1.SubjectDetail
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 
 class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     Subject subjectResource
     def subjectCompositeService
 
-
+    @Before
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
@@ -28,6 +30,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Test case for List method
      */
+    @Test
     void testListWithPagination() {
         def paginationParams = [max: '20', offset: '0']
         List subjectList = subjectCompositeService.list(paginationParams)
@@ -39,6 +42,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Testcase for count method
      */
+    @Test
     void testCount() {
         assertEquals Subject.count(), subjectCompositeService.count()
     }
@@ -46,6 +50,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Testcase for show method
      */
+    @Test
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
         List subjectList = subjectCompositeService.list(paginationParams)
@@ -63,6 +68,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Testcase for show method with ApplicationException
      */
+    @Test
     void testGetWithInvalidGuid() {
         shouldFail( ApplicationException  ) {
             subjectCompositeService.get(null)
@@ -73,6 +79,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Testcase for fetchBySubjectId method
      */
+    @Test
     void testFetchBySubjectId() {
         def subjectDetail = subjectCompositeService.fetchBySubjectId(subjectResource.id)
         assertNotNull subjectDetail
@@ -85,6 +92,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Testcase for fetchBySubjectCode
      */
+    @Test
     void testFetchFetchBySubjectCode() {
         SubjectDetail subjectDetail = subjectCompositeService.fetchBySubjectCode(subjectResource.code)
         assertNotNull subjectDetail

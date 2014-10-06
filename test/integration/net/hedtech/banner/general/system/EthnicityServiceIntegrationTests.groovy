@@ -5,24 +5,27 @@ package net.hedtech.banner.general.system
 
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 
 class EthnicityServiceIntegrationTests extends BaseIntegrationTestCase{
 
     def ethnicityService
 
-
-    protected void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-
-    protected void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-
+    @Test
     void testCreateEthnicity() {
         def ethnicity = newEthnicity()
         ethnicity = ethnicityService.create([domainModel:ethnicity])
@@ -30,7 +33,7 @@ class EthnicityServiceIntegrationTests extends BaseIntegrationTestCase{
         assertNotNull ethnicity.id
     }
 
-
+    @Test
     void testUpdateEthnicity() {
         def ethnicity = newEthnicity()
         ethnicity = ethnicityService.create([domainModel:ethnicity])
@@ -43,7 +46,7 @@ class EthnicityServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals "ZZ", ethnicityUpdate.description
     }
 
-
+    @Test
     void testDeleteEthnicity() {
         def ethnicity = newEthnicity()
         ethnicity = ethnicityService.create([domainModel:ethnicity])
@@ -56,11 +59,11 @@ class EthnicityServiceIntegrationTests extends BaseIntegrationTestCase{
 
     }
 
+    @Test
     void testList(){
         def ethnicity = ethnicityService.list()
         assertTrue ethnicity.size() > 0
     }
-
 
     private def newEthnicity() {
         def race = Race.findByRace("IND")

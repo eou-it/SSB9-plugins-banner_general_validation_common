@@ -5,7 +5,7 @@ import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
-class MaritalStatusServiceTests extends BaseIntegrationTestCase {
+class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def maritalStatusService
 

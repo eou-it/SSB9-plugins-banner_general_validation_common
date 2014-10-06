@@ -9,6 +9,8 @@ import net.hedtech.banner.general.system.RegulatoryRace
 import net.hedtech.banner.general.system.ldm.v1.RaceDetail
 import net.hedtech.banner.general.system.ldm.v1.RaceParentCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 
 
 class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
@@ -16,7 +18,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     Race i_success_race
     def raceCompositeService
 
-
+    @Before
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
@@ -29,7 +31,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         i_success_race = Race.findByRace('TTT')
     }
 
-
+    @Test
     void testListWithoutPaginationParams() {
         List races = raceCompositeService.list([:])
         assertNotNull races
@@ -37,7 +39,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertTrue races.size() > 0
     }
 
-
+    @Test
     void testListWithPagination() {
         def paginationParams = [max: '2', offset: '0']
         List races = raceCompositeService.list(paginationParams)
@@ -46,13 +48,13 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertTrue races.size() == 2
     }
 
-
+    @Test
     void testCount() {
         assertNotNull i_success_race
         assertEquals Race.count(), raceCompositeService.count()
     }
 
-
+    @Test
     void testGetInvalidGuid() {
         try {
             raceCompositeService.get('Invalid-guid')
@@ -61,7 +63,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-
+    @Test
     void testGetNullGuid() {
         try {
             raceCompositeService.get(null)
@@ -70,7 +72,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-
+    @Test
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
         def raceDetails = raceCompositeService.list(paginationParams)
@@ -91,7 +93,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetails[0], raceDetail
     }
 
-
+    @Test
     void testFetchByRaceIdInvalid() {
         try {
             raceCompositeService.fetchByRaceId(null)
@@ -100,7 +102,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-
+    @Test
     void testFetchByRaceId() {
         RaceDetail raceDetail = raceCompositeService.fetchByRaceId(i_success_race.id)
         assertNotNull raceDetail
@@ -108,16 +110,16 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_race.race, raceDetail.race
         assertEquals i_success_race.description, raceDetail.description
         assertEquals i_success_race.dataOrigin, raceDetail.metadata.dataOrigin
-        assertEquals getLdmRace(i_success_race.race), raceDetail.parentCategory
+        assertEquals raceCompositeService.getLdmRace(i_success_race.race), raceDetail.parentCategory
     }
 
-
+    @Test
     void testFetchByRaceInvalid() {
         assertNull raceCompositeService.fetchByRaceCode(null)
         assertNull raceCompositeService.fetchByRaceCode('Q')
     }
 
-
+    @Test
     void testFetchByRace() {
         RaceDetail raceDetail = raceCompositeService.fetchByRaceCode(i_success_race.race)
         assertNotNull raceDetail
@@ -125,9 +127,9 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_race.race, raceDetail.race
         assertEquals i_success_race.description, raceDetail.description
         assertEquals i_success_race.dataOrigin, raceDetail.metadata.dataOrigin
-        assertEquals getLdmRace(i_success_race.race), raceDetail.parentCategory
+        assertEquals raceCompositeService.getLdmRace(i_success_race.race), raceDetail.parentCategory
     }
-
+/*
     //TODO: Move this function to common place
     // Return LDM enumeration value for the corresponding race code.
     def getLdmRace(def race) {
@@ -136,7 +138,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         }
         return null
     }
-
+*/
 
     private def newRace() {
         def regulatoryRace = RegulatoryRace.findByCode("1")

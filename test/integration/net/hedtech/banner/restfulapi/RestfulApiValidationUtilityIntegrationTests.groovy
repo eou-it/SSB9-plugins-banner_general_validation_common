@@ -60,7 +60,8 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
-	@Ignore
+	// TODO HRU-5518
+    @Ignore
     void testValidateSortField() {
         def allowedSortFields = ["firstName", "lastName"]
 

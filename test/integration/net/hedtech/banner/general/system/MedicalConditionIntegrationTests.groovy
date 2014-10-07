@@ -17,20 +17,20 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     def medicalConditionService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreate() {
         def medCond = newMedicalCondition()
         save medCond
@@ -38,7 +38,7 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdate() {
 
         def medCond = newMedicalCondition()
@@ -56,7 +56,7 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDelete() {
 
         def medCond = newMedicalCondition()
@@ -72,7 +72,7 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Tests validation of constraints.
      */
-	@Test
+    @Test
     void testValidation() {
 
         def medicalCondition = new MedicalCondition()
@@ -89,7 +89,7 @@ class MedicalConditionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
 
         def originalSize = MedicalCondition.count()

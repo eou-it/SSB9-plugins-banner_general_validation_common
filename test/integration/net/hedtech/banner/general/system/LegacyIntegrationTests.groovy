@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class LegacyIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateLegacy() {
         def legacy = newLegacy()
         legacy.save(failOnError: true, flush: true)
@@ -40,7 +40,7 @@ class LegacyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateLegacy() {
         def legacy = newLegacy()
         legacy.save(failOnError: true, flush: true)
@@ -59,7 +59,7 @@ class LegacyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -77,7 +77,7 @@ class LegacyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def legacy = newLegacy()
         legacy.save(failOnError: true, flush: true)
@@ -98,7 +98,7 @@ class LegacyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteLegacy() {
         def legacy = newLegacy()
         legacy.save(failOnError: true, flush: true)
@@ -109,14 +109,14 @@ class LegacyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def legacy = new Legacy()
         assertFalse "Legacy could not be validated as expected due to ${legacy.errors}", legacy.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def legacy = new Legacy()
         assertFalse "Legacy should have failed validation", legacy.validate()
@@ -125,7 +125,7 @@ class LegacyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def legacy = new Legacy(
                 code: "TTTTT",

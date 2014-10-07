@@ -16,14 +16,14 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 class TermIntegrationTests extends BaseIntegrationTestCase {
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateTerm() {
         def term = createValidTerm(code: "TT", description: "TT")
 
@@ -34,7 +34,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateTerm() {
         def term = createValidTerm(code: "TT", description: "TT")
         if (!term.save(flush: true, failOnError: true)) {
@@ -58,7 +58,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteTerm() {
         def term = createValidTerm(code: "TT", description: "TT")
         if (!term.save(flush: true, failOnError: true)) {
@@ -72,7 +72,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def term = createValidTerm(code: "TT", description: "TT")
         save term
@@ -93,7 +93,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def term = createValidTerm(code: null)
 
@@ -107,7 +107,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchPreviousTerm() {
         def term = Term.findByCode("000001")
         if (term == null) {
@@ -121,7 +121,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def term = new Term()
         assertFalse "Term should have failed validation", term.validate()
@@ -148,7 +148,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def term = new Term(
                 financialAidProcessingYear: 'XXXXXX',
@@ -158,7 +158,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchMaxTermWithHousingStartDateLessThanEqualDate() {
         def cal = Calendar.instance
         cal.set(2001, 11, 31)
@@ -195,7 +195,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchMaxTermWithStartDateLessThanEqualDate() {
         def term = createValidTerm(code: "WWWW02", description: "ZZZZ01")
         term.save(flush: true)

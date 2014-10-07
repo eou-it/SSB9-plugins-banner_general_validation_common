@@ -33,20 +33,20 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "WWWWW"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidAddressSource() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -55,7 +55,7 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidAddressSource() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -74,7 +74,7 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -95,7 +95,7 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteAddressSource() {
         def addressSource = newValidForCreateAddressSource()
         save addressSource
@@ -107,7 +107,7 @@ class AddressSourceIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def addressSource = new AddressSource()
         assertFalse "AddressSource should have failed validation", addressSource.validate()

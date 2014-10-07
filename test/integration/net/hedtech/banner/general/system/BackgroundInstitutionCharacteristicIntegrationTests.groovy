@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateBackgroundInstitutionCharacteristic() {
         def backgroundInstitutionCharacteristic = newBackgroundInstitutionCharacteristic()
         save backgroundInstitutionCharacteristic
@@ -36,7 +36,7 @@ class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegratio
     }
 
 
-	@Test
+    @Test
     void testUpdateBackgroundInstitutionCharacteristic() {
         def backgroundInstitutionCharacteristic = newBackgroundInstitutionCharacteristic()
         save backgroundInstitutionCharacteristic
@@ -63,7 +63,7 @@ class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegratio
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -81,7 +81,7 @@ class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegratio
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def backgroundInstitutionCharacteristic = newBackgroundInstitutionCharacteristic()
         save backgroundInstitutionCharacteristic
@@ -105,7 +105,7 @@ class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegratio
     }
 
 
-	@Test
+    @Test
     void testDeleteBackgroundInstitutionCharacteristic() {
         def backgroundInstitutionCharacteristic = newBackgroundInstitutionCharacteristic()
         save backgroundInstitutionCharacteristic
@@ -116,14 +116,14 @@ class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegratio
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def backgroundInstitutionCharacteristic = new BackgroundInstitutionCharacteristic()
         assertFalse "BackgroundInstitutionCharacteristic could not be validated as expected due to ${backgroundInstitutionCharacteristic.errors}", backgroundInstitutionCharacteristic.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def backgroundInstitutionCharacteristic = new BackgroundInstitutionCharacteristic()
         assertFalse "BackgroundInstitutionCharacteristic should have failed validation", backgroundInstitutionCharacteristic.validate()
@@ -131,7 +131,7 @@ class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegratio
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def backgroundInstitutionCharacteristic = new BackgroundInstitutionCharacteristic(
                 code: 'XXXXX',

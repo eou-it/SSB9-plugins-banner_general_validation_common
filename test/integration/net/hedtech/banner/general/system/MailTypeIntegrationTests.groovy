@@ -38,20 +38,20 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_displayWebIndicator = true
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -60,7 +60,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidMailType() {
         def mailType = newInvalidForCreateMailType()
         shouldFail(ValidationException) {
@@ -69,7 +69,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -91,7 +91,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -110,7 +110,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -132,7 +132,7 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteMailType() {
         def mailType = newValidForCreateMailType()
         mailType.save(failOnError: true, flush: true)
@@ -143,14 +143,14 @@ class MailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def mailType = newInvalidForCreateMailType()
         assertFalse "MailType could not be validated as expected due to ${mailType.errors}", mailType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def mailType = new MailType()
         assertFalse "MailType should have failed validation", mailType.validate()

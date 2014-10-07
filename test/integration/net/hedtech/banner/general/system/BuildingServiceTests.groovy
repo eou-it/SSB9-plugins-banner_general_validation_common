@@ -10,20 +10,20 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
     def buildingService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateBuilding() {
         def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -32,7 +32,7 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateBuilding() {
         def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -47,7 +47,7 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteBuilding() {
         def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -61,7 +61,7 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def building = buildingService.list()
         assertTrue building.size() > 0

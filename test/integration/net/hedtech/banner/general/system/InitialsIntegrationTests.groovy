@@ -48,20 +48,20 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_emailAddress = "TTTTT"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -70,7 +70,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidInitials() {
         def initials = newInvalidForCreateInitials()
         initials.code = null
@@ -80,7 +80,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -108,7 +108,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -132,7 +132,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -154,7 +154,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -178,7 +178,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteInitials() {
         def initials = newValidForCreateInitials()
         initials.save(failOnError: true, flush: true)
@@ -189,7 +189,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def initials = newInvalidForCreateInitials()
         initials.code = null
@@ -197,7 +197,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def initials = new Initials()
         assertFalse "Initials should have failed validation", initials.validate()
@@ -215,7 +215,7 @@ class InitialsIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def initials = new Initials(
                 title2: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

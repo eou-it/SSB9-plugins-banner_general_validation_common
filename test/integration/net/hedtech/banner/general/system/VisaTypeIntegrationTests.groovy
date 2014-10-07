@@ -15,20 +15,20 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     def visaTypeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateVisaType() {
         def visaType = newVisaType()
         save visaType
@@ -37,7 +37,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateVisaType() {
         def visaType = newVisaType()
         save visaType
@@ -76,7 +76,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def visaType = newVisaType()
         save visaType
@@ -104,7 +104,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteVisaType() {
         def visaType = newVisaType()
         save visaType
@@ -115,14 +115,14 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def visaType = newVisaType()
         assertTrue "VisaType could not be validated as expected due to ${visaType.errors}", visaType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def visaType = new VisaType()
         assertFalse "VisaType should have failed validation", visaType.validate()
@@ -131,7 +131,7 @@ class VisaTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def visaType = new VisaType(
                 code: 'XXXX',

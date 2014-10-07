@@ -48,20 +48,20 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_endDate = new Date() - 1
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidEntriesForSql() {
         def entriesForSql = newValidForCreateEntriesForSql()
         entriesForSql.save(failOnError: true, flush: true)
@@ -70,7 +70,7 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidEntriesForSql() {
         def entriesForSql = newInvalidForCreateEntriesForSql()
         shouldFail(ValidationException) {
@@ -79,7 +79,7 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidEntriesForSql() {
         def entriesForSql = newValidForCreateEntriesForSql()
         entriesForSql.save(failOnError: true, flush: true)
@@ -107,7 +107,7 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidEntriesForSql() {
         def entriesForSql = newValidForCreateEntriesForSql()
         entriesForSql.save(failOnError: true, flush: true)
@@ -130,7 +130,7 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
@@ -158,7 +158,7 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def entriesForSql = newValidForCreateEntriesForSql()
         entriesForSql.save(failOnError: true, flush: true)
@@ -182,7 +182,7 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteEntriesForSql() {
         def entriesForSql = newValidForCreateEntriesForSql()
         entriesForSql.save(failOnError: true, flush: true)
@@ -193,14 +193,14 @@ class EntriesForSqlIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def entriesForSql = newInvalidForCreateEntriesForSql()
         assertFalse "EntriesForSql could not be validated as expected due to ${entriesForSql.errors}", entriesForSql.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def entriesForSql = new EntriesForSql()
         assertFalse "EntriesForSql should have failed validation", entriesForSql.validate()

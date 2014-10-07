@@ -12,19 +12,19 @@ class LetterProcessLetterServiceIntegrationTests extends BaseIntegrationTestCase
 
     def letterProcessLetterService
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateLetterProcessLetter() {
 
         def letterProcessLetter = newLetterProcessLetter()
@@ -33,7 +33,7 @@ class LetterProcessLetterServiceIntegrationTests extends BaseIntegrationTestCase
         assertNotNull "LetterProcessLetter ID is null in LetterProcessLetter Service Tests Create", letterProcessLetter.id
     }
 
-	@Test
+    @Test
     void testUpdate() {
         def letterProcessLetter = newLetterProcessLetter()
         letterProcessLetter = letterProcessLetterService.create(letterProcessLetter)
@@ -61,7 +61,7 @@ class LetterProcessLetterServiceIntegrationTests extends BaseIntegrationTestCase
         assertEquals iletterAlt, letterProcessLetter.letterAlt
     }
 
-	@Test
+    @Test
     void testLetterProcessLetterDelete() {
         def letterProcessLetter = newLetterProcessLetter()
         letterProcessLetter = letterProcessLetterService.create(letterProcessLetter)

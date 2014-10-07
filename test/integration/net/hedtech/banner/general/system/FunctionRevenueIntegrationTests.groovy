@@ -34,20 +34,20 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -56,7 +56,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidFunctionRevenue() {
         def functionRevenue = newInvalidForCreateFunctionRevenue()
         shouldFail(ValidationException) {
@@ -65,7 +65,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -84,7 +84,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -101,7 +101,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -122,7 +122,7 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteFunctionRevenue() {
         def functionRevenue = newValidForCreateFunctionRevenue()
         functionRevenue.save(failOnError: true, flush: true)
@@ -133,14 +133,14 @@ class FunctionRevenueIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def functionRevenue = newInvalidForCreateFunctionRevenue()
         assertFalse "FunctionRevenue could not be validated as expected due to ${functionRevenue.errors}", functionRevenue.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def functionRevenue = new FunctionRevenue()
         assertFalse "FunctionRevenue should have failed validation", functionRevenue.validate()

@@ -75,7 +75,7 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
 
 
     @After
-    public void tearDown( ) {
+    public void tearDown() {
         super.tearDown()
     }
 

@@ -17,18 +17,18 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
     def CIPCodeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-	@Test
+    @Test
     void testCreateCIPCode() {
         def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT", publicationYear: 2010,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
@@ -38,7 +38,7 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
         assertNotNull "CIP Code Code is null in CIP Code Create Service Test", cipCode.code
     }
 
-	@Test
+    @Test
     void testUpdateCIPCode() {
         def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT", publicationYear: 2010,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
@@ -53,7 +53,7 @@ class CIPCodeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteCIPCode() {
         def cipCode = new CIPCode(code: "TT", description: "TT", cipcAIndicator: true, cipcBIndicator: true, cipcCIndicator: true, sp04Program: "TT", publicationYear: 2010,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")

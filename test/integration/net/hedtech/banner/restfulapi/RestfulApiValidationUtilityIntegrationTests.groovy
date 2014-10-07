@@ -13,20 +13,20 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCorrectMaxAndOffset() {
         // No "max" will be added in the absence of maxDefault
         def params = [:]
@@ -62,6 +62,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
 
 	// TODO HRU-5518
     @Ignore
+    @Test
     void testValidateSortField() {
         def allowedSortFields = ["firstName", "lastName"]
 
@@ -86,7 +87,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
-	@Test
+    @Test
     void testValidateCriteria() {
         // Valid "field" "operator" "value"
         def filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": "star"]]
@@ -117,7 +118,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
-	@Test
+    @Test
     void testValidateCriteriaMapVersion() {
         // Valid "field" "operator" "value"
         def filters = [["field": "firstName", "operator": "equals", "value": "Cliff"], ["field": "lastName", "operator": "contains", "value": "star"]]
@@ -138,13 +139,13 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
-	@Test
+    @Test
     void testThrowValidationExceptionForObjectNotFound() {
         shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForObjectNotFound("Term", "201410") })
     }
 
 
-	@Test
+    @Test
     void testCopyProperties() {
         def code = "201410"
         def desc = "201410 term"
@@ -156,7 +157,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
-	@Test
+    @Test
     void testCloneMapExcludingKeys() {
         def map = ["key1": "val1", "key2": "val2"]
 

@@ -34,20 +34,20 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -56,7 +56,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidTargetAudience() {
         def targetAudience = newInvalidForCreateTargetAudience()
         shouldFail(ValidationException) {
@@ -65,7 +65,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -85,7 +85,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -102,7 +102,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -123,7 +123,7 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteTargetAudience() {
         def targetAudience = newValidForCreateTargetAudience()
         targetAudience.save(failOnError: true, flush: true)
@@ -134,14 +134,14 @@ class TargetAudienceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def targetAudience = newInvalidForCreateTargetAudience()
         assertFalse "TargetAudience could not be validated as expected due to ${targetAudience.errors}", targetAudience.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def targetAudience = new TargetAudience()
         assertFalse "TargetAudience should have failed validation", targetAudience.validate()

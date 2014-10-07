@@ -22,14 +22,14 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
 
     def i_success_displayWebIndicator = true
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateSubject() {
         def subject = newValidForCreateSubject()
 
@@ -39,7 +39,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull(subject.id)
     }
 
-	@Test
+    @Test
     void testUpdateSubject() {
         def subject = newValidForCreateSubject()
         if (!subject.save(flush: true, failOnError: true)) {
@@ -62,7 +62,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         assertEquals(1, subject.version)
     }
 
-	@Test
+    @Test
     void testDeleteSubject() {
         def subject = newValidForCreateSubject()
         if (!subject.save(flush: true, failOnError: true)) {
@@ -75,7 +75,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         assertNull(found)
     }
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def subject = newValidForCreateSubject()
         save subject
@@ -97,7 +97,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-	@Test
+    @Test
     void testValidation() {
         def subject = new Subject()
         //should not pass validation since none of the required values are provided
@@ -110,7 +110,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
         assertTrue(subject.validate())
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def subject = new Subject()
         assertFalse "Subject should have failed validation", subject.validate()
@@ -126,7 +126,7 @@ class SubjectIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def subject = new Subject(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')

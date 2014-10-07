@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class EthnicityIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateEthnicity() {
         def ethnicity = newEthnicity()
         ethnicity.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class EthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateEthnicity() {
         def ethnicity = newEthnicity()
         ethnicity.save(failOnError: true, flush: true)
@@ -71,7 +71,7 @@ class EthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -89,7 +89,7 @@ class EthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def ethnicity = newEthnicity()
         ethnicity.save(failOnError: true, flush: true)
@@ -114,7 +114,7 @@ class EthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteEthnicity() {
         def ethnicity = newEthnicity()
         ethnicity.save(failOnError: true, flush: true)
@@ -125,14 +125,14 @@ class EthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def ethnicity = new Ethnicity()
         assertFalse "Ethnicity could not be validated as expected due to ${ethnicity.errors}", ethnicity.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def ethnicity = new Ethnicity()
         assertFalse "Ethnicity should have failed validation", ethnicity.validate()
@@ -142,7 +142,7 @@ class EthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def ethnicity = new Ethnicity(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

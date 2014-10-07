@@ -15,20 +15,20 @@ class AwardCategoryIntegrationTests extends BaseIntegrationTestCase {
     def awardCategoryService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateAwardCategory() {
         def awardCategory = newAwardCategory()
         save awardCategory
@@ -37,7 +37,7 @@ class AwardCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateAwardCategory() {
         def awardCategory = newAwardCategory()
         save awardCategory
@@ -67,7 +67,7 @@ class AwardCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def awardCategory = newAwardCategory()
         save awardCategory
@@ -92,7 +92,7 @@ class AwardCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteAwardCategory() {
         def awardCategory = newAwardCategory()
         save awardCategory
@@ -103,14 +103,14 @@ class AwardCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def awardCategory = newAwardCategory()
         assertTrue "AwardCategory could not be validated as expected due to ${awardCategory.errors}", awardCategory.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def awardCategory = new AwardCategory()
         assertFalse "AwardCategory should have failed validation", awardCategory.validate()
@@ -119,7 +119,7 @@ class AwardCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def awardCategory = new AwardCategory(
                 code: 'XXXX',

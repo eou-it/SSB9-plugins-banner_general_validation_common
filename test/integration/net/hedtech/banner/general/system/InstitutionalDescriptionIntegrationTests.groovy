@@ -16,14 +16,14 @@ class InstitutionalDescriptionIntegrationTests extends BaseIntegrationTestCase {
     def institutionalDescriptionService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testFindByKey() {
         def institutionalDescription = InstitutionalDescription.fetchByKey()
 
@@ -32,7 +32,7 @@ class InstitutionalDescriptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testServiceFindByKey() {
         def institutionalDescription = institutionalDescriptionService.findByKey()
 

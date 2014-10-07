@@ -20,7 +20,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     def ethnicityCompositeService
 
     @Before
-    void setUp() {
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
         initiializeDataReferences()
@@ -85,8 +85,6 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertNotNull ethnicityDetail
         assertNotNull ethnicityDetail.code
         assertEquals ethnicityDetails[0].code, ethnicityDetail.code
-        assertNotNull ethnicityDetail.parentCategory
-        assertEquals ethnicityDetails[0].parentCategory, ethnicityDetail.parentCategory
         assertNotNull ethnicityDetail.guid
         assertEquals ethnicityDetails[0].guid, ethnicityDetail.guid
         assertNotNull ethnicityDetail.metadata

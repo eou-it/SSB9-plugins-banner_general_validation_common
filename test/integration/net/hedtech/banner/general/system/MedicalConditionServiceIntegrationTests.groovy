@@ -17,14 +17,14 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
 
     def medicalConditionService      // injected by Spring
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreate() {
         def medicalCondition = new MedicalCondition(code: "zz", description: "integration-test")
         medicalCondition = medicalConditionService.create(medicalCondition)
@@ -32,14 +32,14 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
     }
 
 
-	@Test
+    @Test
     void testCreateWithParams() {
         def medicalCondition = medicalConditionService.create([code: "zz", description: "integration-test"])
         assertNotNull medicalCondition.id
     }
 
 
-	@Test
+    @Test
     void testUpdate() {
         def medicalCondition = new MedicalCondition(code: "zz", description: "integration-test")
         medicalCondition = medicalConditionService.create(medicalCondition)
@@ -59,7 +59,7 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
     }
 
 
-	@Test
+    @Test
     void testDelete() {
         def medicalCondition = new MedicalCondition(code: "zz", description: "integration-test")
         medicalCondition = medicalConditionService.create(medicalCondition)

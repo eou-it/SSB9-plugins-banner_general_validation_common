@@ -17,18 +17,18 @@ class DepartmentServiceTests extends BaseIntegrationTestCase {
     def DepartmentService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-	@Test
+    @Test
     void testCreateDepartment() {
         def department = new Department(code: "TT", description: "TT", systemRequiredIndicator: "N", voiceResponseMessageNumber: 1,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
@@ -37,7 +37,7 @@ class DepartmentServiceTests extends BaseIntegrationTestCase {
         assertNotNull "Department Code is null in Department Create Service Test", department.code
     }
 
-	@Test
+    @Test
     void testUpdateDepartment() {
         def department = new Department(code: "TT", description: "TT", systemRequiredIndicator: "N", voiceResponseMessageNumber: 1,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")
@@ -51,7 +51,7 @@ class DepartmentServiceTests extends BaseIntegrationTestCase {
         assertEquals "ZZ", departmentUpdate.description
     }
 
-	@Test
+    @Test
     void testDeleteDepartment() {
         def department = new Department(code: "TT", description: "TT", systemRequiredIndicator: "N", voiceResponseMessageNumber: 1,
                 lastModified: new Date(), lastModifiedBy: "test", dataOrigin: "Banner")

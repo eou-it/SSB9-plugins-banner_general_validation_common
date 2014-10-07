@@ -18,14 +18,14 @@ class MedicalEquipmentIntegrationTests extends BaseIntegrationTestCase {
     def medicalEquipmentService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateMedicalEquipment() {
         def medicalEquipment = newMedicalEquipment()
         save medicalEquipment
@@ -33,7 +33,7 @@ class MedicalEquipmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateMedicalEquipment() {
         def medicalEquipment = newMedicalEquipment()
         save medicalEquipment
@@ -53,7 +53,7 @@ class MedicalEquipmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def medicalEquipment = newMedicalEquipment()
         save medicalEquipment
@@ -78,7 +78,7 @@ class MedicalEquipmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteMedicalEquipment() {
         def medicalEquipment = newMedicalEquipment()
         save medicalEquipment
@@ -89,21 +89,21 @@ class MedicalEquipmentIntegrationTests extends BaseIntegrationTestCase {
         assertNull medicalEquipment.get(id)
     }
 
-	@Test
+    @Test
     void testValidation() {
         def medicalEquipment = newMedicalEquipment()
         //should not pass validation since none of the required values are provided
         assertTrue "Medical Equipment could not be validated as expected due to ${medicalEquipment.errors}", medicalEquipment.validate()
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def medicalEquipment = new MedicalEquipment()
         assertFalse "Medical Equipment should have failed validation", medicalEquipment.validate()
         assertErrorsFor medicalEquipment, 'nullable', ['code', 'description']
     }
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def medicalEquipment = new MedicalEquipment(
                 code: 'XXXXXXXXXX',

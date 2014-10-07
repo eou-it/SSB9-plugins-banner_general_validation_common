@@ -33,7 +33,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
     def i_success_electronicDataInterchangeEquivalent = "TT"
 
     @Before
-    void setUp() {
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
         initiializeDataReferences()

@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateMaritalStatus() {
         def maritalStatus = newMaritalStatus()
         maritalStatus.save(failOnError: true, flush: true)
@@ -41,7 +41,7 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateMaritalStatus() {
         def maritalStatus = newMaritalStatus()
         maritalStatus.save(failOnError: true, flush: true)
@@ -65,7 +65,7 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -83,7 +83,7 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def maritalStatus = newMaritalStatus()
         maritalStatus.save(failOnError: true, flush: true)
@@ -104,7 +104,7 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteMaritalStatus() {
         def maritalStatus = newMaritalStatus()
         maritalStatus.save(failOnError: true, flush: true)
@@ -115,14 +115,14 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def maritalStatus = new MaritalStatus()
         assertFalse "MaritalStatus could not be validated as expected due to ${maritalStatus.errors}", maritalStatus.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def maritalStatus = new MaritalStatus()
         assertFalse "MaritalStatus should have failed validation", maritalStatus.validate()
@@ -131,7 +131,7 @@ class MaritalStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def maritalStatus = new MaritalStatus(
                 code: "TTTTT",

@@ -10,20 +10,20 @@ class DegreeServiceIntegrationTests extends BaseIntegrationTestCase {
     def degreeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateDegree() {
         def degree = newDegree("TT")
         degree = degreeService.create([domainModel: degree])
@@ -32,14 +32,14 @@ class DegreeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def degrees = degreeService.list()
         assertTrue degrees.size() > 0
     }
 
 
-	@Test
+    @Test
     void testUpdateDegree() {
         def degree = newDegree("TT")
         degree = degreeService.create([domainModel: degree])
@@ -53,7 +53,7 @@ class DegreeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteDegree() {
         def degree = newDegree("TT")
         degree = degreeService.create([domainModel: degree])

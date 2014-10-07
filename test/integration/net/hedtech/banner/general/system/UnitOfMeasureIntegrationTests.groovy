@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateUnitOfMeasure() {
         def unitOfMeasure = newUnitOfMeasure()
         unitOfMeasure.save(failOnError: true, flush: true)
@@ -40,7 +40,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateUnitOfMeasure() {
         def unitOfMeasure = newUnitOfMeasure()
         unitOfMeasure.save(failOnError: true, flush: true)
@@ -58,7 +58,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -76,7 +76,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def unitOfMeasure = newUnitOfMeasure()
         unitOfMeasure.save(failOnError: true, flush: true)
@@ -97,7 +97,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteUnitOfMeasure() {
         def unitOfMeasure = newUnitOfMeasure()
         unitOfMeasure.save(failOnError: true, flush: true)
@@ -108,14 +108,14 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def unitOfMeasure = new UnitOfMeasure()
         assertFalse "UnitOfMeasure could not be validated as expected due to ${unitOfMeasure.errors}", unitOfMeasure.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def unitOfMeasure = new UnitOfMeasure()
         assertFalse "UnitOfMeasure should have failed validation", unitOfMeasure.validate()
@@ -123,7 +123,7 @@ class UnitOfMeasureIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def unitOfMeasure = new UnitOfMeasure(
                 code: "TTTTT",

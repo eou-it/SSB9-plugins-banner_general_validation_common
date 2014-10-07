@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class DocumentIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidDocument() {
         def document = newValidForCreateDocument()
         document.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class DocumentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidDocument() {
         def document = newValidForCreateDocument()
         document.save(failOnError: true, flush: true)
@@ -55,7 +55,7 @@ class DocumentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -73,7 +73,7 @@ class DocumentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def document = newValidForCreateDocument()
         document.save(failOnError: true, flush: true)
@@ -94,7 +94,7 @@ class DocumentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteDocument() {
         def document = newValidForCreateDocument()
         document.save(failOnError: true, flush: true)
@@ -105,14 +105,14 @@ class DocumentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def document = new Document()
         assertFalse "Document could not be validated as expected due to ${document.errors}", document.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def document = new Document()
         assertFalse "Document should have failed validation", document.validate()

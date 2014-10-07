@@ -17,18 +17,18 @@ class MedicalEquipmentServiceTests extends BaseIntegrationTestCase {
     def MedicalEquipmentService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-	@Test
+    @Test
     void testCreateMedicalEquipment() {
         def medicalEquipment = new MedicalEquipment(code: "TT", description: "TT",
                 lastModified: new Date(), lastModifiedBy: "horizon", dataOrigin: "Banner")
@@ -37,7 +37,7 @@ class MedicalEquipmentServiceTests extends BaseIntegrationTestCase {
         assertNotNull "Medical Equipment Code is null in MedicalEquipment Create Service Test", medicalEquipment.code
     }
 
-	@Test
+    @Test
     void testUpdateMedicalEquipment() {
         def medicalEquipment = new MedicalEquipment(code: "TT", description: "TT",
                 lastModified: new Date(), lastModifiedBy: "horizon", dataOrigin: "Banner")
@@ -52,7 +52,7 @@ class MedicalEquipmentServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteMedicalEquipment() {
         def medicalEquipment = new MedicalEquipment(code: "TT", description: "TT",
                 lastModified: new Date(), lastModifiedBy: "horizon", dataOrigin: "Banner")

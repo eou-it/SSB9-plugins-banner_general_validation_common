@@ -10,14 +10,14 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class PartitionIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreate() {
         def partition = newPartition()
         partition.save()
@@ -25,14 +25,14 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def pCodes = Partition.list()
         assertTrue pCodes.size() > 0
     }
 
 
-	@Test
+    @Test
     void testDelete() {
         def pCode = savePartitionCode()
         def id = pCode.id
@@ -41,7 +41,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdate() {
         def pCode = savePartitionCode()
         pCode.description = "Updated by Dan"
@@ -52,7 +52,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFindAllByCode() {
         savePartitionCode()
         def pCodes = Partition.findAllByCode("1111")
@@ -60,7 +60,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFindAllByDescription() {
         savePartitionCode()
         def pCodes = Partition.findAllByDescription("unit-test")
@@ -68,7 +68,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidationFail() {
         def partition = new Partition(code: "exceeds_length", description: "unit-test", schedulerNumber: 1,
                 lastModifiedBy: "test", lastModified: new Date(), campusCode: "any", dataOrigin: "Horizon")
@@ -76,7 +76,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidationSuccess() {
         def partition = new Partition(code: "1111", description: "unit-test", schedulerNumber: 1,
                 lastModifiedBy: "test", lastModified: new Date(), campusCode: "any", dataOrigin: "Horizon")

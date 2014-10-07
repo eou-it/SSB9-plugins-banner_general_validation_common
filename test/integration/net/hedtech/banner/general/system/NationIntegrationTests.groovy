@@ -15,20 +15,20 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     def nationService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateNation() {
         def nation = newNation()
         save nation
@@ -37,7 +37,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateNation() {
         def nation = newNation()
         save nation
@@ -88,7 +88,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def nation = newNation()
         save nation
@@ -122,7 +122,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteNation() {
         def nation = newNation()
         save nation
@@ -133,14 +133,14 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def nation = newNation()
         assertTrue "Nation could not be validated as expected due to ${nation.errors}", nation.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def nation = new Nation()
         assertFalse "Nation should have failed validation", nation.validate()
@@ -168,7 +168,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def nation = new Nation(
                 capital: 'XXXXXXXXXXXXXXXXXXXXXX',
@@ -185,7 +185,7 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchByNation() {
         def nationList = Nation.fetchBySomeNation()
         assertTrue nationList.list.size() > 5

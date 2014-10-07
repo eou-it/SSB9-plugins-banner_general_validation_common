@@ -38,20 +38,20 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_planToAttendenceIndicator = true
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -60,7 +60,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidRsvp() {
         def rsvp = newInvalidForCreateRsvp()
         shouldFail(ValidationException) {
@@ -69,7 +69,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -92,7 +92,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -111,7 +111,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -133,7 +133,7 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteRsvp() {
         def rsvp = newValidForCreateRsvp()
         rsvp.save(failOnError: true, flush: true)
@@ -144,14 +144,14 @@ class RsvpIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def rsvp = newInvalidForCreateRsvp()
         assertFalse "Rsvp could not be validated as expected due to ${rsvp.errors}", rsvp.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def rsvp = new Rsvp()
         assertFalse "Rsvp should have failed validation", rsvp.validate()

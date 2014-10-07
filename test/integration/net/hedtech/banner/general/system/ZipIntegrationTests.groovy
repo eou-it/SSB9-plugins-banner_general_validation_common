@@ -15,20 +15,20 @@ import java.text.SimpleDateFormat
 
 class ZipIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidZip() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -37,7 +37,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidZip() {
         def zip = newInvalidForCreateZip()
         shouldFail(ValidationException) {
@@ -46,7 +46,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidZip() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -69,7 +69,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidZip() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -87,7 +87,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -104,7 +104,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -125,7 +125,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteZip() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -136,14 +136,14 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def zip = newInvalidForCreateZip()
         assertFalse "Zip could not be validated as expected due to ${zip.errors}", zip.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def zip = new Zip()
         assertFalse "Zip should have failed validation", zip.validate()
@@ -161,7 +161,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchSearchInstitutionType() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)
@@ -185,7 +185,7 @@ class ZipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchBySomeCode() {
         def zip = newValidForCreateZip()
         zip.save(failOnError: true, flush: true)

@@ -20,14 +20,14 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     def termService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testTermListAll() {
         def list = termService.list()
         assertTrue list.size() > 0
@@ -37,7 +37,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListAllWithPagination() {
         def params = ["max": 50, "offset": 2, "sort": "code"]
         def list = termService.list(params)
@@ -48,7 +48,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListFilteredNoPagination() {
         def termControlList = Term.findAllByCodeIlike("%201%")
         assertTrue termControlList.size() > 0
@@ -64,7 +64,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListFilteredStartsWith() {
         def termControlList = Term.findAllByCodeIlike("201%")
         assertTrue termControlList.size() > 0
@@ -80,7 +80,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListFilteredWithPagination() {
 
         def params = ["filter[0][field]": "code", "filter[0][value]": "201%", "filter[0][operator]": "contains",
@@ -92,7 +92,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
 
     }
 
-	@Test
+    @Test
     void testTermListApiFilterByDate() {
         def term = Term.findByCode("201610")
         assertTrue term.lastModified >= new Date("01/01/2010")
@@ -104,7 +104,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListMultipleFiltersNoPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "201410", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "fall%", "filter[1][operator]": "contains"]
@@ -115,7 +115,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListMultipleFiltersContainsWithoutWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "201410", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "fall", "filter[1][operator]": "contains"]
@@ -126,7 +126,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListMultipleFiltersContainsStartsWthOutWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "201", "filter[0][operator]": "startswith"]
         def list = termService.list(params)
@@ -136,7 +136,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListMultipleFiltersContainsStartsWthWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "201%", "filter[0][operator]": "startswith"]
         def list = termService.list(params)
@@ -146,7 +146,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListMultipleFiltersWithPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "201410", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "fall%", "filter[1][operator]": "contains",
@@ -158,7 +158,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testListCodeFilterSupportedOperators() {
         def params = ["filter[0][field]": "code", "filter[0][operator]": "equals", "filter[0][value]": "201410"]
         def list = termService.list(params)
@@ -182,7 +182,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testListDescriptionFilterSupportedOperators() {
         def params = ["filter[0][field]": "description", "filter[0][operator]": "equals", "filter[0][value]": "Fall 2013(201410)"]
         def list = termService.list(params)
@@ -198,7 +198,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testListDescriptionFilterUnsupportedOperator() {
         // Unsupported operator
         def params = ["filter[0][field]": "description", "filter[0][operator]": "startswith", "filter[0][value]": "fall"]
@@ -210,7 +210,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermCount() {
         def termControlList = Term.findAllByCodeIlike("201%")
         assertTrue termControlList.size() > 0
@@ -223,7 +223,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListNonApiFilter() {
         def termControlList = Term.findAllByCodeIlike("201%")
         assertTrue termControlList.size() > 0
@@ -239,7 +239,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testTermListNonApiFilterWithPagination() {
         def filterCriteria = ["params": ["code": "201%"],
                 "criteria": [["key": "code", "binding": "code", "operator": Operators.CONTAINS]],
@@ -277,7 +277,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testGetWithInvalidTermCode() {
         def apiModule = false
         def args = formMapForGet()

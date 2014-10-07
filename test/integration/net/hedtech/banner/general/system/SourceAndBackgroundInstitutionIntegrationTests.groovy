@@ -15,20 +15,20 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     def sourceAndBackgroundInstitutionService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateSourceAndBackgroundInstitution() {
         def sourceAndBackgroundInstitution = newSourceAndBackgroundInstitution()
         save sourceAndBackgroundInstitution
@@ -37,7 +37,7 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     }
 
 
-	@Test
+    @Test
     void testUpdateSourceAndBackgroundInstitution() {
         def sourceAndBackgroundInstitution = newSourceAndBackgroundInstitution()
         save sourceAndBackgroundInstitution
@@ -79,7 +79,7 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def sourceAndBackgroundInstitution = newSourceAndBackgroundInstitution()
         save sourceAndBackgroundInstitution
@@ -108,7 +108,7 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     }
 
 
-	@Test
+    @Test
     void testDeleteSourceAndBackgroundInstitution() {
         def sourceAndBackgroundInstitution = newSourceAndBackgroundInstitution()
         save sourceAndBackgroundInstitution
@@ -119,14 +119,14 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def sourceAndBackgroundInstitution = newSourceAndBackgroundInstitution()
         assertTrue "SourceAndBackgroundInstitution could not be validated as expected due to ${sourceAndBackgroundInstitution.errors}", sourceAndBackgroundInstitution.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def sourceAndBackgroundInstitution = new SourceAndBackgroundInstitution()
         assertFalse "SourceAndBackgroundInstitution should have failed validation", sourceAndBackgroundInstitution.validate()
@@ -135,7 +135,7 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def sourceAndBackgroundInstitution = new SourceAndBackgroundInstitution(
                 code: 'XXXXXXXX',
@@ -145,7 +145,7 @@ class SourceAndBackgroundInstitutionIntegrationTests extends BaseIntegrationTest
     }
 
 
-	@Test
+    @Test
     void testFetchBySomeSourceAndBackgroundInstitution() {
         def sourceAndBackgroundInstitutionList = SourceAndBackgroundInstitution.fetchBySomeSourceAndBackgroundInstitution()
         assertTrue sourceAndBackgroundInstitutionList.list.size() > 5

@@ -18,14 +18,14 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
     def cipCodeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateCIPCode() {
         def cipCode = newCIPCode()
         save cipCode
@@ -33,7 +33,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateCIPCode() {
         def cipCode = newCIPCode()
         save cipCode
@@ -52,7 +52,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 1, cipCode.version
     }
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def cipCode = newCIPCode()
         save cipCode
@@ -76,7 +76,7 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-	@Test
+    @Test
     void testDeleteCIPCode() {
         def cipCode = newCIPCode()
         save cipCode
@@ -87,21 +87,21 @@ class CIPCodeIntegrationTests extends BaseIntegrationTestCase {
         assertNull CIPCode.get(id)
     }
 
-	@Test
+    @Test
     void testValidation() {
         def cipCode = newCIPCode()
         //should not pass validation since none of the required values are provided
         assertTrue "CIP Code could not be validated as expected due to ${cipCode.errors}", cipCode.validate()
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def cipCode = new CIPCode()
         assertFalse "CIP Code should have failed validation", cipCode.validate()
         assertErrorsFor cipCode, 'nullable', ['code', 'description', 'publicationYear']
     }
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def cipCode = new CIPCode(
                 code: 'XXXXXXXXXX',

@@ -40,20 +40,20 @@ class DirectoryOptionIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_systemRequiredIndicator = true
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidDirectoryOption() {
         def directoryOption = newValidForCreateDirectoryOption()
         directoryOption.save(failOnError: true, flush: true)
@@ -62,7 +62,7 @@ class DirectoryOptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidDirectoryOption() {
         def directoryOption = newInvalidForCreateDirectoryOption()
         shouldFail(ValidationException) {
@@ -71,7 +71,7 @@ class DirectoryOptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidDirectoryOption() {
         def directoryOption = newValidForCreateDirectoryOption()
         directoryOption.save(failOnError: true, flush: true)
@@ -93,7 +93,7 @@ class DirectoryOptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidDirectoryOption() {
         def directoryOption = newValidForCreateDirectoryOption()
         directoryOption.save(failOnError: true, flush: true)
@@ -112,7 +112,7 @@ class DirectoryOptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -134,7 +134,7 @@ class DirectoryOptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def directoryOption = newValidForCreateDirectoryOption()
         directoryOption.save(failOnError: true, flush: true)
@@ -156,7 +156,7 @@ class DirectoryOptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteDirectoryOption() {
         def directoryOption = newValidForCreateDirectoryOption()
         directoryOption.save(failOnError: true, flush: true)
@@ -167,14 +167,14 @@ class DirectoryOptionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def directoryOption = newInvalidForCreateDirectoryOption()
         assertFalse "DirectoryOption could not be validated as expected due to ${directoryOption.errors}", directoryOption.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def directoryOption = new DirectoryOption()
         assertFalse "DirectoryOption should have failed validation", directoryOption.validate()

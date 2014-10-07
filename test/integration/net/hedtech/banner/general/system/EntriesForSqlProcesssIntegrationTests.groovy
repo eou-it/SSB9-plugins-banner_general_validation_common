@@ -49,20 +49,20 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -71,7 +71,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newInvalidForCreateEntriesForSqlProcesss()
         shouldFail(ValidationException) {
@@ -80,7 +80,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -108,7 +108,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -131,7 +131,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
@@ -159,7 +159,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -183,7 +183,7 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteEntriesForSqlProcesss() {
         def entriesForSqlProcesss = newValidForCreateEntriesForSqlProcesss()
         entriesForSqlProcesss.save(failOnError: true, flush: true)
@@ -194,14 +194,14 @@ class EntriesForSqlProcesssIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def entriesForSqlProcesss = newInvalidForCreateEntriesForSqlProcesss()
         assertFalse "EntriesForSqlProcesss could not be validated as expected due to ${entriesForSqlProcesss.errors}", entriesForSqlProcesss.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def entriesForSqlProcesss = new EntriesForSqlProcesss()
         assertFalse "EntriesForSqlProcesss should have failed validation", entriesForSqlProcesss.validate()

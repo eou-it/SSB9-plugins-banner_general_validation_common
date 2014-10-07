@@ -15,20 +15,20 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     def degreeLevelService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateDegreeLevel() {
         def degreeLevel = newDegreeLevel()
         save degreeLevel
@@ -37,7 +37,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateDegreeLevel() {
         def degreeLevel = newDegreeLevel()
         save degreeLevel
@@ -67,7 +67,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def degreeLevel = newDegreeLevel()
         save degreeLevel
@@ -92,7 +92,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteDegreeLevel() {
         def degreeLevel = newDegreeLevel()
         save degreeLevel
@@ -103,14 +103,14 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def degreeLevel = newDegreeLevel()
         assertTrue "DegreeLevel could not be validated as expected due to ${degreeLevel.errors}", degreeLevel.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def degreeLevel = new DegreeLevel()
         assertFalse "DegreeLevel should have failed validation", degreeLevel.validate()
@@ -119,7 +119,7 @@ class DegreeLevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def degreeLevel = new DegreeLevel(
                 code: 'XXXX',

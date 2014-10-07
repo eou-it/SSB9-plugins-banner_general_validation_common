@@ -23,20 +23,20 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
 
     def campusService
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateCampus() {
         def campus = newValidForCreateCampus()
 
@@ -45,7 +45,7 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateCampus() {
         def campus = newValidForCreateCampus()
 
@@ -65,7 +65,7 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteCampus() {
         def campus = newValidForCreateCampus()
 
@@ -76,7 +76,7 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
         assertNull(Campus.get(id))
     }
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def campus = newValidForCreateCampus()
         save campus
@@ -97,13 +97,13 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def campus = newValidForCreateCampus()
         assertTrue "Campus could not be validated as expected due to ${campus.errors}", campus.validate()
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def campus = new Campus()
         assertFalse "Campus should have failed validation", campus.validate()
@@ -118,7 +118,7 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def campus = new Campus(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')

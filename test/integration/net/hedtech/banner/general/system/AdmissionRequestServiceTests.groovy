@@ -10,20 +10,20 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
     def admissionRequestService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateAdmissionRequest() {
         def admissionRequest = new AdmissionRequest(code: "TT", description: "TT", displayWebIndicator:"False", voiceResponseEligIndicator:"T", voiceResponseMsgNumber:"1", tableName:"T")
         admissionRequest = admissionRequestService.create([domainModel: admissionRequest])
@@ -31,7 +31,7 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateAdmissionRequest() {
         def admissionRequest = new AdmissionRequest(code: "TT", description: "TT", displayWebIndicator:"False", voiceResponseEligIndicator:"T", voiceResponseMsgNumber:"1", tableName:"T")
         admissionRequest = admissionRequestService.create([domainModel: admissionRequest])
@@ -45,7 +45,7 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteAdmissionRequest() {
         def admissionRequest = new AdmissionRequest(code: "TT", description: "TT", displayWebIndicator:"False", voiceResponseEligIndicator:"T", voiceResponseMsgNumber:"1", tableName:"T")
         admissionRequest = admissionRequestService.create([domainModel: admissionRequest])
@@ -57,7 +57,7 @@ class AdmissionRequestServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def admissionRequest = admissionRequestService.list()
         assertTrue admissionRequest.size() > 0

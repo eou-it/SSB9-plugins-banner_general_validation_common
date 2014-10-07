@@ -15,20 +15,20 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
     def committeeAndServiceTypeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateCommitteeAndServiceType() {
         def committeeAndServiceType = newCommitteeAndServiceType()
         save committeeAndServiceType
@@ -37,7 +37,7 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateCommitteeAndServiceType() {
         def committeeAndServiceType = newCommitteeAndServiceType()
         save committeeAndServiceType
@@ -66,7 +66,7 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def committeeAndServiceType = newCommitteeAndServiceType()
         save committeeAndServiceType
@@ -91,7 +91,7 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteCommitteeAndServiceType() {
         def committeeAndServiceType = newCommitteeAndServiceType()
         save committeeAndServiceType
@@ -102,14 +102,14 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def committeeAndServiceType = newCommitteeAndServiceType()
         assertTrue "CommitteeAndServiceType could not be validated as expected due to ${committeeAndServiceType.errors}", committeeAndServiceType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def committeeAndServiceType = new CommitteeAndServiceType()
         assertFalse "CommitteeAndServiceType should have failed validation", committeeAndServiceType.validate()
@@ -117,7 +117,7 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def committeeAndServiceType = new CommitteeAndServiceType(
                 code: 'XXXXXXXX',

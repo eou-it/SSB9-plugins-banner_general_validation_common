@@ -29,20 +29,20 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_systemRequiredIndicator = "N"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidActivityType() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -51,7 +51,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidActivityType() {
         def activityType = newInvalidForCreateActivityType()
         shouldFail(ValidationException) {
@@ -60,7 +60,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidActivityType() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -82,7 +82,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidActivityType() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -101,7 +101,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -119,7 +119,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -141,7 +141,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteActivityType() {
         def activityType = newValidForCreateActivityType()
         activityType.save(failOnError: true, flush: true)
@@ -152,14 +152,14 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def activityType = newInvalidForCreateActivityType()
         assertFalse "ActivityType could not be validated as expected due to ${activityType.errors}", activityType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def activityType = new ActivityType()
         assertFalse "ActivityType should have failed validation", activityType.validate()
@@ -175,7 +175,7 @@ class ActivityTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def activityType = new ActivityType(
                 systemRequiredIndicator: 'XXX')

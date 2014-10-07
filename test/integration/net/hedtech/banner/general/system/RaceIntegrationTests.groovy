@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class RaceIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateRace() {
         def race = newRace()
         race.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateRace() {
         def race = newRace()
         race.save(failOnError: true, flush: true)
@@ -62,7 +62,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "2", race?.regulatoryRace?.code
     }
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -80,7 +80,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def race = newRace()
         race.save(failOnError: true, flush: true)
@@ -103,7 +103,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteRace() {
         def race = newRace()
         race.save(failOnError: true, flush: true)
@@ -114,14 +114,14 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def race = new Race()
         assertFalse "Race could not be validated as expected due to ${race.errors}", race.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def race = new Race()
         assertFalse "Race should have failed validation", race.validate()
@@ -131,14 +131,14 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchAllLikeRaceOrDescription() {
         def races = Race.fetchAllLikeRaceOrDescription("AA")
         assertNotNull  races
         assertTrue races.size() > 1
     }
 
-	@Test
+    @Test
     void testFetchAllByRegulatoryRaceSuccess() {
         Race race = newRace()
         race.save(failOnError: true, flush: true)
@@ -150,7 +150,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchAllByRegulatoryRaceForInvalidValues() {
         List<Race> quiredRacelist = Race.fetchAllByRegulatoryRace('INVALID')
         assertTrue quiredRacelist.isEmpty()

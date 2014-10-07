@@ -15,20 +15,20 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     def admissionRequestService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateAdmissionRequest() {
         def admissionRequest = newAdmissionRequest()
         save admissionRequest
@@ -37,7 +37,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateAdmissionRequest() {
         def admissionRequest = newAdmissionRequest()
         save admissionRequest
@@ -76,7 +76,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def admissionRequest = newAdmissionRequest()
         save admissionRequest
@@ -104,7 +104,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteAdmissionRequest() {
         def admissionRequest = newAdmissionRequest()
         save admissionRequest
@@ -115,14 +115,14 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def admissionRequest = newAdmissionRequest()
         assertTrue "AdmissionRequest could not be validated as expected due to ${admissionRequest.errors}", admissionRequest.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def admissionRequest = new AdmissionRequest(
                 code: null,
@@ -134,7 +134,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def admissionRequest = new AdmissionRequest(
                 code: 'XXXXXX',
@@ -145,7 +145,7 @@ class AdmissionRequestIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchBySomeAdmissionRequest() {
         def admissionRequestList = AdmissionRequest.fetchBySomeAdmissionRequest()
         assertTrue admissionRequestList.list.size() > 5

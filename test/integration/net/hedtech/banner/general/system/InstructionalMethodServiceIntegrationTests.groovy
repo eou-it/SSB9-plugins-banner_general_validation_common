@@ -17,20 +17,20 @@ class InstructionalMethodServiceIntegrationTests extends BaseIntegrationTestCase
     def instructionalMethodService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateInstructionalMethod() {
         def instructionalMethod = newInstructionalMethod("1111")
         instructionalMethod = instructionalMethodService.create([domainModel: instructionalMethod])
@@ -39,13 +39,13 @@ class InstructionalMethodServiceIntegrationTests extends BaseIntegrationTestCase
     }
 
 
-	@Test
+    @Test
     void testList() {
         assertTrue 0 < instructionalMethodService.list().size()
     }
 
 
-	@Test
+    @Test
     void testUpdateInstructionalMethod() {
         def instructionalMethod = newInstructionalMethod("1111")
         instructionalMethod = instructionalMethodService.create([domainModel: instructionalMethod])
@@ -59,7 +59,7 @@ class InstructionalMethodServiceIntegrationTests extends BaseIntegrationTestCase
     }
 
 
-	@Test
+    @Test
     void testDeleteInstructionalMethod() {
         def instructionalMethod = newInstructionalMethod("1111")
         instructionalMethod = instructionalMethodService.create([domainModel: instructionalMethod])

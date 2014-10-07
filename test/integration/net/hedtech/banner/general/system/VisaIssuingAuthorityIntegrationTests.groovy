@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class VisaIssuingAuthorityIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidVisaIssuingAuthority() {
         def visaIssuingAuthority = newValidForCreateVisaIssuingAuthority()
         visaIssuingAuthority.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class VisaIssuingAuthorityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidVisaIssuingAuthority() {
         def visaIssuingAuthority = newValidForCreateVisaIssuingAuthority()
         visaIssuingAuthority.save(failOnError: true, flush: true)
@@ -55,7 +55,7 @@ class VisaIssuingAuthorityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -73,7 +73,7 @@ class VisaIssuingAuthorityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def visaIssuingAuthority = newValidForCreateVisaIssuingAuthority()
         visaIssuingAuthority.save(failOnError: true, flush: true)
@@ -94,7 +94,7 @@ class VisaIssuingAuthorityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteVisaIssuingAuthority() {
         def visaIssuingAuthority = newValidForCreateVisaIssuingAuthority()
         visaIssuingAuthority.save(failOnError: true, flush: true)
@@ -105,14 +105,14 @@ class VisaIssuingAuthorityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def visaIssuingAuthority = new VisaIssuingAuthority()
         assertFalse "VisaIssuingAuthority could not be validated as expected due to ${visaIssuingAuthority.errors}", visaIssuingAuthority.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def visaIssuingAuthority = new VisaIssuingAuthority()
         assertFalse "VisaIssuingAuthority should have failed validation", visaIssuingAuthority.validate()

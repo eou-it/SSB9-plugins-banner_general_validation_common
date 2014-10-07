@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidPortOfEntry() {
         def portOfEntry = newValidForCreatePortOfEntry()
         portOfEntry.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidPortOfEntry() {
         def portOfEntry = newValidForCreatePortOfEntry()
         portOfEntry.save(failOnError: true, flush: true)
@@ -58,7 +58,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -76,7 +76,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def portOfEntry = newValidForCreatePortOfEntry()
         portOfEntry.save(failOnError: true, flush: true)
@@ -98,7 +98,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeletePortOfEntry() {
         def portOfEntry = newValidForCreatePortOfEntry()
         portOfEntry.save(failOnError: true, flush: true)
@@ -109,14 +109,14 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def portOfEntry = new PortOfEntry()
         assertFalse "PortOfEntry could not be validated as expected due to ${portOfEntry.errors}", portOfEntry.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def portOfEntry = new PortOfEntry()
         assertFalse "PortOfEntry should have failed validation", portOfEntry.validate()
@@ -132,7 +132,7 @@ class PortOfEntryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def portOfEntry = new PortOfEntry(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

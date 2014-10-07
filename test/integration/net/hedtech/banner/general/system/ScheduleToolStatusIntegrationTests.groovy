@@ -15,20 +15,20 @@ class ScheduleToolStatusIntegrationTests extends BaseIntegrationTestCase {
     def scheduleToolStatusService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateScheduleToolStatus() {
         def scheduleToolStatus = newScheduleToolStatus()
         save scheduleToolStatus
@@ -37,7 +37,7 @@ class ScheduleToolStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateScheduleToolStatus() {
         def scheduleToolStatus = newScheduleToolStatus()
         save scheduleToolStatus
@@ -66,7 +66,7 @@ class ScheduleToolStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def scheduleToolStatus = newScheduleToolStatus()
         save scheduleToolStatus
@@ -91,7 +91,7 @@ class ScheduleToolStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteScheduleToolStatus() {
         def scheduleToolStatus = newScheduleToolStatus()
         save scheduleToolStatus
@@ -102,14 +102,14 @@ class ScheduleToolStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def scheduleToolStatus = newScheduleToolStatus()
         assertTrue "ScheduleToolStatus could not be validated as expected due to ${scheduleToolStatus.errors}", scheduleToolStatus.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def scheduleToolStatus = new ScheduleToolStatus()
         assertFalse "ScheduleToolStatus should have failed validation", scheduleToolStatus.validate()
@@ -118,7 +118,7 @@ class ScheduleToolStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def scheduleToolStatus = new ScheduleToolStatus()
         assertFalse "ScheduleToolStatus should have failed validation", scheduleToolStatus.validate()

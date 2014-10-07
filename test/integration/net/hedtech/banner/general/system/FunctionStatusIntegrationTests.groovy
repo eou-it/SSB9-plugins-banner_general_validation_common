@@ -80,7 +80,7 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
 		def functionStatus = newValidForCreateFunctionStatus()
 		save functionStatus
@@ -114,7 +114,7 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def functionStatus = new FunctionStatus()
         assertFalse "FunctionStatus should have failed validation", functionStatus.validate()
@@ -130,7 +130,7 @@ class FunctionStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def functionStatus = new FunctionStatus(code:u_failure_code, description: u_failure_description, activeIndicator:'XXX' )
 		assertFalse "FunctionStatus should have failed validation", functionStatus.validate()

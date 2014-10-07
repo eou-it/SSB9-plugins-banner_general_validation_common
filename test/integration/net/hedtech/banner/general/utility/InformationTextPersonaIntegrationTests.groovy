@@ -12,14 +12,14 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testInformationTextPersonasWithoutFilter() {
         InformationTextPersonaListService.webTailorRoleList = [
                 [
@@ -45,7 +45,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
         assertEquals(4, personaCount)
     }
 
-	@Test
+    @Test
     void testInformationTextPersonasWithFilter() {
         InformationTextPersonaListService.webTailorRoleList = [
                 [
@@ -71,7 +71,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
         assertEquals(3, personaCount)
     }
 
-	@Test
+    @Test
     void testInformationTextPersonasWithExactFilterMatch() {
         InformationTextPersonaListService.webTailorRoleList = [
                 [
@@ -97,7 +97,7 @@ class InformationTextPersonaIntegrationTests extends BaseIntegrationTestCase {
         assertEquals('ALUMNI', persona)
     }
 
-	@Test
+    @Test
     void testValidInformationTextPersonaWithFilter() {
         InformationTextPersonaListService.webTailorRoleList = [
                 [

@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class ReligionIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateReligion() {
         def religion = newReligion()
         religion.save(failOnError: true, flush: true)
@@ -40,7 +40,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateReligion() {
         def religion = newReligion()
         religion.save(failOnError: true, flush: true)
@@ -59,7 +59,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -77,7 +77,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def religion = newReligion()
         religion.save(failOnError: true, flush: true)
@@ -98,7 +98,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteReligion() {
         def religion = newReligion()
         religion.save(failOnError: true, flush: true)
@@ -109,14 +109,14 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def religion = new Religion()
         assertFalse "Religion could not be validated as expected due to ${religion.errors}", religion.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def religion = new Religion()
         assertFalse "Religion should have failed validation", religion.validate()
@@ -125,7 +125,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def religion = new Religion(
                 code: "TTTTT",

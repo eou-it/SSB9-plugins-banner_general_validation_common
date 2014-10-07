@@ -38,20 +38,20 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_studentExchangeVisitorInformationSystemEquivalent = "TTT"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidRelationship() {
         def relationship = newValidForCreateRelationship()
         relationship.save(failOnError: true, flush: true)
@@ -60,7 +60,7 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidRelationship() {
         def relationship = newInvalidForCreateRelationship()
         relationship.code = null
@@ -70,7 +70,7 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidRelationship() {
         def relationship = newValidForCreateRelationship()
         relationship.save(failOnError: true, flush: true)
@@ -93,7 +93,7 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidRelationship() {
         def relationship = newValidForCreateRelationship()
         relationship.save(failOnError: true, flush: true)
@@ -113,7 +113,7 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def relationship = newValidForCreateRelationship()
         relationship.save(failOnError: true, flush: true)
@@ -135,7 +135,7 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteRelationship() {
         def relationship = newValidForCreateRelationship()
         relationship.save(failOnError: true, flush: true)
@@ -146,7 +146,7 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def relationship = newInvalidForCreateRelationship()
         relationship.code = null
@@ -154,7 +154,7 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def relationship = new Relationship()
         assertFalse "Relationship should have failed validation", relationship.validate()
@@ -170,7 +170,7 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def relationship = new Relationship(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

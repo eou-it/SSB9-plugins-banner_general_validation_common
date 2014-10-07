@@ -15,20 +15,20 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivisionIntegrationTes
     def geographicRegionAsCostCenterInformationByDisctirctOrDivisionService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateGeographicRegionAsCostCenterInformationByDisctirctOrDivision() {
         def geographicRegionAsCostCenterInformationByDisctirctOrDivision = newGeographicRegionAsCostCenterInformationByDisctirctOrDivision()
         save geographicRegionAsCostCenterInformationByDisctirctOrDivision
@@ -37,7 +37,7 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivisionIntegrationTes
     }
 
 
-	@Test
+    @Test
     void testUpdateGeographicRegionAsCostCenterInformationByDisctirctOrDivision() {
         def geographicRegionAsCostCenterInformationByDisctirctOrDivision = newGeographicRegionAsCostCenterInformationByDisctirctOrDivision()
         save geographicRegionAsCostCenterInformationByDisctirctOrDivision
@@ -63,7 +63,7 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivisionIntegrationTes
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def geographicRegionAsCostCenterInformationByDisctirctOrDivision = newGeographicRegionAsCostCenterInformationByDisctirctOrDivision()
         save geographicRegionAsCostCenterInformationByDisctirctOrDivision
@@ -87,7 +87,7 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivisionIntegrationTes
     }
 
 
-	@Test
+    @Test
     void testDeleteGeographicRegionAsCostCenterInformationByDisctirctOrDivision() {
         def geographicRegionAsCostCenterInformationByDisctirctOrDivision = newGeographicRegionAsCostCenterInformationByDisctirctOrDivision()
         save geographicRegionAsCostCenterInformationByDisctirctOrDivision
@@ -98,14 +98,14 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivisionIntegrationTes
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def geographicRegionAsCostCenterInformationByDisctirctOrDivision = newGeographicRegionAsCostCenterInformationByDisctirctOrDivision()
         assertTrue "GeographicRegionAsCostCenterInformationByDisctirctOrDivision could not be validated as expected due to ${geographicRegionAsCostCenterInformationByDisctirctOrDivision.errors}", geographicRegionAsCostCenterInformationByDisctirctOrDivision.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def geographicRegionAsCostCenterInformationByDisctirctOrDivision = new GeographicRegionAsCostCenterInformationByDisctirctOrDivision()
         assertFalse "GeographicRegionAsCostCenterInformationByDisctirctOrDivision should have failed validation", geographicRegionAsCostCenterInformationByDisctirctOrDivision.validate()
@@ -118,7 +118,7 @@ class GeographicRegionAsCostCenterInformationByDisctirctOrDivisionIntegrationTes
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def geographicRegionAsCostCenterInformationByDisctirctOrDivision = new GeographicRegionAsCostCenterInformationByDisctirctOrDivision()
         assertFalse "GeographicRegionAsCostCenterInformationByDisctirctOrDivision should have failed validation", geographicRegionAsCostCenterInformationByDisctirctOrDivision.validate()

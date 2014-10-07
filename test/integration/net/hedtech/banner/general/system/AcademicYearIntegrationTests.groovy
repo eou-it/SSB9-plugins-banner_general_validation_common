@@ -25,14 +25,14 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
     def academicYearService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateAcademicYear() {
         def academicYear = newValidForCreateAcademicYear()
 
@@ -40,7 +40,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull academicYear.id
     }
 
-	@Test
+    @Test
     void testUpdateAcademicYear() {
         def academicYear = newValidForCreateAcademicYear()
         save academicYear
@@ -60,7 +60,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteAcademicYear() {
         def academicYear = newValidForCreateAcademicYear()
         save academicYear
@@ -73,7 +73,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def academicYear = newValidForCreateAcademicYear()
         save academicYear
@@ -94,7 +94,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-	@Test
+    @Test
     void testValidation() {
         def academicYear = new AcademicYear()
         //should not pass validation since none of the required values are provided
@@ -110,7 +110,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
         assertTrue academicYear.validate()
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def academicYear = new AcademicYear()
         assertFalse "AcademicYear should have failed validation", academicYear.validate()
@@ -125,7 +125,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def academicYear = new AcademicYear(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

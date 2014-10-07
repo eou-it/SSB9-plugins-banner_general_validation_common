@@ -12,20 +12,20 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 class SystemUtilityIntegrationTests extends BaseIntegrationTestCase {
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['SSASECT'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testIsDegreeWorksInstalledTrue() {
         def sdaCrosswalkConversions = SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup("PREREQCHK",
                 "DEGREEWORKS")
@@ -75,7 +75,7 @@ class SystemUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testIsDegreeWorksInstalledInvalidTerm() {
         def sdaCrosswalkConversions = SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup("PREREQCHK",
                 "DEGREEWORKS")
@@ -118,7 +118,7 @@ class SystemUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testIsDegreeWorksInstalledFalse() {
         def sdaCrosswalkConversions = SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup("PREREQCHK",
                 "DEGREEWORKS")
@@ -151,7 +151,7 @@ class SystemUtilityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testIsDegreeWorksInstalledNoSda() {
         def sdaCrosswalkConversion = SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup("PREREQCHK",
                 "DEGREEWORKS")

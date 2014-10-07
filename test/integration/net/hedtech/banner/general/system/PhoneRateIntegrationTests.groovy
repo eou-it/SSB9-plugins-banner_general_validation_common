@@ -45,20 +45,20 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "Test Failure Description for invalid update"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidPhoneRate() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -67,7 +67,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidPhoneRate() {
         def phoneRate = newInvalidForCreatePhoneRate()
         shouldFail {
@@ -76,7 +76,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidPhoneRate() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -105,7 +105,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidPhoneRate() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -128,7 +128,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -152,7 +152,7 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeletePhoneRate() {
         def phoneRate = newValidForCreatePhoneRate()
         phoneRate.save(failOnError: true, flush: true)
@@ -163,14 +163,14 @@ class PhoneRateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def phoneRate = newValidForCreatePhoneRate()
         assertTrue "PhoneRate could not be validated as expected due to ${phoneRate.errors}", phoneRate.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def phoneRate = new PhoneRate()
         assertFalse "PhoneRate should have failed validation", phoneRate.validate()

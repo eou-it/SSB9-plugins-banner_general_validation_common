@@ -24,20 +24,20 @@ class ActivityCategoryIntegrationTests extends BaseIntegrationTestCase {
 
     def u_failure_description = "This is the invalid description and it should fail the test"
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidActivityCategory() {
         def activityCategory = newValidForCreateActivityCategory()
         activityCategory.save(failOnError: true, flush: true)
@@ -46,7 +46,7 @@ class ActivityCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidActivityCategory() {
         def activityCategory = newInvalidForCreateActivityCategory()
         shouldFail(ValidationException) {
@@ -55,7 +55,7 @@ class ActivityCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidActivityCategory() {
         def activityCategory = newValidForCreateActivityCategory()
         activityCategory.save(failOnError: true, flush: true)
@@ -74,7 +74,7 @@ class ActivityCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidActivityCategory() {
         def activityCategory = newValidForCreateActivityCategory()
         activityCategory.save(failOnError: true, flush: true)
@@ -91,7 +91,7 @@ class ActivityCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -109,7 +109,7 @@ class ActivityCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def activityCategory = newValidForCreateActivityCategory()
         activityCategory.save(failOnError: true, flush: true)
@@ -130,7 +130,7 @@ class ActivityCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteActivityCategory() {
         def activityCategory = newValidForCreateActivityCategory()
         activityCategory.save(failOnError: true, flush: true)
@@ -141,14 +141,14 @@ class ActivityCategoryIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def activityCategory = newInvalidForCreateActivityCategory()
         assertFalse "ActivityCategory could not be validated as expected due to ${activityCategory.errors}", activityCategory.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def activityCategory = new ActivityCategory()
         assertFalse "ActivityCategory should have failed validation", activityCategory.validate()

@@ -15,18 +15,18 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
 
     def originatorService
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-	@Test
+    @Test
     void testCreateOriginator() {
         def originator = newOriginator()
         save originator
@@ -34,7 +34,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull originator.id
     }
 
-	@Test
+    @Test
     void testUpdateOriginator() {
         def originator = newOriginator()
         save originator
@@ -59,7 +59,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "UUUUU", originator.description
     }
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def originator = newOriginator()
         save originator
@@ -82,7 +82,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-	@Test
+    @Test
     void testDeleteOriginator() {
         def originator = newOriginator()
         save originator
@@ -92,13 +92,13 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
         assertNull Originator.get(id)
     }
 
-	@Test
+    @Test
     void testValidation() {
         def originator = newOriginator()
         assertTrue "Originator could not be validated as expected due to ${originator.errors}", originator.validate()
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def originator = new Originator()
         assertFalse "Originator should have failed validation", originator.validate()
@@ -112,7 +112,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def originator = new Originator(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
@@ -136,7 +136,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
     /**
      * A test to exercise 'code' primary key in HoldType
      */
-	@Test
+    @Test
     void testPrimaryKeyOnCode() {
         def originator = newOriginator()
         def duplicateObj = newOriginator()
@@ -154,7 +154,7 @@ class OriginatorIntegrationTests extends BaseIntegrationTestCase {
     /**
      * A test to exercise the findBy method for Originator
      */
-	@Test
+    @Test
     void testFindOriginator() {
         def originator = newOriginator()
         save originator

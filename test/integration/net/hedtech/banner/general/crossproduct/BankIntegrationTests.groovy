@@ -120,20 +120,20 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_achFileNumber = 1
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidBank() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -142,7 +142,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidBank() {
         def bank = newInvalidForCreateBank()
         shouldFail(ValidationException) {
@@ -151,7 +151,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidBank() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -228,7 +228,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidBank() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -284,7 +284,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -314,7 +314,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -353,7 +353,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteBank() {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
@@ -364,14 +364,14 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def bank = newInvalidForCreateBank()
         assertFalse "Bank could not be validated as expected due to ${bank.errors}", bank.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def bank = new Bank()
         assertFalse "Bank should have failed validation", bank.validate()
@@ -407,7 +407,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def bank = new Bank(
                 chartOfAccounts: 'XXX',

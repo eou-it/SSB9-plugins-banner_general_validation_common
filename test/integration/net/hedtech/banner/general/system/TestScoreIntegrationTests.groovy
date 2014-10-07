@@ -18,21 +18,21 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     def testScoreService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def testScore = newTestScore()
         assertTrue "TestScore could not be validated as expected due to ${testScore.errors}", testScore.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def testScore = new TestScore()
         assertFalse "TestScore should have failed validation", testScore.validate()
@@ -45,7 +45,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def testScore = new TestScore(code: "TTXXX", description: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 numberPositions: 22567,
@@ -63,7 +63,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testCreateTestScore() {
         def entity = newTestScore()
         save entity
@@ -72,7 +72,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateTestScore() {
         def entity = newTestScore()
         save entity
@@ -90,7 +90,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def entity = newTestScore()
         save entity
@@ -109,7 +109,7 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteTestScore() {
         def testScore = newTestScore()
         save testScore

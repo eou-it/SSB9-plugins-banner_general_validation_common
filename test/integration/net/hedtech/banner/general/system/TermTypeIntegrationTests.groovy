@@ -16,14 +16,14 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 class TermTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateTermType() {
         def termType = newValidForCreateTermType()
 
@@ -33,7 +33,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull(termType.id)
     }
 
-	@Test
+    @Test
     void testUpdateTermType() {
         def termType = newValidForCreateTermType()
         if (!termType.save(flush: true, failOnError: true)) {
@@ -56,7 +56,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals(1, termType.version)
     }
 
-	@Test
+    @Test
     void testDeleteTermType() {
         def termType = newValidForCreateTermType()
         if (!termType.save(flush: true, failOnError: true)) {
@@ -69,7 +69,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
         assertNull(found)
     }
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def termType = newValidForCreateTermType()
         save termType
@@ -89,7 +89,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-	@Test
+    @Test
     void testValidation() {
         def termType = new TermType()
         //should not pass validation since none of the required values are provided
@@ -103,7 +103,7 @@ class TermTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def termType = new TermType()
         assertFalse "TermType should have failed validation", termType.validate()

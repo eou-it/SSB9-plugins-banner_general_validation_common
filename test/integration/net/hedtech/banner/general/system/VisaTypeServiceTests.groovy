@@ -10,20 +10,20 @@ class VisaTypeServiceTests extends BaseIntegrationTestCase {
     def visaTypeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateVisaType() {
         def visaType = new VisaType(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -32,7 +32,7 @@ class VisaTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateVisaType() {
         def visaType = new VisaType(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -47,7 +47,7 @@ class VisaTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteVisaType() {
         def visaType = new VisaType(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -61,7 +61,7 @@ class VisaTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def visaType = visaTypeService.list()
         assertTrue visaType.size() > 0

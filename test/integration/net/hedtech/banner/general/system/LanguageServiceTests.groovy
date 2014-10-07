@@ -10,20 +10,20 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
     def languageService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateLanguage() {
         def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -32,7 +32,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateLanguage() {
         def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -47,7 +47,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteLanguage() {
         def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
                                     voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
@@ -61,7 +61,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def language = languageService.list()
         assertTrue language.size() > 0

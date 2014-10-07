@@ -18,14 +18,14 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     def departmentService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateDepartment() {
         def department = newDepartment()
         save department
@@ -33,7 +33,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateDepartment() {
         def department = newDepartment()
         save department
@@ -53,7 +53,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def department = newDepartment()
         save department
@@ -78,7 +78,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteDepartment() {
         def department = newDepartment()
         save department
@@ -89,14 +89,14 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
         assertNull department.get(id)
     }
 
-	@Test
+    @Test
     void testValidation() {
         def department = newDepartment()
         //should not pass validation since none of the required values are provided
         assertTrue "Department could not be validated as expected due to ${department.errors}", department.validate()
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def department = new Department()
         //should not pass validation since none of the required values are provided
@@ -105,7 +105,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def department = new Department(
                 code: 'XXXXXXXXXX',
@@ -116,7 +116,7 @@ class DepartmentIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testFetchBySomeAttribute() {
         def department = Department.fetchBySomeAttribute()
         def departmentList = department.get("list")

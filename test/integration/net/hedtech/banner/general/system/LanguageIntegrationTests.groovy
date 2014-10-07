@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class LanguageIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidLanguage() {
         def language = newValidForCreateLanguage()
         language.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class LanguageIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidLanguage() {
         def language = newValidForCreateLanguage()
         language.save(failOnError: true, flush: true)
@@ -55,7 +55,7 @@ class LanguageIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -73,7 +73,7 @@ class LanguageIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def language = newValidForCreateLanguage()
         language.save(failOnError: true, flush: true)
@@ -94,7 +94,7 @@ class LanguageIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteLanguage() {
         def language = newValidForCreateLanguage()
         language.save(failOnError: true, flush: true)
@@ -105,14 +105,14 @@ class LanguageIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def language = new Language()
         assertFalse "Language could not be validated as expected due to ${language.errors}", language.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def language = new Language()
         assertFalse "Language should have failed validation", language.validate()

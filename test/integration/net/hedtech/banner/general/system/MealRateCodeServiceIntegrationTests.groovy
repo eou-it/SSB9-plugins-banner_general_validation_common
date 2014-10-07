@@ -10,20 +10,20 @@ class MealRateCodeServiceIntegrationTests extends BaseIntegrationTestCase {
     def mealRateCodeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateMealRateCode() {
         def mealRateCode = newMealRateCode()
         mealRateCode = mealRateCodeService.create([domainModel: mealRateCode])
@@ -31,7 +31,7 @@ class MealRateCodeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateMealRateCode() {
         def mealRateCode = newMealRateCode()
         mealRateCode = mealRateCodeService.create([domainModel: mealRateCode])
@@ -45,7 +45,7 @@ class MealRateCodeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteMealRateCode() {
         def mealRateCode = newMealRateCode()
         mealRateCode = mealRateCodeService.create([domainModel: mealRateCode])
@@ -58,7 +58,7 @@ class MealRateCodeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def mealRateCode = mealRateCodeService.list()
         assertTrue mealRateCode.size() > 0

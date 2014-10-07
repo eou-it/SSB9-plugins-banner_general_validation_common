@@ -25,20 +25,20 @@ class LeadershipIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "This is invalid description and it should fail the test"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidLeadership() {
         def leadership = newValidForCreateLeadership()
         leadership.save(failOnError: true, flush: true)
@@ -47,7 +47,7 @@ class LeadershipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidLeadership() {
         def leadership = newInvalidForCreateLeadership()
         shouldFail(ValidationException) {
@@ -56,7 +56,7 @@ class LeadershipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidLeadership() {
         def leadership = newValidForCreateLeadership()
         leadership.save(failOnError: true, flush: true)
@@ -75,7 +75,7 @@ class LeadershipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidLeadership() {
         def leadership = newValidForCreateLeadership()
         leadership.save(failOnError: true, flush: true)
@@ -92,7 +92,7 @@ class LeadershipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -110,7 +110,7 @@ class LeadershipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def leadership = newValidForCreateLeadership()
         leadership.save(failOnError: true, flush: true)
@@ -131,7 +131,7 @@ class LeadershipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteLeadership() {
         def leadership = newValidForCreateLeadership()
         leadership.save(failOnError: true, flush: true)
@@ -142,14 +142,14 @@ class LeadershipIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def leadership = newInvalidForCreateLeadership()
         assertFalse "Leadership could not be validated as expected due to ${leadership.errors}", leadership.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def leadership = new Leadership()
         assertFalse "Leadership should have failed validation", leadership.validate()

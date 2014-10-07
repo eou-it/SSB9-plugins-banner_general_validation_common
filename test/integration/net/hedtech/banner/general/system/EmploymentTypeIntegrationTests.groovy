@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class EmploymentTypeIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidEmploymentType() {
         def employmentType = newValidForCreateEmploymentType()
         employmentType.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class EmploymentTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidEmploymentType() {
         def employmentType = newValidForCreateEmploymentType()
         employmentType.save(failOnError: true, flush: true)
@@ -55,7 +55,7 @@ class EmploymentTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -73,7 +73,7 @@ class EmploymentTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def employmentType = newValidForCreateEmploymentType()
         employmentType.save(failOnError: true, flush: true)
@@ -94,7 +94,7 @@ class EmploymentTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteEmploymentType() {
         def employmentType = newValidForCreateEmploymentType()
         employmentType.save(failOnError: true, flush: true)
@@ -105,14 +105,14 @@ class EmploymentTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def employmentType = new EmploymentType()
         assertFalse "EmploymentType could not be validated as expected due to ${employmentType.errors}", employmentType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def employmentType = new EmploymentType()
         assertFalse "EmploymentType should have failed validation", employmentType.validate()

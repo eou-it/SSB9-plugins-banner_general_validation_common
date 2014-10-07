@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class VisaSourceIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidVisaSource() {
         def visaSource = newValidForCreateVisaSource()
         visaSource.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class VisaSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidVisaSource() {
         def visaSource = newValidForCreateVisaSource()
         visaSource.save(failOnError: true, flush: true)
@@ -55,7 +55,7 @@ class VisaSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -73,7 +73,7 @@ class VisaSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def visaSource = newValidForCreateVisaSource()
         visaSource.save(failOnError: true, flush: true)
@@ -94,7 +94,7 @@ class VisaSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteVisaSource() {
         def visaSource = newValidForCreateVisaSource()
         visaSource.save(failOnError: true, flush: true)
@@ -105,14 +105,14 @@ class VisaSourceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def visaSource = new VisaSource()
         assertFalse "VisaSource could not be validated as expected due to ${visaSource.errors}", visaSource.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def visaSource = new VisaSource()
         assertFalse "VisaSource should have failed validation", visaSource.validate()

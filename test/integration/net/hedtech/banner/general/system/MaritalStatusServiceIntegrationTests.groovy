@@ -10,20 +10,20 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
     def maritalStatusService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateMaritalStatus() {
         def maritalStatus = new MaritalStatus(electronicDataInterchangeEquivalent: "T", financeConversion: "T",
                                               code: "T", description: "TT")
@@ -32,7 +32,7 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateMaritalStatus() {
         def maritalStatus = new MaritalStatus(electronicDataInterchangeEquivalent: "T", financeConversion: "T",
                                               code: "T", description: "TT")
@@ -47,7 +47,7 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteMaritalStatus() {
         def maritalStatus = new MaritalStatus(electronicDataInterchangeEquivalent: "T", financeConversion: "T",
                                               code: "T", description: "TT")
@@ -60,7 +60,7 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
 
     }
 
-	@Test
+    @Test
     void testList(){
         def maritalStatus = maritalStatusService.list()
         assertTrue maritalStatus.size() > 0

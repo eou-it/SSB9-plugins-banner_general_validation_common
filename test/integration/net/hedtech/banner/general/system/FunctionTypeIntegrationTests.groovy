@@ -34,20 +34,20 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -56,7 +56,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidFunctionType() {
         def functionType = newInvalidForCreateFunctionType()
         shouldFail(ValidationException) {
@@ -65,7 +65,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -85,7 +85,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -102,7 +102,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -123,7 +123,7 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteFunctionType() {
         def functionType = newValidForCreateFunctionType()
         functionType.save(failOnError: true, flush: true)
@@ -134,14 +134,14 @@ class FunctionTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def functionType = newInvalidForCreateFunctionType()
         assertFalse "FunctionType could not be validated as expected due to ${functionType.errors}", functionType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def functionType = new FunctionType()
         assertFalse "FunctionType should have failed validation", functionType.validate()

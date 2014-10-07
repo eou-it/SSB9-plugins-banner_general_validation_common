@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class IpedsEthnicityIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateIpedsEthnicity() {
         def ipedsEthnicity = newIpedsEthnicity()
         save ipedsEthnicity
@@ -36,7 +36,7 @@ class IpedsEthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateIpedsEthnicity() {
         def ipedsEthnicity = newIpedsEthnicity()
         save ipedsEthnicity
@@ -66,7 +66,7 @@ class IpedsEthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -84,7 +84,7 @@ class IpedsEthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def ipedsEthnicity = newIpedsEthnicity()
         save ipedsEthnicity
@@ -109,7 +109,7 @@ class IpedsEthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteIpedsEthnicity() {
         def ipedsEthnicity = newIpedsEthnicity()
         save ipedsEthnicity
@@ -120,14 +120,14 @@ class IpedsEthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def ipedsEthnicity = new IpedsEthnicity()
         assertFalse "IpedsEthnicity could not be validated as expected due to ${ipedsEthnicity.errors}", ipedsEthnicity.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def ipedsEthnicity = new IpedsEthnicity()
         assertFalse "IpedsEthnicity should be valid", ipedsEthnicity.validate()
@@ -136,7 +136,7 @@ class IpedsEthnicityIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def ipedsEthnicity = new IpedsEthnicity(
                 code: 'XXXX',
@@ -145,7 +145,7 @@ class IpedsEthnicityIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor(ipedsEthnicity, 'maxSize', ['code', 'description'])
     }
 
-	@Test
+    @Test
     void testInListValidationFailure() {
         def ipedsEthnicity = newIpedsEthnicity()
         ipedsEthnicity.systemRequiredIndicator = "T"

@@ -84,20 +84,20 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     def u_failure_standardCodeIso = "TTT"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCurrencyConversionValidCreate() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)
@@ -110,7 +110,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
-	@Test
+    @Test
     void testCurrencyConversionInvalidCreate() {
         def currencyConversion = newInvalidForCreateCurrencyConversion()
         shouldFail(ApplicationException) {
@@ -119,7 +119,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
-	@Test
+    @Test
     void testCurrencyConversionValidUpdate() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)
@@ -160,7 +160,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
-	@Test
+    @Test
     void testCurrencyConversionInvalidUpdate() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)
@@ -190,7 +190,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
-	@Test
+    @Test
     void testCurrencyConversionDelete() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)
@@ -201,7 +201,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
-	@Test
+    @Test
     void testReadOnly() {
         def currencyConversion = newValidForCreateCurrencyConversion()
         currencyConversionService.create(currencyConversion)

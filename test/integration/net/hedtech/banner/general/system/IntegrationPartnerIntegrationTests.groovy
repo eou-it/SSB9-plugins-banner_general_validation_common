@@ -15,20 +15,20 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     def integrationPartnerService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateIntegrationPartner() {
         def integrationPartner = newIntegrationPartner()
         save integrationPartner
@@ -37,7 +37,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateIntegrationPartner() {
         def integrationPartner = newIntegrationPartner()
         save integrationPartner
@@ -63,7 +63,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def integrationPartner = newIntegrationPartner()
         save integrationPartner
@@ -88,7 +88,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteIntegrationPartner() {
         def integrationPartner = newIntegrationPartner()
         save integrationPartner
@@ -99,14 +99,14 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def integrationPartner = newIntegrationPartner()
         assertTrue "IntegrationPartner could not be validated as expected due to ${integrationPartner.errors}", integrationPartner.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def integrationPartner = new IntegrationPartner()
         assertFalse "IntegrationPartner should have failed validation", integrationPartner.validate()
@@ -114,7 +114,7 @@ class IntegrationPartnerIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def integrationPartner = new IntegrationPartner(
                 code: 'XXXXXXX',

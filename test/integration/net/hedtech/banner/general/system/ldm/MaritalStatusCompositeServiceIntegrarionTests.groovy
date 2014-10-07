@@ -18,7 +18,7 @@ class MaritalStatusCompositeServiceIntegrarionTests extends BaseIntegrationTestC
     def maritalStatusCompositeService
 
     @Before
-    void setUp() {
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
         initiializeDataReferences()

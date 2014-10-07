@@ -34,20 +34,20 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "TTTTT TTTTT TTTTT TTTTT TTTTT TTTTT"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -56,7 +56,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidSubjectIndex() {
         def subjectIndex = newInvalidForCreateSubjectIndex()
         shouldFail(ValidationException) {
@@ -65,7 +65,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -85,7 +85,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -102,7 +102,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -123,7 +123,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteSubjectIndex() {
         def subjectIndex = newValidForCreateSubjectIndex()
         save subjectIndex
@@ -134,7 +134,7 @@ class SubjectIndexIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def subjectIndex = new SubjectIndex()
         assertFalse "SubjectIndex should have failed validation", subjectIndex.validate()

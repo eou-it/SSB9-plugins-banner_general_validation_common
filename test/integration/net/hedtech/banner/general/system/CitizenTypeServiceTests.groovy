@@ -10,20 +10,20 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
     def citizenTypeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateCitizenType() {
         def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
@@ -31,7 +31,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateCitizenType() {
         def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
@@ -45,7 +45,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteCitizenType() {
         def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
@@ -58,7 +58,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def citizenType = citizenTypeService.list()
         assertTrue citizenType.size() > 0

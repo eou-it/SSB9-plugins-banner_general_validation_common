@@ -34,20 +34,20 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "TTTTT"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -56,7 +56,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidRating() {
         def rating = newInvalidForCreateRating()
         rating.code = null
@@ -66,7 +66,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -86,7 +86,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -104,7 +104,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def rating = newValidForCreateRating()
         save rating
@@ -125,7 +125,7 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteRating() {
         def rating = newValidForCreateRating()
         save rating
@@ -136,14 +136,14 @@ class RatingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def rating = newInvalidForCreateRating()
         assertTrue "Rating could not be validated as expected due to ${rating.errors}", rating.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def rating = new Rating()
         assertFalse "Rating should have failed validation", rating.validate()

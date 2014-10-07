@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidInternationalSponsor() {
         def internationalSponsor = newValidForCreateInternationalSponsor()
         internationalSponsor.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidInternationalSponsor() {
         def internationalSponsor = newValidForCreateInternationalSponsor()
         internationalSponsor.save(failOnError: true, flush: true)
@@ -55,7 +55,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -73,7 +73,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def internationalSponsor = newValidForCreateInternationalSponsor()
         internationalSponsor.save(failOnError: true, flush: true)
@@ -94,7 +94,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteInternationalSponsor() {
         def internationalSponsor = newValidForCreateInternationalSponsor()
         internationalSponsor.save(failOnError: true, flush: true)
@@ -105,14 +105,14 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def internationalSponsor = new InternationalSponsor()
         assertFalse "InternationalSponsor could not be validated as expected due to ${internationalSponsor.errors}", internationalSponsor.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def internationalSponsor = new InternationalSponsor()
         assertFalse "InternationalSponsor should have failed validation", internationalSponsor.validate()
@@ -127,7 +127,7 @@ class InternationalSponsorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def internationalSponsor = new InternationalSponsor(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')

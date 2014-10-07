@@ -34,20 +34,20 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidFunctionPurpose() {
         def functionPurpose = newValidForCreateFunctionPurpose()
         save functionPurpose
@@ -57,7 +57,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testUpdateValidFunctionPurpose() {
         def functionPurpose = newValidForCreateFunctionPurpose()
         save functionPurpose
@@ -77,7 +77,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def functionPurpose = newValidForCreateFunctionPurpose()
         save functionPurpose
@@ -98,7 +98,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteFunctionPurpose() {
         def functionPurpose = newValidForCreateFunctionPurpose()
         save functionPurpose
@@ -109,7 +109,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def functionPurpose = newInvalidForCreateFunctionPurpose()
         functionPurpose.code = u_failure_code
@@ -119,7 +119,7 @@ class FunctionPurposeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def functionPurpose = new FunctionPurpose()
         assertFalse "FunctionPurpose should have failed validation", functionPurpose.validate()

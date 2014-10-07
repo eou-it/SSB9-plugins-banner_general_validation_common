@@ -22,18 +22,18 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
     // No Invalid Scenario required
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-	@Test
+    @Test
     void testCreateValidLearnerFieldStudy() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         save learnerFieldStudy
@@ -41,7 +41,7 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull learnerFieldStudy.id
     }
 
-	@Test
+    @Test
     void testUpdateValidLearnerFieldStudy() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         save learnerFieldStudy
@@ -62,7 +62,7 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
         assertEquals false, learnerFieldStudy.systemRequiredIndicator
     }
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         save learnerFieldStudy
@@ -83,7 +83,7 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-	@Test
+    @Test
     void testDeleteLearnerFieldStudy() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         save learnerFieldStudy
@@ -93,13 +93,13 @@ class LearnerFieldStudyIntegrationTests extends BaseIntegrationTestCase {
         assertNull LearnerFieldStudy.get(id)
     }
 
-	@Test
+    @Test
     void testValidation() {
         def learnerFieldStudy = newValidForCreateLearnerFieldStudy()
         assertTrue "LearnerFieldStudy could not be validated as expected due to ${learnerFieldStudy.errors}", learnerFieldStudy.validate()
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def learnerFieldStudy = new LearnerFieldStudy()
         assertFalse "LearnerFieldStudy should have failed validation", learnerFieldStudy.validate()

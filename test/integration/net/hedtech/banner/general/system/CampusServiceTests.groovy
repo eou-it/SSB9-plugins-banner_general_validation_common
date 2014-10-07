@@ -11,20 +11,20 @@ class CampusServiceTests extends BaseIntegrationTestCase {
     def campusService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateCampus() {
         def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
@@ -32,7 +32,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateCampus() {
         def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
@@ -46,7 +46,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteCampus() {
         def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
         campus = campusService.create([domainModel: campus])
@@ -58,7 +58,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def campus = campusService.list()
         assertTrue campus.size() > 0

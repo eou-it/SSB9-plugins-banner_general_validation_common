@@ -34,20 +34,20 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = "TTTTT"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidMenu() {
         def menu = newValidForCreateMenu()
         menu.save(failOnError: true, flush: true)
@@ -56,7 +56,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidMenu() {
         def menu = newInvalidForCreateMenu()
         menu.code = null
@@ -66,7 +66,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidMenu() {
         def menu = newValidForCreateMenu()
         menu.save(failOnError: true, flush: true)
@@ -85,7 +85,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidMenu() {
         def menu = newValidForCreateMenu()
         menu.save(failOnError: true, flush: true)
@@ -103,7 +103,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def menu = newValidForCreateMenu()
         menu.save(failOnError: true, flush: true)
@@ -124,7 +124,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteMenu() {
         def menu = newValidForCreateMenu()
         menu.save(failOnError: true, flush: true)
@@ -135,7 +135,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def menu = newInvalidForCreateMenu()
         menu.code = null
@@ -143,7 +143,7 @@ class MenuIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def menu = new Menu()
         assertFalse "Menu should have failed validation", menu.validate()

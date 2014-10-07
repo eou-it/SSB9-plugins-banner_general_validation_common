@@ -68,20 +68,20 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_systemRequestIndicator = "L"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         save sdaCrosswalkConversion
@@ -90,14 +90,14 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = newInvalidForCreateSdaCrosswalkConversion()
         assertFalse sdaCrosswalkConversion.validate()
     }
 
 
-	@Test
+    @Test
     void testUpdateValidSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         save sdaCrosswalkConversion
@@ -123,7 +123,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         save sdaCrosswalkConversion
@@ -151,7 +151,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         save sdaCrosswalkConversion
@@ -172,7 +172,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         save sdaCrosswalkConversion
@@ -183,14 +183,14 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         assertTrue "SdaCrosswalkConversion could not be validated as expected due to ${sdaCrosswalkConversion.errors}", sdaCrosswalkConversion.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def sdaCrosswalkConversion = new SdaCrosswalkConversion()
         assertFalse "SdaCrosswalkConversion should have failed validation", sdaCrosswalkConversion.validate()
@@ -211,7 +211,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def sdaCrosswalkConversion = new SdaCrosswalkConversion(
                 translation: 'XXXXXXXXXXXXXXXXX',
@@ -221,7 +221,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testfetchAllByInternalAndExternalAndInternalGroup() {
         def sdax = newValidForCreateSdaCrosswalkConversion()
         save sdax
@@ -235,7 +235,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testfetchAllByInternalAndInternalGroup() {
         def sdax = newValidForCreateSdaCrosswalkConversion()
         save sdax
@@ -248,7 +248,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testfetchAllByInternalAndLessExternalAndInternalGroup() {
         def sdax = newValidForCreateSdaCrosswalkConversion()
         save sdax
@@ -260,7 +260,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
         assertEquals sdaxs.size(), 1
     }
 
-	@Test
+    @Test
     void testFetchReportingDates() {
         def sdax = newValidForCreateSdaCrosswalkConversion()
         save sdax
@@ -271,7 +271,7 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchAllByDescriptionLikeAndInternalGroup() {
         def sdaCrosswalkConversion = newValidForCreateSdaCrosswalkConversion()
         save sdaCrosswalkConversion

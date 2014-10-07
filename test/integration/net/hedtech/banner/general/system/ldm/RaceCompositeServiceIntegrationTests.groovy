@@ -19,7 +19,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     def raceCompositeService
 
     @Before
-    void setUp() {
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
         initiializeDataReferences()

@@ -37,20 +37,20 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_inactiveIndicator = "Y"
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidRoomStatus() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -59,7 +59,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidRoomStatus() {
         def roomStatus = newInvalidForCreateRoomStatus()
         shouldFail {
@@ -68,7 +68,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidRoomStatus() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -91,7 +91,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidRoomStatus() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -110,7 +110,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -132,7 +132,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteRoomStatus() {
         def roomStatus = newValidForCreateRoomStatus()
         roomStatus.save(failOnError: true, flush: true)
@@ -143,14 +143,14 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def roomStatus = newValidForCreateRoomStatus()
         assertTrue "RoomStatus could not be validated as expected due to ${roomStatus.errors}", roomStatus.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def roomStatus = new RoomStatus()
         assertFalse "RoomStatus should have failed validation", roomStatus.validate()
@@ -166,7 +166,7 @@ class RoomStatusIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def roomStatus = new RoomStatus(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

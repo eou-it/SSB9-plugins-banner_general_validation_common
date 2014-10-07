@@ -17,18 +17,18 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
     def DisabilityService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-	@Test
+    @Test
     void testCreateDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
@@ -37,7 +37,7 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
         assertNotNull "Disability Code is null in Disability Create Service Test", disability.code
     }
 
-	@Test
+    @Test
     void testUpdateDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
@@ -51,7 +51,7 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
         assertEquals "ZZ", disabilityUpdate.description
     }
 
-	@Test
+    @Test
     void testDeleteDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")

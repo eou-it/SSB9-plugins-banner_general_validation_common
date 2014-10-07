@@ -15,22 +15,22 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
  * */
 class MealRateCodeIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
     /**
      * Tests the ability to create and persist a new MealRateCode instance.
      */
-	@Test
+    @Test
     void testCreateMealRateCode() {
         def mealRateCode = createMealRateCode()
         mealRateCode.save(failOnError: true, flush: true)
@@ -40,7 +40,7 @@ class MealRateCodeIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Tests the ability to update a Description.
      */
-	@Test
+    @Test
     void testUpdateMealRateCode() {
         def mealRateCode = createMealRateCode()
         save mealRateCode
@@ -62,7 +62,7 @@ class MealRateCodeIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Test optimistic locking.
      */
-	@Test
+    @Test
     void testOptimisticLock() {
         def mealRateCode = createMealRateCode()
         save mealRateCode
@@ -89,7 +89,7 @@ class MealRateCodeIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Tests the ability to delete a MealRateCode.
      */
-	@Test
+    @Test
     void testDeleteMealRateCode() {
         def mealRateCode = createMealRateCode()
         save mealRateCode
@@ -101,14 +101,14 @@ class MealRateCodeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def mealRateCode = new MealRateCode()
         assertFalse "MealRateCode could not be validated as expected due to ${mealRateCode.errors}", mealRateCode.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def mealRateCode = new MealRateCode()
         //should not pass validation since none of the required values are provided
@@ -117,7 +117,7 @@ class MealRateCodeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def mealRateCode = new MealRateCode(
                 code: "TTTTT",

@@ -34,20 +34,20 @@ class RateIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidRate() {
         def rate = newValidForCreateRate()
         rate.save(failOnError: true, flush: true)
@@ -56,7 +56,7 @@ class RateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidRate() {
         def rate = newInvalidForCreateRate()
         shouldFail(ValidationException) {
@@ -65,7 +65,7 @@ class RateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidRate() {
         def rate = newValidForCreateRate()
         rate.save(failOnError: true, flush: true)
@@ -85,7 +85,7 @@ class RateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidRate() {
         def rate = newValidForCreateRate()
         rate.save(failOnError: true, flush: true)
@@ -102,7 +102,7 @@ class RateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def rate = newValidForCreateRate()
         rate.save(failOnError: true, flush: true)
@@ -123,7 +123,7 @@ class RateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteRate() {
         def rate = newValidForCreateRate()
         rate.save(failOnError: true, flush: true)
@@ -134,14 +134,14 @@ class RateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def rate = newInvalidForCreateRate()
         assertFalse "Rate could not be validated as expected due to ${rate.errors}", rate.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def rate = new Rate()
         assertFalse "Rate should have failed validation", rate.validate()

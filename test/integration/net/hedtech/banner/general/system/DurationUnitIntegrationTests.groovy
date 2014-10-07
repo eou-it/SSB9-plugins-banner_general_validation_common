@@ -50,14 +50,14 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     def durationUnitCodeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateDurationUnitCode() {
         def durationUnitCode = newValidForCreateDurationUnit()
 
@@ -66,7 +66,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateDurationUnitCode() {
         def durationUnitCode = newValidForCreateDurationUnit()
 
@@ -85,7 +85,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteDurationUnitCode() {
         def durationUnitCode = newValidForCreateDurationUnit()
 
@@ -98,7 +98,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def durationUnit = newValidForCreateDurationUnit()
         save durationUnit
@@ -121,7 +121,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def durationUnitCode = new DurationUnit()
         //should not pass validation since none of the required values are provided
@@ -134,7 +134,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def durationUnit = new DurationUnit()
         assertFalse "DurationUnit should have failed validation", durationUnit.validate()
@@ -151,7 +151,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testFetchByCodeOrDescriptionILike() {
 
         def filter = "HALF"

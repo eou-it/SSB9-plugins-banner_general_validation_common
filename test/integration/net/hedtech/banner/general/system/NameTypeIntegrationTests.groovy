@@ -15,20 +15,20 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
     def nameTypeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateNameType() {
         def nameType = newNameType()
         save nameType
@@ -37,7 +37,7 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateNameType() {
         def nameType = newNameType()
         save nameType
@@ -63,7 +63,7 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def nameType = newNameType()
         save nameType
@@ -87,7 +87,7 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteNameType() {
         def nameType = newNameType()
         save nameType
@@ -98,14 +98,14 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def nameType = newNameType()
         assertTrue "NameType could not be validated as expected due to ${nameType.errors}", nameType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def nameType = new NameType()
         assertFalse "NameType should have failed validation", nameType.validate()

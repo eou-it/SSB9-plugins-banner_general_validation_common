@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateAdditionalIdentificationType() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         save additionalIdentificationType
@@ -40,7 +40,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
-	@Test
+    @Test
     void testUpdateAdditionalIdentificationType() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         save additionalIdentificationType
@@ -66,7 +66,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -84,7 +84,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         save additionalIdentificationType
@@ -104,7 +104,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
-	@Test
+    @Test
     void testDeleteAdditionalIdentificationType() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         save additionalIdentificationType
@@ -115,14 +115,14 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def additionalIdentificationType = new AdditionalIdentificationType()
         assertFalse "AdditionalIdentificationType could not be validated as expected due to ${additionalIdentificationType.errors}", additionalIdentificationType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def additionalIdentificationType = new AdditionalIdentificationType()
         assertFalse "AdditionalIdentificationType should be valid", additionalIdentificationType.validate()
@@ -131,7 +131,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def additionalIdentificationType = new AdditionalIdentificationType(
                 code: 'XXXXX',
@@ -142,7 +142,7 @@ class AdditionalIdentificationTypeIntegrationTests extends BaseIntegrationTestCa
     }
 
 
-	@Test
+    @Test
     void testInListValidationFailure() {
         def additionalIdentificationType = newAdditionalIdentificationType()
         additionalIdentificationType.searchBypass = "T"

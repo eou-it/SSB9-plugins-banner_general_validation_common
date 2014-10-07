@@ -10,20 +10,20 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
     def religionService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateReligion() {
         def religion = new Religion(code: "T", description: "TT")
         religion = religionService.create([domainModel: religion])
@@ -31,7 +31,7 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateReligion() {
         def religion = new Religion(code: "T", description: "TT")
         religion = religionService.create([domainModel: religion])
@@ -45,7 +45,7 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteReligion() {
         def religion = new Religion(code: "T", description: "TT")
         religion = religionService.create([domainModel: religion])
@@ -58,7 +58,7 @@ class ReligionServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testList() {
         def religion = religionService.list()
         assertTrue religion.size() > 0

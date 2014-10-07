@@ -42,8 +42,8 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
         initializeTestDataForReferences()
@@ -66,13 +66,13 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidFunctionEmphasis() {
         def functionEmphasis = newValidForCreateFunctionEmphasis()
         save functionEmphasis
@@ -81,7 +81,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidFunctionEmphasis() {
         def functionEmphasis = newValidForCreateFunctionEmphasis()
         save functionEmphasis
@@ -110,7 +110,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def functionEmphasis = newValidForCreateFunctionEmphasis()
         save functionEmphasis
@@ -131,7 +131,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteFunctionEmphasis() {
         def functionEmphasis = newValidForCreateFunctionEmphasis()
         save functionEmphasis
@@ -142,7 +142,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def functionEmphasis = newInvalidForCreateFunctionEmphasis()
         functionEmphasis.code = u_failure_code
@@ -152,7 +152,7 @@ class FunctionEmphasisIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def functionEmphasis = new FunctionEmphasis()
         assertFalse "FunctionEmphasis should have failed validation", functionEmphasis.validate()

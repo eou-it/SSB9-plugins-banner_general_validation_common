@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreatePersonType() {
         def personType = newPersonType()
         save personType
@@ -36,7 +36,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdatePersonType() {
         def personType = newPersonType()
         save personType
@@ -63,7 +63,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -81,7 +81,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def personType = newPersonType()
         save personType
@@ -105,7 +105,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeletePersonType() {
         def personType = newPersonType()
         save personType
@@ -116,14 +116,14 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def personType = new PersonType()
         assertFalse "PersonType could not be validated as expected due to ${personType.errors}", personType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def personType = new PersonType()
         assertFalse "PersonType should have failed validation", personType.validate()
@@ -131,7 +131,7 @@ class PersonTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def personType = new PersonType(
                 code: 'XXXXX',

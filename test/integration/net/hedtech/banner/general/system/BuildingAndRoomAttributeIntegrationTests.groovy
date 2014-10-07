@@ -15,20 +15,20 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     def buildingAndRoomAttributeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateBuildingAndRoomAttribute() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         save buildingAndRoomAttribute
@@ -37,7 +37,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateBuildingAndRoomAttribute() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         save buildingAndRoomAttribute
@@ -69,7 +69,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         save buildingAndRoomAttribute
@@ -95,7 +95,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteBuildingAndRoomAttribute() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         save buildingAndRoomAttribute
@@ -106,14 +106,14 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def buildingAndRoomAttribute = newBuildingAndRoomAttribute()
         assertTrue "BuildingAndRoomAttribute could not be validated as expected due to ${buildingAndRoomAttribute.errors}", buildingAndRoomAttribute.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def buildingAndRoomAttribute = new BuildingAndRoomAttribute()
         assertFalse "BuildingAndRoomAttribute should have failed validation", buildingAndRoomAttribute.validate()
@@ -122,7 +122,7 @@ class BuildingAndRoomAttributeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def buildingAndRoomAttribute = new BuildingAndRoomAttribute(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')

@@ -15,18 +15,18 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
  */
 class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
-	@Test
+    @Test
     void testCreateProxyAccessSystemOptionType() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         save proxyAccessSystemOptionType
@@ -34,7 +34,7 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         assertNotNull proxyAccessSystemOptionType.id
     }
 
-	@Test
+    @Test
     void testUpdateProxyAccessSystemOptionType() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         save proxyAccessSystemOptionType
@@ -62,7 +62,7 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         assertEquals "R", proxyAccessSystemOptionType.sytemLevelCode
     }
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         save proxyAccessSystemOptionType
@@ -86,7 +86,7 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         }
     }
 
-	@Test
+    @Test
     void testDeleteProxyAccessSystemOptionType() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         save proxyAccessSystemOptionType
@@ -96,13 +96,13 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         assertNull ProxyAccessSystemOptionType.get(id)
     }
 
-	@Test
+    @Test
     void testValidation() {
         def proxyAccessSystemOptionType = newProxyAccessSystemOptionType()
         assertTrue "ProxyAccessSystemOptionType could not be validated as expected due to ${proxyAccessSystemOptionType.errors}", proxyAccessSystemOptionType.validate()
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def proxyAccessSystemOptionType = new ProxyAccessSystemOptionType()
         assertFalse "ProxyAccessSystemOptionType should have failed validation", proxyAccessSystemOptionType.validate()
@@ -110,7 +110,7 @@ class ProxyAccessSystemOptionTypeIntegrationTests extends BaseIntegrationTestCas
         assertNoErrorsFor proxyAccessSystemOptionType, []
     }
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def proxyAccessSystemOptionType = new ProxyAccessSystemOptionType()
         assertFalse "ProxyAccessSystemOptionType should have failed validation", proxyAccessSystemOptionType.validate()

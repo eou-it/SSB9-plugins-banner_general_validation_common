@@ -15,20 +15,20 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     def stateService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateState() {
         def state = newState()
         save state
@@ -37,7 +37,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateState() {
         def state = newState()
         save state
@@ -72,7 +72,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def state = newState()
         save state
@@ -99,7 +99,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteState() {
         def state = newState()
         save state
@@ -110,14 +110,14 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def state = newState()
         assertTrue "State could not be validated as expected due to ${state.errors}", state.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def state = new State()
         assertFalse "State should have failed validation", state.validate()
@@ -137,7 +137,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def state = new State(
                 ediEquiv: 'XXXX',

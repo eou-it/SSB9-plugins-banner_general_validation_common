@@ -19,20 +19,20 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     def collegeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateCollege() {
         def college = collegeService.create(newCollege("TT"))
         assertNotNull "College returned from collegeService.create has null id", college.id
@@ -40,7 +40,7 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateCollege() {
         def college = collegeService.create(newCollege("TT"))
         assertNotNull college.id
@@ -54,7 +54,7 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteCollege() {
         def college = collegeService.create(newCollege("TT"))
         assertNotNull "College returned from collegeService.create has null id", college.id
@@ -70,6 +70,7 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
 
 	// TODO - HRU-5518
     @Ignore
+    @Test
     void testSaveInvalid() {
         try {
             // note: this will be invalid for both code and description, resulting in two errors

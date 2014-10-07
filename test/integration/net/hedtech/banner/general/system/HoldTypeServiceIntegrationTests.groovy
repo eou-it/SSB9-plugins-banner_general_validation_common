@@ -19,14 +19,14 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     def holdTypeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListAll() {
         def list = holdTypeService.list()
         assertTrue list.size() > 0
@@ -35,7 +35,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListAllWithPagination() {
         def params = ["max": 3, "offset": 2, "sort": "code"]
         def list = holdTypeService.list(params)
@@ -46,7 +46,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListFilteredNoPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "B", "filter[0][operator]": "contains"]
         def list = holdTypeService.list(params)
@@ -57,7 +57,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListFilteredStartsWith() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "B", "filter[0][operator]": "startswith"]
         def list = holdTypeService.list(params)
@@ -67,7 +67,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListFilteredWithPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "A%", "filter[0][operator]": "contains",
                 "max": 3, "offset": 2, "sort": "code"]
@@ -79,7 +79,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListApiFilterByDate() {
         def params = ["filter[0][field]": "lastModified", "filter[0][value]": "2009-01-01T01:00:00-00:00", "filter[0][operator]": "gt", "filter[0][type]": "date"]
         def list = holdTypeService.list(params)
@@ -89,7 +89,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListMultipleFiltersNoPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "BA", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "%a%", "filter[1][operator]": "contains"]
@@ -99,7 +99,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListMultipleFiltersContainsWithoutWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "BA", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "%a%", "filter[1][operator]": "contains"]
@@ -109,7 +109,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListMultipleFiltersContainsStartsWthOutWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "B", "filter[0][operator]": "startswith"]
         def list = holdTypeService.list(params)
@@ -118,7 +118,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListMultipleFiltersContainsStartsWthWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "B%", "filter[0][operator]": "startswith"]
         def list = holdTypeService.list(params)
@@ -127,7 +127,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListMultipleFiltersWithPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "ZZ", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "%A%", "filter[1][operator]": "contains",
@@ -139,7 +139,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeCount() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "B%", "filter[0][operator]": "contains"]
         def listSize = holdTypeService.count(params)
@@ -147,7 +147,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListNonApiFilter() {
         def filterCriteria = ["params": ["code": "B%"],
                 "criteria": [["key": "code", "binding": "code", "operator": Operators.CONTAINS]]]
@@ -158,7 +158,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeListNonApiFilterWithPagination() {
         def filterCriteria = ["params": ["code": "A%"],
                 "criteria": [["key": "code", "binding": "code", "operator": Operators.CONTAINS]],
@@ -169,7 +169,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertTrue list[0] instanceof HoldType
     }
 
-	@Test
+    @Test
     void testHoldTypeShowWithValidHoldType() {
         def args = formMapForShow()
         def holdType = holdTypeService.show(args)
@@ -178,7 +178,7 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testHoldTypeShowWithInvalidHoldTypeCode() {
         def args = formMapForShow()
         args << [id: "wwwwwww"]

@@ -31,14 +31,14 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
     def levelService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateLevel() {
         def level = newValidForCreateLevel()
 
@@ -48,7 +48,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull(level.id)
     }
 
-	@Test
+    @Test
     void testUpdateLevel() {
         def level = newValidForCreateLevel()
         if (!level.save(flush: true, failOnError: true)) {
@@ -71,7 +71,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         assertEquals(1, level.version)
     }
 
-	@Test
+    @Test
     void testDeleteLevel() {
         def level = newValidForCreateLevel()
         if (!level.save(flush: true, failOnError: true)) {
@@ -85,7 +85,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def level = newValidForCreateLevel()
         save level
@@ -105,7 +105,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-	@Test
+    @Test
     void testValidation() {
         def level = new Level()
         //should not pass validation since none of the required values are provided
@@ -125,7 +125,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         assertTrue(level.validate())
     }
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def level = new Level()
         assertFalse "Level should have failed validation", level.validate()
@@ -144,7 +144,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def level = new Level(
                 description: 'This description is longet then allowed, it should throw maxSize error',

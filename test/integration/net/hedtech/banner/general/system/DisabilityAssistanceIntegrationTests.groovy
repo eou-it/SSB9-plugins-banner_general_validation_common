@@ -17,14 +17,14 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
     def disabilityAssistanceService;
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreate() {
         def disabilityAssistance = new DisabilityAssistance(code: "zz", description: "unit-test", lastModified: new Date(),
                 lastModifiedBy: "psykes", dataOrigin: "Banner")
@@ -36,7 +36,7 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdate() {
 
         def disabilityAssistance = new DisabilityAssistance(code: "yy", description: "unit-test", lastModified: new Date(),
@@ -59,7 +59,7 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDelete() {
 
         def disabilityAssistance = new DisabilityAssistance(code: "xx", description: "unit-test", lastModified: new Date(),
@@ -77,7 +77,7 @@ class DisabilityAssistanceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
 
         def disabilityAssistance = new DisabilityAssistance()

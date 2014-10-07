@@ -18,14 +18,14 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     def collegeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@Test
+    @Test
     void testCreateCollege() {
         def entity = newCollege()
         save entity
@@ -34,7 +34,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateCollege() {
         def entity = newCollege()
         save entity
@@ -52,7 +52,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def entity = newCollege()
         save entity
@@ -71,7 +71,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteCollege() {
         def college = newCollege()
         save college
@@ -83,14 +83,14 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def college = newCollege()
         assertTrue "College could not be validated as expected due to ${college.errors}", college.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def college = new College()
         assertFalse "College should have failed validation", college.validate()
@@ -101,7 +101,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def college = new College(code: "TTXX", description: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 addressStreetLine1: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -122,7 +122,7 @@ class CollegeIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testFetchBySomeAttribute() {
         def college = College.fetchBySomeAttribute()
         def collegeList = college.get("list")

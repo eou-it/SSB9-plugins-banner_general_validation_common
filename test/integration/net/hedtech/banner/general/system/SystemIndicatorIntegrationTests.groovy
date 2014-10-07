@@ -34,21 +34,21 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidSystemIndicator() {
         def systemIndicator = newValidForCreateSystemIndicator()
         save systemIndicator
@@ -57,7 +57,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidSystemIndicator() {
         def systemIndicator = newValidForCreateSystemIndicator()
         save systemIndicator
@@ -76,7 +76,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def systemIndicator = newValidForCreateSystemIndicator()
         save systemIndicator
@@ -97,7 +97,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteSystemIndicator() {
         def systemIndicator = newValidForCreateSystemIndicator()
         save systemIndicator
@@ -109,7 +109,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def systemIndicator = new SystemIndicator()
         assertFalse "SystemIndicator should have failed validation", systemIndicator.validate()
@@ -122,7 +122,7 @@ class SystemIndicatorIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def systemIndicator = new SystemIndicator(code: u_failure_code, description: u_failure_description)
         assertFalse "SystemIndicator should have failed validation", systemIndicator.validate()

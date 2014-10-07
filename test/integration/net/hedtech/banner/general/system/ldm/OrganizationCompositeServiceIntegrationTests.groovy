@@ -16,7 +16,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     def organizationCompositeService
 
     @Before
-    void setUp() {
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
         initiializeDataReferences()

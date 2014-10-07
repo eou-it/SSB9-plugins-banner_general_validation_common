@@ -15,20 +15,20 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     def functionService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateFunction() {
         def function = newFunction()
         save function
@@ -37,7 +37,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateFunction() {
         def function = newFunction()
         save function
@@ -66,7 +66,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def function = newFunction()
         save function
@@ -91,7 +91,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteFunction() {
         def function = newFunction()
         save function
@@ -102,14 +102,14 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def function = newFunction()
         assertTrue "Function could not be validated as expected due to ${function.errors}", function.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def function = new Function()
         assertFalse "Function should have failed validation", function.validate()
@@ -118,7 +118,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def function = new Function()
         assertFalse "Function should have failed validation", function.validate()

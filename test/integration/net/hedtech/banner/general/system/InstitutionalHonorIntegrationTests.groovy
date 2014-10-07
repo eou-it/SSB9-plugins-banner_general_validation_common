@@ -15,20 +15,20 @@ import java.text.SimpleDateFormat
 
 class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidInstitutionalHonor() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -37,7 +37,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidInstitutionalHonor() {
         def institutionalHonor = newInvalidForCreateInstitutionalHonor()
         shouldFail(ValidationException) {
@@ -46,7 +46,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidInstitutionalHonor() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -75,7 +75,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidInstitutionalHonor() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -98,7 +98,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -115,7 +115,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -136,7 +136,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteInstitutionalHonor() {
         def institutionalHonor = newValidForCreateInstitutionalHonor()
         institutionalHonor.save(failOnError: true, flush: true)
@@ -147,14 +147,14 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def institutionalHonor = newInvalidForCreateInstitutionalHonor()
         assertFalse "InstitutionalHonor could not be validated as expected due to ${institutionalHonor.errors}", institutionalHonor.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def institutionalHonor = new InstitutionalHonor()
         assertFalse "InstitutionalHonor should have failed validation", institutionalHonor.validate()
@@ -172,7 +172,7 @@ class InstitutionalHonorIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def institutionalHonor = new InstitutionalHonor(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

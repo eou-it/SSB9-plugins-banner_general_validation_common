@@ -42,20 +42,20 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
 
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['SSAEXCL', 'SSASECT', 'STVDAYS'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidDayOfWeek() {
         def dayOfWeek = newValidForCreateDayOfWeek()
         dayOfWeek.save(failOnError: true, flush: true)
@@ -64,7 +64,7 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testCreateInvalidDayOfWeek() {
         def dayOfWeek = newInvalidForCreateDayOfWeek()
         shouldFail() {
@@ -73,7 +73,7 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateValidDayOfWeek() {
         def dayOfWeek = newValidForCreateDayOfWeek()
         dayOfWeek.save(failOnError: true, flush: true)
@@ -98,7 +98,7 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateInvalidDayOfWeek() {
         def dayOfWeek = newValidForCreateDayOfWeek()
         dayOfWeek.save(failOnError: true, flush: true)
@@ -119,7 +119,7 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def dayOfWeek = newValidForCreateDayOfWeek()
         dayOfWeek.save(failOnError: true, flush: true)
@@ -142,7 +142,7 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteDayOfWeek() {
         def dayOfWeek = newValidForCreateDayOfWeek()
         dayOfWeek.save(failOnError: true, flush: true)
@@ -153,14 +153,14 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def dayOfWeek = newValidForCreateDayOfWeek()
         assertTrue "DayOfWeek could not be validated as expected due to ${dayOfWeek.errors}", dayOfWeek.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def dayOfWeek = new DayOfWeek()
         assertFalse "DayOfWeek should have failed validation", dayOfWeek.validate()
@@ -177,7 +177,7 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def dayOfWeek = new DayOfWeek(
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

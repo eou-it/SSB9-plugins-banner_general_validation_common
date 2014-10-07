@@ -15,20 +15,20 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     def buildingService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateBuilding() {
         def building = newBuilding()
         save building
@@ -37,7 +37,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateBuilding() {
         def building = newBuilding()
         save building
@@ -66,7 +66,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def building = newBuilding()
         save building
@@ -91,7 +91,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteBuilding() {
         def building = newBuilding()
         save building
@@ -102,14 +102,14 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def building = newBuilding()
         assertTrue "Building could not be validated as expected due to ${building.errors}", building.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def building = new Building()
         assertFalse "Building should have failed validation", building.validate()
@@ -117,7 +117,7 @@ class BuildingIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def building = new Building(
                 code: 'XXXXXXXX',

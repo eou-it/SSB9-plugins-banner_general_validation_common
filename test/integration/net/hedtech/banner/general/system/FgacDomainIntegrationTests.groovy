@@ -15,20 +15,20 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     def fgacDomainService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateFgacDomain() {
         def fgacDomain = newFgacDomain()
         save fgacDomain
@@ -37,7 +37,7 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateFgacDomain() {
         def fgacDomain = newFgacDomain()
         save fgacDomain
@@ -63,7 +63,7 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def fgacDomain = newFgacDomain()
         save fgacDomain
@@ -87,7 +87,7 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteFgacDomain() {
         def fgacDomain = newFgacDomain()
         save fgacDomain
@@ -98,14 +98,14 @@ class FgacDomainIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def fgacDomain = newFgacDomain()
         assertTrue "FgacDomain could not be validated as expected due to ${fgacDomain.errors}", fgacDomain.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def fgacDomain = new FgacDomain()
         assertFalse "FgacDomain should have failed validation", fgacDomain.validate()

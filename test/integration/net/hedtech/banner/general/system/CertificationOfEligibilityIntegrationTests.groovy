@@ -14,20 +14,20 @@ import java.text.SimpleDateFormat
 
 class CertificationOfEligibilityIntegrationTests extends BaseIntegrationTestCase {
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateValidCertificationOfEligibility() {
         def certificationOfEligibility = newValidForCreateCertificationOfEligibility()
         certificationOfEligibility.save(failOnError: true, flush: true)
@@ -36,7 +36,7 @@ class CertificationOfEligibilityIntegrationTests extends BaseIntegrationTestCase
     }
 
 
-	@Test
+    @Test
     void testUpdateValidCertificationOfEligibility() {
         def certificationOfEligibility = newValidForCreateCertificationOfEligibility()
         certificationOfEligibility.save(failOnError: true, flush: true)
@@ -55,7 +55,7 @@ class CertificationOfEligibilityIntegrationTests extends BaseIntegrationTestCase
     }
 
 
-	@Test
+    @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
         def date = new SimpleDateFormat('yyyy-M-d')
@@ -73,7 +73,7 @@ class CertificationOfEligibilityIntegrationTests extends BaseIntegrationTestCase
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def certificationOfEligibility = newValidForCreateCertificationOfEligibility()
         certificationOfEligibility.save(failOnError: true, flush: true)
@@ -94,7 +94,7 @@ class CertificationOfEligibilityIntegrationTests extends BaseIntegrationTestCase
     }
 
 
-	@Test
+    @Test
     void testDeleteCertificationOfEligibility() {
         def certificationOfEligibility = newValidForCreateCertificationOfEligibility()
         certificationOfEligibility.save(failOnError: true, flush: true)
@@ -105,14 +105,14 @@ class CertificationOfEligibilityIntegrationTests extends BaseIntegrationTestCase
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def certificationOfEligibility = new CertificationOfEligibility()
         assertFalse "CertificationOfEligibility could not be validated as expected due to ${certificationOfEligibility.errors}", certificationOfEligibility.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def certificationOfEligibility = new CertificationOfEligibility()
         assertFalse "CertificationOfEligibility should have failed validation", certificationOfEligibility.validate()

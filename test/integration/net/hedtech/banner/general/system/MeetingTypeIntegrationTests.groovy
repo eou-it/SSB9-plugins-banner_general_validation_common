@@ -15,20 +15,20 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     def meetingTypeService
 
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
         super.tearDown()
     }
 
 
-	@Test
+    @Test
     void testCreateMeetingType() {
         def meetingType = newMeetingType()
         save meetingType
@@ -37,7 +37,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testUpdateMeetingType() {
         def meetingType = newMeetingType()
         save meetingType
@@ -69,7 +69,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testOptimisticLock() {
         def meetingType = newMeetingType()
         save meetingType
@@ -95,7 +95,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testDeleteMeetingType() {
         def meetingType = newMeetingType()
         save meetingType
@@ -106,14 +106,14 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testValidation() {
         def meetingType = newMeetingType()
         assertTrue "MeetingType could not be validated as expected due to ${meetingType.errors}", meetingType.validate()
     }
 
 
-	@Test
+    @Test
     void testNullValidationFailure() {
         def meetingType = new MeetingType()
         assertFalse "MeetingType should have failed validation", meetingType.validate()
@@ -121,7 +121,7 @@ class MeetingTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-	@Test
+    @Test
     void testMaxSizeValidationFailures() {
         def meetingType = new MeetingType(
                 code: 'XXXXXX',

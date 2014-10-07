@@ -251,28 +251,57 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    @Ignore
-	@Test
+    @Test
     void testGetWithValidTerm() {
+        def apiModule = false
         def args = formMapForGet()
-        def RestfulApiRequestParams = (net.hedtech.banner.restfulapi.RestfulApiRequestParams as Class)
-        RestfulApiRequestParams.set(args)
-        def term = termService.get(args.id)
-        assertNotNull term
-        assertEquals term.code, "201410"
+        try {
+            def restfulApiRequestParams = this.class.classLoader.loadClass( 'net.hedtech.banner.restfulapi.RestfulApiRequestParams' ).newInstance()
+            apiModule = true
+        } catch (ClassNotFoundException e) {
+            apiModule = false
+        }
+
+        if(apiModule){
+            def restfulApiRequestParams = this.class.classLoader.loadClass( 'net.hedtech.banner.restfulapi.RestfulApiRequestParams' ).newInstance()
+            restfulApiRequestParams.set(args)
+            def term = termService.get(args.id)
+            assertNotNull term
+            assertEquals term.code, "201410"
+        } else {
+            shouldFail(ClassNotFoundException) {
+                def restfulApiRequestParams = this.class.classLoader.loadClass('net.hedtech.banner.restfulapi.RestfulApiRequestParams').newInstance()
+            }
+        }
     }
 
 
-    @Ignore
+
 	@Test
     void testGetWithInvalidTermCode() {
+        def apiModule = false
         def args = formMapForGet()
         args << [id: "wwwwwww"]
-        def RestfulApiRequestParams = (net.hedtech.banner.restfulapi.RestfulApiRequestParams as Class)
-        RestfulApiRequestParams.set(args)
-        shouldFail(ApplicationException) {
-            def term = termService.get(args.id)
+
+        try {
+            def restfulApiRequestParams = this.class.classLoader.loadClass( 'net.hedtech.banner.restfulapi.RestfulApiRequestParams' ).newInstance()
+            apiModule = true
+        } catch (ClassNotFoundException e) {
+            apiModule = false
         }
+
+        if(apiModule) {
+            def restfulApiRequestParams = this.class.classLoader.loadClass( 'net.hedtech.banner.restfulapi.RestfulApiRequestParams' ).newInstance()
+            restfulApiRequestParams.set(args)
+            shouldFail(ClassNotFoundException) {
+                def term = termService.get(args.id)
+            }
+        } else {
+            shouldFail(ClassNotFoundException ) {
+                def restfulApiRequestParams = this.class.classLoader.loadClass('net.hedtech.banner.restfulapi.RestfulApiRequestParams').newInstance()
+            }
+        }
+
     }
 
 

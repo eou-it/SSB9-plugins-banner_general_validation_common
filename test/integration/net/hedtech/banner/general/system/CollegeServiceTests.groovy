@@ -68,7 +68,8 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
     }
 
 
-	@Ignore
+	// TODO - HRU-5518
+    @Ignore
     void testSaveInvalid() {
         try {
             // note: this will be invalid for both code and description, resulting in two errors

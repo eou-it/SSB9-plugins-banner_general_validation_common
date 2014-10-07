@@ -77,9 +77,9 @@ class TermService extends ServiceBase {
         Map params = [:]
 
         try {
-            def RestfulApiRequestParams = (net.hedtech.banner.restfulapi.RestfulApiRequestParams as Class)
+            def RestfulApiRequestParams = this.class.classLoader.loadClass( 'net.hedtech.banner.restfulapi.RestfulApiRequestParams' ).newInstance()
             params = RestfulApiRequestParams.get();
-        } catch (e) {
+        } catch (ClassNotFoundException e) {
         }
 
         if (params?.pluralizedResourceName) {

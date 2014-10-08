@@ -2,6 +2,7 @@
  Copyright 2014 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
@@ -105,7 +106,7 @@ class LdmService {
         try {
             date = dateFormat.parse( strDate )
         } catch (ParseException pe) {
-            throw new ApplicationException( GlobalUniqueIdentifierService.API, "@@r1:date.invalid.format.message:BusinessLogicValidationException@@" )
+            throw new ApplicationException( GlobalUniqueIdentifierService.API, new BusinessLogicValidationException("date.invalid.format.message",["BusinessLogicValidationException"]) )
         }
         return date
     }
@@ -114,7 +115,7 @@ class LdmService {
     public String getTimeInHHmmFormat( String time ) {
         if(time) {
             if (time?.length() != getTimeFormat()?.length())
-                throw new ApplicationException( GlobalUniqueIdentifierService.API, "@@r1:time.invalid.format.message:BusinessLogicValidationException@@" )
+                throw new ApplicationException( GlobalUniqueIdentifierService.API, new BusinessLogicValidationException("time.invalid.format.message",["BusinessLogicValidationException"]) )
 
             String[] timesArray = time?.split( ':' )
             List patternList = getTimeFormat()?.toLowerCase().split( ':' ) as List

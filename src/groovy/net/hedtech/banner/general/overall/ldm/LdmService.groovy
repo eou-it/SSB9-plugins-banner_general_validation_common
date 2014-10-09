@@ -25,7 +25,7 @@ class LdmService {
     ]
 
 
-    static String fetchBannerDomainPropertyForLdmField( String ldmField ) {
+    static String fetchBannerDomainPropertyForLdmField(String ldmField) {
         return ldmFieldToBannerDomainPropertyMap[ldmField]
     }
 
@@ -40,12 +40,12 @@ class LdmService {
      * @param translationValue
      * @return
      */
-    IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue( String processCode, String settingName, String translationValue ) {
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue( 'LDM', settingName, translationValue )
-        IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get( 0 ) : null
-        LdmService.log.debug( "ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getMissCount() )
-        LdmService.log.debug( "ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getHitCount() )
-        LdmService.log.debug( "ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getPutCount() )
+    IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue) {
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM', settingName, translationValue)
+        IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
+        LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
+        LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
+        LdmService.log.debug("ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
         return integrationConfig
     }
 
@@ -60,12 +60,12 @@ class LdmService {
      * @param value
      * @return
      */
-    IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue( String processCode, String settingName, String value ) {
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue( 'LDM', settingName, value )
-        IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get( 0 ) : null
-        LdmService.log.debug( "ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getMissCount() )
-        LdmService.log.debug( "ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getHitCount() )
-        LdmService.log.debug( "ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics( IntegrationConfiguration.LDM_CACHE_REGION_NAME ).getPutCount() )
+    IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue(String processCode, String settingName, String value) {
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue('LDM', settingName, value)
+        IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
+        LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
+        LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
+        LdmService.log.debug("ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
         return integrationConfig
     }
 
@@ -73,12 +73,13 @@ class LdmService {
      * This method ensures that application exception includes BusinessLogicValidationException message which returns with http status code 400.
      * @param e ApplicationException
      */
-    static void throwBusinessLogicValidationException( ApplicationException ae ) {
+    void throwBusinessLogicValidationException(ApplicationException ae) {
         if (ae.wrappedException instanceof NotFoundException) {
-            throw new ApplicationException( ae.getEntityClassName(), "@@r1:not.found.message:${ae.getUserFriendlyName()}:${ae.wrappedException.id}:BusinessLogicValidationException@@" )
-        } else if (ae.getType() == "RuntimeException" && ae.wrappedException.message.startsWith( "@@r1" )) {
-            String wrappedExceptionMsg = ae.wrappedException.message
-            throw new ApplicationException( ae.getEntityClassName(), wrappedExceptionMsg.substring( 0, wrappedExceptionMsg.length() - 2 ) + ':BusinessLogicValidationException@@' )
+            throw new ApplicationException(ae.getEntityClassName(), new BusinessLogicValidationException("not.found.message",[ae.getUserFriendlyName(), ae.wrappedException.id]))
+        } else if (ae.getType() == "RuntimeException" && ae.wrappedException.message.startsWith("@@r1")) {
+            String message = ae.wrappedException.message
+            Map rcps = getResourceCodeAndParams(message)
+            throw new ApplicationException(ae.getEntityClassName(), new BusinessLogicValidationException(rcps.resourceCode, rcps.bindingParams))
         } else {
             throw ae
         }
@@ -90,7 +91,7 @@ class LdmService {
      * @param domainModel Domain object
      * @param map json payload
      */
-    static void setDataOrigin( domainModel, map ) {
+    static void setDataOrigin(domainModel, map) {
         if (!domainModel) return
         if (map?.metadata && map?.metadata?.dataOrigin) {
             domainModel.dataOrigin = map?.metadata?.dataOrigin
@@ -98,28 +99,28 @@ class LdmService {
     }
 
 
-    static Date convertString2Date( String strDate ) {
-        DateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd" )
+    static Date convertString2Date(String strDate) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd")
         dateFormat.lenient = false
 
         Date date
         try {
-            date = dateFormat.parse( strDate )
+            date = dateFormat.parse(strDate)
         } catch (ParseException pe) {
-            throw new ApplicationException( GlobalUniqueIdentifierService.API, new BusinessLogicValidationException("date.invalid.format.message",["BusinessLogicValidationException"]) )
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new BusinessLogicValidationException("date.invalid.format.message", ["BusinessLogicValidationException"]))
         }
         return date
     }
 
 
-    public String getTimeInHHmmFormat( String time ) {
-        if(time) {
+    public String getTimeInHHmmFormat(String time) {
+        if (time) {
             if (time?.length() != getTimeFormat()?.length())
-                throw new ApplicationException( GlobalUniqueIdentifierService.API, new BusinessLogicValidationException("time.invalid.format.message",["BusinessLogicValidationException"]) )
+                throw new ApplicationException(GlobalUniqueIdentifierService.API, new BusinessLogicValidationException("time.invalid.format.message", ["BusinessLogicValidationException"]))
 
-            String[] timesArray = time?.split( ':' )
-            List patternList = getTimeFormat()?.toLowerCase().split( ':' ) as List
-            return timesArray[patternList.indexOf( 'hh' )] + timesArray[patternList.indexOf( 'mm' )]
+            String[] timesArray = time?.split(':')
+            List patternList = getTimeFormat()?.toLowerCase().split(':') as List
+            return timesArray[patternList.indexOf('hh')] + timesArray[patternList.indexOf('mm')]
         }
     }
 
@@ -128,5 +129,70 @@ class LdmService {
         return timeFormat ?: (timeFormat = MessageResolver.message("default.time.withSeconds.format"))
     }
 
-}
+    private Map getResourceCodeAndParams(String msg) {
+        List<String> bindingParams = parse(extractAPIErrorText(msg))
+        if (bindingParams.size() < 2) {
+            log.warn "Exception message did not contain parsable content: $msg"
+            resourceCode = "unknown.banner.api.exception"
+        }
+        if (!bindingParams.get(0).equals("r1")) {
+            log.warn "Unknown tunneled exception; message should have started with 'r1' but was: $msg"
+            resourceCode = "unknown.banner.api.exception"
+        }
+        String resourceCode = bindingParams.get(1)
+        bindingParams.remove(0)
+        bindingParams.remove(0)
 
+        [resourceCode: resourceCode, bindingParams: bindingParams]
+    }
+
+    private List<String> parse(String source) {
+        List<String> values = new ArrayList<String>()
+        String currentChar = null
+        StringBuffer sb = new StringBuffer()
+        boolean lastCharWasEscape = false
+        for (int i = 0; i < source.length(); i++) {
+            currentChar = source.substring(i, i + 1)
+            if (lastCharWasEscape) {
+                if (currentChar.equals("\\")) {
+                    lastCharWasEscape = false
+                    sb.append("\\")
+                    currentChar = null
+                } else if (currentChar.equals(":")) {
+                    lastCharWasEscape = false
+                    sb.append(":")
+                    currentChar = null
+                } else {
+                    // didn't escape anything, discard
+                    sb.append(currentChar)
+                    lastCharWasEscape = false
+                    currentChar = null
+                }
+            } else if (currentChar.equals("\\")) {
+                lastCharWasEscape = true
+            } else if (currentChar.equals(":")) {
+                // field separater
+                values.add(sb.toString())
+                sb = new StringBuffer()
+                currentChar = null
+            } else {
+                sb.append(currentChar)
+                currentChar = null
+            }
+        }
+        if (currentChar != null) {
+            sb.append(currentChar)
+        }
+        values.add(sb.toString())
+        return values
+    }
+
+    private String extractAPIErrorText(String message) {
+        if (message == null) {
+            return message
+        }
+        String tmp = message.substring(message.indexOf("@@") + 2, message.length())
+        int end = tmp.indexOf("@@")
+        return tmp.substring(0, end)
+    }
+}

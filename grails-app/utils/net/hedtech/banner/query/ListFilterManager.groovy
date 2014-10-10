@@ -180,16 +180,16 @@ class ListFilterManager {
         }
         else {
             if (map.operator == "eq") {
-                return Restrictions.eq( map.field, value)
+                return Restrictions.eq( map.field, value).ignoreCase()
             }
             else if (map.operator == "st") {
-                return Restrictions.like( map.field, value + "%")
+                return Restrictions.ilike( map.field, value + "%")
             }
             else if (map.operator == "co") {
-                return Restrictions.like( map.field, "%" + value + "%")
+                return Restrictions.ilike( map.field, "%" + value + "%")
             }
             else if (map.operator == "ne") {
-                return Restrictions.ne(map.field, value)
+                return Restrictions.ne(map.field, value).ignoreCase()
             }
             else if (map.operator == "t") {
                 if (fieldDefinition.trueFalseProcessor) {

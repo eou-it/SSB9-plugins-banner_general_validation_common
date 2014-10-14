@@ -73,9 +73,9 @@ class LdmService {
      * This method ensures that application exception includes BusinessLogicValidationException message which returns with http status code 400.
      * @param e ApplicationException
      */
-    void throwBusinessLogicValidationException(ApplicationException ae) {
+    static void throwBusinessLogicValidationException(ApplicationException ae) {
         if (ae.wrappedException instanceof NotFoundException) {
-            throw new ApplicationException(ae.getEntityClassName(), new BusinessLogicValidationException("not.found.message",[ae.getUserFriendlyName(), ae.wrappedException.id]))
+                throw new ApplicationException(ae.getEntityClassName(), new BusinessLogicValidationException("not.found.message", [ae.getUserFriendlyName(),ae.wrappedException.id]))
         } else if (ae.getType() == "RuntimeException" && ae.wrappedException.message.startsWith("@@r1")) {
             String message = ae.wrappedException.message
             Map rcps = getResourceCodeAndParams(message)
@@ -129,24 +129,25 @@ class LdmService {
         return timeFormat ?: (timeFormat = MessageResolver.message("default.time.withSeconds.format"))
     }
 
-    private Map getResourceCodeAndParams(String msg) {
+    //Stolen from private methods in ApplicationException...
+    private static Map getResourceCodeAndParams(String msg) {
         List<String> bindingParams = parse(extractAPIErrorText(msg))
         if (bindingParams.size() < 2) {
-            log.warn "Exception message did not contain parsable content: $msg"
-            resourceCode = "unknown.banner.api.exception"
+            return [resourceCode: "unknown.banner.api.exception"]
         }
         if (!bindingParams.get(0).equals("r1")) {
-            log.warn "Unknown tunneled exception; message should have started with 'r1' but was: $msg"
-            resourceCode = "unknown.banner.api.exception"
+            return [resourceCode: "unknown.banner.api.exception"]
         }
-        String resourceCode = bindingParams.get(1)
-        bindingParams.remove(0)
-        bindingParams.remove(0)
+        else {
+            String resourceCode = bindingParams.get(1)
+            bindingParams.remove(0)
+            bindingParams.remove(0)
 
-        [resourceCode: resourceCode, bindingParams: bindingParams]
+            [resourceCode: resourceCode, bindingParams: bindingParams]
+        }
     }
 
-    private List<String> parse(String source) {
+    private static List<String> parse(String source) {
         List<String> values = new ArrayList<String>()
         String currentChar = null
         StringBuffer sb = new StringBuffer()
@@ -187,7 +188,7 @@ class LdmService {
         return values
     }
 
-    private String extractAPIErrorText(String message) {
+    private static String extractAPIErrorText(String message) {
         if (message == null) {
             return message
         }

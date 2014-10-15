@@ -16,7 +16,7 @@ class ListFilterManager {
      * The operators. They are equals, not equals, less than, greater than, contains, starts with, exists, does not exist,
      * true, false
      */
-    enum operators  { eq, ne, lt, gt, co, st, has, hasnot, t, f}
+    enum operators  { eq, ne, lt, gt, co, st, en, has, hasnot, t, f}
 
     /**
      * The field types. They are:
@@ -184,6 +184,9 @@ class ListFilterManager {
             }
             else if (map.operator == "st") {
                 return Restrictions.ilike( map.field, value + "%")
+            }
+            else if (map.operator == "en") {
+                return Restrictions.ilike( map.field, "%" + value)
             }
             else if (map.operator == "co") {
                 return Restrictions.ilike( map.field, "%" + value + "%")

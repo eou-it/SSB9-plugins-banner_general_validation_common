@@ -189,7 +189,10 @@ class ListFilterManager {
                 return Restrictions.ilike( map.field, "%" + value + "%")
             }
             else if (map.operator == "ne") {
-                return Restrictions.ne(map.field, value).ignoreCase()
+                def ourRestriction = Restrictions.disjunction()
+                ourRestriction.add(Restrictions.ne(map.field, value).ignoreCase())
+                ourRestriction.add(Restrictions.isNull(map.field))
+                return ourRestriction
             }
             else if (map.operator == "t") {
                 if (fieldDefinition.trueFalseProcessor) {

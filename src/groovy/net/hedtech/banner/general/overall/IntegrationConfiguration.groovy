@@ -187,7 +187,6 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode ) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            log.debug("Inside IntegrationConfiguration >>sessionFactory.getCurrentSession().getCacheMode()" + session.getCacheMode());
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue')
                     .setString('processCode', processCode).setString('settingName', settingName).setString('translationValue', translationValue).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
 
@@ -204,7 +203,6 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode ) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            log.debug("Inside IntegrationConfiguration >>sessionFactory.getCurrentSession().getCacheMode()" + session.getCacheMode());
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
                     .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
 
@@ -218,11 +216,8 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode ) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            log.debug("Inside IntegrationConfiguration >>sessionFactory.getCurrentSession().getCacheMode()" + session.getCacheMode());
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
                     .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
-
-
         }
         return integrationList?.size() > 0 ? integrationList?.get(0) : null
 

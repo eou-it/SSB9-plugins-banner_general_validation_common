@@ -2,6 +2,9 @@
 Copyright 2014 Ellucian Company L.P. and its affiliates.
 *******************************************************************************/
 package net.hedtech.banner.general.system
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 import grails.validation.ValidationException
 import groovy.sql.Sql
@@ -45,18 +48,20 @@ class SqlProcessParameterIntegrationTests extends BaseIntegrationTestCase {
 	def u_failure_endDate = new Date()
 
 
-
-	protected void setUp() {
+    @Before
+    public void setUp() {
 		formContext = ['GUAGMNU']
 		super.setUp()
 	}
 
 
-	protected void tearDown() {
+    @After
+    public void tearDown() {
 		super.tearDown()
 	}
 	
 	
+    @Test
 	void testCreateValidSqlProcessParameter() {
 		def sqlProcessParameter = newValidForCreateSqlProcessParameter()
 		sqlProcessParameter.save( failOnError: true, flush: true )
@@ -65,6 +70,7 @@ class SqlProcessParameterIntegrationTests extends BaseIntegrationTestCase {
 	}
 	
 	
+    @Test
 	void testCreateInvalidSqlProcessParameter() {
 		def sqlProcessParameter = newInvalidForCreateSqlProcessParameter()
 		shouldFail(ValidationException) {
@@ -73,6 +79,7 @@ class SqlProcessParameterIntegrationTests extends BaseIntegrationTestCase {
 	}
 	
 	
+    @Test
 	void testUpdateValidSqlProcessParameter() {
 		def sqlProcessParameter = newValidForCreateSqlProcessParameter()
 		sqlProcessParameter.save( failOnError: true, flush: true )
@@ -100,6 +107,7 @@ class SqlProcessParameterIntegrationTests extends BaseIntegrationTestCase {
 	}
 	
 	
+    @Test
 	void testUpdateInvalidSqlProcessParameter() {
 		def sqlProcessParameter = newValidForCreateSqlProcessParameter()
 		sqlProcessParameter.save( failOnError: true, flush: true )
@@ -122,6 +130,7 @@ class SqlProcessParameterIntegrationTests extends BaseIntegrationTestCase {
 	}
 	
 	
+    @Test
     void testDates() {
         def time = new SimpleDateFormat('HHmmss')
         def hour = new SimpleDateFormat('HH')
@@ -149,6 +158,7 @@ class SqlProcessParameterIntegrationTests extends BaseIntegrationTestCase {
     }
 	
 	
+    @Test
     void testOptimisticLock() {
 		def sqlProcessParameter = newValidForCreateSqlProcessParameter()
 		sqlProcessParameter.save( failOnError: true, flush: true )
@@ -172,6 +182,7 @@ class SqlProcessParameterIntegrationTests extends BaseIntegrationTestCase {
     }
 	
 	
+    @Test
 	void testDeleteSqlProcessParameter() {
 		def sqlProcessParameter = newValidForCreateSqlProcessParameter()
 		sqlProcessParameter.save( failOnError: true, flush: true )
@@ -182,12 +193,14 @@ class SqlProcessParameterIntegrationTests extends BaseIntegrationTestCase {
 	}
 	
 	
+    @Test
     void testValidation() {
        def sqlProcessParameter = newInvalidForCreateSqlProcessParameter()
        assertFalse "SqlProcessParameter could not be validated as expected due to ${sqlProcessParameter.errors}", sqlProcessParameter.validate()
     }
 	
 	
+    @Test
     void testNullValidationFailure() {
         def sqlProcessParameter = new SqlProcessParameter()
         assertFalse "SqlProcessParameter should have failed validation", sqlProcessParameter.validate()

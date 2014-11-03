@@ -2,6 +2,9 @@
  Copyright 2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.query.operators.Operators
@@ -17,12 +20,20 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     def studentActivityService
 
 
-    protected void setUp() {
+    @Before
+    public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 
 
+    @After
+    public void tearDown() {
+        super.tearDown()
+    }
+
+
+    @Test
     void testStudentActivityListAll() {
         def list = studentActivityService.list()
         assertTrue list.size() > 0
@@ -32,6 +43,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListAllWithPagination() {
         def params = ["max": 50, "offset": 2, "sort": "code"]
         def list = studentActivityService.list(params)
@@ -42,6 +54,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListFilteredNoPagination() {
         def studentActivityControlList = StudentActivity.findAllByCodeIlike("%3%")
         assertTrue studentActivityControlList.size() > 0
@@ -57,6 +70,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListFilteredStartsWith() {
         def studentActivityControlList = StudentActivity.findAllByCodeIlike("1%")
         assertTrue studentActivityControlList.size() > 0
@@ -72,6 +86,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListFilteredWithPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "1", "filter[0][operator]": "contains",
                 "max": 10, "offset": 2, "sort": "code"]
@@ -83,6 +98,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListMultipleFiltersNoPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "130", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "Debate", "filter[1][operator]": "contains"]
@@ -93,6 +109,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListMultipleFiltersContainsWithoutWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "130", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "Debate", "filter[1][operator]": "contains"]
@@ -103,6 +120,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListMultipleFiltersContainsStartsWthOutWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "1", "filter[0][operator]": "startswith"]
         def list = studentActivityService.list(params)
@@ -112,6 +130,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListMultipleFiltersContainsStartsWthWildcard() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "1%", "filter[0][operator]": "startswith"]
         def list = studentActivityService.list(params)
@@ -121,6 +140,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListMultipleFiltersWithPagination() {
         def params = ["filter[0][field]": "code", "filter[0][value]": "300", "filter[0][operator]": "lt",
                 "filter[1][field]": "description", "filter[1][value]": "Team", "filter[1][operator]": "contains",
@@ -132,6 +152,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testListCodeFilterSupportedOperators() {
         def params = ["filter[0][field]": "code", "filter[0][operator]": "equals", "filter[0][value]": "130"]
         def list = studentActivityService.list(params)
@@ -155,6 +176,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testListDescriptionFilterSupportedOperators() {
         def params = ["filter[0][field]": "description", "filter[0][operator]": "equals", "filter[0][value]": "Debate Club"]
         def list = studentActivityService.list(params)
@@ -170,6 +192,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testListDescriptionFilterUnsupportedOperator() {
         // Unsupported operator
         def params = ["filter[0][field]": "description", "filter[0][operator]": "startswith", "filter[0][value]": "Debate"]
@@ -181,6 +204,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testListActivityTypeFilterSupportedOperators() {
         def params = ["filter[0][field]": "activityType", "filter[0][operator]": "equals", "filter[0][value]": "SPRTS"]
         def list = studentActivityService.list(params)
@@ -204,6 +228,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityCount() {
         def studentActivityControlList = StudentActivity.findAllByCodeIlikeAndActivityType("%1%", ActivityType.findByCode("SPRTS"))
         assertTrue studentActivityControlList.size() > 0
@@ -217,6 +242,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListNonApiFilter() {
         def studentActivityControlList = StudentActivity.findAllByCodeIlike("1%")
         assertTrue studentActivityControlList.size() > 0
@@ -232,6 +258,7 @@ class StudentActivityServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
     void testStudentActivityListNonApiFilterWithPagination() {
         def filterCriteria = ["params": ["code": "1%"],
                 "criteria": [["key": "code", "binding": "code", "operator": Operators.CONTAINS]],

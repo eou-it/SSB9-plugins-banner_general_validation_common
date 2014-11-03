@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2014 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -20,9 +20,9 @@ import net.hedtech.banner.service.ServiceBase
 // create, update, and delete may throw grails.validation.ValidationException a runtime exception when there is a validation failure
 
 /**
- * A transactional service supporting persistence of the Term model and filtering using the restfulApi plugin.
+ * A transactional service supporting persistence of the StudentActivity model and filtering using the restfulApi plugin.
  * */
-class TermService extends ServiceBase {
+class StudentActivityService extends ServiceBase {
 
     boolean transactional = true
 
@@ -45,16 +45,19 @@ class TermService extends ServiceBase {
 
         def allowedFields = ["code"        : [Operators.EQUALS, Operators.CONTAINS, Operators.STARTS_WITH, "lt", Operators.LESS_THAN, "gt", Operators.GREATER_THAN],
                              "description" : [Operators.EQUALS, Operators.EQUALS_IGNORE_CASE, Operators.CONTAINS],
-                             "startDate"   : [Operators.EQUALS, "lt", Operators.LESS_THAN, "le", Operators.LESS_THAN_EQUALS, "gt", Operators.GREATER_THAN, "ge", Operators.GREATER_THAN_EQUALS],
-                             "endDate"     : [Operators.EQUALS, "lt", Operators.LESS_THAN, "le", Operators.LESS_THAN_EQUALS, "gt", Operators.GREATER_THAN, "ge", Operators.GREATER_THAN_EQUALS],
-                             "lastModified": [Operators.EQUALS, "lt", Operators.LESS_THAN, "gt", Operators.GREATER_THAN]]
+                             "activityType": [Operators.EQUALS, Operators.CONTAINS, Operators.STARTS_WITH, "lt", Operators.LESS_THAN, "gt", Operators.GREATER_THAN]]
         RestfulApiValidationUtility.validateCriteria(QueryBuilder.createFilters(map), allowedFields)
 
-        def termQuery = """from Term a"""
-        def termList = new DynamicFinder(Term.class, termQuery, "a").find([params: filterMap.params, criteria: filterMap.criteria],
+        // activityType references a validation table, so adjust the binding
+        filterMap.criteria.each {
+            if (it.key == "activityType") it.binding= "activityType.code"
+        } 
+        
+        def studentActivityQuery = """from StudentActivity a"""
+        def studentActivityList = new DynamicFinder(StudentActivity.class, studentActivityQuery, "a").find([params: filterMap.params, criteria: filterMap.criteria],
                                                                           filterMap.pagingAndSortParams)
 
-        return termList
+        return studentActivityList
     }
 
 
@@ -64,34 +67,39 @@ class TermService extends ServiceBase {
 
         // If not using filters, defer to the ServiceBase or any other count implementation
         if (filterMap.size() == 0 && !map.params && !map.criteria) return super.count()
+        
+        // activityType references a validation table, so adjust the binding
+        filterMap.criteria.each {
+            if (it.key == "activityType") it.binding= "activityType.code"
+        }
 
-        def termQuery = """from Term a"""
-        def termSize = new DynamicFinder(Term.class, termQuery, "a").count([params: filterMap.params, criteria: filterMap.criteria])
+        def studentActivityQuery = """from StudentActivity a"""
+        def studentActivitySize = new DynamicFinder(StudentActivity.class, studentActivityQuery, "a").count([params: filterMap.params, criteria: filterMap.criteria])
 
-        return termSize
+        return studentActivitySize
     }
 
 
     def get(id) {
-        Term term
+        StudentActivity studentActivity
         Map params = [:]
 
         try {
-            def RestfulApiRequestParams = this.class.classLoader.loadClass( 'net.hedtech.banner.restfulapi.RestfulApiRequestParams' ).newInstance()
+            def RestfulApiRequestParams = (net.hedtech.banner.restfulapi.RestfulApiRequestParams as Class)
             params = RestfulApiRequestParams.get();
-        } catch (ClassNotFoundException e) {
+        } catch (e) {
         }
 
         if (params?.pluralizedResourceName) {
-            String termCode = id
-            term = Term.findByCode(termCode)
-            if (!term) {
-                throw new ApplicationException("Term", termCode, new NotFoundException(id: termCode, entityClassName: Term.class.simpleName))
+            String studentActivityCode = id
+            studentActivity = StudentActivity.findByCode(studentActivityCode)
+            if (!studentActivity) {
+                throw new ApplicationException("StudentActivity", studentActivityCode, new NotFoundException(id: studentActivityCode, entityClassName: StudentActivity.class.simpleName))
             }
         } else {
-            term = super.get(id)
+            studentActivity = super.get(id)
         }
-        return term
+        return studentActivity
     }
 
 }

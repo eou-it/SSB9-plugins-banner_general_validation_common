@@ -21,8 +21,8 @@ class InformationTextPersonaListService {
     static Logger staticLog = Logger.getLogger( "net.hedtech.banner.general.utility.InformationTextPersonaListService" )
 
     static {
-        if (Holders?.config.webTailorRoleList?.size() != 0) {
-            webTailorRoleList = Holders?.config.webTailorRoleList
+        if (Holders?.config?.webTailorRoleList?.size() > 0) {
+            webTailorRoleList = Holders.config.webTailorRoleList
         }
     }
 

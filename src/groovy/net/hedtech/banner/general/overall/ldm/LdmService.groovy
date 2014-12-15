@@ -226,7 +226,7 @@ class LdmService {
                 }
             }
         }
-        return version
+        return version?.toLowerCase()
     }
 
 
@@ -236,7 +236,7 @@ class LdmService {
     }
 
 
-    private static HttpServletRequest getHttpServletRequest() {
+    public static HttpServletRequest getHttpServletRequest() {
         HttpServletRequest request
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes()
         if (requestAttributes && requestAttributes instanceof ServletRequestAttributes) {

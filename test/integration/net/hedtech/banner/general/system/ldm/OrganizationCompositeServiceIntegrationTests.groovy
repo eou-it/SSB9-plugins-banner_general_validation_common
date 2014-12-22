@@ -14,6 +14,7 @@ import org.junit.Test
 class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     College college
+    Department department
     def organizationCompositeService
 
     @Before
@@ -26,6 +27,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
     private void initiializeDataReferences() {
         college = College.findByCode('AH')
+        department = Department.findByCode('ECON')
     }
 
     /**
@@ -75,10 +77,9 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     void testGetWithInvalidGuid() {
-        shouldFail( ApplicationException  ) {
+        shouldFail(ApplicationException) {
             organizationCompositeService.get(null)
         }
-
     }
 
     /**
@@ -94,15 +95,39 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     }
 
     /**
-     * Testcase for fetchByCollegeCode
+     * Testcase for fetchByCollegeCode method
      */
     @Test
-    void testFetchFetchByCollegeCode() {
+    void testFetchByCollegeCode() {
         Organization organization = organizationCompositeService.fetchByCollegeCode(college.code)
         assertNotNull organization
         assertEquals college.code, organization.abbreviation
         assertEquals college.description, organization.title
         assertEquals college.dataOrigin, organization.metadata.dataOrigin
+    }
+
+    /**
+     * Testcase for fetchByDepartmentId method
+     */
+    @Test
+    void testFetchByDepartmentId() {
+        def organization = organizationCompositeService.fetchByDepartmentId(department.id)
+        assertNotNull organization
+        assertEquals department.code, organization.abbreviation
+        assertEquals department.description, organization.title
+        assertEquals department.dataOrigin, organization.metadata.dataOrigin
+    }
+
+    /**
+     * Testcase for fetchByDepartmentCode method
+     */
+    @Test
+    void testFetchByDepartmentCode() {
+        Organization organization = organizationCompositeService.fetchByDepartmentCode(department.code)
+        assertNotNull organization
+        assertEquals department.code, organization.abbreviation
+        assertEquals department.description, organization.title
+        assertEquals department.dataOrigin, organization.metadata.dataOrigin
     }
 
 }

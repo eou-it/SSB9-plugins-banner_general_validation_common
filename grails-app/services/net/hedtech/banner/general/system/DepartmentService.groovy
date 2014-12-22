@@ -20,4 +20,14 @@ class DepartmentService extends ServiceBase{
 
     boolean transactional = true
 
+    /**
+     * Finds Department for a give departmentCode
+     * @param departmentCode
+     * @return Department - Entity
+     */
+    Department fetchByCode(departmentCode){
+        Department.findByCode(departmentCode)
+
+    }
+
 }

@@ -24,6 +24,7 @@ class OrganizationCompositeService {
     private static final String DEPARTMENT_LDM_NAME = "departments"
 
     def collegeService
+    def departmentService
 
     // For Hibernate current session
     def sessionFactory
@@ -117,6 +118,30 @@ class OrganizationCompositeService {
             return null
         }
         return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, college.id).guid, college.code, college.description, OrganizationType.COLLEGE.value, new Metadata(college.dataOrigin))
+    }
+
+
+    Organization fetchByDepartmentId(Long domainId) {
+        if (null == domainId) {
+            return null
+        }
+        Department department = departmentService.get(domainId)
+        if (!department) {
+            return null
+        }
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(DEPARTMENT_LDM_NAME, domainId).guid, department.code, department.description, OrganizationType.DEPARTMENT.value, new Metadata(department.dataOrigin))
+    }
+
+
+    Organization fetchByDepartmentCode(String departmentCode) {
+        if (!departmentCode) {
+            return null
+        }
+        Department department = departmentService.fetchByCode(departmentCode)
+        if (!department) {
+            return null
+        }
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(DEPARTMENT_LDM_NAME, department.id).guid, department.code, department.description, OrganizationType.DEPARTMENT.value, new Metadata(department.dataOrigin))
     }
 
 

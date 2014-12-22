@@ -10,6 +10,12 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GORGUID")
+@NamedQueries(value = [
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNamesAndGuid",
+                query = """FROM  GlobalUniqueIdentifier a
+	  	                WHERE a.ldmName IN ('colleges', 'departments')
+	  	                AND a.guid = :guid """)
+])
 class GlobalUniqueIdentifier implements Serializable {
     /**
      * Surrogate ID for GORGUID
@@ -132,6 +138,15 @@ class GlobalUniqueIdentifier implements Serializable {
         if (globalUniqueIdentifier?.ldmName != ldmName) {
             globalUniqueIdentifier = null
         }
+        return globalUniqueIdentifier
+    }
+
+
+    static GlobalUniqueIdentifier fetchByLdmNamesAndGuid(String guid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.withSession {session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNamesAndGuid').setString('guid', guid).uniqueResult()
+        }
+
         return globalUniqueIdentifier
     }
 

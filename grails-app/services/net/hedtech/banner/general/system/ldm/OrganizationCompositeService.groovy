@@ -137,7 +137,7 @@ class OrganizationCompositeService {
         if (!departmentCode) {
             return null
         }
-        Department department = departmentService.fetchByCode(departmentCode)
+        Department department = Department.findByCode(departmentCode)
         if (!department) {
             return null
         }

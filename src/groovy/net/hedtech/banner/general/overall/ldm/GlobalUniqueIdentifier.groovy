@@ -14,7 +14,11 @@ import javax.persistence.*
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNamesAndGuid",
                 query = """FROM  GlobalUniqueIdentifier a
 	  	                WHERE a.ldmName IN ('colleges', 'departments')
-	  	                AND a.guid = :guid """)
+	  	                AND a.guid = :guid """),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId",
+                query = """FROM GlobalUniqueIdentifier a
+                        WHERE a.ldmName = :ldmName
+                        AND a.domainId in (:domainSurrogateIds)""")
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**
@@ -143,11 +147,18 @@ class GlobalUniqueIdentifier implements Serializable {
 
 
     static GlobalUniqueIdentifier fetchByLdmNamesAndGuid(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.withSession {session ->
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.withSession { session ->
             session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNamesAndGuid').setString('guid', guid).uniqueResult()
         }
 
         return globalUniqueIdentifier
     }
 
+    static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainSurrogateIds(ldmName, surrogateIds) {
+        List<GlobalUniqueIdentifier> globalUniqueIdentifier = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId').setString('ldmName', ldmName).setParameterList('domainSurrogateIds', surrogateIds).list();
+        }
+
+        return globalUniqueIdentifier
+    }
 }

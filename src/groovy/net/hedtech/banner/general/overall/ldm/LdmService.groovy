@@ -229,6 +229,21 @@ class LdmService {
         return version?.toLowerCase()
     }
 
+    /**
+     * Is RESTful API "Accept" header is for extended version (deep marshalling) like application/vnd.hedtech.integration.maximum.v1+json.
+     * In this case, service has to return response with some of the associations expanded as specified by maximum schema.
+     *
+     * @return
+     */
+    public static boolean isMaximumRepresentation() {
+        boolean maxRep = false
+        String acceptHeader = getAcceptHeader()
+        if (acceptHeader) {
+            maxRep = acceptHeader.contains("maximum")
+        }
+        return maxRep
+    }
+
 
     private static String getAcceptHeader() {
         HttpServletRequest request = getHttpServletRequest()

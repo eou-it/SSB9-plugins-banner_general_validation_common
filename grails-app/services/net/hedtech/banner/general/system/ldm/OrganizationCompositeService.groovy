@@ -129,7 +129,7 @@ class OrganizationCompositeService {
         if (!department) {
             return null
         }
-        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(DEPARTMENT_LDM_NAME, domainId).guid, department.code, department.description, OrganizationType.DEPARTMENT.value, new Metadata(department.dataOrigin))
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(DEPARTMENT_LDM_NAME, domainId)?.guid, department.code, department.description, OrganizationType.DEPARTMENT.value, new Metadata(department.dataOrigin))
     }
 
 
@@ -141,7 +141,7 @@ class OrganizationCompositeService {
         if (!department) {
             return null
         }
-        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(DEPARTMENT_LDM_NAME, department.id).guid, department.code, department.description, OrganizationType.DEPARTMENT.value, new Metadata(department.dataOrigin))
+        return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(DEPARTMENT_LDM_NAME, department.id)?.guid, department.code, department.description, OrganizationType.DEPARTMENT.value, new Metadata(department.dataOrigin))
     }
 
 

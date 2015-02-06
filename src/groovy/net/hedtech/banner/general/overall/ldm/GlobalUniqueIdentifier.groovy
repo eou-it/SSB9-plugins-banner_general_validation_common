@@ -18,7 +18,11 @@ import javax.persistence.*
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId",
                 query = """FROM GlobalUniqueIdentifier a
                         WHERE a.ldmName = :ldmName
-                        AND a.domainId in (:domainSurrogateIds)""")
+                        AND a.domainId in (:domainSurrogateIds)"""),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainKeys",
+                        query = """FROM GlobalUniqueIdentifier a
+                                WHERE a.ldmName = :ldmName
+                                AND a.domainKey in (:domainKeys)""")
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**
@@ -155,10 +159,18 @@ class GlobalUniqueIdentifier implements Serializable {
     }
 
     static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainSurrogateIds(ldmName, surrogateIds) {
-        List<GlobalUniqueIdentifier> globalUniqueIdentifier = GlobalUniqueIdentifier.withSession { session ->
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
             session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId').setString('ldmName', ldmName).setParameterList('domainSurrogateIds', surrogateIds).list();
         }
 
-        return globalUniqueIdentifier
+        return globalUniqueIdentifierList
+    }
+
+    static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainKeys(ldmName, domainKeys) {
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainKeys').setString('ldmName', ldmName).setParameterList('domainKeys', domainKeys).list();
+        }
+
+        return globalUniqueIdentifierList
     }
 }

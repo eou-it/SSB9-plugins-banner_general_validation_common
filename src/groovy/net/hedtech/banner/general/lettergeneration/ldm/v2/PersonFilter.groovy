@@ -60,7 +60,7 @@ class PersonFilter {
     }
 
 
-    private String formTitle(String application, String selection, String creator, String user) {
+    public static String formTitle(String application, String selection, String creator, String user) {
         StringBuilder stringBuilder = new StringBuilder()
         stringBuilder.append(application)
         stringBuilder.append(SEPARATOR)

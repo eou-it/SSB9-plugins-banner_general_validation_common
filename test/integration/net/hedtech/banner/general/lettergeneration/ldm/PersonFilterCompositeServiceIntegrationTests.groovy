@@ -18,7 +18,6 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
     def personFilterCompositeService
     public static final String LDM_NAME = 'person-filters'
-    private static final String SEPARATOR = '-^'
     String application
     String user
     String selection
@@ -111,7 +110,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         assertEquals selection, personFilter.selection
         assertEquals "Banner", personFilter.metadata.dataOrigin
         assertEquals guid, personFilter.guid
-        assertEquals formTitle(application, selection, user, personFilter.lastModifiedBy), personFilter.title
+        assertEquals PersonFilter.formTitle(application, selection, user, personFilter.lastModifiedBy), personFilter.title
     }
 
 
@@ -154,7 +153,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         assertEquals selection, personFilter.selection
         assertEquals "Banner", personFilter.metadata.dataOrigin
         assertEquals guid, personFilter.guid
-        assertEquals formTitle(application, selection, user, personFilter.lastModifiedBy), personFilter.title
+        assertEquals PersonFilter.formTitle(application, selection, user, personFilter.lastModifiedBy), personFilter.title
     }
 
 
@@ -174,21 +173,5 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         populationSelectionBase.save(failOnError: true, flush: true)
         assertNotNull populationSelectionBase.id
         return populationSelectionBase
-    }
-
-
-    private String formTitle(String application, String selection, String creator, String user = null) {
-        StringBuilder stringBuilder = new StringBuilder()
-        stringBuilder.append(application)
-        stringBuilder.append(SEPARATOR)
-        stringBuilder.append(selection)
-        stringBuilder.append(SEPARATOR)
-        stringBuilder.append(creator)
-        if (user != null) {
-            stringBuilder.append(SEPARATOR)
-            stringBuilder.append(user)
-        }
-
-        return stringBuilder.toString()
     }
 }

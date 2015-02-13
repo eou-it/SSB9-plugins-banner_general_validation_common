@@ -56,17 +56,6 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
     public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        initializeTestDataForReferences()
-    }
-
-    //This method is used to initialize test data for references.
-    //A method is required to execute database calls as it requires a active transaction
-    void initializeTestDataForReferences() {
-        //Valid test data (For success tests)
-        //Invalid test data (For failure tests)
-        //Valid test data (For success tests)
-        //Valid test data (For failure tests)
-        //Test data for references for custom tests
     }
 
 
@@ -147,7 +136,6 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testDates() {
-        def time = new SimpleDateFormat( 'HHmmss' )
         def hour = new SimpleDateFormat( 'HH' )
         def date = new SimpleDateFormat( 'yyyy-M-d' )
         def today = new Date()

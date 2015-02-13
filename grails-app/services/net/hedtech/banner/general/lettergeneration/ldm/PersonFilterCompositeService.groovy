@@ -30,6 +30,12 @@ class PersonFilterCompositeService {
     ]
 
 
+    /**
+     * GET /api/person-filters
+     *
+     * @param params Request parameters
+     * @return
+     */
     List<PersonFilter> list(Map params){
 
         List<PersonFilter> personFilters = []
@@ -48,21 +54,35 @@ class PersonFilterCompositeService {
         return personFilters
     }
 
-
-    Long count() {
+    /**
+     * GET /api/person-filters
+     *
+     * The count method must return the total number of instances of the resource.
+     * It is used in conjunction with the list method when returning a list of resources.
+     * RestfulApiController will make call to "count" only if the "list" execution happens without any exception.
+     *
+     * @param params Request parameters
+     * @return
+     */    Long count() {
         return PopulationSelectionBase.count()
     }
 
 
+    /**
+     * GET /api/person-filters/<guid>
+     *
+     * @param guid
+     * @return
+     */
     PersonFilter get(String guid){
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(PopulationSelectionBase.class.simpleName)))
+            throw new ApplicationException("personFilter", new NotFoundException())
         }
 
         PopulationSelectionBase populationSelectionBase = PopulationSelectionBase.get(globalUniqueIdentifier.domainId)
         if (!populationSelectionBase) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(PopulationSelectionBase.class.simpleName)))
+            throw new ApplicationException("personFilter", new NotFoundException())
         }
 
         return new PersonFilter(populationSelectionBase, globalUniqueIdentifier.guid, new Metadata(populationSelectionBase.dataOrigin));

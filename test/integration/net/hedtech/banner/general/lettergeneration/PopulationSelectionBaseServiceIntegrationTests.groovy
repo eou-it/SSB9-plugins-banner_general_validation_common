@@ -58,22 +58,6 @@ class PopulationSelectionBaseServiceIntegrationTests extends BaseIntegrationTest
 	}
 
 
-	//This method is used to initialize test data for references.
-	//A method is required to execute database calls as it requires a active transaction
-	void initializeTestDataForReferences() {
-		//Valid test data (For success tests)
-
-		//Invalid test data (For failure tests)
-
-		//Valid test data (For success tests)
-
-		//Valid test data (For failure tests)
-
-		//Test data for references for custom tests
-
-	}
-
-
     @After
 	public void tearDown() {
 		super.tearDown()

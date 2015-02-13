@@ -26,14 +26,14 @@ class PersonFilterCompositeService {
     public static final String LDM_NAME = 'person-filters'
 
     private HashMap ldmFieldToBannerDomainPropertyMap = [
-            title       : 'selection'
+            abbreviation       : 'selection'
     ]
 
 
     List<PersonFilter> list(Map params){
 
         List<PersonFilter> personFilters = []
-        List allowedSortFields = ['title']
+        List allowedSortFields = ['abbreviation']
 
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)

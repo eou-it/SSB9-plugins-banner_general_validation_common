@@ -70,7 +70,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     @Test
     void testListWithSort() {
         createPopulationSelectionBase(application, selection1, user, user)
-        List personFiltersList = personFilterCompositeService.list([sort: 'title', order: 'desc'])
+        List personFiltersList = personFilterCompositeService.list([sort: 'abbreviation', order: 'desc'])
         assertNotNull personFiltersList
         assertTrue personFiltersList.size() > 0
         assertTrue personFiltersList[0] instanceof PersonFilter
@@ -81,7 +81,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     @Test
     void testListWithInvalidSortFiled() {
         shouldFail(RestfulApiValidationException) {
-            personFilterCompositeService.list([sort: 'abbreviation', order: 'desc'])
+            personFilterCompositeService.list([sort: 'title', order: 'desc'])
         }
     }
 
@@ -89,7 +89,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     @Test
     void testListWithInvalidSortOrder() {
         shouldFail(RestfulApiValidationException) {
-            personFilterCompositeService.list([sort: 'title', order: 'des'])
+            personFilterCompositeService.list([sort: 'abbreviation', order: 'des'])
         }
     }
 
@@ -111,7 +111,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         assertEquals selection, personFilter.selection
         assertEquals "Banner", personFilter.metadata.dataOrigin
         assertEquals guid, personFilter.guid
-        assertEquals formAbbreviation(application, selection, user, personFilter.lastModifiedBy), personFilter.abbreviation
+        assertEquals formTitle(application, selection, user, personFilter.lastModifiedBy), personFilter.title
     }
 
 
@@ -150,11 +150,11 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
         def personFilter = personFilterCompositeService.get(guid)
         assertNotNull personFilter
-        assertNotNull personFilter.abbreviation
+        assertNotNull personFilter.title
         assertEquals selection, personFilter.selection
         assertEquals "Banner", personFilter.metadata.dataOrigin
         assertEquals guid, personFilter.guid
-        assertEquals formAbbreviation(application, selection, user, personFilter.lastModifiedBy), personFilter.abbreviation
+        assertEquals formTitle(application, selection, user, personFilter.lastModifiedBy), personFilter.title
     }
 
 
@@ -177,7 +177,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     }
 
 
-    private String formAbbreviation(String application, String selection, String creator, String user = null) {
+    private String formTitle(String application, String selection, String creator, String user = null) {
         StringBuilder stringBuilder = new StringBuilder()
         stringBuilder.append(application)
         stringBuilder.append(SEPARATOR)

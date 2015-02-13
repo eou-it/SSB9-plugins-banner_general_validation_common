@@ -19,12 +19,12 @@ class PersonFilter {
     private static final String SEPARATOR = '-^'
     String guid
     Metadata metadata
-    String abbreviation
+    String title
 
     PersonFilter(PopulationSelectionBase populationSelectionBase, String guid, Metadata metadata) {
         this.populationSelectionBase = populationSelectionBase
         this.guid = guid
-        this.abbreviation = formAbbreviation(populationSelectionBase.application, populationSelectionBase.selection, populationSelectionBase.creatorId, populationSelectionBase.lastModifiedBy ?: null)
+        this.title = formTitle(populationSelectionBase.application, populationSelectionBase.selection, populationSelectionBase.creatorId, populationSelectionBase.lastModifiedBy ?: null)
         this.metadata = metadata
     }
 
@@ -35,7 +35,7 @@ class PersonFilter {
         PersonFilter that = (PersonFilter) o
         if (populationSelectionBase != that.populationSelectionBase) return false
         if (guid != that.guid) return false
-        if (abbreviation != that.abbreviation) return false
+        if (title != that.title) return false
         if (metadata != that.metadata) return false
         return true
     }
@@ -45,7 +45,7 @@ class PersonFilter {
         int result
         result = (populationSelectionBase != null ? populationSelectionBase.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
-        result = 31 * result + (abbreviation != null ? abbreviation.hashCode() : 0)
+        result = 31 * result + (title != null ? title.hashCode() : 0)
         result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
         return result
     }
@@ -56,11 +56,11 @@ class PersonFilter {
                     populationSelectionBase=$populationSelectionBase,
                     guid=$guid,
                     metadata=$metadata,
-                    abbreviation=$abbreviation]"""
+                    title=$title]"""
     }
 
 
-    private String formAbbreviation(String application, String selection, String creator, String user) {
+    private String formTitle(String application, String selection, String creator, String user) {
         StringBuilder stringBuilder = new StringBuilder()
         stringBuilder.append(application)
         stringBuilder.append(SEPARATOR)

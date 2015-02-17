@@ -203,6 +203,15 @@ class LdmService {
     }
 
     /**
+     * Return "Accept" header
+     *
+     * @return
+     */
+    public static String getResponseRepresentation() {
+        return responseBodyMediaType()
+    }
+
+    /**
      * RESTful APIs use custom media types (previously known as 'MIME types') for versioning.
      * HEDM APIs will have Accept headers like application/vnd.hedtech.integration.v1+json, application/vnd.hedtech.integration.v2+json so on.
      * Non-HEDM APIs will have Accept headers like application/vnd.hedtech.v1+json, application/vnd.hedtech.v2+json so on.
@@ -212,9 +221,9 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Accept header
      */
-    public static String getRepresentationVersion() {
+    public static String getResponseRepresentationVersion() {
         String version
-        String acceptHeader = getAcceptHeader()
+        String acceptHeader = responseBodyMediaType()
         if (acceptHeader) {
             int indexOfDotBeforeVersion = acceptHeader.lastIndexOf(".")
             int indexOfPlus = acceptHeader.lastIndexOf("+")
@@ -235,17 +244,32 @@ class LdmService {
      *
      * @return
      */
-    public static boolean isMaximumRepresentation() {
+    public static boolean isMaximumResponseRepresentation() {
         boolean maxRep = false
-        String acceptHeader = getAcceptHeader()
+        String acceptHeader = responseBodyMediaType()
         if (acceptHeader) {
             maxRep = acceptHeader.contains("maximum")
         }
         return maxRep
     }
 
+    /**
+     * Returns "Content-Type" header
+     *
+     * @return
+     */
+    public static String getRequestRepresentation() {
+        return requestBodyMediaType()
+    }
 
-    private static String getAcceptHeader() {
+
+    private static String requestBodyMediaType() {
+        HttpServletRequest request = getHttpServletRequest()
+        return request?.getHeader("Content-Type")
+    }
+
+
+    private static String responseBodyMediaType() {
         HttpServletRequest request = getHttpServletRequest()
         return request?.getHeader("Accept")
     }

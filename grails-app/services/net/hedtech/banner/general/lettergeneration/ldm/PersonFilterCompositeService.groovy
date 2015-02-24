@@ -98,12 +98,13 @@ class PersonFilterCompositeService {
     private def fetchPersonFilterByCriteria(Map content, boolean count = false) {
         log.trace "fetchPersonFilterByCriteria:Begin"
         def result
-
-        String queryCriteria = "select distinct a.application, a.selection, a.creatorId, a.lastModifiedBy from PopulationSelectionExtract a where 1=1"
+        String queryCriteria = ""
 
         if (count) {
+            queryCriteria = "select count(a) from PopulationSelectionExtract a where 1=1 group by a.application, a.selection, a.creatorId, a.lastModifiedBy"
             result = PopulationSelectionExtract.executeQuery(queryCriteria)?.size()
         } else {
+            queryCriteria = "select distinct a.application, a.selection, a.creatorId, a.lastModifiedBy from PopulationSelectionExtract a where 1=1"
             Integer max = content.max.trim().toInteger()
             Integer offset = content.offset?.trim()?.toInteger() ?: 0
             if (content.sort) {

@@ -1,11 +1,9 @@
 /** *****************************************************************************
- © 2015 Ellucian.  All Rights Reserved.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 package net.hedtech.banner.general.lettergeneration.ldm.v2
 
-
-import net.hedtech.banner.general.lettergeneration.PopulationSelectionBase
 import net.hedtech.banner.general.system.ldm.v1.Metadata
 
 
@@ -14,17 +12,15 @@ import net.hedtech.banner.general.system.ldm.v1.Metadata
  */
 class PersonFilter {
 
-    @Delegate
-    private final PopulationSelectionBase populationSelectionBase
-    private static final String SEPARATOR = '-^'
+    String abbreviation
     String guid
     Metadata metadata
     String title
 
-    PersonFilter(PopulationSelectionBase populationSelectionBase, String guid, Metadata metadata) {
-        this.populationSelectionBase = populationSelectionBase
+    PersonFilter(String abbreviation, String guid, String title, Metadata metadata) {
+        this.abbreviation = abbreviation
         this.guid = guid
-        this.title = formTitle(populationSelectionBase.application, populationSelectionBase.selection, populationSelectionBase.creatorId, populationSelectionBase.lastModifiedBy ?: null)
+        this.title = title
         this.metadata = metadata
     }
 
@@ -33,7 +29,7 @@ class PersonFilter {
         if (this.is(o)) return true
         if (getClass() != o.class) return false
         PersonFilter that = (PersonFilter) o
-        if (populationSelectionBase != that.populationSelectionBase) return false
+        if (abbreviation != that.abbreviation) return false
         if (guid != that.guid) return false
         if (title != that.title) return false
         if (metadata != that.metadata) return false
@@ -43,7 +39,7 @@ class PersonFilter {
 
     int hashCode() {
         int result
-        result = (populationSelectionBase != null ? populationSelectionBase.hashCode() : 0)
+        result = (abbreviation != null ? abbreviation.hashCode() : 0)
         result = 31 * result + (guid != null ? guid.hashCode() : 0)
         result = 31 * result + (title != null ? title.hashCode() : 0)
         result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
@@ -53,25 +49,10 @@ class PersonFilter {
 
     public String toString() {
         """PersonFilter[
-                    populationSelectionBase=$populationSelectionBase,
+                    abbreviation=$abbreviation,
                     guid=$guid,
                     metadata=$metadata,
                     title=$title]"""
     }
 
-
-    public static String formTitle(String application, String selection, String creator, String user) {
-        StringBuilder stringBuilder = new StringBuilder()
-        stringBuilder.append(application)
-        stringBuilder.append(SEPARATOR)
-        stringBuilder.append(selection)
-        stringBuilder.append(SEPARATOR)
-        stringBuilder.append(creator)
-        if (user != null) {
-            stringBuilder.append(SEPARATOR)
-            stringBuilder.append(user)
-        }
-
-        return stringBuilder.toString()
-    }
 }

@@ -1,10 +1,10 @@
 /** *****************************************************************************
- © 2015 Ellucian.  All Rights Reserved.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.lettergeneration.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.general.lettergeneration.PopulationSelectionBase
+import net.hedtech.banner.general.lettergeneration.PopulationSelectionExtract
 import net.hedtech.banner.general.lettergeneration.ldm.v2.PersonFilter
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
@@ -23,6 +23,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     String selection
     String selection1
     String guid
+    String key
 
 
     @Before
@@ -44,6 +45,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         user = "GRAILS_USER"
         selection = "SAT_Test"
         selection1 = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        key = "1001"
     }
 
 
@@ -68,12 +70,12 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
     @Test
     void testListWithSort() {
-        createPopulationSelectionBase(application, selection1, user, user)
+        createPopulationSelectionExtract(application, selection1, user, user, key)
         List personFiltersList = personFilterCompositeService.list([sort: 'abbreviation', order: 'desc'])
         assertNotNull personFiltersList
         assertTrue personFiltersList.size() > 0
         assertTrue personFiltersList[0] instanceof PersonFilter
-        assertEquals selection1, personFiltersList[0].selection
+        assertEquals selection1, personFiltersList[0].abbreviation
     }
 
 
@@ -95,28 +97,24 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
     @Test
     void testSchemaPropertiesForList() {
-        def populationSelectionBase = createPopulationSelectionBase(application, selection, user, user)
-        guid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, populationSelectionBase.id).guid
-
+        PopulationSelectionExtract populationSelectionExtract = createPopulationSelectionExtract(application, selection, user, user, key)
+        String domain_key = "${populationSelectionExtract.application}-^${populationSelectionExtract.selection}-^${populationSelectionExtract.creatorId}-^${populationSelectionExtract.lastModifiedBy}"
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(LDM_NAME, domain_key)
+        assertNotNull globalUniqueIdentifier
+        assertNotNull globalUniqueIdentifier.guid
         List<PersonFilter> personFiltersList = personFilterCompositeService.list([:])
         assertNotNull personFiltersList
         assertTrue personFiltersList.size() > 0
         assertTrue personFiltersList[0] instanceof PersonFilter
 
         PersonFilter personFilter = personFiltersList.find {
-            it.selection == selection
+            it.abbreviation == selection
         }
 
-        assertEquals selection, personFilter.selection
+        assertEquals selection, personFilter.abbreviation
         assertEquals "Banner", personFilter.metadata.dataOrigin
-        assertEquals guid, personFilter.guid
-        assertEquals PersonFilter.formTitle(application, selection, user, personFilter.lastModifiedBy), personFilter.title
-    }
-
-
-    @Test
-    void testCount() {
-        assertEquals PopulationSelectionBase.count(), personFilterCompositeService.count()
+        assertEquals globalUniqueIdentifier.guid, personFilter.guid
+        assertEquals globalUniqueIdentifier.domainKey, personFilter.title
     }
 
 
@@ -142,36 +140,39 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
     @Test
     void testGet() {
-        def populationSelectionBase = createPopulationSelectionBase(application, selection, user, user)
-        guid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, populationSelectionBase.id).guid
-        assertNotNull guid
+        PopulationSelectionExtract populationSelectionExtract = createPopulationSelectionExtract(application, selection, user, user, key)
+        String domain_key = "${populationSelectionExtract.application}-^${populationSelectionExtract.selection}-^${populationSelectionExtract.creatorId}-^${populationSelectionExtract.lastModifiedBy}"
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(LDM_NAME, domain_key)
+        assertNotNull globalUniqueIdentifier
+        assertNotNull globalUniqueIdentifier.guid
 
-
-        def personFilter = personFilterCompositeService.get(guid)
+        def personFilter = personFilterCompositeService.get(globalUniqueIdentifier.guid)
         assertNotNull personFilter
         assertNotNull personFilter.title
-        assertEquals selection, personFilter.selection
+        assertEquals selection, personFilter.abbreviation
         assertEquals "Banner", personFilter.metadata.dataOrigin
-        assertEquals guid, personFilter.guid
-        assertEquals PersonFilter.formTitle(application, selection, user, personFilter.lastModifiedBy), personFilter.title
+        assertEquals globalUniqueIdentifier.guid, personFilter.guid
+        assertEquals globalUniqueIdentifier.domainKey, personFilter.title
     }
 
 
     private
-    def createPopulationSelectionBase(String application, String selection, String creator, String user = null) {
-        def populationSelectionBase = new PopulationSelectionBase(
+    def createPopulationSelectionExtract(String application, String selection, String creator, String user, String key) {
+        def populationSelectionExtract = new PopulationSelectionExtract(
                 application: application,
                 selection: selection,
                 creatorId: creator,
+                key: key,
                 description: "Test",
-                lockIndicator: true,
-                typeIndicator: "M",
+                systemIndicator: "S",
                 lastModified: new Date(),
                 lastModifiedBy: user,
                 dataOrigin: "Banner"
         )
-        populationSelectionBase.save(failOnError: true, flush: true)
-        assertNotNull populationSelectionBase.id
-        return populationSelectionBase
+        populationSelectionExtract.save(failOnError: true, flush: true)
+        assertNotNull populationSelectionExtract.id
+        return populationSelectionExtract
     }
+
+
 }

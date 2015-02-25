@@ -31,6 +31,13 @@ import org.hibernate.annotations.Type
  */
 @Entity
 @Table(name = "GLBEXTR")
+@NamedQueries(value = [
+        @NamedQuery(name = "PopulationSelectionExtract.fetchAllPidmsByApplicationSelectionCreatorIdLastModifiedBy",
+                query = """SELECT a.key FROM  PopulationSelectionExtract a
+		           WHERE a.application = :application
+		           AND   a.selection = :selection
+		           AND   a.creatorId = :creatorId
+		           AND   a.lastModifiedBy = :lastModifiedBy""")])
 class PopulationSelectionExtract implements Serializable {
 
     /**
@@ -170,4 +177,22 @@ class PopulationSelectionExtract implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = [ 'application', 'selection', 'creatorId', 'key', 'lastModifiedBy' ]
+
+    public static List fetchAllPidmsByApplicationSelectionCreatorIdLastModifiedBy(String application, String selection, String creatorId, String lastModifiedBy)
+    {
+        List<Integer> pidms = []
+        //List<String> pidmstr =[]
+        def pidmsres =[]
+        if (application && selection && creatorId)
+        {
+            PopulationSelectionExtract.withSession {
+                session ->
+                    pidmsres = session.getNamedQuery( 'PopulationSelectionExtract.fetchAllPidmsByApplicationSelectionCreatorIdLastModifiedBy' ).setString( 'application', application ).setString( 'selection', selection ).setString( 'creatorId', creatorId ).setString( 'lastModifiedBy', lastModifiedBy ).list()
+            }
+        }
+
+        //pidmsres.each{pidmstr<<it.trim()}
+        pidmsres.each{pidms<<it.toInteger() }
+        return pidms
+    }
 }

@@ -9,6 +9,8 @@ import net.hedtech.banner.general.lettergeneration.PopulationSelectionExtract
 import net.hedtech.banner.general.lettergeneration.ldm.v2.PersonFilter
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.ldm.v1.Metadata
+import net.hedtech.banner.query.QueryBuilder
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -98,25 +100,62 @@ class PersonFilterCompositeService {
     private def fetchPersonFilterByCriteria(Map content, boolean count = false) {
         log.trace "fetchPersonFilterByCriteria:Begin"
         def result
-        String queryCriteria = ""
+
+        def searchFilters = QueryBuilder.createFilters(content)
+        def filtersAllowedWithCriterion = ["abbreviation"]
+        def allowedOperators = [Operators.CONTAINS]
+        RestfulApiValidationUtility.validateCriteria(searchFilters, filtersAllowedWithCriterion, allowedOperators)
+
+        def filterMap = QueryBuilder.getFilterData(content)
+        def params = filterMap.params
+        def criteria = filterMap.criteria
+
+        String query = ""
+        if (count) {
+            query = "select count(a) from PopulationSelectionExtract a where 1=1 "
+        } else {
+            query = "select distinct a.application, a.selection, a.creatorId, a.lastModifiedBy from PopulationSelectionExtract a where 1=1"
+        }
+
+        Map namedParams = [:]
+        if (params.containsKey("abbreviation")) {
+            // filter[index][field]=abbreviation
+            retainSingleCriterionForFilter(criteria, "abbreviation")
+            query += """ and lower(a.selection) like lower(:selection) """
+            namedParams.put("selection", params.abbreviation)
+        } else if (content.containsKey("abbreviation")) {
+            content.put("selection", (!content.abbreviation.trim().contains("%")) ? "%${content.abbreviation.trim()}%" : content.abbreviation.trim())
+            query += """ and lower(a.selection) like lower(:selection) """
+            namedParams.put("selection", content.selection)
+        }
 
         if (count) {
-            queryCriteria = "select count(a) from PopulationSelectionExtract a where 1=1 group by a.application, a.selection, a.creatorId, a.lastModifiedBy"
-            result = PopulationSelectionExtract.executeQuery(queryCriteria)?.size()
+            query += "group by a.application, a.selection, a.creatorId, a.lastModifiedBy"
+            result = PopulationSelectionExtract.executeQuery(query, namedParams)?.size()
         } else {
-            queryCriteria = "select distinct a.application, a.selection, a.creatorId, a.lastModifiedBy from PopulationSelectionExtract a where 1=1"
             Integer max = content.max.trim().toInteger()
             Integer offset = content.offset?.trim()?.toInteger() ?: 0
             if (content.sort) {
                 String sort = content.sort.trim()
                 String order = content.order?.trim() ?: "asc"
-                queryCriteria += """ order by $sort $order """
+                query += """ order by $sort $order """
             }
-            result = PopulationSelectionExtract.executeQuery(queryCriteria, [max: max, offset: offset])
+
+            result = PopulationSelectionExtract.executeQuery(query, namedParams, [max: max, offset: offset])
         }
 
         log.trace "fetchPersonFilterByCriteria:End"
         return result
+    }
+
+
+    private void retainSingleCriterionForFilter(def criteria, String filterName) {
+        def col = criteria.findAll { it.key == filterName }
+        if (col.size() > 1) {
+            // More than one criterion for filter
+            criteria.removeAll { it.key == filterName }
+            criteria << col[col.size()-1]
+        }
     }
 
 

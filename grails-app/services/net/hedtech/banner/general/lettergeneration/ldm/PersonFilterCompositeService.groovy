@@ -124,9 +124,8 @@ class PersonFilterCompositeService {
             query += """ and lower(a.selection) like lower(:selection) """
             namedParams.put("selection", params.abbreviation)
         } else if (content.containsKey("abbreviation")) {
-            content.put("selection", (!content.abbreviation.trim().contains("%")) ? "%${content.abbreviation.trim()}%" : content.abbreviation.trim())
             query += """ and lower(a.selection) like lower(:selection) """
-            namedParams.put("selection", content.selection)
+            namedParams.put("selection", (!content.abbreviation.trim().contains("%")) ? "%${content.abbreviation.trim()}%" : content.abbreviation.trim())
         }
 
         if (count) {

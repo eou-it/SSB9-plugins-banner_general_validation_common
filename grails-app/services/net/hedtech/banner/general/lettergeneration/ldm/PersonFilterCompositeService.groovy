@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.lettergeneration.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.lettergeneration.PopulationSelectionExtract
 import net.hedtech.banner.general.lettergeneration.ldm.v2.PersonFilter
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 class PersonFilterCompositeService {
 
     public static final String LDM_NAME = 'person-filters'
+    private static final String DOMAIN_KEY_DELIMITER = '-^'
 
     private HashMap ldmFieldToBannerDomainPropertyMap = [
             abbreviation: 'selection'
@@ -88,12 +90,16 @@ class PersonFilterCompositeService {
             throw new ApplicationException("personFilter", new NotFoundException())
         }
 
-        PopulationSelectionExtract populationSelectionExtract = PopulationSelectionExtract.get(globalUniqueIdentifier.domainId)
-        if (!populationSelectionExtract) {
+        // As only one record is inserted in GLBEXTR for application,selection, creatorId and userId combination, can't rely on domain surrogate id. Hence, domain key
+        def domainKeyParts = splitDomainKey(globalUniqueIdentifier.domainKey)
+
+        def pidms = PopulationSelectionExtract.fetchAllPidmsByApplicationSelectionCreatorIdLastModifiedBy(domainKeyParts.application, domainKeyParts.selection, domainKeyParts.creatorId, domainKeyParts.lastModifiedBy)
+
+        if (!pidms) {
             throw new ApplicationException("personFilter", new NotFoundException())
         }
 
-        return new PersonFilter(populationSelectionExtract.selection, globalUniqueIdentifier.guid, globalUniqueIdentifier.domainKey, new Metadata(globalUniqueIdentifier.dataOrigin));
+        return new PersonFilter(domainKeyParts.selection, globalUniqueIdentifier.guid, globalUniqueIdentifier.domainKey, new Metadata(globalUniqueIdentifier.dataOrigin));
     }
 
 
@@ -153,8 +159,34 @@ class PersonFilterCompositeService {
         if (col.size() > 1) {
             // More than one criterion for filter
             criteria.removeAll { it.key == filterName }
-            criteria << col[col.size()-1]
+            criteria << col[col.size() - 1]
         }
+    }
+
+
+    private def splitDomainKey(String domainKey) {
+        def domainKeyParts = [:]
+
+        if (domainKey) {
+            List tokens = domainKey.tokenize(DOMAIN_KEY_DELIMITER)
+            if (tokens.size() < 4) {
+                throw new ApplicationException(Course, new BusinessLogicValidationException("invalid.domain.key.message", ["BusinessLogicValidationException"]))
+            }
+
+            domainKeyParts << [application: tokens[0]]
+            log.debug("application: ${tokens[0]}")
+
+            domainKeyParts << [selection: tokens[1]]
+            log.debug("selection: ${tokens[1]}")
+
+            domainKeyParts << [creatorId: tokens[2]]
+            log.debug("creatorId: ${tokens[2]}")
+
+            domainKeyParts << [lastModifiedBy: tokens[3]]
+            log.debug("lastModifiedBy: ${tokens[3]}")
+        }
+
+        return domainKeyParts
     }
 
 

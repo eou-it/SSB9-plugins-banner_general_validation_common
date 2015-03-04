@@ -56,12 +56,12 @@ class RaceCompositeService extends LdmService {
     RaceDetail get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(RACE_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(Race.class.simpleName)))
+            throw new ApplicationException("race", new NotFoundException())
         }
 
         Race race = Race.get(globalUniqueIdentifier.domainId)
         if (!race) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(Race.class.simpleName)))
+            throw new ApplicationException("race", new NotFoundException())
         }
 
         return new RaceDetail(race, globalUniqueIdentifier.guid, getLdmRace(race.race), new Metadata(race.dataOrigin));

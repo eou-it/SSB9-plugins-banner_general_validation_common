@@ -164,13 +164,13 @@ class PersonFilterCompositeService {
     }
 
 
-    private def splitDomainKey(String domainKey) {
+    def splitDomainKey(String domainKey) {
         def domainKeyParts = [:]
 
         if (domainKey) {
             List tokens = domainKey.tokenize(DOMAIN_KEY_DELIMITER)
             if (tokens.size() < 4) {
-                throw new ApplicationException(Course, new BusinessLogicValidationException("invalid.domain.key.message", ["BusinessLogicValidationException"]))
+                throw new ApplicationException('PersonFilterCompositeService', new BusinessLogicValidationException("invalid.domain.key.message", ["BusinessLogicValidationException"]))
             }
 
             domainKeyParts << [application: tokens[0]]

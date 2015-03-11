@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system.ldm
 
 import grails.util.GrailsNameUtils
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
@@ -15,6 +16,7 @@ import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusParentCategory
 import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional
 class MaritalStatusCompositeService extends LdmService {
 
     def maritalStatusService
+
     private static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
     static final String PROCESS_CODE = "LDM"
     static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
@@ -41,7 +44,7 @@ class MaritalStatusCompositeService extends LdmService {
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)
         List<MaritalStatus> maritalStatusList = maritalStatusService.list(params) as List
         maritalStatusList.each { maritalStatus ->
-            maritalStatusDetailList << new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
+            maritalStatusDetailList << getDecoratedMaritalStatus(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id))
         }
         return maritalStatusDetailList
     }
@@ -63,7 +66,30 @@ class MaritalStatusCompositeService extends LdmService {
             throw new ApplicationException("maritalStatus", new NotFoundException())
         }
 
-        return new MaritalStatusDetail(maritalStatus, globalUniqueIdentifier.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin));
+        return getDecoratedMaritalStatus( maritalStatus, globalUniqueIdentifier )
+    }
+
+    def create(content) {
+        validateMaritalStatus(content)
+        MaritalStatus undecoratedMaritalStatus = bindMaritalStatus( new MaritalStatus(), content)
+        GlobalUniqueIdentifier globalUniqueIdentifier
+        if( content.id ) {
+            globalUniqueIdentifier = updateGuidValue(undecoratedMaritalStatus.id, content.id, MARITAL_STATUS_LDM_NAME)
+        }
+        else {
+            globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, undecoratedMaritalStatus?.id)
+        }
+        getDecoratedMaritalStatus( undecoratedMaritalStatus, globalUniqueIdentifier )
+    }
+
+    def update(content) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(MARITAL_STATUS_LDM_NAME, content?.id)
+        if(!globalUniqueIdentifier) {
+            return create( content )
+        }
+        MaritalStatus undecoratedMaritalStatus = MaritalStatus.findById(globalUniqueIdentifier?.domainId)
+        undecoratedMaritalStatus = bindMaritalStatus( undecoratedMaritalStatus, content)
+        getDecoratedMaritalStatus( undecoratedMaritalStatus, globalUniqueIdentifier )
     }
 
 
@@ -72,10 +98,8 @@ class MaritalStatusCompositeService extends LdmService {
             return null
         }
         MaritalStatus maritalStatus = maritalStatusService.get(maritalStatusId) as MaritalStatus
-        if (!maritalStatus) {
-            return null
-        }
-        return new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatusId)?.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
+        return getDecoratedMaritalStatus( maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatusId) )
+
     }
 
 
@@ -86,16 +110,41 @@ class MaritalStatusCompositeService extends LdmService {
             if (!maritalStatus) {
                 return maritalStatusDetail
             }
-            maritalStatusDetail = new MaritalStatusDetail(maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
+            maritalStatusDetail = getDecoratedMaritalStatus( maritalStatus, GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id) )
+
         }
         return maritalStatusDetail
     }
 
     def getLdmMaritalStatus(def maritalStatus) {
-        if (maritalStatus != null) {
-            IntegrationConfiguration rule = findAllByProcessCodeAndSettingNameAndValue(PROCESS_CODE, MARITAL_STATUS_PARENT_CATEGORY, maritalStatus)
-            return MaritalStatusParentCategory.MARITAL_STATUS_PARENT_CATEGORY.contains(rule?.translationValue) ? rule?.translationValue : null
+        if (maritalStatus == null) {
+            return maritalStatus
         }
-        return null
+        else {
+            IntegrationConfiguration rule = findAllByProcessCodeAndSettingNameAndValue(PROCESS_CODE, MARITAL_STATUS_PARENT_CATEGORY, maritalStatus)
+            MaritalStatusParentCategory.MARITAL_STATUS_PARENT_CATEGORY.contains(rule?.translationValue) ? rule?.translationValue : null
+        }
+
+    }
+
+    static void validateMaritalStatus(content) {
+        if(!content?.code) {
+            throw new ApplicationException( 'maritalStatus', new BusinessLogicValidationException('code.required', [] ) )
+        }
+        if(!content?.description) {
+            throw new ApplicationException( 'maritalStatus', new BusinessLogicValidationException('description.required', [] ) )
+        }
+    }
+
+    def bindMaritalStatus(MaritalStatus maritalStatus, Map content) {
+        setDataOrigin(maritalStatus,content)
+        bindData(maritalStatus, content, [:])
+        maritalStatus.financeConversion = maritalStatus.financeConversion ?: "1" 
+        maritalStatusService.createOrUpdate(maritalStatus)
+    }
+
+    def getDecoratedMaritalStatus(MaritalStatus maritalStatus, GlobalUniqueIdentifier globalUniqueIdentifier) {
+        new MaritalStatusDetail(maritalStatus,
+                globalUniqueIdentifier.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
     }
 }

@@ -174,8 +174,8 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     //Can't test getting params without restful-api plugin,
     // so just test the result when plugin isn't loaded.
     @Test
-    void testGetParams() {
-        assertNull RestfulApiValidationUtility.getParams()
+    void testGetRequestParams() {
+        assertNull RestfulApiValidationUtility.getRequestParams()
     }
 
 }

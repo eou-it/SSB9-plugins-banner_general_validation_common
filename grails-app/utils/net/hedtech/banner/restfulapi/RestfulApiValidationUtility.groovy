@@ -190,7 +190,7 @@ class RestfulApiValidationUtility {
         return qapiReq
     }
 
-    public static getParams() {
+    public static getRequestParams() {
         try {  // Avoid restful-api plugin dependencies.
             Class fetchedClass = Class.forName(
                     "net.hedtech.banner.restfulapi.RestfulApiRequestParams",

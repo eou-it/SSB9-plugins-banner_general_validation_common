@@ -55,12 +55,12 @@ class MaritalStatusCompositeService extends LdmService {
     MaritalStatusDetail get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(MARITAL_STATUS_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(MaritalStatus.class.simpleName)))
+            throw new ApplicationException("maritalStatus", new NotFoundException())
         }
 
         MaritalStatus maritalStatus = MaritalStatus.get(globalUniqueIdentifier.domainId)
         if (!maritalStatus) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(MaritalStatus.class.simpleName)))
+            throw new ApplicationException("maritalStatus", new NotFoundException())
         }
 
         return new MaritalStatusDetail(maritalStatus, globalUniqueIdentifier.guid, getLdmMaritalStatus(maritalStatus.code), new Metadata(maritalStatus.dataOrigin));

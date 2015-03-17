@@ -10,6 +10,20 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GORGUID")
+@NamedQueries(value = [
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNamesAndGuid",
+                query = """FROM  GlobalUniqueIdentifier a
+	  	                WHERE a.ldmName IN ('colleges', 'departments')
+	  	                AND a.guid = :guid """),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId",
+                query = """FROM GlobalUniqueIdentifier a
+                        WHERE a.ldmName = :ldmName
+                        AND a.domainId in (:domainSurrogateIds)"""),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainKeys",
+                        query = """FROM GlobalUniqueIdentifier a
+                                WHERE a.ldmName = :ldmName
+                                AND a.domainKey in (:domainKeys)""")
+])
 class GlobalUniqueIdentifier implements Serializable {
     /**
      * Surrogate ID for GORGUID
@@ -135,4 +149,28 @@ class GlobalUniqueIdentifier implements Serializable {
         return globalUniqueIdentifier
     }
 
+
+    static GlobalUniqueIdentifier fetchByLdmNamesAndGuid(String guid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNamesAndGuid').setString('guid', guid).uniqueResult()
+        }
+
+        return globalUniqueIdentifier
+    }
+
+    static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainSurrogateIds(ldmName, surrogateIds) {
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId').setString('ldmName', ldmName).setParameterList('domainSurrogateIds', surrogateIds).list();
+        }
+
+        return globalUniqueIdentifierList
+    }
+
+    static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainKeys(ldmName, domainKeys) {
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainKeys').setString('ldmName', ldmName).setParameterList('domainKeys', domainKeys).list();
+        }
+
+        return globalUniqueIdentifierList
+    }
 }

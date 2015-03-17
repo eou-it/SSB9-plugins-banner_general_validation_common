@@ -2,13 +2,17 @@
  Copyright 2014 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
-import net.hedtech.banner.exceptions.BusinessLogicValidationException
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.utility.MessageResolver
+import org.springframework.web.context.request.RequestAttributes
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 
+import javax.servlet.http.HttpServletRequest
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -75,7 +79,7 @@ class LdmService {
      */
     static void throwBusinessLogicValidationException(ApplicationException ae) {
         if (ae.wrappedException instanceof NotFoundException) {
-                throw new ApplicationException(ae.getEntityClassName(), new BusinessLogicValidationException("not.found.message", [ae.getUserFriendlyName(),ae.wrappedException.id]))
+            throw new ApplicationException(ae.getEntityClassName(), new BusinessLogicValidationException("not.found.message", [ae.getUserFriendlyName(), ae.wrappedException.id]))
         } else if (ae.getType() == "RuntimeException" && ae.wrappedException.message.startsWith("@@r1")) {
             String message = ae.wrappedException.message
             Map rcps = getResourceCodeAndParams(message)
@@ -137,8 +141,7 @@ class LdmService {
         }
         if (!bindingParams.get(0).equals("r1")) {
             return [resourceCode: "unknown.banner.api.exception"]
-        }
-        else {
+        } else {
             String resourceCode = bindingParams.get(1)
             bindingParams.remove(0)
             bindingParams.remove(0)
@@ -146,6 +149,7 @@ class LdmService {
             [resourceCode: resourceCode, bindingParams: bindingParams]
         }
     }
+
 
     private static List<String> parse(String source) {
         List<String> values = new ArrayList<String>()
@@ -188,6 +192,7 @@ class LdmService {
         return values
     }
 
+
     private static String extractAPIErrorText(String message) {
         if (message == null) {
             return message
@@ -196,4 +201,87 @@ class LdmService {
         int end = tmp.indexOf("@@")
         return tmp.substring(0, end)
     }
+
+    /**
+     * Return "Accept" header
+     *
+     * @return
+     */
+    public static String getResponseRepresentation() {
+        return responseBodyMediaType()
+    }
+
+    /**
+     * RESTful APIs use custom media types (previously known as 'MIME types') for versioning.
+     * HEDM APIs will have Accept headers like application/vnd.hedtech.integration.v1+json, application/vnd.hedtech.integration.v2+json so on.
+     * Non-HEDM APIs will have Accept headers like application/vnd.hedtech.v1+json, application/vnd.hedtech.v2+json so on.
+     *
+     * Accept header can contain generic media types like application/vnd.hedtech.integration+json or application/json that
+     * represent latest (current) version of the API.  In such cases, this method does not return anything.
+     *
+     * @return version (v1,v2 so on) extracted from Accept header
+     */
+    public static String getResponseRepresentationVersion() {
+        String version
+        String acceptHeader = responseBodyMediaType()
+        if (acceptHeader) {
+            int indexOfDotBeforeVersion = acceptHeader.lastIndexOf(".")
+            int indexOfPlus = acceptHeader.lastIndexOf("+")
+            if (indexOfDotBeforeVersion != -1 && indexOfPlus != -1 && indexOfDotBeforeVersion + 1 < indexOfPlus) {
+                version = acceptHeader.substring(indexOfDotBeforeVersion + 1, indexOfPlus)
+                if (!version?.toLowerCase()?.startsWith("v")) {
+                    // May be generic Accept header like "application/vnd.hedtech.integration+json"
+                    version = null
+                }
+            }
+        }
+        return version?.toLowerCase()
+    }
+
+    /**
+     * Is RESTful API "Accept" header is for extended version (deep marshalling) like application/vnd.hedtech.integration.maximum.v1+json.
+     * In this case, service has to return response with some of the associations expanded as specified by maximum schema.
+     *
+     * @return
+     */
+    public static boolean isMaximumResponseRepresentation() {
+        boolean maxRep = false
+        String acceptHeader = responseBodyMediaType()
+        if (acceptHeader) {
+            maxRep = acceptHeader.contains("maximum")
+        }
+        return maxRep
+    }
+
+    /**
+     * Returns "Content-Type" header
+     *
+     * @return
+     */
+    public static String getRequestRepresentation() {
+        return requestBodyMediaType()
+    }
+
+
+    private static String requestBodyMediaType() {
+        HttpServletRequest request = getHttpServletRequest()
+        return request?.getHeader("Content-Type")
+    }
+
+
+    private static String responseBodyMediaType() {
+        HttpServletRequest request = getHttpServletRequest()
+        return request?.getHeader("Accept")
+    }
+
+
+    public static HttpServletRequest getHttpServletRequest() {
+        HttpServletRequest request
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes()
+        if (requestAttributes && requestAttributes instanceof ServletRequestAttributes) {
+            request = ((ServletRequestAttributes) requestAttributes).getRequest()
+        }
+        return request
+    }
+
 }

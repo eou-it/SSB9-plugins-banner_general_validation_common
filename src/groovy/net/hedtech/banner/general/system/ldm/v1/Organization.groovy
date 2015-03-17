@@ -3,25 +3,23 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm.v1
 
-import net.hedtech.banner.general.system.College
-
 /**
  * Decorator for Organization LDM (/base/domain/organization/v1/organization.json-schema)
  *
  */
 class Organization {
 
-    @Delegate
-    private final College underlyingDomain
-
     String guid
+    String abbreviation
+    String title
     String organizationType
     Metadata metadata
 
 
-    def Organization(String guid, def underlyingDomain, String organizationType, Metadata metadata) {
+    def Organization(String guid, String abbreviation, String title, String organizationType, Metadata metadata) {
         this.guid = guid
-        this.underlyingDomain = underlyingDomain
+        this.abbreviation = abbreviation
+        this.title = title
         this.organizationType = organizationType
         this.metadata = metadata
     }
@@ -39,7 +37,9 @@ class Organization {
         Organization that = (Organization) o
 
         if (guid != that.guid) return false
-        if (underlyingDomain != that.underlyingDomain) return false
+        if (abbreviation != that.abbreviation) return false
+        if (title != that.title) return false
+        if (organizationType != that.organizationType) return false
         if (metadata != that.metadata) return false
         return true
     }
@@ -50,8 +50,10 @@ class Organization {
      */
     int hashCode() {
         int result
-        result = (underlyingDomain != null ? underlyingDomain.hashCode() : 0)
-        result = 31 * result + (guid != null ? guid.hashCode() : 0)
+        result = (guid != null ? guid.hashCode() : 0)
+        result = 31 * result + (abbreviation != null ? abbreviation.hashCode() : 0)
+        result = 31 * result + (title != null ? title.hashCode() : 0)
+        result = 31 * result + (organizationType != null ? organizationType.hashCode() : 0)
         result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
         return result
     }
@@ -59,8 +61,9 @@ class Organization {
 
     public String toString() {
         """Organization[
-                    underlyingDomain=$underlyingDomain,
                     guid=$guid,
+                    abbreviation=$abbreviation,
+                    title=$title,
                     organizationType=$organizationType,
                     metadata=$metadata]"""
     }

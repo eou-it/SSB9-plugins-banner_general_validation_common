@@ -86,7 +86,7 @@ class TermService extends ServiceBase {
             String termCode = id
             term = Term.findByCode(termCode)
             if (!term) {
-                throw new ApplicationException("Term", termCode, new NotFoundException(id: termCode, entityClassName: Term.class.simpleName))
+                throw new ApplicationException("term", new NotFoundException())
             }
         } else {
             term = super.get(id)

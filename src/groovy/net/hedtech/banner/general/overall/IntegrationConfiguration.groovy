@@ -14,7 +14,7 @@ import javax.persistence.*
 
 
 @Cacheable(true)
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="ldmEnumeration")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "ldmEnumeration")
 @Entity
 @Table(name = "GV_GORICCR")
 @NamedQueries(value = [
@@ -30,7 +30,12 @@ import javax.persistence.*
                 query = """FROM IntegrationConfiguration a
                               WHERE a.processCode = :processCode
                               and a.settingName = :settingName
-                              and a.value = :value""")
+                              and a.value = :value"""),
+        @NamedQuery(name = "IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValues",
+                query = """FROM IntegrationConfiguration a
+                                      WHERE a.processCode = :processCode
+                                      and a.settingName = :settingName
+                                      and a.value in (:values)""")
 ])
 class IntegrationConfiguration implements Serializable {
     static final String LDM_CACHE_REGION_NAME = "ldmEnumeration"
@@ -72,37 +77,37 @@ class IntegrationConfiguration implements Serializable {
     /**
      * PROCESS CODE: The integration configuration setting process code.
      */
-    @Column(name= "GORICCR_SQPR_CODE")
+    @Column(name = "GORICCR_SQPR_CODE")
     String processCode
 
     /**
      * SETTING NAME: The integration configuration setting name.
      */
-    @Column(name= "GORICCR_ICSN_CODE")
+    @Column(name = "GORICCR_ICSN_CODE")
     String settingName
 
     /**
      * VALUE: Value of configuration setting.
      */
-    @Column(name= "GORICCR_VALUE")
+    @Column(name = "GORICCR_VALUE")
     String value
 
     /**
      * VALUE DESCRIPTION: Description of the value entered for the given setting.
      */
-    @Column(name= "GORICCR_VALUE_DESC")
+    @Column(name = "GORICCR_VALUE_DESC")
     String valueDescription
 
     /**
      * SEQUENCE NUMBER: Ordinal number used when order of configuration settings is important.
      */
-    @Column(name= "GORICCR_SEQ_NO")
+    @Column(name = "GORICCR_SEQ_NO")
     Integer sequenceNumber
 
     /**
      * TRANSLATION VALUE: A value that is the technical equivalent of the value in the VALUE field.
      */
-    @Column(name= "GORICCR_TRANSLATION_VALUE")
+    @Column(name = "GORICCR_TRANSLATION_VALUE")
     String translationValue
 
     public String toString() {
@@ -170,11 +175,11 @@ class IntegrationConfiguration implements Serializable {
     }
 
     //Read Only fields that should be protected against update
-    public static readonlyProperties = ['processCode','settingName']
+    public static readonlyProperties = ['processCode', 'settingName']
 
     static List<IntegrationConfiguration> fetchAllByProcessCode(String processCode) {
         List<IntegrationConfiguration> integrationList = null
-        if (!processCode ) return integrationList
+        if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCode')
                     .setString('processCode', processCode).setCacheMode(CacheMode.IGNORE).list()
@@ -183,9 +188,9 @@ class IntegrationConfiguration implements Serializable {
 
     }
 
-    static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode,String settingName, String translationValue) {
+    static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue) {
         List<IntegrationConfiguration> integrationList = null
-        if (!processCode ) return integrationList
+        if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue')
                     .setString('processCode', processCode).setString('settingName', settingName).setString('translationValue', translationValue).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
@@ -197,11 +202,12 @@ class IntegrationConfiguration implements Serializable {
     }
 
     /**
-     * @deprecated  Primary key of table prevents this ever returning a list. {@link #fetchByProcessCodeAndSettingNameAndValue(String processCode,String settingName, String value)}
+     * @deprecated Primary key of table prevents this ever returning a list. {@link #fetchByProcessCodeAndSettingNameAndValue(String processCode, String settingName, String value)}
      */
-    @Deprecated static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndValue(String processCode,String settingName, String value) {
+    @Deprecated
+    static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndValue(String processCode, String settingName, String value) {
         List<IntegrationConfiguration> integrationList = null
-        if (!processCode ) return integrationList
+        if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
                     .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
@@ -212,14 +218,25 @@ class IntegrationConfiguration implements Serializable {
 
     }
 
-    static IntegrationConfiguration fetchByProcessCodeAndSettingNameAndValue(String processCode,String settingName, String value) {
+    static IntegrationConfiguration fetchByProcessCodeAndSettingNameAndValue(String processCode, String settingName, String value) {
         List<IntegrationConfiguration> integrationList = null
-        if (!processCode ) return integrationList
+        if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
                     .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
         }
         return integrationList?.size() > 0 ? integrationList?.get(0) : null
+
+    }
+
+    static List<IntegrationConfiguration> fetchByProcessCodeAndSettingNameAndValues(String processCode, String settingName, List<String> values) {
+        List<IntegrationConfiguration> integrationList = null
+        if (!processCode) return integrationList
+        integrationList = IntegrationConfiguration.withSession { session ->
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValues')
+                    .setString('processCode', processCode).setString('settingName', settingName).setParameterList('values', values).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+        }
+        return integrationList
 
     }
 

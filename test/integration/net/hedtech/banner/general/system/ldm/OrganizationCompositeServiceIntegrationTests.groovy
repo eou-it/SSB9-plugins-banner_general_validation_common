@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.College
+import net.hedtech.banner.general.system.Department
 import net.hedtech.banner.general.system.ldm.v1.Organization
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
@@ -13,6 +14,7 @@ import org.junit.Test
 class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     College college
+    Department department
     def organizationCompositeService
 
     @Before
@@ -25,6 +27,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
     private void initiializeDataReferences() {
         college = College.findByCode('AH')
+        department = Department.findByCode('ECON')
     }
 
     /**
@@ -36,7 +39,7 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         List organizationList = organizationCompositeService.list(paginationParams)
         assertNotNull organizationList
         assertFalse organizationList.isEmpty()
-        assertTrue organizationList.code.contains(college.code)
+        assertTrue organizationList.abbreviation.contains(college.code)
     }
 
     /**
@@ -44,7 +47,10 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     void testCount() {
-        assertEquals College.count(), organizationCompositeService.count()
+        Long count = College.count()
+        count += Department.count()
+
+        assertEquals count, organizationCompositeService.count()
     }
 
     /**
@@ -59,8 +65,8 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         assertNotNull organizationList[0].guid
         def organization = organizationCompositeService.get(organizationList[0].guid)
         assertNotNull organization
-        assertEquals organizationList[0].code, organization.code
-        assertEquals organizationList[0].description, organization.description
+        assertEquals organizationList[0].abbreviation, organization.abbreviation
+        assertEquals organizationList[0].title, organization.title
         assertEquals organizationList[0].metadata.dataOrigin, organization.metadata.dataOrigin
         assertEquals organizationList[0].guid, organization.guid
         assertEquals organizationList[0].organizationType, organization.organizationType
@@ -71,10 +77,9 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     void testGetWithInvalidGuid() {
-        shouldFail( ApplicationException  ) {
+        shouldFail(ApplicationException) {
             organizationCompositeService.get(null)
         }
-
     }
 
     /**
@@ -84,23 +89,45 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     void testFetchByCollegeId() {
         def organization = organizationCompositeService.fetchByCollegeId(college.id)
         assertNotNull organization
-        assertEquals college.id, organization.id
-        assertEquals college.code, organization.code
-        assertEquals college.description, organization.description
+        assertEquals college.code, organization.abbreviation
+        assertEquals college.description, organization.title
         assertEquals college.dataOrigin, organization.metadata.dataOrigin
     }
 
     /**
-     * Testcase for fetchByCollegeCode
+     * Testcase for fetchByCollegeCode method
      */
     @Test
-    void testFetchFetchByCollegeCode() {
+    void testFetchByCollegeCode() {
         Organization organization = organizationCompositeService.fetchByCollegeCode(college.code)
         assertNotNull organization
-        assertEquals college.id, organization.id
-        assertEquals college.code, organization.code
-        assertEquals college.description, organization.description
+        assertEquals college.code, organization.abbreviation
+        assertEquals college.description, organization.title
         assertEquals college.dataOrigin, organization.metadata.dataOrigin
+    }
+
+    /**
+     * Testcase for fetchByDepartmentId method
+     */
+    @Test
+    void testFetchByDepartmentId() {
+        def organization = organizationCompositeService.fetchByDepartmentId(department.id)
+        assertNotNull organization
+        assertEquals department.code, organization.abbreviation
+        assertEquals department.description, organization.title
+        assertEquals department.dataOrigin, organization.metadata.dataOrigin
+    }
+
+    /**
+     * Testcase for fetchByDepartmentCode method
+     */
+    @Test
+    void testFetchByDepartmentCode() {
+        Organization organization = organizationCompositeService.fetchByDepartmentCode(department.code)
+        assertNotNull organization
+        assertEquals department.code, organization.abbreviation
+        assertEquals department.description, organization.title
+        assertEquals department.dataOrigin, organization.metadata.dataOrigin
     }
 
 }

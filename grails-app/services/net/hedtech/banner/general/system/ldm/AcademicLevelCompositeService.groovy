@@ -54,12 +54,12 @@ class AcademicLevelCompositeService {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
 
         if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(AcademicLevel.class.simpleName)))
+            throw new ApplicationException("academicLevel", new NotFoundException())
         }
 
         Level level = Level.get(globalUniqueIdentifier.domainId)
         if (!level) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(AcademicLevel.class.simpleName)))
+            throw new ApplicationException("academicLevel", new NotFoundException())
         }
 
         return new AcademicLevel(level, globalUniqueIdentifier.guid, new Metadata(level.dataOrigin));

@@ -111,6 +111,20 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertEquals globalUniqueIdentifier, globalUniqueIdentifier1
     }
 
+    @Test
+    void testFetchByLdmNameAndDomainSurrogateIds(){
+        String ldmName = GlobalUniqueIdentifier.findAll([max:1])[0].ldmName
+        List<Long> domainIds = GlobalUniqueIdentifier.findAllByLdmName(ldmName,[max:10]).domainId
+
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateIds(ldmName, domainIds)
+        assertNotNull globalUniqueIdentifierList
+        globalUniqueIdentifierList.collect {
+            assertEquals it.ldmName,ldmName
+            assertTrue domainIds.contains(it.domainId)
+        }
+
+    }
+
 
     private GlobalUniqueIdentifier createNewGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = new GlobalUniqueIdentifier(

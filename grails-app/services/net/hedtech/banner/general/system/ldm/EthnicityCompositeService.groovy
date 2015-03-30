@@ -53,12 +53,12 @@ class EthnicityCompositeService {
     EthnicityDetail get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITY_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(Ethnicity.class.simpleName)))
+            throw new ApplicationException("ethnicity", new NotFoundException())
         }
 
         Ethnicity ethnicity = Ethnicity.get(globalUniqueIdentifier.domainId)
         if (!ethnicity) {
-            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: GrailsNameUtils.getNaturalName(Ethnicity.class.simpleName)))
+            throw new ApplicationException("ethnicity", new NotFoundException())
         }
 
         return new EthnicityDetail(ethnicity, globalUniqueIdentifier.guid, getLdmEthnicity(ethnicity), new Metadata(ethnicity.dataOrigin));

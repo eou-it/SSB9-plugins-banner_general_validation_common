@@ -171,4 +171,11 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         assertFalse clonedMap.containsKey("key2")
     }
 
+    //Can't test getting params without restful-api plugin,
+    // so just test the result when plugin isn't loaded.
+    @Test
+    void testGetRequestParams() {
+        assertNull RestfulApiValidationUtility.getRequestParams()
+    }
+
 }

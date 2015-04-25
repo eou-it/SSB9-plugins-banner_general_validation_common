@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional
 class EthnicityCompositeService {
 
     def ethnicityService
+    private static final String PROCESS_CODE = "HEDM"
     private static final String ETHNICITY_LDM_NAME = 'ethnicities'
 
     List<EthnicityDetail> list(Map params) {

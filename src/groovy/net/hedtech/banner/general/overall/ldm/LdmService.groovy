@@ -6,7 +6,6 @@ package net.hedtech.banner.general.overall.ldm
 import grails.validation.ValidationException
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
-import net.hedtech.banner.exceptions.MultiModelValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.utility.MessageResolver
@@ -35,7 +34,7 @@ class LdmService {
     ]
 
     private static List globalBindExcludes = ['id', 'version', 'dataOrigin']
-
+    private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
 
     static String fetchBannerDomainPropertyForLdmField(String ldmField) {
         return ldmFieldToBannerDomainPropertyMap[ldmField]
@@ -53,7 +52,7 @@ class LdmService {
      * @return
      */
     IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue) {
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM', settingName, translationValue)
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue(processCode, settingName, translationValue)
         IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
         LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
@@ -73,7 +72,7 @@ class LdmService {
      * @return
      */
     IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue(String processCode, String settingName, String value) {
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue('LDM', settingName, value)
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue(processCode, settingName, value)
         IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
         LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
@@ -342,4 +341,5 @@ class LdmService {
         newEntity.guid = guid
         globalUniqueIdentifierService.update(newEntity)
     }
+
 }

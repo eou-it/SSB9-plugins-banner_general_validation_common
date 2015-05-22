@@ -8,11 +8,9 @@ import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.IpedsEthnicity
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
-import net.hedtech.banner.general.system.ldm.v1.EthnicityParentCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
-
 
 class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
@@ -24,6 +22,10 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
     def i_success_description = 'New Ethnicity'
     def i_success_data_origin = 'Banner'
     def i_success_parent_category = 'Hispanic'
+
+    def u_success_description = 'Update Ethnicity'
+    def u_success_data_origin = 'Banner'
+    def u_success_parent_category = 'Non-Hispanic'
 
 
     @Before
@@ -124,7 +126,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertEquals i_success_ethnicity.code, ethnicityDetail.code
         assertEquals i_success_ethnicity.description, ethnicityDetail.description
         assertEquals i_success_ethnicity.dataOrigin, ethnicityDetail.metadata.dataOrigin
-        assertEquals getLdmEthnicity(i_success_ethnicity), ethnicityDetail.parentCategory
+        assertEquals ethnicityCompositeService.getHeDMEnumeration(i_success_ethnicity.ethnic), ethnicityDetail.parentCategory
     }
 
 
@@ -143,7 +145,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertEquals i_success_ethnicity.code, ethnicityDetail.code
         assertEquals i_success_ethnicity.description, ethnicityDetail.description
         assertEquals i_success_ethnicity.dataOrigin, ethnicityDetail.metadata.dataOrigin
-        assertEquals getLdmEthnicity(i_success_ethnicity), ethnicityDetail.parentCategory
+        assertEquals ethnicityCompositeService.getHeDMEnumeration(i_success_ethnicity.ethnic), ethnicityDetail.parentCategory
     }
 
 
@@ -198,22 +200,46 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
 
+    @Test
+    void testUpdateEthnicity() {
+        Map create_content = newEthnicityMap()
+        def o_success_ethnicity_create = ethnicityCompositeService.create(create_content)
+        assertNotNull o_success_ethnicity_create
+        assertNotNull o_success_ethnicity_create.guid
+        assertEquals i_success_code, o_success_ethnicity_create.code
+        assertEquals i_success_description, o_success_ethnicity_create.description
+        assertEquals i_success_data_origin, o_success_ethnicity_create.dataOrigin
+        assertEquals i_success_parent_category, o_success_ethnicity_create.parentCategory
+
+        Map update_content = updateEthnicityMap(o_success_ethnicity_create.guid)
+        def o_success_ethnicity_update = ethnicityCompositeService.update(update_content)
+        assertNotNull o_success_ethnicity_update
+        assertEquals o_success_ethnicity_create.guid, o_success_ethnicity_update.guid
+        assertEquals i_success_code, o_success_ethnicity_update.code
+        assertEquals u_success_description, o_success_ethnicity_update.description
+        assertEquals u_success_data_origin, o_success_ethnicity_update.dataOrigin
+        assertEquals u_success_parent_category, o_success_ethnicity_update.parentCategory
+    }
+
+
     private Map newEthnicityMap() {
         Map params = [code          : i_success_code,
                       description   : i_success_description,
-                      metadata      : [[dataOrigin: i_success_data_origin]],
+                      metadata      : [dataOrigin: i_success_data_origin],
                       parentCategory: i_success_parent_category
         ]
         return params
     }
 
 
-    def getLdmEthnicity(def ethnicity) {
-        if (ethnicity != null) {
-            return ethnicity.ethnic == "1" ? EthnicityParentCategory.NON_HISPANIC.value :
-                    (ethnicity.ethnic == "2" ? EthnicityParentCategory.HISPANIC.value : null)
-        }
-        return null
+    private Map updateEthnicityMap(guid) {
+        Map params = [id            : guid,
+                      description         : u_success_description,
+                      metadata      : [dataOrigin: u_success_data_origin],
+                      parentCategory: u_success_parent_category
+        ]
+
+        return params
     }
 
 

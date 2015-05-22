@@ -89,6 +89,42 @@ class EthnicityCompositeService extends LdmService {
         return getDecorator(ethnicity, ethnicityGuid)
     }
 
+    /**
+     * PUT /api/ethnicities/<guid>
+     *
+     * @param content Request body
+     * @return
+     */
+    def update(Map content) {
+        String ethnicityGuid = content?.id?.trim()?.toLowerCase()
+
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITY_LDM_NAME, ethnicityGuid)
+        if (ethnicityGuid) {
+            if (!globalUniqueIdentifier) {
+                if (!content.get('guid')) {
+                    content.put('guid', ethnicityGuid)
+                }
+                //Per strategy when a GUID was provided, the create should happen.
+                return create(content)
+            }
+        } else {
+            throw new ApplicationException("ethnicity", new NotFoundException())
+        }
+
+        Ethnicity ethnicity = Ethnicity.findById(globalUniqueIdentifier?.domainId)
+        if (!ethnicity) {
+            throw new ApplicationException("ethnicity", new NotFoundException())
+        }
+
+        // Should not allow to update ethnicity.code as it is read-only
+        if (ethnicity.code != content?.code?.trim()) {
+            content.put("code", ethnicity.code)
+        }
+        ethnicity = bindEthnicity(ethnicity, content)
+
+        return getDecorator(ethnicity, ethnicityGuid)
+    }
+
 
     EthnicityDetail fetchByEthnicityId(Long ethnicityId) {
         if (null == ethnicityId) {
@@ -119,7 +155,7 @@ class EthnicityCompositeService extends LdmService {
      *
      * @param ethnicCode 1 - Not Hispanic or Latino, 2 - Hispanic or Latino, or null.
      */
-    private String getHeDMEnumeration(String ethnicCode) {
+    String getHeDMEnumeration(String ethnicCode) {
         String hedmEnum
         switch (ethnicCode) {
             case "1":

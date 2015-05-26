@@ -1,27 +1,25 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
-import net.hedtech.banner.general.system.ldm.v1.MaritalStatusParentCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
 
-
 class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     MaritalStatus i_success_maritalStatus
-    Map i_success_content
     Map i_success_input_content
     def i_creation_guid = '11599c85-afe8-4624-9832-106a716624a7'
     def i_update_description = 'Updating the description'
 
     def maritalStatusCompositeService
     def globalUniqueIdentifierService
+
 
     @Before
     public void setUp() {
@@ -33,9 +31,9 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     private void initializeDataReferences() {
         i_success_maritalStatus = MaritalStatus.findByCode('M')
-        i_success_content = [abbreviation:'X',metadata:[dataOrigin:'INTEGTEST'],title:'Not applicable']
-        i_success_input_content = [code:'Y',metadata:[dataOrigin:'Banner'],description:'The Y code']
+        i_success_input_content = [code: 'Y', metadata: [dataOrigin: 'Banner'], description: 'The Y code']
     }
+
 
     @Test
     void testListWithoutPaginationParams() {
@@ -44,6 +42,7 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertFalse maritalStatuses.isEmpty()
         assertTrue maritalStatuses.size() > 0
     }
+
 
     @Test
     void testListWithPagination() {
@@ -54,11 +53,13 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertTrue maritalStatuses.size() == 4
     }
 
+
     @Test
     void testCount() {
         assertNotNull i_success_maritalStatus
         assertEquals MaritalStatus.count(), maritalStatusCompositeService.count()
     }
+
 
     @Test
     void testGetInvalidGuid() {
@@ -69,18 +70,20 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         }
     }
 
+
     @Test
     void testGetOrphanedGuid() {
-        globalUniqueIdentifierService.create([guid:i_creation_guid,
-                                              ldmName:'marital-status',
-                                              domainId:99999999999,
-                                              domainKey:'Y'])
+        globalUniqueIdentifierService.create([guid     : i_creation_guid,
+                                              ldmName  : 'marital-status',
+                                              domainId : 99999999999,
+                                              domainKey: 'Y'])
         try {
             maritalStatusCompositeService.get(i_creation_guid)
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
     }
+
 
     @Test
     void testGetNullGuid() {
@@ -90,6 +93,7 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
             assertApplicationException ae, "NotFoundException"
         }
     }
+
 
     @Test
     void testGet() {
@@ -111,11 +115,13 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals maritalStatusDetail.metadata.dataOrigin, maritalStatusDetails[0].metadata.dataOrigin
     }
 
+
     @Test
     void testFetchByMaritalStatusIdNull() {
         def result = maritalStatusCompositeService.fetchByMaritalStatusId(null)
         assertNull result
     }
+
 
     @Test
     void testFetchByMaritalStatusId() {
@@ -125,14 +131,16 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_maritalStatus.code, maritalStatusDetail.code
         assertEquals i_success_maritalStatus.description, maritalStatusDetail.description
         assertEquals i_success_maritalStatus.dataOrigin, maritalStatusDetail.metadata.dataOrigin
-        assertEquals maritalStatusCompositeService.getLdmMaritalStatus(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
+        assertEquals maritalStatusCompositeService.getHeDMEnumeration(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
     }
+
 
     @Test
     void testFetchByMaritalStatusInvalid() {
         assertNull maritalStatusCompositeService.fetchByMaritalStatusCode(null)
         assertNull maritalStatusCompositeService.fetchByMaritalStatusCode('Q')
     }
+
 
     @Test
     void testFetchByMaritalStatus() {
@@ -142,28 +150,32 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_maritalStatus.code, maritalStatusDetail.code
         assertEquals i_success_maritalStatus.description, maritalStatusDetail.description
         assertEquals i_success_maritalStatus.dataOrigin, maritalStatusDetail.metadata.dataOrigin
-        assertEquals maritalStatusCompositeService.getLdmMaritalStatus(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
+        assertEquals maritalStatusCompositeService.getHeDMEnumeration(i_success_maritalStatus.code), maritalStatusDetail.parentCategory
     }
+
 
     @Test
     void testGetLdmMaritalStatus() {
-        def result = maritalStatusCompositeService.getLdmMaritalStatus('S')
+        def result = maritalStatusCompositeService.getHeDMEnumeration('S')
         assertNotNull result
         assertEquals result, 'Single'
 
     }
 
+
     @Test
     void testGetLdmMaritalStatusNull() {
-        def result = maritalStatusCompositeService.getLdmMaritalStatus(null)
+        def result = maritalStatusCompositeService.getHeDMEnumeration(null)
         assertNull result
     }
 
+
     @Test
     void testGetLdmMaritalStatusInvalidTranslation() {
-        def result = maritalStatusCompositeService.getLdmMaritalStatus('X')
+        def result = maritalStatusCompositeService.getHeDMEnumeration('X')
         assertNull result
     }
+
 
     @Test
     void testCreate() {
@@ -174,25 +186,28 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
     }
 
+
     @Test
     void testCreateNoCode() {
         i_success_input_content.remove('code')
         try {
             MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.create(i_success_input_content)
-        } catch(Exception ae) {
+        } catch (Exception ae) {
             assertApplicationException ae, "code.required"
         }
     }
+
 
     @Test
     void testCreateNoDesc() {
         i_success_input_content.remove('description')
         try {
             MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.create(i_success_input_content)
-        } catch(Exception ae) {
+        } catch (Exception ae) {
             assertApplicationException ae, "description.required"
         }
     }
+
 
     @Test
     void testUpdateCreate() {
@@ -204,6 +219,7 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_input_content.description, maritalStatusDetail.description
         assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
     }
+
 
     @Test
     void testUpdate() {
@@ -217,25 +233,4 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
     }
 
-    def getLdmMaritalStatus(def maritalStatus) {
-        if (maritalStatus != null) {
-            switch (maritalStatus) {
-                case "S":
-                    return MaritalStatusParentCategory.SINGLE.value
-                case "M":
-                    return MaritalStatusParentCategory.MARRIED.value
-                case "D":
-                    return MaritalStatusParentCategory.DIVORCED.value
-                case "W":
-                    return MaritalStatusParentCategory.WIDOWED.value
-                case "P":
-                    return MaritalStatusParentCategory.SEPARATED.value
-                case "R":
-                    return MaritalStatusParentCategory.MARRIED.value
-                default:
-                    return null
-            }
-        }
-        return null
-    }
 }

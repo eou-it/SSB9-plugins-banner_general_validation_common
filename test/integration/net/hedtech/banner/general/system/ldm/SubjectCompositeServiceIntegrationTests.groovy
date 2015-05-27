@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -12,8 +12,12 @@ import org.junit.Test
 
 class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
-    Subject subjectResource
     def subjectCompositeService
+
+    Subject subjectResource
+    Map i_success_content
+    String u_success_description = 'Subject 1 updated description'
+
 
     @Before
     public void setUp() {
@@ -25,6 +29,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     private void initiializeDataReferences() {
         subjectResource = Subject.findByCode('OPEN')
+        i_success_content = [code: 'S1', description: 'Subject 1', metadata: [dataOrigin: 'Banner']]
     }
 
     /**
@@ -55,7 +60,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         def paginationParams = [max: '1', offset: '0']
         List subjectList = subjectCompositeService.list(paginationParams)
         assertNotNull subjectList
-        assertTrue subjectList.size()> 0
+        assertTrue subjectList.size() > 0
         assertNotNull subjectList[0].guid
         def subjectDetail = subjectCompositeService.get(subjectList[0].guid)
         assertNotNull subjectDetail
@@ -70,7 +75,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testGetWithInvalidGuid() {
-        shouldFail( ApplicationException  ) {
+        shouldFail(ApplicationException) {
             subjectCompositeService.get(null)
         }
 
@@ -84,7 +89,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         def subjectDetail = subjectCompositeService.fetchBySubjectId(subjectResource.id)
         assertNotNull subjectDetail
         assertEquals subjectResource.id, subjectDetail.id
-        assertEquals subjectResource.code , subjectDetail.code
+        assertEquals subjectResource.code, subjectDetail.code
         assertEquals subjectResource.description, subjectDetail.description
         assertEquals subjectResource.dataOrigin, subjectDetail.metadata.dataOrigin
     }
@@ -101,4 +106,50 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals subjectResource.description, subjectDetail.description
         assertEquals subjectResource.dataOrigin, subjectDetail.metadata.dataOrigin
     }
+
+
+    @Test
+    void testCreateNoCode() {
+        i_success_content.remove('code')
+        try {
+            SubjectDetail subjectDetail = subjectCompositeService.create(i_success_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "code.required.message"
+        }
+    }
+
+
+    @Test
+    void testCreateNoDesc() {
+        i_success_content.remove('description')
+        try {
+            SubjectDetail subjectDetail = subjectCompositeService.create(i_success_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "description.required.message"
+        }
+    }
+
+
+    @Test
+    void testCreate() {
+        SubjectDetail subjectDetail = subjectCompositeService.create(i_success_content)
+        assertNotNull subjectDetail
+        assertEquals i_success_content.code, subjectDetail.code
+        assertEquals i_success_content.description, subjectDetail.description
+        assertEquals i_success_content.metadata.dataOrigin, subjectDetail.dataOrigin
+    }
+
+
+    @Test
+    void testUpdate() {
+        SubjectDetail subjectDetail = subjectCompositeService.create(i_success_content)
+        assertNotNull subjectDetail
+        i_success_content.put('id', subjectDetail.guid)
+        i_success_content.put('description', u_success_description)
+        subjectDetail = subjectCompositeService.update(i_success_content)
+        assertEquals i_success_content.code, subjectDetail.code
+        assertEquals u_success_description, subjectDetail.description
+        assertEquals i_success_content.metadata.dataOrigin, subjectDetail.dataOrigin
+    }
+
 }

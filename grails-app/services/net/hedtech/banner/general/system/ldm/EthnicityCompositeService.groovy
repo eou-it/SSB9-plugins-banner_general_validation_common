@@ -29,13 +29,14 @@ class EthnicityCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<EthnicityDetail> list(Map params) {
         List ethnicityDetailList = []
-        List allowedSortFields = ['abbreviation', 'title']
 
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+
+        List allowedSortFields = ['abbreviation', 'title']
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
-
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+
         List<Ethnicity> ethnicityList = ethnicityService.list(params) as List
         ethnicityList.each { ethnicity ->
             ethnicityDetailList << getDecorator(ethnicity)
@@ -74,7 +75,12 @@ class EthnicityCompositeService extends LdmService {
     def create(Map content) {
         validateRequest(content)
 
-        Ethnicity ethnicity = bindEthnicity(new Ethnicity(), content)
+        Ethnicity ethnicity = Ethnicity.findByCode(content?.code?.trim())
+        if (ethnicity) {
+            throw new ApplicationException("ethnicity", new BusinessLogicValidationException("exists.message", null))
+        }
+
+        ethnicity = bindEthnicity(new Ethnicity(), content)
 
         String ethnicityGuid = content?.guid?.trim()?.toLowerCase()
         if (ethnicityGuid) {

@@ -39,13 +39,14 @@ class MaritalStatusCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<MaritalStatusDetail> list(Map params) {
         List maritalStatusDetailList = []
-        List allowedSortFields = ['abbreviation', 'title']
 
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+
+        List allowedSortFields = ['abbreviation', 'title']
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
-
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+
         List<MaritalStatus> maritalStatusList = maritalStatusService.list(params) as List
         maritalStatusList.each { maritalStatus ->
             maritalStatusDetailList << getDecorator(maritalStatus)
@@ -60,7 +61,6 @@ class MaritalStatusCompositeService extends LdmService {
      * It is used in conjunction with the list method when returning a list of resources.
      * RestfulApiController will make call to "count" only if the "list" execution happens without any exception.
      *
-     * @param params Request parameters
      * @return
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -97,7 +97,12 @@ class MaritalStatusCompositeService extends LdmService {
     def create(content) {
         validateRequest(content)
 
-        MaritalStatus maritalStatus = bindMaritalStatus(new MaritalStatus(), content)
+        MaritalStatus maritalStatus = MaritalStatus.findByCode(content?.code?.trim())
+        if (maritalStatus) {
+            throw new ApplicationException("maritalStatus", new BusinessLogicValidationException("exists.message", null))
+        }
+
+        maritalStatus = bindMaritalStatus(new MaritalStatus(), content)
 
         String msGuid = content?.guid?.trim()?.toLowerCase()
         if (msGuid) {

@@ -104,7 +104,7 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
         assertNotNull maritalStatusDetails[0].guid
         def maritalStatusDetail = maritalStatusCompositeService.get(maritalStatusDetails[0].guid)
-        assertNotNull maritalStatusDetail
+        assertNotNull maritalStatusDetail.toString()
         assertNotNull maritalStatusDetail.code
         assertEquals maritalStatusDetail.code, maritalStatusDetails[0].code
         assertNotNull maritalStatusDetail.parentCategory
@@ -113,6 +113,7 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals maritalStatusDetail.guid, maritalStatusDetails[0].guid
         assertNotNull maritalStatusDetail.metadata
         assertEquals maritalStatusDetail.metadata.dataOrigin, maritalStatusDetails[0].metadata.dataOrigin
+        assertEquals maritalStatusDetail, maritalStatusDetails[0]
     }
 
 

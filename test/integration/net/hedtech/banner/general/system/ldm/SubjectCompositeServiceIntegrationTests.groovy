@@ -69,6 +69,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals subjectList[0].code, subjectDetail.code
         assertEquals subjectList[0].description, subjectDetail.description
         assertEquals subjectList[0].metadata.dataOrigin, subjectDetail.metadata.dataOrigin
+        assertEquals subjectList[0], subjectDetail
     }
     /**
      * Testcase for show method with ApplicationException
@@ -87,7 +88,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchBySubjectId() {
         def subjectDetail = subjectCompositeService.fetchBySubjectId(subjectResource.id)
-        assertNotNull subjectDetail
+        assertNotNull subjectDetail.toString()
         assertEquals subjectResource.id, subjectDetail.id
         assertEquals subjectResource.code, subjectDetail.code
         assertEquals subjectResource.description, subjectDetail.description

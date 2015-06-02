@@ -97,7 +97,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
         assertNotNull ethnicityDetails[0].guid
         def ethnicityDetail = ethnicityCompositeService.get(ethnicityDetails[0].guid)
-        assertNotNull ethnicityDetail
+        assertNotNull ethnicityDetail.toString()
         assertNotNull ethnicityDetail.code
         assertEquals ethnicityDetails[0].code, ethnicityDetail.code
         assertNotNull ethnicityDetail.guid

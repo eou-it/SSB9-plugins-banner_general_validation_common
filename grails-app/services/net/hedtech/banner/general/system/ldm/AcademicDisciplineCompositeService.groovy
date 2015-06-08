@@ -2,7 +2,6 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
-import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.AcademicDiscipline
 import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineDetailDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -16,9 +15,17 @@ class AcademicDisciplineCompositeService {
 
     def majorMinorConcentrationService
 
-    private static final String DEFAULT_SORT_FIELD = 'abbreviation'
+    private static final String DEFAULT_SORT_FIELD = 'title'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
     static final List allowedSortFields = [DEFAULT_SORT_FIELD]
+    private static HashMap ldmFieldToBannerDomainPropertyMap = [
+            title: 'code'
+    ]
+
+    private String fetchBannerDomainPropertyForLdmField(String ldmField) {
+        return ldmFieldToBannerDomainPropertyMap[ldmField]
+    }
+
 
     /**
      * GET /api/academic-disciplines
@@ -34,7 +41,7 @@ class AcademicDisciplineCompositeService {
         params?.order = params?.order ? params?.order : DEFAULT_ORDER_TYPE
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)
+        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
         majorMinorConcentrationList = getDataFromDB(false, params)
         getDisciplineFilterData(majorMinorConcentrationList, academicDisciplineDetailList)
         return academicDisciplineDetailList;
@@ -50,7 +57,8 @@ class AcademicDisciplineCompositeService {
     }
 
     /**
-     * GET /api/academic-disciplines/{guid}* @param guid
+     * GET /api/academic-disciplines/{guid}
+     * @param guid
      * @return
      */
     @Transactional(readOnly = true)
@@ -83,6 +91,4 @@ class AcademicDisciplineCompositeService {
     private AcademicDisciplineDetailDecorator popluateData(academicDiscipline) {
         new AcademicDisciplineDetailDecorator(academicDiscipline)
     }
-
-
 }

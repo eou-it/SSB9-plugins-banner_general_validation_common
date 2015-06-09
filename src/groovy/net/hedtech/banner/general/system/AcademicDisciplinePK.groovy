@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system
 
 import org.hibernate.annotations.Type
@@ -7,6 +10,7 @@ import javax.persistence.Embeddable
 
 /**
  * Created by invthannee on 6/3/2015.
+ * composite primary key Entity
  */
 @Embeddable
 class AcademicDisciplinePK implements Serializable {

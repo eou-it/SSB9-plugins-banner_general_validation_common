@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
@@ -11,6 +14,7 @@ import org.junit.Test
 
 /**
  * Created by invthannee on 6/4/2015.
+ * Integration Tests for AcademicDisciplineCompositeService
  */
 class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 

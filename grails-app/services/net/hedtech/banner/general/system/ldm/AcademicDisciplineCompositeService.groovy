@@ -1,14 +1,18 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.system.AcademicDiscipline
-import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineDetailDecorator
+import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineDetail
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
 /**
  * Created by invthannee on 6/2/2015.
+ *  Academic Discipline Composite Service
  */
 @Transactional
 class AcademicDisciplineCompositeService {
@@ -33,8 +37,8 @@ class AcademicDisciplineCompositeService {
      * @return
      */
     @Transactional(readOnly = true)
-    List<AcademicDisciplineDetailDecorator> list(Map params) {
-        List<AcademicDisciplineDetailDecorator> academicDisciplineDetailList = []
+    List<AcademicDisciplineDetail> list(Map params) {
+        List<AcademicDisciplineDetail> academicDisciplineDetailList = []
         List<AcademicDiscipline> majorMinorConcentrationList
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         params?.sort = params?.sort ? params?.sort : DEFAULT_SORT_FIELD
@@ -59,11 +63,11 @@ class AcademicDisciplineCompositeService {
     /**
      * GET /api/academic-disciplines/{guid}
      * @param guid
-     * @return
+     * @return 
      */
     @Transactional(readOnly = true)
-    List<AcademicDisciplineDetailDecorator> get(String guid) {
-        List<AcademicDisciplineDetailDecorator> academicDisciplineDetailList = []
+    List<AcademicDisciplineDetail> get(String guid) {
+        List<AcademicDisciplineDetail> academicDisciplineDetailList = []
         List<AcademicDiscipline> majorMinorConcentrationList = AcademicDiscipline.findAllByGuid(guid?.trim())
         if (majorMinorConcentrationList) {
             getDisciplineFilterData(majorMinorConcentrationList, academicDisciplineDetailList)
@@ -82,13 +86,9 @@ class AcademicDisciplineCompositeService {
         }
     }
 
-    private void getDisciplineFilterData(List<AcademicDiscipline> academicDisciplineList, List<AcademicDisciplineDetailDecorator> academicDisciplineDetailList) {
+    private void getDisciplineFilterData(List<AcademicDiscipline> academicDisciplineList, List<AcademicDisciplineDetail> academicDisciplineDetailList) {
         academicDisciplineList.each { academicDiscipline ->
-            academicDisciplineDetailList << popluateData(academicDiscipline)
+            academicDisciplineDetailList <<  new AcademicDisciplineDetail(academicDiscipline)
         }
-    }
-
-    private AcademicDisciplineDetailDecorator popluateData(academicDiscipline) {
-        new AcademicDisciplineDetailDecorator(academicDiscipline)
     }
 }

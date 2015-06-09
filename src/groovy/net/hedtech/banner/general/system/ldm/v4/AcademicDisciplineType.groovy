@@ -1,7 +1,10 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
 
 /**
- * Enumerations for  AcademicDiscipline
+ * Type Enumerations for  AcademicDiscipline
  * Created by invthannee on 6/2/2015.
  */
 public enum AcademicDisciplineType {

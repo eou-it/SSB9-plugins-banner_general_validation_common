@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system
 
 import javax.persistence.Column
@@ -8,12 +11,15 @@ import javax.persistence.Table
 /**
  * Created by invthannee on 6/3/2015.
  *
- * AcademicDiscipline view Table
+ * AcademicDiscipline Read Only view
  */
 @Entity
 @Table(name = "SVQ_MAJRS")
 class AcademicDiscipline implements Serializable {
 
+    /**
+     * This field specifies the composite primary key of SVQ_MAJRS
+     */
     @EmbeddedId
     AcademicDisciplinePK id
 
@@ -42,7 +48,7 @@ class AcademicDiscipline implements Serializable {
     String guid
 
     /**
-     * This field specifies the GUID.
+     * This field specifies the type of STVMAJR.
 
      */
     @Column(name = "STVMAJR_VALID_TYPE", length = 30)

@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
 
 import net.hedtech.banner.general.system.AcademicDiscipline
@@ -7,7 +10,7 @@ import net.hedtech.banner.general.system.ldm.v1.Metadata
  * Decorator for academic disciplines
  * Created by invthannee on 6/2/2015.
  */
-class AcademicDisciplineDetailDecorator {
+class AcademicDisciplineDetail {
     @Delegate
     private final AcademicDiscipline academicDiscipline
     Metadata metadata
@@ -16,7 +19,7 @@ class AcademicDisciplineDetailDecorator {
     List<Map<String, String>> title
     List<Map<String, String>> descriptionList
 
-    AcademicDisciplineDetailDecorator(AcademicDiscipline academicDiscipline) {
+    AcademicDisciplineDetail(AcademicDiscipline academicDiscipline) {
         title = []
         descriptionList = []
         this.academicDiscipline = academicDiscipline

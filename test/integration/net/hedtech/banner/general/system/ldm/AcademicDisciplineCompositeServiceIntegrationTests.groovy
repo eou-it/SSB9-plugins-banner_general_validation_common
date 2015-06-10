@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.MajorMinorConcentration
 import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineType
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -24,6 +25,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
     def i_sucess_academicDiscipline_minor
     def i_sucess_academicDiscipline_concentration
     def i_sucess_academicDiscipline_guid
+    def non_exits_guid
 
 
     @Before
@@ -45,6 +47,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         i_sucess_academicDiscipline_major = MajorMinorConcentration.findAllByValidMajorIndicator(Boolean.TRUE)
         i_sucess_academicDiscipline_concentration = MajorMinorConcentration.findAllByValidConcentratnIndicator(Boolean.TRUE)
         i_sucess_academicDiscipline_guid = GlobalUniqueIdentifier.findAllByLdmName('academic-disciplines')
+        non_exits_guid=GlobalUniqueIdentifier.findByDomainKey('ELE')
     }
 
     @Test
@@ -311,4 +314,26 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
             assertApplicationException ae, "NotFoundException"
         }
     }
+    
+    @Test
+    void testGetWithValidGuidAndNonExitsInAcademicDiscipline(){
+        try {
+            def academicDiscipline = academicDisciplineCompositeService.get(non_exits_guid?.guid)
+        } catch (RestfulApiValidationException ae) {
+           assertEquals ae.returnMap['messageCode'], "academicDiscipline.invalidGuid"
+        }
+    }
+
+    @Test
+    void testGetWithInvalidAcademicDisciplineGuid() {
+        try {
+
+           def guid= i_sucess_academicDiscipline_guid.find{it.domainKey == i_fail_academicDiscipline.code}?.guid
+            assertNotNull guid
+            def academicDiscipline = academicDisciplineCompositeService.get(guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+    
 }

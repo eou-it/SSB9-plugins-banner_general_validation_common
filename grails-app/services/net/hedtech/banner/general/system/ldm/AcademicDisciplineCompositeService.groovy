@@ -21,8 +21,8 @@ class AcademicDisciplineCompositeService {
 
     private static final String DEFAULT_SORT_FIELD = 'title'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
-    static final List allowedSortFields = [DEFAULT_SORT_FIELD]
-    private static HashMap ldmFieldToBannerDomainPropertyMap = [
+    private static final List allowedSortFields = [DEFAULT_SORT_FIELD]
+    private final static HashMap ldmFieldToBannerDomainPropertyMap = [
             title: 'code'
     ]
 

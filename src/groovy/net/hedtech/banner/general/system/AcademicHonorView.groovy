@@ -79,7 +79,7 @@ class AcademicHonorView implements Serializable{
         def academicHonor
         AcademicHonorView.withSession {
             session ->
-                academicHonor = session.getNamedQuery( 'AcademicHonorView.fetchByCode' ).setString( 'guid', guid ).uniqueResult()
+                academicHonor = session.getNamedQuery( 'AcademicHonorView.fetchByGuid' ).setString( 'guid', guid ).uniqueResult()
         }
         return academicHonor
     }

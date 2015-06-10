@@ -1,5 +1,8 @@
 package net.hedtech.banner.general.system.ldm
-
+import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.AcademicHonorView
 import net.hedtech.banner.general.system.ldm.v4.AcademicHonor
 import net.hedtech.banner.query.DynamicFinder
@@ -13,25 +16,25 @@ import org.springframework.transaction.annotation.Transactional
  * @author Sitakant
  */
 class AcademicHonorCompositeService {
-    public static final String AWARD = "award"
-    public static final String DISTINCTION = "distinction"
+
     public static final def allowedSortFields=['title']
     public static final def DEFAULT_SORTED_FIELD='code'
     public static final def ALLOWED_SEARCH_FIELD='type'
     public static final String LDM_NAME_INSTITUTIONAL = 'institutional-honors'
     public static final String LDM_NAME_DEPARTMENTAL = 'departmental-honors'
     public static final String DEFAULT_ORDER_TYPE='ASC'
-    public static final Integer MAX_DEFAULT=10
-    public static final Integer MAX_UPPER_LIMIT=15
-
+    public static final Integer MAX_UPPER_LIMIT=500
     public final def SEARCH_PARAMETERS=['award', 'distinction']
     public final Map sortFieldMap=['title':'code']
     public final Map ldmToDomainFieldMap=[
-            "award":LDM_NAME_DEPARTMENTAL,
-            "distinction":LDM_NAME_INSTITUTIONAL
+            'award':LDM_NAME_DEPARTMENTAL,
+            'distinction':LDM_NAME_INSTITUTIONAL
     ]
 
-
+    /**
+     * GET /api/academic-honors
+     * @return List
+     */
     @Transactional(readOnly = true)
     List<AcademicHonor> list(Map params) {
         List academicHonors = []
@@ -39,13 +42,7 @@ class AcademicHonorCompositeService {
 
                 results.each {
                     result->
-                        def type=''
-                        if (result.type==LDM_NAME_DEPARTMENTAL){
-                            type= 'award'
-                        }
-                        if(result.type==LDM_NAME_INSTITUTIONAL){
-                            type='distinction'
-                        }
+                        def type = checkType(result)
                         academicHonors << new AcademicHonor(result,type)
         }
         academicHonors
@@ -54,6 +51,7 @@ class AcademicHonorCompositeService {
      private def fetchAcademicHonorViewCriteria(Map params,boolean count=false) {
         def results
          RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
+         RestfulApiValidationUtility.correctMaxAndOffset(params,0,MAX_UPPER_LIMIT)
          def sortParam = params.sort
          params.sort = params?.sort ? sortFieldMap[params?.sort] : DEFAULT_SORTED_FIELD
          params?.order = params?.order ? params?.order : DEFAULT_ORDER_TYPE
@@ -88,8 +86,47 @@ class AcademicHonorCompositeService {
         return results
     }
 
+    /**
+     *
+     * @return Long value as total count
+     */
     Long count(params) {
         return fetchAcademicHonorViewCriteria(params,true)
+    }
+
+    /**
+     * GET /api/academic-honors/{guid}
+     * @param guid
+     * @return
+     */
+    @Transactional(readOnly = true)
+    AcademicHonor get(String guid){
+        AcademicHonorView academicHonorView=null
+        if(guid){
+            academicHonorView = AcademicHonorView.fetchByGuid(guid)
+        }
+        if(!academicHonorView){
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
+            if(globalUniqueIdentifier){
+                throw new ApplicationException("academicCompositeService", new BusinessLogicValidationException("invalid.guid",[]))
+            }else{
+                throw new ApplicationException("academicCompositeService", new NotFoundException())
+            }
+
+        }
+        String type = checkType(academicHonorView)
+        new AcademicHonor(academicHonorView,type)
+    }
+
+    private String checkType(AcademicHonorView academicHonorView) {
+        def type = ''
+        if (academicHonorView.type == LDM_NAME_DEPARTMENTAL) {
+            type = 'award'
+        }
+        if (academicHonorView.type == LDM_NAME_INSTITUTIONAL) {
+            type = 'distinction'
+        }
+        type
     }
 
 }

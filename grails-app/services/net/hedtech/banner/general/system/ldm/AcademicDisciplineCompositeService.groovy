@@ -5,8 +5,10 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.AcademicDiscipline
 import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineDetail
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 class AcademicDisciplineCompositeService {
 
     def majorMinorConcentrationService
-
+    private static final String ACADEMIC_DISCIPLINE_HEDM = 'academic-disciplines'
     private static final String DEFAULT_SORT_FIELD = 'title'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
     private static final List allowedSortFields = [DEFAULT_SORT_FIELD]
@@ -72,8 +74,13 @@ class AcademicDisciplineCompositeService {
         if (majorMinorConcentrationList) {
             getDisciplineFilterData(majorMinorConcentrationList, academicDisciplineDetailList)
         } else {
-            throw new ApplicationException("academicDiscipline", new NotFoundException())
-        }
+            GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
+            if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=ACADEMIC_DISCIPLINE_HEDM) {
+                throw new RestfulApiValidationException("academicDiscipline.invalidGuid")
+            }else {
+                throw new ApplicationException("academicDiscipline", new NotFoundException())
+            }
+            }
         return academicDisciplineDetailList
     }
 

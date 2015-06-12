@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
@@ -11,8 +14,8 @@ import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 /**
- * <p> REST End point for Academic Honor Service. If we'll pass type is award then , Departmental-honors will display .</p>
- * <p> If we'll pass type is distinction then, Institutional  Honors will display else, Both of 2 Honor will display</p>
+ * <p> REST End point for Academic Honor Service. If we'll pass type is award then , Departmental-honors will return .</p>
+ * <p> If we'll pass type is distinction then, Institutional  Honors will display else, Both of 2 Honor will return</p>
  * @author Sitakant
  */
 class AcademicHonorCompositeService {
@@ -52,9 +55,9 @@ class AcademicHonorCompositeService {
         def results
          RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
          RestfulApiValidationUtility.correctMaxAndOffset(params,0,MAX_UPPER_LIMIT)
-         def sortParam = params.sort
-         params.sort = params?.sort ? sortFieldMap[params?.sort] : DEFAULT_SORTED_FIELD
-         params?.order = params?.order ? params?.order : DEFAULT_ORDER_TYPE
+         def sortParam = params?.sort
+         params.sort = params?.sort ? sortFieldMap[params.sort] : DEFAULT_SORTED_FIELD
+         params.order = params?.order ? params.order : DEFAULT_ORDER_TYPE
          RestfulApiValidationUtility.validateSortOrder(params.order)
          def pagingAndSortingParams = QueryBuilder.getFilterData(params)?.pagingAndSortParams
          if(!count){

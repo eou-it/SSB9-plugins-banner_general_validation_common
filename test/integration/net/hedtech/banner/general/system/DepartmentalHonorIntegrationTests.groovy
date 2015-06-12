@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system
 
 import grails.validation.ValidationException
@@ -27,7 +30,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
 
     @Test
     public void testCreateValidDepartmentalHonor(){
-        def departmentalHonor = newValidForCreateDepartnmentalHonor()
+        def departmentalHonor = createValidForCreateDepartnmentalHonor()
         assert departmentalHonor instanceof DepartmentalHonor
         departmentalHonor.save(flush: true, failOnError: true)
         assertNotNull departmentalHonor.id
@@ -43,7 +46,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
 
     @Test
     public void testValueOfDepartmentalHonor(){
-        def departmentalHonor = newValidForCreateDepartnmentalHonor()
+        def departmentalHonor = createValidForCreateDepartnmentalHonor()
         assert departmentalHonor instanceof DepartmentalHonor
         departmentalHonor.save(flush: true, failOnError: true)
 
@@ -58,7 +61,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
 
     @Test
     public void testInvalidDepartnmentHonor(){
-        def departmentalHonor=newInvalidForCreateDepartnmentalHonor()
+        def departmentalHonor=createInvalidForCreateDepartnmentalHonor()
         shouldFail(ValidationException) {
             departmentalHonor.save(failOnError: true, flush: true)
         }
@@ -66,7 +69,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
 
     @Test
     public void testUpdateDepartnmentHonor(){
-        def departnmentHonor = newValidForCreateDepartnmentalHonor()
+        def departnmentHonor = createValidForCreateDepartnmentalHonor()
         departnmentHonor.save(failOnError: true, flush: true)
         assertEquals 0L, departnmentHonor.version
         assertEquals "AAAAZ", departnmentHonor.code
@@ -85,7 +88,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
     //Optimastic Locking TestCase
     @Test
     public void testOptimasticLock(){
-        def departnmentHonor = newValidForCreateDepartnmentalHonor()
+        def departnmentHonor = createValidForCreateDepartnmentalHonor()
         departnmentHonor.save(failOnError: true, flush: true)
 
         def sql
@@ -106,7 +109,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
 
     @Test
     public void testDeleteDepartnmentHonor(){
-        def departnmentHonor = newValidForCreateDepartnmentalHonor()
+        def departnmentHonor = createValidForCreateDepartnmentalHonor()
         departnmentHonor.save(failOnError: true, flush: true)
 
         departnmentHonor.delete()
@@ -115,7 +118,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
         assertNull departnmentResponse
     }
 
-    private def newValidForCreateDepartnmentalHonor() {
+    private def createValidForCreateDepartnmentalHonor() {
         def departmentalHonor = new DepartmentalHonor(
                 code: "AAAAZ",
                 description: "123456789012345678901234567890",
@@ -125,7 +128,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
         return departmentalHonor
     }
 
-    private def newInvalidForCreateDepartnmentalHonor(){
+    private def createInvalidForCreateDepartnmentalHonor(){
         def departmentalHonor = new DepartmentalHonor(
                 code: "AAAAAAA",
                 description: "123456789012345678901234567890",

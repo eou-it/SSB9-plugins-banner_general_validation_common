@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
@@ -47,7 +50,8 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testFetchDataByCode(){
         def code='D'
-        AcademicHonorView academicHonorView = AcademicHonorView.fetchByCode(code)
+        def type = 'departmental-honors'
+        AcademicHonorView academicHonorView = AcademicHonorView.fetchByCode(code,type)
         assertFalse academicHonorView==null
         assertEquals academicHonorView.code,code
     }

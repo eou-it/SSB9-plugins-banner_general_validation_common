@@ -1,7 +1,10 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system
 import javax.persistence.*
 /**
- * <p> Department Honor </p>
+ * <p> Academic History Department Honor Validation Table</p>
  * @author Sitakant
  */
 @Entity

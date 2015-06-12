@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -11,7 +14,7 @@ import javax.persistence.Table
  */
 
 @Entity
-@Table(name = "svq_stvhonr_stvhond")
+@Table(name = "svq_acad_honors")
 @NamedQueries(value = [
         @NamedQuery(name = "AcademicHonorView.fetchByGuid",
                 query = """FROM  AcademicHonorView honor
@@ -21,7 +24,7 @@ import javax.persistence.Table
 		   WHERE honor.type=:type"""),
         @NamedQuery(name = "AcademicHonorView.fetchByCode",
                 query = """FROM  AcademicHonorView honor
-		   WHERE honor.code=:code""")
+		   WHERE honor.code=:code and honor.type=:type""")
 ])
 class AcademicHonorView implements Serializable{
 
@@ -33,7 +36,7 @@ class AcademicHonorView implements Serializable{
     String guid
 
     /**
-     * Code for Honor . Primary Key for STVHOND and STVHONR
+     * Code for Honor (STVHOND and STVHONR Table)
      * */
     @Column(name = "CODE")
     String code
@@ -57,11 +60,11 @@ class AcademicHonorView implements Serializable{
     String type
 
 
-    public static AcademicHonorView fetchByCode( String code) {
+    public static AcademicHonorView fetchByCode( String code,String type) {
         def academicHonor
         AcademicHonorView.withSession {
             session ->
-                academicHonor = session.getNamedQuery( 'AcademicHonorView.fetchByCode' ).setString( 'code', code ).uniqueResult()
+                academicHonor = session.getNamedQuery( 'AcademicHonorView.fetchByCode' ).setString( 'code', code ).setString('type',type).uniqueResult()
         }
         return academicHonor
     }

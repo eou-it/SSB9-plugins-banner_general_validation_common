@@ -13,7 +13,6 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 
 /**
  * <p> Integration Tests for DepartmentalHonor </p>
- * @author Sitakant
  */
 class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
 

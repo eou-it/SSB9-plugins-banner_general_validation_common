@@ -5,7 +5,6 @@ package net.hedtech.banner.general.system
 import javax.persistence.*
 /**
  * <p> Academic History Department Honor Validation Table</p>
- * @author Sitakant
  */
 @Entity
 @Table(name = "STVHOND")

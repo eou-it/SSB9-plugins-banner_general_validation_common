@@ -15,8 +15,7 @@ import net.hedtech.banner.service.ServiceBase
 
 
 /**
- * <p> A transactional service supporting persistence of the Institutional. </p>
- * @author Sitakant
+ * <p> A transactional service supporting persistence of the Institutional Honor. </p>
  */
 class InstitutionalHonorService extends ServiceBase{
     boolean transactional = true

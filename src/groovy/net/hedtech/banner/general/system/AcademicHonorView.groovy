@@ -9,8 +9,7 @@ import javax.persistence.NamedQueries
 import javax.persistence.NamedQuery
 import javax.persistence.Table
 /**
- * <p> Academic Honor View to retrive the Honors </p>
- * @author Sitakant
+ * <p> Academic Honor View to retrieve the Honors from STVHOND and STVHONR Tables</p>
  */
 
 @Entity

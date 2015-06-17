@@ -2,19 +2,16 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
-
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.ldm.v4.AcademicHonor
+import net.hedtech.banner.general.system.ldm.v4.AcademicHonorDetail
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
 /**
- * <p>This is the integration testcases for Academic Honor</p>
- * @author Sitakant
- */
+ * <p>Integration Test cases for AcademicHonorCompositeService</p>
+ * */
 class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTestCase {
 
     def academicHonorCompositeService
@@ -42,7 +39,7 @@ class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTest
         params.type='award'
         List list = academicHonorCompositeService.list(params)
         assertTrue list.size()>0
-        AcademicHonor academicHonor = list.get(0)
+        AcademicHonorDetail academicHonor = list.get(0)
         assertEquals academicHonor.type,'award'
     }
 
@@ -51,7 +48,7 @@ class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTest
         params.type='distinction'
         List list = academicHonorCompositeService.list(params)
         assertTrue list.size()>0
-        AcademicHonor academicHonor = list.get(0)
+        AcademicHonorDetail academicHonor = list.get(0)
         assertEquals academicHonor.type,'distinction'
     }
 
@@ -80,10 +77,10 @@ class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTest
         List list = academicHonorCompositeService.list(params)
         assertNotNull list
         assertTrue list.size()>0
-        AcademicHonor academicHonor = list.get(0)
+        AcademicHonorDetail academicHonor = list.get(0)
         assertNotNull academicHonor
 
-        AcademicHonor academicHonor1 = academicHonorCompositeService.get(academicHonor.guid)
+        AcademicHonorDetail academicHonor1 = academicHonorCompositeService.get(academicHonor.guid)
         assertNotNull academicHonor1
         assertEquals academicHonor.descriptions,academicHonor1.descriptions
         assertEquals academicHonor.guid,academicHonor1.guid
@@ -96,7 +93,7 @@ class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTest
         List list = academicHonorCompositeService.list(params)
         assertNotNull list
         assertTrue list.size()>0
-        AcademicHonor academicHonor = list.get(0)
+        AcademicHonorDetail academicHonor = list.get(0)
         assertNotNull academicHonor
 
         try {

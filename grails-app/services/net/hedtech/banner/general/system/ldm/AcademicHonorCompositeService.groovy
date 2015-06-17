@@ -7,16 +7,15 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.AcademicHonorView
-import net.hedtech.banner.general.system.ldm.v4.AcademicHonor
+import net.hedtech.banner.general.system.ldm.v4.AcademicHonorDetail
 import net.hedtech.banner.query.DynamicFinder
 import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 /**
- * <p> REST End point for Academic Honor Service. If we'll pass type is award then , Departmental-honors will return .</p>
- * <p> If we'll pass type is distinction then, Institutional  Honors will display else, Both of 2 Honor will return</p>
- * @author Sitakant
+ * <p> REST End point for Academic Honor Service. If we'll pass type is award then , Departmental-honor records will return .</p>
+ * <p> If we'll pass type is distinction then, Institutional  Honor records will return else, Both of 2 Honor will return</p>
  */
 class AcademicHonorCompositeService {
 
@@ -39,14 +38,14 @@ class AcademicHonorCompositeService {
      * @return List
      */
     @Transactional(readOnly = true)
-    List<AcademicHonor> list(Map params) {
+    List<AcademicHonorDetail> list(Map params) {
         List academicHonors = []
         List<AcademicHonorView> results = fetchAcademicHonorViewCriteria(params)
 
         results.each {
             result->
                 def type = checkType(result)
-                academicHonors << new AcademicHonor(result,type)
+                academicHonors << new AcademicHonorDetail(result,type)
         }
         academicHonors
     }
@@ -103,7 +102,7 @@ class AcademicHonorCompositeService {
      * @return
      */
     @Transactional(readOnly = true)
-    AcademicHonor get(String guid){
+    AcademicHonorDetail get(String guid){
         AcademicHonorView academicHonorView=null
         if(guid){
             academicHonorView = AcademicHonorView.fetchByGuid(guid)
@@ -118,7 +117,7 @@ class AcademicHonorCompositeService {
 
         }
         String type = checkType(academicHonorView)
-        new AcademicHonor(academicHonorView,type)
+        new AcademicHonorDetail(academicHonorView,type)
     }
 
     private String checkType(AcademicHonorView academicHonorView) {

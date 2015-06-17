@@ -213,8 +213,16 @@ class EthnicityCompositeService extends LdmService {
     def bindEthnicity(Ethnicity ethnicity, Map content) {
         setDataOrigin(ethnicity, content)
         bindData(ethnicity, content, [:])
-        if (content.parentCategory) {
-            ethnicity.ethnic = getEthnicCode(content.parentCategory)
+        if (content.containsKey("parentCategory")) {
+            String parentCategory = content.get("parentCategory")
+            if (parentCategory) {
+                if (!EthnicityParentCategory.contains(parentCategory)) {
+                    throw new ApplicationException("ethnicity", new BusinessLogicValidationException("parentCategory.invalid", null))
+                }
+                ethnicity.ethnic = getEthnicCode(content.parentCategory)
+            } else {
+                ethnicity.ethnic = null
+            }
         }
         try {
             ethnicityService.createOrUpdate(ethnicity)

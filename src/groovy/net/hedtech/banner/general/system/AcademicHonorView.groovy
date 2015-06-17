@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 import javax.persistence.Column
@@ -14,7 +14,7 @@ import javax.persistence.Table
  */
 
 @Entity
-@Table(name = "svq_acad_honors")
+@Table(name = "gvq_acad_honors")
 @NamedQueries(value = [
         @NamedQuery(name = "AcademicHonorView.fetchByGuid",
                 query = """FROM  AcademicHonorView honor
@@ -110,5 +110,17 @@ class AcademicHonorView implements Serializable{
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
         result = 31 * result + (type != null ? type.hashCode() : 0)
         return result
+    }
+
+
+    @Override
+    public String toString() {
+        return "AcademicHonorView{" +
+                "guid='" + guid + '\'' +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", dataOrigin='" + dataOrigin + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

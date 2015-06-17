@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
@@ -41,12 +41,12 @@ class AcademicHonorCompositeService {
     @Transactional(readOnly = true)
     List<AcademicHonor> list(Map params) {
         List academicHonors = []
-                List<AcademicHonorView> results = fetchAcademicHonorViewCriteria(params)
+        List<AcademicHonorView> results = fetchAcademicHonorViewCriteria(params)
 
-                results.each {
-                    result->
-                        def type = checkType(result)
-                        academicHonors << new AcademicHonor(result,type)
+        results.each {
+            result->
+                def type = checkType(result)
+                academicHonors << new AcademicHonor(result,type)
         }
         academicHonors
     }

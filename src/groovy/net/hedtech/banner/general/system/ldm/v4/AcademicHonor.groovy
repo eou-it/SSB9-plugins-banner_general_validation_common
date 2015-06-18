@@ -8,7 +8,7 @@ import net.hedtech.banner.general.system.ldm.v1.Metadata
 /**
  * <p> Decorator for Academic Honor REST Service</p>
  */
-class AcademicHonorDetail {
+class AcademicHonor {
     Metadata metadata
     String guid
     String type
@@ -17,7 +17,7 @@ class AcademicHonorDetail {
     def titles=[]
     def descriptions=[]
 
-    AcademicHonorDetail(AcademicHonorView academicHonorView,String type) {
+    AcademicHonor(AcademicHonorView academicHonorView,String type) {
         this.guid = academicHonorView.guid
         this.metadata = new Metadata(academicHonorView.dataOrigin)
         this.organization = null
@@ -32,10 +32,10 @@ class AcademicHonorDetail {
                 "metadata=" + metadata +
                 ", id='" + guid + '\'' +
                 ", title='" + titles + '\'' +
-                ", decription='" + descriptions + '\'' +
+                ", description='" + descriptions + '\'' +
                 ", type='" + type + '\'' +
                 ", organization=" + organization +
-                '}';
+                '}'
     }
 
 

@@ -2,16 +2,20 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
+
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.springframework.dao.InvalidDataAccessResourceUsageException
 
 /**
  * <p>Integration Test case for AcademicHonorView which is a Read only view</p>
- * @author Sitakant
  */
 class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
+
+    public static final String INSTITUTIONAL_HONORS = 'institutional-honors'
 
     @Before
     public void setUp() {
@@ -24,29 +28,44 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
         super.tearDown()
     }
 
+    /**
+     * <p> Test to get the count from AcademicHonorView and cumulative count of DepartmentalHonor and InstitutionalHonor</p>
+     * */
     @Test
     public void testCount(){
-        assertTrue AcademicHonorView.count()>0
+        def departmentalHonorCount = DepartmentalHonor.count()
+        assertNotNull departmentalHonorCount
+        def institutionalHonorCount = InstitutionalHonor.count()
+        assertNotNull institutionalHonorCount
+        assertTrue AcademicHonorView.count()==(institutionalHonorCount+departmentalHonorCount)
     }
 
+    /**
+     * <p> Test to get the departmental-honors records from AcademicHonorView </p>
+     * */
     @Test
     public void testFetchDataBasedOnAwardType(){
         def type = 'departmental-honors'
-        List list = AcademicHonorView.fetchByType(type)
-        assertTrue list.size()>0
-        AcademicHonorView academicHonorView = list.get(0)
+        List academicHonorViewRecords = AcademicHonorView.fetchByType(type)
+        assertTrue academicHonorViewRecords.size()>0
+        AcademicHonorView academicHonorView = academicHonorViewRecords.get(0)
         assertEquals academicHonorView.type,type
     }
 
+    /**
+     * <p> Test to get the institutional-honors records from AcademicHonorView </p>
+     * */
     @Test
     public void testFetchDataBasedOnDistinctionType(){
-        def type = 'institutional-honors'
-        List list = AcademicHonorView.fetchByType(type)
+        List list = AcademicHonorView.fetchByType(INSTITUTIONAL_HONORS)
         assertTrue list.size()>0
         AcademicHonorView academicHonorView = list.get(0)
-        assertEquals academicHonorView.type,type
+        assertEquals academicHonorView.type,INSTITUTIONAL_HONORS
     }
 
+    /**
+     * <p> Test to get the record based on the code and type </p>
+     * */
     @Test
     public void testFetchDataByCode(){
         def code='D'
@@ -55,4 +74,78 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
         assertFalse academicHonorView==null
         assertEquals academicHonorView.code,code
     }
+
+    /**
+     * <p> Test to get the record from AcademicHonorView based on Guid</p>
+     * */
+    @Test
+    void testFetchByguid() {
+        String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
+        assertNotNull instHonorsGuid
+        AcademicHonorView academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid);
+        assertNotNull academicHonorView
+        assertEquals INSTITUTIONAL_HONORS,academicHonorView.type
+        assertEquals 'M',academicHonorView.code
+    }
+
+    /**
+     * <p> Test to get the no record from AcademicHonorView by passing an invalid guid</p>
+     * */
+    @Test
+    void testFetchByInvalidGuid() {
+        String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
+        assertNotNull instHonorsGuid
+        AcademicHonorView academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid.substring(0,10));
+        assertNull academicHonorView
+    }
+
+    /**
+     * <p> Test to create a record on AcademicHonorView which will return exception as this is a read-only view</p>
+     */
+    @Test
+    void testReadOnlyForCreateAcademicDiscipline(){
+        def academicHonorView = newAcademicHonors()
+        assertNotNull academicHonorView
+        shouldFail(InvalidDataAccessResourceUsageException) {
+            academicHonorView.save(flush: true, onError: true)
+        }
+    }
+
+    /**
+     * <p>Test to update on AcademicHonorView which will return exception as this is a read-only view</p>
+     */
+    @Test
+    void testReadOnlyForUpdateAcademicDiscipline(){
+        String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
+        assertNotNull instHonorsGuid
+        def academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid)
+        assertNotNull academicHonorView
+        academicHonorView.description='Dummy Value'
+        shouldFail(InvalidDataAccessResourceUsageException) {
+            academicHonorView.save(flush: true, onError: true)
+        }
+    }
+
+
+    /**
+     * <p>Test to delete on AcademicHonorView which will return exception as this is a read-only view</p>
+     */
+    @Test
+    void testReadOnlyForDeleteAcademicDiscipline(){
+        String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
+        assertNotNull instHonorsGuid
+        def academicDiscipline = AcademicHonorView.fetchByGuid(instHonorsGuid)
+        assertNotNull academicDiscipline
+        shouldFail(InvalidDataAccessResourceUsageException) {
+            academicDiscipline.delete(flush: true, onError: true)
+        }
+    }
+
+    private def newAcademicHonors(){
+        new AcademicHonorView(
+                code: 'SS',description: 'Dummy Description',type: INSTITUTIONAL_HONORS,guid: 'aaaaaaaaaaaaa'
+        )
+    }
+
+
 }

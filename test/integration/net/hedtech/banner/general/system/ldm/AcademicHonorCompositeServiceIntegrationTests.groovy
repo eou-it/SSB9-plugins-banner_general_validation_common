@@ -4,7 +4,8 @@
 package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.ldm.v4.AcademicHonorDetail
+import net.hedtech.banner.general.system.AcademicHonorView
+import net.hedtech.banner.general.system.ldm.v4.AcademicHonor
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -12,7 +13,7 @@ import org.junit.Test
 /**
  * <p>Integration Test cases for AcademicHonorCompositeService</p>
  * */
-class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTestCase {
+class AcademicHonorCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def academicHonorCompositeService
 
@@ -27,31 +28,53 @@ class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTest
         super.tearDown()
     }
 
+    /**
+     * <p> Test to lists the academicHonors Records from academicHonorsCompositeService</p>
+     * */
     @Test
     public void testListAcademicHonors(){
-       List list = academicHonorCompositeService.list(params)
-       assertTrue list.size()>0
-
+       List academicHonorList = academicHonorCompositeService.list([max:'5'])
+       assertNotNull academicHonorList
+       assertFalse academicHonorList.isEmpty()
+       assertEquals 5, academicHonorList.size()
     }
 
+    /**
+     * <p> Test to list the award type academic honors from academicHonorsCompositeService</p>
+     * */
     @Test
     public void testAwardHonors(){
         params.type='award'
         List list = academicHonorCompositeService.list(params)
         assertTrue list.size()>0
-        AcademicHonorDetail academicHonor = list.get(0)
+        AcademicHonor academicHonor = list.get(0)
         assertEquals academicHonor.type,'award'
     }
 
+    /**
+     * <p> Test to list the distinction type academic honors from academicHonorsCompositeService</p>
+     * */
     @Test
     public void testDistinctionHonors(){
         params.type='distinction'
         List list = academicHonorCompositeService.list(params)
         assertTrue list.size()>0
-        AcademicHonorDetail academicHonor = list.get(0)
+        AcademicHonor academicHonor = list.get(0)
         assertEquals academicHonor.type,'distinction'
     }
 
+    /**
+     * <p>Test to check the count on academicHonorCompositeService</p>
+     * */
+        @Test
+    public void testCount(){
+        assertNotNull academicHonorCompositeService
+        assertEquals AcademicHonorView.count(),academicHonorCompositeService.count(params)
+    }
+
+    /**
+     * <p> Test to check the sort order and sorting field on academicHonorsCompositeService</p>
+     * */
     @Test
     public void testSortOrder(){
         params.order='DESC'
@@ -60,40 +83,48 @@ class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTest
         assertTrue list.size()>0
     }
 
+    /**
+     * <p> Tests to check the offset on academicHonorsCompositeService</p>
+     * */
     @Test
     public void testOffsetCriteria(){
-        List list = academicHonorCompositeService.list(params)
-        assertTrue list.size()>0
+        List academicHonorList = academicHonorCompositeService.list(params)
+        assertTrue academicHonorList.size()>0
 
-        params.offset=2
-        List list2 = academicHonorCompositeService.list(params)
-        assertTrue list.size()>0
+        params.offset='2'
+        List academicHonorListNew = academicHonorCompositeService.list(params)
+        assertTrue academicHonorListNew.size()>0
 
-        assertTrue list2.size()<list.size()
+        assertTrue academicHonorListNew.size()<academicHonorList.size()
     }
 
+    /**
+     * <p> Test to get a single record from academicHonorsCompositeService</p>
+     * */
     @Test
     public void testShow(){
         List list = academicHonorCompositeService.list(params)
         assertNotNull list
         assertTrue list.size()>0
-        AcademicHonorDetail academicHonor = list.get(0)
+        AcademicHonor academicHonor = list.get(0)
         assertNotNull academicHonor
 
-        AcademicHonorDetail academicHonor1 = academicHonorCompositeService.get(academicHonor.guid)
+        AcademicHonor academicHonor1 = academicHonorCompositeService.get(academicHonor.guid)
         assertNotNull academicHonor1
         assertEquals academicHonor.descriptions,academicHonor1.descriptions
         assertEquals academicHonor.guid,academicHonor1.guid
         assertEquals academicHonor.type,academicHonor1.type
     }
 
-
+    /**
+     * <p> Test to pass an invalid guid to academicHonorsCompositeService which will return an exception saying record not found</p>
+     * */
     @Test
     public void testInvalidShow(){
         List list = academicHonorCompositeService.list(params)
         assertNotNull list
         assertTrue list.size()>0
-        AcademicHonorDetail academicHonor = list.get(0)
+        AcademicHonor academicHonor = list.get(0)
         assertNotNull academicHonor
 
         try {
@@ -103,6 +134,9 @@ class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTest
         }
     }
 
+    /**
+     * <p> Test to pass another service guid to academicHonorsCompositeService which will throw exception saying Invalid Guid for academicHonorsService</p>
+     * */
     @Test
     public void testDifferentLDMGuid(){
         String siteGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey('campuses', 'M')?.guid
@@ -113,4 +147,17 @@ class AcademicHonorCompositeServiceInitegrationTests extends BaseIntegrationTest
             assertApplicationException ae, "invalid.guid"
         }
     }
+
+    /**
+     * <p> Test show for academicHonorCompositeService with null guid </p>
+     * */
+    @Test
+    void testGetNullGuid() {
+        try {
+            academicHonorCompositeService.get( null )
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -7,7 +7,6 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.RegulatoryRace
 import net.hedtech.banner.general.system.ldm.v1.RaceDetail
-import net.hedtech.banner.general.system.ldm.v1.RaceParentCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -81,7 +80,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
         assertNotNull raceDetails[0].guid
         def raceDetail = raceCompositeService.get(raceDetails[0].guid)
-        assertNotNull raceDetail
+        assertNotNull raceDetail.toString()
         assertNotNull raceDetail.race
         assertEquals raceDetail.race, raceDetails[0].race
         assertNotNull raceDetail.guid

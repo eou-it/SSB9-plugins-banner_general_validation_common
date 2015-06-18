@@ -151,7 +151,7 @@
         <mapping class="net.hedtech.banner.general.lettergeneration.PopulationSelectionBase"/>
         <mapping class="net.hedtech.banner.general.lettergeneration.PopulationSelectionExtract"/>
         <mapping class="net.hedtech.banner.general.system.AcademicDisciplinePK"/>
-        <mapping class="net.hedtech.banner.general.system.AcademicDiscipline"/>
+        <mapping class="net.hedtech.banner.general.system.AcademicDisciplineView"/>
         <mapping class="net.hedtech.banner.general.system.DepartmentalHonor"/>
         <mapping class="net.hedtech.banner.general.system.AcademicHonorView"/> 
 

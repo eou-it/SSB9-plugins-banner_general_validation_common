@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -9,8 +9,7 @@ import javax.persistence.Column
 import javax.persistence.Embeddable
 
 /**
- * Created by invthannee on 6/3/2015.
- * composite primary key Entity
+ * composite primary key for Academic Discipline
  */
 @Embeddable
 class AcademicDisciplinePK implements Serializable {

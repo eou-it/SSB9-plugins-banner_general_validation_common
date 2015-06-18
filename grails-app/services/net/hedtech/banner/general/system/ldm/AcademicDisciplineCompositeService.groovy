@@ -1,25 +1,27 @@
 /*******************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.AcademicDiscipline
-import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineDetail
+import net.hedtech.banner.general.system.AcademicDisciplineView
+import net.hedtech.banner.general.system.ldm.v4.AcademicDiscipline
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
 /**
- * Created by invthannee on 6/2/2015.
- *  Academic Discipline Composite Service
+ * <p> REST End point for Academic Discipline Service. If we'll pass type is major then , Academic Discipline major type of data will return.</p>
+ * <p> If we'll pass type is minor then, Academic Discipline minor type of data will return else, It will return all  type of Academic Discipline data.</p>
+ * <p>MajorMinorConcentrationService is used for only create and update of Academic Discipline data.</p>
  */
 @Transactional
 class AcademicDisciplineCompositeService {
 
     def majorMinorConcentrationService
+    
     private static final String ACADEMIC_DISCIPLINE_HEDM = 'academic-disciplines'
     private static final String DEFAULT_SORT_FIELD = 'title'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
@@ -39,9 +41,9 @@ class AcademicDisciplineCompositeService {
      * @return
      */
     @Transactional(readOnly = true)
-    List<AcademicDisciplineDetail> list(Map params) {
-        List<AcademicDisciplineDetail> academicDisciplineDetailList = []
-        List<AcademicDiscipline> majorMinorConcentrationList
+    List<AcademicDiscipline> list(Map params) {
+        List<AcademicDiscipline> academicDisciplineDetailList = []
+        List<AcademicDisciplineView> majorMinorConcentrationList
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         params?.sort = params?.sort ? params?.sort : DEFAULT_SORT_FIELD
         params?.order = params?.order ? params?.order : DEFAULT_ORDER_TYPE
@@ -68,9 +70,9 @@ class AcademicDisciplineCompositeService {
      * @return 
      */
     @Transactional(readOnly = true)
-    List<AcademicDisciplineDetail> get(String guid) {
-        List<AcademicDisciplineDetail> academicDisciplineDetailList = []
-        List<AcademicDiscipline> majorMinorConcentrationList = AcademicDiscipline.findAllByGuid(guid?.trim())
+    List<AcademicDiscipline> get(String guid) {
+        List<AcademicDiscipline> academicDisciplineDetailList = []
+        List<AcademicDisciplineView> majorMinorConcentrationList = AcademicDisciplineView.findAllByGuid(guid?.trim())
         if (majorMinorConcentrationList) {
             getDisciplineFilterData(majorMinorConcentrationList, academicDisciplineDetailList)
         } else {
@@ -87,15 +89,15 @@ class AcademicDisciplineCompositeService {
 
     private def getDataFromDB(Boolean count, Map params) {
         if (count) {
-            params?.type ? AcademicDiscipline.countByType(params.type) : AcademicDiscipline.count()
+            params?.type ? AcademicDisciplineView.countByType(params.type) : AcademicDisciplineView.count()
         } else {
-            params?.type ? AcademicDiscipline.findAllByType(params.type, params) : AcademicDiscipline.list(params)
+            params?.type ? AcademicDisciplineView.findAllByType(params.type, params) : AcademicDisciplineView.list(params)
         }
     }
 
-    private void getDisciplineFilterData(List<AcademicDiscipline> academicDisciplineList, List<AcademicDisciplineDetail> academicDisciplineDetailList) {
+    private void getDisciplineFilterData(List<AcademicDisciplineView> academicDisciplineList, List<AcademicDiscipline> academicDisciplineDetailList) {
         academicDisciplineList.each { academicDiscipline ->
-            academicDisciplineDetailList <<  new AcademicDisciplineDetail(academicDiscipline)
+            academicDisciplineDetailList <<  new AcademicDiscipline(academicDiscipline)
         }
     }
 }

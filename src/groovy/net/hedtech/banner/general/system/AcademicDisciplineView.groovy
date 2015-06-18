@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -9,13 +9,11 @@ import javax.persistence.Entity
 import javax.persistence.Table
 
 /**
- * Created by invthannee on 6/3/2015.
- *
- * AcademicDiscipline Read Only view
+ * AcademicDisciplineView Read Only view
  */
 @Entity
-@Table(name = "SVQ_MAJRS")
-class AcademicDiscipline implements Serializable {
+@Table(name = "GVQ_MAJORS")
+class AcademicDisciplineView implements Serializable {
 
     /**
      * This field specifies the composite primary key of SVQ_MAJRS
@@ -58,7 +56,7 @@ class AcademicDiscipline implements Serializable {
         if (this.is(o)) return true
         if (getClass() != o.class) return false
 
-        AcademicDiscipline that = (AcademicDiscipline) o
+        AcademicDisciplineView that = (AcademicDisciplineView) o
 
         if (code != that.code) return false
         if (dataOrigin != that.dataOrigin) return false
@@ -80,4 +78,16 @@ class AcademicDiscipline implements Serializable {
         result = 31 * result + (type != null ? type.hashCode() : 0)
         return result
     }
+
+    @Override
+    public String toString() {
+        """AcademicDisciplineView[
+					id=$id, 
+					code=$code,
+					description=$description, 
+					dataOrigin=$dataOrigin,
+                    guid=$guid,
+                    type=$type]"""
+    }
+
 }

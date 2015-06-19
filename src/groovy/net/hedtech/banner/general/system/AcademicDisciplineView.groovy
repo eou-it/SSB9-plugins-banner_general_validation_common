@@ -9,7 +9,7 @@ import javax.persistence.Entity
 import javax.persistence.Table
 
 /**
- * AcademicDisciplineView Read Only view
+ * <p>Read only view for Academic Disciplines.</p>
  */
 @Entity
 @Table(name = "GVQ_MAJORS")

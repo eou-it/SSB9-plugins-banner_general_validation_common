@@ -15,11 +15,11 @@ import org.springframework.transaction.annotation.Transactional
 /**
  * <p> REST End point for Academic Discipline Service. If we'll pass type is major then , Academic Discipline major type of data will return.</p>
  * <p> If we'll pass type is minor then, Academic Discipline minor type of data will return else, It will return all  type of Academic Discipline data.</p>
- * <p>MajorMinorConcentrationService is used for only create and update of Academic Discipline data.</p>
  */
 @Transactional
 class AcademicDisciplineCompositeService {
-
+    
+    //This filed is used for only to create and update of Academic Discipline data
     def majorMinorConcentrationService
     
     private static final String ACADEMIC_DISCIPLINE_HEDM = 'academic-disciplines'

@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.system.AcademicDisciplineView
 import net.hedtech.banner.general.system.MajorMinorConcentration
 import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
@@ -20,9 +21,6 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
 
     def academicDisciplineCompositeService
     def i_fail_academicDiscipline
-    def i_sucess_academicDiscipline_minor_count
-    def i_sucess_academicDiscipline_major_count
-    def i_sucess_academicDiscipline_concentration_count
     def non_exits_guid
     def i_fail_academicDiscipline_guid
 
@@ -39,14 +37,8 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         super.tearDown()
     }
 
-    /**
-     * Initialize data for test cases
-     */
     private void initializeDataReferences() {
         i_fail_academicDiscipline = MajorMinorConcentration.findByValidMinorIndicatorIsNullAndValidMajorIndicatorIsNullAndValidConcentratnIndicatorIsNull()
-        i_sucess_academicDiscipline_minor_count = MajorMinorConcentration.countByValidMinorIndicator(Boolean.TRUE)
-        i_sucess_academicDiscipline_major_count = MajorMinorConcentration.countByValidMajorIndicator(Boolean.TRUE)
-        i_sucess_academicDiscipline_concentration_count = MajorMinorConcentration.countByValidConcentratnIndicator(Boolean.TRUE)
         i_fail_academicDiscipline_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines',i_fail_academicDiscipline.code)
         non_exits_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
     }
@@ -57,7 +49,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testGet() {
         def paginationParams = [max: '1', offset: '0']
-        List academicDisciplines = academicDisciplineCompositeService.list(paginationParams)
+        List academicDisciplines=AcademicDisciplineView.list(paginationParams)
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
         assertNotNull academicDisciplines[0].guid
@@ -75,7 +67,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testGetWithInvalidGuid() {
         def paginationParams = [max: '1', offset: '0']
-        List academicDisciplines = academicDisciplineCompositeService.list(paginationParams)
+        List academicDisciplines=AcademicDisciplineView.list(paginationParams)
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
         assertNotNull academicDisciplines[0].guid
@@ -164,7 +156,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines = academicDisciplineCompositeService.list([:])
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertTrue academicDisciplines.size() > 0
+        assertEquals academicDisciplines.size() , AcademicDisciplineView.list([max:'500']).size()
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
     
@@ -189,7 +181,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines = academicDisciplineCompositeService.list([type: AcademicDisciplineType.MINOR.value])
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertTrue academicDisciplines.size() > 0
+        assertEquals academicDisciplines.size() , AcademicDisciplineView.countByType(AcademicDisciplineType.MINOR.value)
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
 
@@ -201,7 +193,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines = academicDisciplineCompositeService.list([type: AcademicDisciplineType.MAJOR.value])
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertTrue academicDisciplines.size() > 0
+        assertEquals academicDisciplines.size() ,AcademicDisciplineView.countByType(AcademicDisciplineType.MAJOR.value)
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
 
@@ -213,7 +205,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines = academicDisciplineCompositeService.list([type: AcademicDisciplineType.CONCENTRATION.value])
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertTrue academicDisciplines.size() > 0
+        assertEquals academicDisciplines.size() ,AcademicDisciplineView.countByType(AcademicDisciplineType.CONCENTRATION.value)
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
 
@@ -222,7 +214,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListWithInvalidType() {
-        List academicDisciplines = academicDisciplineCompositeService.list([type: "TEST"])
+        List academicDisciplines = academicDisciplineCompositeService.list([type: "INVALID_TYPE"])
         assertNotNull academicDisciplines
         assertTrue academicDisciplines.isEmpty()
     }
@@ -271,9 +263,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testCount() {
-        assertEquals i_sucess_academicDiscipline_minor_count +
-                i_sucess_academicDiscipline_major_count +
-                i_sucess_academicDiscipline_concentration_count, academicDisciplineCompositeService.count([:])
+        assertEquals AcademicDisciplineView.count(), academicDisciplineCompositeService.count([:])
     }
 
     /**
@@ -281,9 +271,9 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testCountByType() {
-        assertEquals i_sucess_academicDiscipline_minor_count, academicDisciplineCompositeService.count([type: AcademicDisciplineType.MINOR.value])
-        assertEquals i_sucess_academicDiscipline_major_count, academicDisciplineCompositeService.count([type: AcademicDisciplineType.MAJOR.value])
-        assertEquals i_sucess_academicDiscipline_concentration_count, academicDisciplineCompositeService.count([type: AcademicDisciplineType.CONCENTRATION.value])
+        assertEquals AcademicDisciplineView.countByType(AcademicDisciplineType.MINOR.value), academicDisciplineCompositeService.count([type: AcademicDisciplineType.MINOR.value])
+        assertEquals AcademicDisciplineView.countByType(AcademicDisciplineType.MAJOR.value), academicDisciplineCompositeService.count([type: AcademicDisciplineType.MAJOR.value])
+        assertEquals AcademicDisciplineView.countByType(AcademicDisciplineType.CONCENTRATION.value), academicDisciplineCompositeService.count([type: AcademicDisciplineType.CONCENTRATION.value])
         assertEquals 0, academicDisciplineCompositeService.count([type: AcademicDisciplineType.CONCENTRATION.value+'test'])
     }
 

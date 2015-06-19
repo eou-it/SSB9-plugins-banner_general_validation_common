@@ -16,9 +16,9 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException
  */
 class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
     def i_fail_academicDiscipline
-    def i_sucess_academicDiscipline_minor
-    def i_sucess_academicDiscipline_major
-    def i_sucess_academicDiscipline_concentration
+    def i_success_academicDiscipline_minor
+    def i_success_academicDiscipline_major
+    def i_success_academicDiscipline_concentration
     def i_fail_academicDiscipline_gorguid
 
     @Before
@@ -33,14 +33,11 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
         super.tearDown()
     }
     
-    /**
-     * Initialize data for test cases
-     */
     private void initializeDataReferences() {
         i_fail_academicDiscipline = MajorMinorConcentration.findByValidMinorIndicatorIsNullAndValidMajorIndicatorIsNullAndValidConcentratnIndicatorIsNull()
-        i_sucess_academicDiscipline_minor = MajorMinorConcentration.findAllByValidMinorIndicator(Boolean.TRUE)
-        i_sucess_academicDiscipline_major = MajorMinorConcentration.findAllByValidMajorIndicator(Boolean.TRUE)
-        i_sucess_academicDiscipline_concentration = MajorMinorConcentration.findAllByValidConcentratnIndicator(Boolean.TRUE)
+        i_success_academicDiscipline_minor = MajorMinorConcentration.findAllByValidMinorIndicator(Boolean.TRUE)
+        i_success_academicDiscipline_major = MajorMinorConcentration.findAllByValidMajorIndicator(Boolean.TRUE)
+        i_success_academicDiscipline_concentration = MajorMinorConcentration.findAllByValidConcentratnIndicator(Boolean.TRUE)
         i_fail_academicDiscipline_gorguid=  GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines',i_fail_academicDiscipline.code)
     }
 
@@ -51,11 +48,11 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
     void testCount() {
         def count =AcademicDisciplineView.count()
         assertNotNull count
-        assertEquals count ,i_sucess_academicDiscipline_minor.size()+i_sucess_academicDiscipline_major.size()+i_sucess_academicDiscipline_concentration.size()
+        assertEquals count ,i_success_academicDiscipline_minor.size()+i_success_academicDiscipline_major.size()+i_success_academicDiscipline_concentration.size()
     }
 
     /**
-     * This test case is checking for Academic Discipline View type return count is match with respective MajorMinorConcentration type count of Major , minor and concentration
+     * This test case is checking for Academic Discipline View type return count is match with respective MajorMinorConcentration type count of Major , minor or concentration
      */
     @Test
     void testCountByType() {
@@ -65,28 +62,27 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull majorCount
         assertNotNull minorCount
         assertNotNull concentrationCount
-        assertEquals minorCount,i_sucess_academicDiscipline_minor.size()
-        assertEquals majorCount,i_sucess_academicDiscipline_major.size()
-        assertEquals concentrationCount,i_sucess_academicDiscipline_concentration.size()
+        assertEquals minorCount,i_success_academicDiscipline_minor.size()
+        assertEquals majorCount,i_success_academicDiscipline_major.size()
+        assertEquals concentrationCount,i_success_academicDiscipline_concentration.size()
     }
 
     /**
-     * This test case is checking for Academic Discipline View return data have MajorMinorConcentration type of Major , minor and concentration data.
-     * And Checking for Academic Discipline View return data doesn't have MajorMinorConcentration null type of Major and minor and concentration data.
+     * This test case is checking for Academic Discipline View return data have only MajorMinorConcentration type of Major , minor and concentration data.
+     * And checking return data does contains MajorMinorConcentration records which do not have major, minor or concentration.
      */
     @Test
     void testList(){
         def academicDisciplineList=AcademicDisciplineView.list()
         assertNotNull academicDisciplineList
         assertFalse academicDisciplineList.code.contains(i_fail_academicDiscipline.code)
-        assertTrue academicDisciplineList.code.contains(i_sucess_academicDiscipline_minor[0].code)
-        assertTrue academicDisciplineList.code.contains(i_sucess_academicDiscipline_major[0].code)
-        assertTrue academicDisciplineList.code.contains(i_sucess_academicDiscipline_concentration[0].code)
+        assertTrue academicDisciplineList.code.contains(i_success_academicDiscipline_minor[0].code)
+        assertTrue academicDisciplineList.code.contains(i_success_academicDiscipline_major[0].code)
+        assertTrue academicDisciplineList.code.contains(i_success_academicDiscipline_concentration[0].code)
         
     }
     /**
-     * This test case is checking  for Academic Discipline View return type of Major data.
-     * And Checking for Academic Discipline View return type of Major data doesn't have MajorMinorConcentration null type of Major and minor and concentration data.
+     * This test case is checking  for Academic Discipline View return type of Major data does contains MajorMinorConcentration records which do not have major, minor or concentration.
      */
     @Test
     void testFetchByMajorType() {
@@ -96,8 +92,7 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * This test case is checking for Academic Discipline View return type of Minor data.
-     * And Checking for Academic Discipline View return type of Minor data doesn't have MajorMinorConcentration null type of Major and minor and concentration data.
+     * This test case is checking for Academic Discipline View return type of Minor data does contains MajorMinorConcentration records which do not have major, minor or concentration.
      */
     @Test
     void testFetchByMinorType() {
@@ -107,8 +102,7 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * This test case is checking for Academic Discipline View return type of concentration data.
-     * And Checking for Academic Discipline View return type of concentration data doesn't have MajorMinorConcentration null type of Major and minor and concentration data.
+     * This test case is checking for Academic Discipline View return type of concentration data does contains MajorMinorConcentration records which do not have major, minor or concentration.
      */
     @Test
     void testFetchByConcentrationType() {
@@ -119,7 +113,7 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
 
     /**
      * This test case is checking for Academic Discipline View return data does have guid value is empty or null
-     * And Checking for Academic Discipline View return type of concentration data doesn't have MajorMinorConcentration null type of Major and minor and concentration data.
+     * And checking return data does contains MajorMinorConcentration records which do not have major, minor or concentration.
      */
     @Test
     void testFetchByguid() {
@@ -165,10 +159,6 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
             }
     }
     
-    /**
-     * This method is used to create new AcademicDisciplineView
-     * @return AcademicDisciplineView
-     */
     private def newAcademicDiscipline(){
         new AcademicDisciplineView(
              id:   new AcademicDisciplinePK(

@@ -46,8 +46,7 @@ class AcademicHonorCompositeService {
 
         results.each {
             result->
-                def type = checkType(result)
-                academicHonors << new AcademicHonor(result,type)
+                academicHonors << new AcademicHonor(result)
         }
         academicHonors
     }
@@ -118,19 +117,9 @@ class AcademicHonorCompositeService {
             }
 
         }
-        String type = checkType(academicHonorView)
-        new AcademicHonor(academicHonorView,type)
+        new AcademicHonor(academicHonorView)
     }
 
-    private String checkType(AcademicHonorView academicHonorView) {
-        def type = ''
-        if (academicHonorView.type == LDM_NAME_DEPARTMENTAL) {
-            type = 'award'
-        }
-        if (academicHonorView.type == LDM_NAME_INSTITUTIONAL) {
-            type = 'distinction'
-        }
-        type
-    }
+
 
 }

@@ -44,10 +44,13 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p> Test to get the departmental-honors records from AcademicHonorView </p>
      * */
     @Test
-    public void testFetchDataBasedOnAwardType(){
+    public void testFetchDeptHonorsCount(){
         def type = 'departmental-honors'
         List academicHonorViewRecords = AcademicHonorView.fetchByType(type)
-        assertTrue academicHonorViewRecords.size()>0
+        assertNotNull academicHonorViewRecords
+        def departmentalHonorsCount = DepartmentalHonor.count()
+        assertNotNull departmentalHonorsCount
+        assertEquals academicHonorViewRecords.size(),departmentalHonorsCount
         AcademicHonorView academicHonorView = academicHonorViewRecords.get(0)
         assertEquals academicHonorView.type,type
     }
@@ -56,9 +59,12 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p> Test to get the institutional-honors records from AcademicHonorView </p>
      * */
     @Test
-    public void testFetchDataBasedOnDistinctionType(){
+    public void testFetchInstitutionalHonorsCount(){
         List list = AcademicHonorView.fetchByType(INSTITUTIONAL_HONORS)
-        assertTrue list.size()>0
+        assertNotNull list
+        def institutionalHonorCount = InstitutionalHonor.count();
+        assertNotNull institutionalHonorCount
+        assertEquals institutionalHonorCount,list.size()
         AcademicHonorView academicHonorView = list.get(0)
         assertEquals academicHonorView.type,INSTITUTIONAL_HONORS
     }
@@ -67,12 +73,13 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p> Test to get the record based on the code and type </p>
      * */
     @Test
-    public void testFetchDataByCode(){
+    public void testFetchDatabyCodeNType(){
         def code='D'
         def type = 'departmental-honors'
         AcademicHonorView academicHonorView = AcademicHonorView.fetchByCode(code,type)
         assertFalse academicHonorView==null
         assertEquals academicHonorView.code,code
+        assertEquals academicHonorView.type,type
     }
 
     /**
@@ -103,7 +110,7 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p> Test to create a record on AcademicHonorView which will return exception as this is a read-only view</p>
      */
     @Test
-    void testReadOnlyForCreateAcademicDiscipline(){
+    void testReadOnlyForCreateAcademicHonor(){
         def academicHonorView = newAcademicHonors()
         assertNotNull academicHonorView
         shouldFail(InvalidDataAccessResourceUsageException) {
@@ -115,7 +122,7 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p>Test to update on AcademicHonorView which will return exception as this is a read-only view</p>
      */
     @Test
-    void testReadOnlyForUpdateAcademicDiscipline(){
+    void testReadOnlyForUpdateAcademicHonor(){
         String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
         assertNotNull instHonorsGuid
         def academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid)
@@ -131,7 +138,7 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p>Test to delete on AcademicHonorView which will return exception as this is a read-only view</p>
      */
     @Test
-    void testReadOnlyForDeleteAcademicDiscipline(){
+    void testReadOnlyForDeleteAcademicHonor(){
         String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
         assertNotNull instHonorsGuid
         def academicDiscipline = AcademicHonorView.fetchByGuid(instHonorsGuid)

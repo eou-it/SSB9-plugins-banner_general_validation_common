@@ -34,7 +34,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testCreateValidDepartmentalHonor(){
-        def departmentalHonor = createValidDepartnmentalHonor()
+        def departmentalHonor = createValidDepartmentalHonor()
         assert departmentalHonor instanceof DepartmentalHonor
         departmentalHonor.save(flush: true, failOnError: true)
         assertNotNull departmentalHonor.id
@@ -47,7 +47,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
     public void testNullableForDepartmentHonor(){
         def departmentalHonor = new DepartmentalHonor()
         assertTrue departmentalHonor instanceof DepartmentalHonor
-        assertFalse "Departmental Honor should have failed validation", departmentalHonor.validate()
+        assertFalse departmentalHonor.validate()//Validate the Object against the hibernate constraints
         assertErrorsFor departmentalHonor, 'nullable',['code']
     }
 
@@ -56,7 +56,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testValueOfDepartmentalHonor(){
-        def departmentalHonor = createValidDepartnmentalHonor()
+        def departmentalHonor = createValidDepartmentalHonor()
         assert departmentalHonor instanceof DepartmentalHonor
         departmentalHonor.save(flush: true, failOnError: true)
 
@@ -74,7 +74,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testInvalidDepartmentalHonor(){
-        def departmentalHonor=createInvalidDepartnmentalHonor()
+        def departmentalHonor=createInvalidDepartmentalHonor()
         shouldFail(ValidationException) {
             departmentalHonor.save(failOnError: true, flush: true)
         }
@@ -85,22 +85,23 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testValidUpdateDepartmentalHonor(){
-        def departmentHonor = createValidDepartnmentalHonor()
+        def departmentHonor = createValidDepartmentalHonor()
         departmentHonor.save(failOnError: true, flush: true)
         assertNotNull departmentHonor.id
         def departmentHonorUpdate = new DepartmentalHonor().get(departmentHonor.id)
         departmentHonorUpdate.description="Dummy Description"
         departmentHonorUpdate.save(failOnError: true, flush: true)
-        assertEquals departmentHonorUpdate.description,"Dummy Description"
         assertEquals departmentHonor.id,departmentHonorUpdate.id
+        departmentHonorUpdate=new DepartmentalHonor().get(departmentHonorUpdate.id)
+        assertEquals departmentHonorUpdate.description,"Dummy Description"
     }
 
     /**
      * <p> Test for invalid record update in DepartmentalHonor and expecting Exception</p>
      * */
     @Test
-    void testUpdateInvalidInstitutionalHonor() {
-        def departmentalHonor = createValidDepartnmentalHonor()
+    void testUpdateInvalidDepartmentalHonor() {
+        def departmentalHonor = createValidDepartmentalHonor()
         departmentalHonor.save(failOnError: true, flush: true)
         assertNotNull departmentalHonor.id
         assertEquals 0L, departmentalHonor.version
@@ -108,7 +109,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
 
         //Update the entity with invalid values
         departmentalHonor.description = "123456789012345678901234567890FAIL"
-        departmentalHonor.transcPrintIndicator = "ZZZ"
+        departmentalHonor.transcPrintIndicator = "Z"
         departmentalHonor.commencePrintIndicator = "Z"
         shouldFail(ValidationException) {
             departmentalHonor.save(failOnError: true, flush: true)
@@ -124,7 +125,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
         def date = new SimpleDateFormat('yyyy-M-d')
         def currentDate = new Date()
 
-        def departmentalHonor = createValidDepartnmentalHonor()
+        def departmentalHonor = createValidDepartmentalHonor()
         departmentalHonor.save(flush: true, failOnError: true)
         departmentalHonor.refresh()
         assertNotNull departmentalHonor.id
@@ -136,7 +137,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testOptimisticLock(){
-        def departmentHonor = createValidDepartnmentalHonor()
+        def departmentHonor = createValidDepartmentalHonor()
         departmentHonor.save(failOnError: true, flush: true)
 
         def sql
@@ -159,17 +160,17 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
      * <p> Test for Deleting a Departmental Honor </p>
      * */
     @Test
-    public void testDeleteDepartnmentHonor(){
-        def departnmentHonor = createValidDepartnmentalHonor()
-        departnmentHonor.save(failOnError: true, flush: true)
+    public void testDeleteDepartmentalHonor(){
+        def departmentalHonor = createValidDepartmentalHonor()
+        departmentalHonor.save(failOnError: true, flush: true)
 
-        departnmentHonor.delete()
+        departmentalHonor.delete()
 
-        def departnmentResponse = departnmentHonor.get(departnmentHonor.id)
-        assertNull departnmentResponse
+        def departmentResponse = departmentalHonor.get(departmentalHonor.id)
+        assertNull departmentResponse
     }
 
-    private def createValidDepartnmentalHonor() {
+    private def createValidDepartmentalHonor() {
         def departmentalHonor = new DepartmentalHonor(
                 code: "AAAAZ",
                 description: "123456789012345678901234567890",
@@ -179,7 +180,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
         return departmentalHonor
     }
 
-    private def createInvalidDepartnmentalHonor(){
+    private def createInvalidDepartmentalHonor(){
         def departmentalHonor = new DepartmentalHonor(
                 code: "AAAAAAA",
                 description: "123456789012345678901234567890",

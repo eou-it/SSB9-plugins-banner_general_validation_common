@@ -126,6 +126,7 @@ class EthnicityCompositeService extends LdmService {
         if (ethnicity.code != content?.code?.trim()) {
             content.put("code", ethnicity.code)
         }
+        validateRequest(content)
         ethnicity = bindEthnicity(ethnicity, content)
 
         return getDecorator(ethnicity, ethnicityGuid)

@@ -147,6 +147,7 @@ class MaritalStatusCompositeService extends LdmService {
         if (maritalStatus.code != content?.code?.trim()) {
             content.put("code", maritalStatus.code)
         }
+        validateRequest(content)
         maritalStatus = bindMaritalStatus(maritalStatus, content)
 
         return getDecorator(maritalStatus, msGuid)

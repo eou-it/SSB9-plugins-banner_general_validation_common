@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -83,7 +83,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         save level
         assertNotNull level.id
         AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelId(level.id)
-        assertNotNull academicLevel
+        assertNotNull academicLevel.toString()
         assertNotNull academicLevel.guid
         assertEquals academicLevel.id, level.id
 
@@ -110,6 +110,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals academicLevels[0].guid, academicLevel.guid
         assertEquals academicLevels[0].code, academicLevel.code
         assertEquals academicLevels[0].metadata, academicLevel.metadata
+        assertEquals academicLevels[0], academicLevel
     }
 
     @Test

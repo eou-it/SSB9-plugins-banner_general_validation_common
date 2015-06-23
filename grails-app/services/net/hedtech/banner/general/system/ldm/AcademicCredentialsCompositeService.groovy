@@ -78,13 +78,13 @@ class AcademicCredentialsCompositeService {
     AcademicCredentials get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid?.trim())
         if(!globalUniqueIdentifier){
-            throw new ApplicationException("academicCredentials", new NotFoundException())
+            throw new ApplicationException("academicCredential", new NotFoundException())
         }else if (globalUniqueIdentifier && globalUniqueIdentifier.ldmName!=LDM_NAME) {
-            throw new RestfulApiValidationException("academicCredentials.invalidGuid")
+            throw new RestfulApiValidationException("academicCredential.invalidGuid")
         }
             Degree degree = degreeService.get(globalUniqueIdentifier.domainId)
             if (!degree) {
-                throw new ApplicationException("academicCredentials", new NotFoundException())
+                throw new ApplicationException("academicCredential", new NotFoundException())
             }
         new AcademicCredentials(degree, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, degree.id)?.guid,new Metadata(degree.dataOrigin),populateTypeValue(degree.degreeType))
     }

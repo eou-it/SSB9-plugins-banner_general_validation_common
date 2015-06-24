@@ -21,7 +21,7 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
     def  academicCredentialsCompositeService
     
     def success_guid
-    def non_exits_guid
+    def invalid_resource_guid
 
     @Before
     public void setUp() {
@@ -31,7 +31,7 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
     }
 
     private void initializeDataReferences() {
-        non_exits_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
+        invalid_resource_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
         success_guid=GlobalUniqueIdentifier.findByLdmName('academic-credentials')
     }
 
@@ -112,10 +112,10 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
     }
 
     /**
-     * This test case is checking for AcademicCredentialsCompositeService list method passing with invalid sort filed
+     * This test case is checking for AcademicCredentialsCompositeService list method passing with invalid sort field
      */
     @Test
-    void testListWithInvalidSortFiled(){
+    void testListWithInvalidSortField(){
         shouldFail(RestfulApiValidationException) {
             def map = [sort:'code']
             academicCredentialsCompositeService.list(map)
@@ -226,7 +226,7 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
     @Test
     void testGetWithValidGuidAndNonExitsInAcademicCredentials(){
         shouldFail(RestfulApiValidationException) {
-            academicCredentialsCompositeService.get(non_exits_guid?.guid)
+            academicCredentialsCompositeService.get(invalid_resource_guid?.guid)//invalid_resource_guid variable is defined at the top of the class
         }
     }
 
@@ -236,7 +236,7 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
     @Test
     void testGetWithValidGuid(){
        assertNotNull success_guid
-       def guid=success_guid?.guid
+       def guid=success_guid?.guid //success_guid variable is defined at the top of the class
        assertNotNull guid
        def  academicCredential= academicCredentialsCompositeService.get(guid)
        assertNotNull academicCredential
@@ -251,7 +251,7 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
     @Test
     void testGetWithInValidGuid(){
         assertNotNull success_guid
-        def guid=success_guid?.guid
+        def guid=success_guid?.guid//success_guid variable is defined at the top of the class
         assertNotNull guid
         try {
             academicCredentialsCompositeService.get(guid + '2')

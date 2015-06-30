@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 class AcademicHonorCompositeService {
 
-    public static final def allowedSortFields=['title']
+    public static final def allowedSortFields=['code']
     public static final def DEFAULT_SORTED_FIELD='code'
     public static final def ALLOWED_SEARCH_FIELD='type'
     public static final String LDM_NAME_INSTITUTIONAL = 'institutional-honors'
@@ -29,7 +29,7 @@ class AcademicHonorCompositeService {
     public static final String DEFAULT_ORDER_TYPE='ASC'
     public static final Integer MAX_UPPER_LIMIT=500
     public final def SEARCH_PARAMETERS=['award', 'distinction']
-    public final Map sortFieldMap=['title':'code']
+    public final Map sortFieldMap=['code':'code']
     public final Map ldmToDomainFieldMap=[
             'award':LDM_NAME_DEPARTMENTAL,
             'distinction':LDM_NAME_INSTITUTIONAL

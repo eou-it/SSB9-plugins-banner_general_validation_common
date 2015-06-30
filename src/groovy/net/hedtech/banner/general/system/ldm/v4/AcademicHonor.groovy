@@ -17,21 +17,18 @@ class AcademicHonor {
     @Delegate
     final private AcademicHonorView academicHonorView
     Metadata metadata
-    String guid
     String honorType
     List<String> organization
 
     def titles=[]
-    def descriptions=[]
+    def descriptions=null
 
     AcademicHonor(AcademicHonorView academicHonorView) {
         this.academicHonorView=academicHonorView
-        this.guid = academicHonorView.guid
         this.metadata = new Metadata(academicHonorView.dataOrigin)
         this.organization = null
         this.honorType = academicHonorView.type
-        titles << ["en":academicHonorView.code]
-        descriptions << ["en":academicHonorView.description]
+        titles << ["en":academicHonorView.title]
     }
 
 
@@ -49,15 +46,16 @@ class AcademicHonor {
         }
         type
     }
+
     @Override
     public String toString() {
         return "AcademicHonor{" +
-                "metadata=" + metadata +
-                ", id='" + guid + '\'' +
-                ", title='" + titles + '\'' +
-                ", description='" + descriptions + '\'' +
-                ", type='" + type + '\'' +
+                "academicHonorView=" + academicHonorView +
+                ", metadata=" + metadata +
+                ", honorType='" + honorType + '\'' +
                 ", organization=" + organization +
-                '}'
+                ", titles=" + titles +
+                ", descriptions=" + descriptions +
+                '}';
     }
 }

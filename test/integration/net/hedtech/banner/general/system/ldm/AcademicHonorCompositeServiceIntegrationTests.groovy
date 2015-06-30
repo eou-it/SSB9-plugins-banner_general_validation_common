@@ -80,32 +80,32 @@ class AcademicHonorCompositeServiceIntegrationTests extends BaseIntegrationTestC
     @Test
     public void testSortOrder(){
         params.order='DESC'
-        params.sort='title'
+        params.sort='code'
         List list = academicHonorCompositeService.list(params)
         String tempParam
         list.each{
             academicHonor->
-                String title=academicHonor.titles.get(0).get('en')
+                String code=academicHonor.code
                 if(!tempParam){
-                    tempParam=title
+                    tempParam=code
                 }
-                assertTrue tempParam.compareTo(title)>0 || tempParam.compareTo(title)==0
-                tempParam=title
+                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
+                tempParam=code
         }
 
         params.clear()
         params.order='ASC'
-        params.sort='title'
+        params.sort='code'
         list = academicHonorCompositeService.list(params)
         tempParam=null
         list.each{
             academicHonor->
-                String title=academicHonor.titles.get(0).get('en')
+                String code=academicHonor.code
                 if(!tempParam){
-                    tempParam=title
+                    tempParam=code
                 }
-                assertTrue tempParam.compareTo(title)<0 || tempParam.compareTo(title)==0
-                tempParam=title
+                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
+                tempParam=code
         }
     }
 
@@ -126,7 +126,7 @@ class AcademicHonorCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertNotNull newAcademicHonor
 
         assertEquals academicHonor?.guid,newAcademicHonor?.guid
-        assertEquals academicHonor?.description,newAcademicHonor?.description
+        assertEquals academicHonor?.title,newAcademicHonor?.title
         assertEquals academicHonor?.code,newAcademicHonor?.code
         assertEquals academicHonor?.dataOrigin,newAcademicHonor?.dataOrigin
         assertEquals academicHonor?.titles,newAcademicHonor?.titles
@@ -147,7 +147,7 @@ class AcademicHonorCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
         AcademicHonor newAcademicHonor = academicHonorCompositeService.get(academicHonor.guid)
         assertNotNull newAcademicHonor
-        assertEquals academicHonor.descriptions,newAcademicHonor.descriptions
+        assertEquals academicHonor.title,newAcademicHonor.title
         assertEquals academicHonor.guid,newAcademicHonor.guid
         assertEquals academicHonor.honorType,newAcademicHonor.honorType
     }

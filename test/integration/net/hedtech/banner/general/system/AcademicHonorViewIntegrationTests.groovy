@@ -127,7 +127,7 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull instHonorsGuid
         def academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid)
         assertNotNull academicHonorView
-        academicHonorView.description='Dummy Value'
+        academicHonorView.title='Dummy Value'
         shouldFail(InvalidDataAccessResourceUsageException) {
             academicHonorView.save(flush: true, onError: true)
         }
@@ -150,7 +150,7 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
 
     private def newAcademicHonors(){
         new AcademicHonorView(
-                code: 'SS',description: 'Dummy Description',type: INSTITUTIONAL_HONORS,guid: 'aaaaaaaaaaaaa'
+                code: 'SS',title: 'Dummy Description',type: INSTITUTIONAL_HONORS,guid: 'aaaaaaaaaaaaa'
         )
     }
 

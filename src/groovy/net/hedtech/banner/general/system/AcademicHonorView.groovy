@@ -43,8 +43,8 @@ class AcademicHonorView implements Serializable{
     /**
      * Description about the Honors
      * */
-    @Column(name = "DESCRIPTION")
-    String description
+    @Column(name = "TITLE")
+    String title
 
     /**
      * DATA ORIGIN: Source system that created or updated the section

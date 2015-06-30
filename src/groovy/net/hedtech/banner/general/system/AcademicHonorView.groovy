@@ -86,6 +86,18 @@ class AcademicHonorView implements Serializable{
         return academicHonor
     }
 
+
+    @Override
+    public String toString() {
+        return "AcademicHonorView{" +
+                "guid='" + guid + '\'' +
+                ", code='" + code + '\'' +
+                ", title='" + title + '\'' +
+                ", dataOrigin='" + dataOrigin + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
+
     boolean equals(o) {
         if (this.is(o)) return true
         if (getClass() != o.class) return false
@@ -94,8 +106,8 @@ class AcademicHonorView implements Serializable{
 
         if (code != that.code) return false
         if (dataOrigin != that.dataOrigin) return false
-        if (description != that.description) return false
         if (guid != that.guid) return false
+        if (title != that.title) return false
         if (type != that.type) return false
 
         return true
@@ -105,21 +117,9 @@ class AcademicHonorView implements Serializable{
         int result
         result = (guid != null ? guid.hashCode() : 0)
         result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
+        result = 31 * result + (title != null ? title.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
         result = 31 * result + (type != null ? type.hashCode() : 0)
         return result
-    }
-
-
-    @Override
-    public String toString() {
-        return "AcademicHonorView{" +
-                "guid='" + guid + '\'' +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", dataOrigin='" + dataOrigin + '\'' +
-                ", type='" + type + '\'' +
-                '}';
     }
 }

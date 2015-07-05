@@ -59,6 +59,13 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
 
     @Test
+    void testBasicCount() {
+        def personFilterCount = personFilterCompositeService.count([:])
+        assertTrue personFilterCount > 0
+    }
+
+
+    @Test
     void testListWithPagination() {
         List personFiltersList = personFilterCompositeService.list([max: '4', offset: '0'])
         assertNotNull personFiltersList
@@ -71,7 +78,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     @Test
     void testListWithSort() {
         createPopulationSelectionExtract(application, selection1, user, user, key)
-        List personFiltersList = personFilterCompositeService.list([sort: 'abbreviation', order: 'desc'])
+        List personFiltersList = personFilterCompositeService.list([sort: 'abbreviation', order: 'desc', 'filter[0][field]': 'abbreviation', 'filter[0][operator]': 'contains', 'filter[0][value]': selection1])
         assertNotNull personFiltersList
         assertTrue personFiltersList.size() > 0
         assertTrue personFiltersList[0] instanceof PersonFilter
@@ -147,7 +154,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         assertNotNull globalUniqueIdentifier.guid
 
         def personFilter = personFilterCompositeService.get(globalUniqueIdentifier.guid)
-        assertNotNull personFilter
+        assertNotNull personFilter.toString()
         assertNotNull personFilter.title
         assertEquals selection, personFilter.abbreviation
         assertEquals "Banner", personFilter.metadata.dataOrigin

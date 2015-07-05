@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm.v1
 
@@ -36,16 +36,6 @@ class RaceDetail {
         if (parentCategory != that.parentCategory) return false
         if (metadata != that.metadata) return false
         return true
-    }
-
-
-    int hashCode() {
-        int result
-        result = (raceDecorator != null ? raceDecorator.hashCode() : 0)
-        result = 31 * result + (guid != null ? guid.hashCode() : 0)
-        result = 31 * result + (parentCategory != null ? parentCategory.hashCode() : 0)
-        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
-        return result
     }
 
 

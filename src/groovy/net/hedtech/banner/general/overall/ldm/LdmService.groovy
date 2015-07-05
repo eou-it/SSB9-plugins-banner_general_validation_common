@@ -3,11 +3,13 @@
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
+import grails.validation.ValidationException
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.utility.MessageResolver
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -20,6 +22,9 @@ import java.text.SimpleDateFormat
 class LdmService {
 
     def sessionFactory
+    def grailsWebDataBinder
+    def globalUniqueIdentifierService
+
     String timeFormat = ''
 
     private static HashMap ldmFieldToBannerDomainPropertyMap = [
@@ -27,6 +32,9 @@ class LdmService {
             title       : 'description',
             number      : 'roomNumber'
     ]
+
+    private static List globalBindExcludes = ['id', 'version', 'dataOrigin']
+    private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
 
 
     static String fetchBannerDomainPropertyForLdmField(String ldmField) {
@@ -45,7 +53,7 @@ class LdmService {
      * @return
      */
     IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue) {
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM', settingName, translationValue)
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue(processCode, settingName, translationValue)
         IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
         LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
@@ -262,6 +270,31 @@ class LdmService {
         return requestBodyMediaType()
     }
 
+    /**
+     * HeDM APIs will have Content-Type headers like application/vnd.hedtech.integration.v1+json, application/vnd.hedtech.integration.room-availability.v1+json so on.
+     *
+     * Content-Type header can contain generic media types like application/vnd.hedtech.integration+json or application/vnd.hedtech.integration.room-availability+json or
+     * application/json that represent latest (current) request version of the API.  In such cases, this method does not return anything.
+     *
+     * @return version (v1,v2 so on) extracted from Content-Type header
+     */
+    public static String getRequestRepresentationVersion() {
+        String version
+        String contentTypeHeader = requestBodyMediaType()
+        if (contentTypeHeader) {
+            int indexOfDotBeforeVersion = contentTypeHeader.lastIndexOf(".")
+            int indexOfPlus = contentTypeHeader.lastIndexOf("+")
+            if (indexOfDotBeforeVersion != -1 && indexOfPlus != -1 && indexOfDotBeforeVersion + 1 < indexOfPlus) {
+                version = contentTypeHeader.substring(indexOfDotBeforeVersion + 1, indexOfPlus)
+                if (!version?.toLowerCase()?.startsWith("v")) {
+                    // May be generic Content-Type header like "application/vnd.hedtech.integration.room-availability+json"
+                    version = null
+                }
+            }
+        }
+        return version?.toLowerCase()
+    }
+
 
     private static String requestBodyMediaType() {
         HttpServletRequest request = getHttpServletRequest()
@@ -282,6 +315,56 @@ class LdmService {
             request = ((ServletRequestAttributes) requestAttributes).getRequest()
         }
         return request
+    }
+
+    /**
+     * Used to bind map properties onto grails domains.
+     * Can provide an exclusion and inclusion list in the third param.
+     */
+    public void bindData(def domain, Map properties, Map includeExcludeMap) {
+        if (includeExcludeMap?.exclude instanceof List) {
+            includeExcludeMap.exclude.addAll(globalBindExcludes)
+        } else {
+            includeExcludeMap.put('exclude', globalBindExcludes)
+        }
+        grailsWebDataBinder.bind(domain,
+                properties as SimpleMapDataBindingSource,
+                null,
+                includeExcludeMap?.include,
+                includeExcludeMap?.exclude,
+                null)
+        if (domain.hasErrors()) {
+            throw new ApplicationException("${domain.class.simpleName}", new ValidationException("${domain.class.simpleName}", domain.errors))
+        }
+    }
+
+    /**
+     * Used to set the GUID to a specific value when update method
+     * calls create.
+     */
+    private GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
+        // Update the GUID to the one we received.
+        GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ldmName, id)
+        if (!newEntity) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: ldmName))
+        }
+        newEntity.guid = guid
+        globalUniqueIdentifierService.update(newEntity)
+    }
+
+    /**
+     * This method will not perform well because of lack of keys for domain keys.
+     *  Use the method above to use the faster indexed method.
+     *  This is only used when there is no single master table for the GUID or no single record for the GUID.
+     */
+    private GlobalUniqueIdentifier updateGuidValueByDomainKey(String domainKey, String guid, String ldmName) {
+        // Update the GUID to the one we received.
+        GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ldmName, domainKey)
+        if (!newEntity) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: ldmName))
+        }
+        newEntity.guid = guid
+        globalUniqueIdentifierService.update(newEntity)
     }
 
 }

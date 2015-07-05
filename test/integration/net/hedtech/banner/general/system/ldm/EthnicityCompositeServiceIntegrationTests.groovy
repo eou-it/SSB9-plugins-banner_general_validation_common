@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -8,16 +8,25 @@ import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.IpedsEthnicity
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
-import net.hedtech.banner.general.system.ldm.v1.EthnicityParentCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
 
-
-class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
+class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     Ethnicity i_success_ethnicity
     def ethnicityCompositeService
+
+    def i_success_guid = 'a' * 36
+    def i_success_code = 'XY'
+    def i_success_description = 'New Ethnicity'
+    def i_success_data_origin = 'Banner'
+    def i_success_parent_category = 'Hispanic'
+
+    def u_success_description = 'Update Ethnicity'
+    def u_success_data_origin = 'Banner'
+    def u_success_parent_category = 'Non-Hispanic'
+
 
     @Before
     public void setUp() {
@@ -32,6 +41,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         i_success_ethnicity = Ethnicity.findByCode('TT')
     }
 
+
     @Test
     void testListWithoutPaginationParams() {
         List ethnicities = ethnicityCompositeService.list([:])
@@ -39,6 +49,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertFalse ethnicities.isEmpty()
         assertTrue ethnicities.size() > 0
     }
+
 
     @Test
     void testListWithPagination() {
@@ -49,11 +60,13 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertTrue ethnicities.size() == 2
     }
 
+
     @Test
     void testCount() {
         assertNotNull i_success_ethnicity
         assertEquals Ethnicity.count(), ethnicityCompositeService.count()
     }
+
 
     @Test
     void testGetInvalidGuid() {
@@ -64,6 +77,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         }
     }
 
+
     @Test
     void testGetNullGuid() {
         try {
@@ -72,6 +86,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
             assertApplicationException ae, "NotFoundException"
         }
     }
+
 
     @Test
     void testGet() {
@@ -82,7 +97,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
 
         assertNotNull ethnicityDetails[0].guid
         def ethnicityDetail = ethnicityCompositeService.get(ethnicityDetails[0].guid)
-        assertNotNull ethnicityDetail
+        assertNotNull ethnicityDetail.toString()
         assertNotNull ethnicityDetail.code
         assertEquals ethnicityDetails[0].code, ethnicityDetail.code
         assertNotNull ethnicityDetail.guid
@@ -91,6 +106,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals ethnicityDetails[0].metadata.dataOrigin, ethnicityDetail.metadata.dataOrigin
         assertEquals ethnicityDetails[0], ethnicityDetail
     }
+
 
     @Test
     void testFetchByEthnicityIdInvalid() {
@@ -101,6 +117,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         }
     }
 
+
     @Test
     void testFetchByEthnicityId() {
         EthnicityDetail ethnicityDetail = ethnicityCompositeService.fetchByEthnicityId(i_success_ethnicity.id)
@@ -109,14 +126,16 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals i_success_ethnicity.code, ethnicityDetail.code
         assertEquals i_success_ethnicity.description, ethnicityDetail.description
         assertEquals i_success_ethnicity.dataOrigin, ethnicityDetail.metadata.dataOrigin
-        assertEquals getLdmEthnicity(i_success_ethnicity), ethnicityDetail.parentCategory
+        assertEquals ethnicityCompositeService.getHeDMEnumeration(i_success_ethnicity.ethnic), ethnicityDetail.parentCategory
     }
+
 
     @Test
     void testFetchByEthnicityInvalid() {
         assertNull ethnicityCompositeService.fetchByEthnicityCode(null)
         assertNull ethnicityCompositeService.fetchByEthnicityCode('Q')
     }
+
 
     @Test
     void testFetchByEthnicityCode() {
@@ -126,16 +145,101 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals i_success_ethnicity.code, ethnicityDetail.code
         assertEquals i_success_ethnicity.description, ethnicityDetail.description
         assertEquals i_success_ethnicity.dataOrigin, ethnicityDetail.metadata.dataOrigin
-        assertEquals getLdmEthnicity(i_success_ethnicity), ethnicityDetail.parentCategory
+        assertEquals ethnicityCompositeService.getHeDMEnumeration(i_success_ethnicity.ethnic), ethnicityDetail.parentCategory
     }
 
 
-    def getLdmEthnicity(def ethnicity) {
-        if (ethnicity != null) {
-            return ethnicity.ethnic == "1" ? EthnicityParentCategory.NON_HISPANIC.value :
-                    (ethnicity.ethnic == "2" ? EthnicityParentCategory.HISPANIC.value : null)
+    @Test
+    void testCreateEthnicity() {
+        Map content = newEthnicityMap()
+        def o_success_ethnicity_create = ethnicityCompositeService.create(content)
+        assertNotNull o_success_ethnicity_create
+        assertNotNull o_success_ethnicity_create.guid
+        assertEquals i_success_code, o_success_ethnicity_create.code
+        assertEquals i_success_description, o_success_ethnicity_create.description
+        assertEquals i_success_data_origin, o_success_ethnicity_create.dataOrigin
+        assertEquals i_success_parent_category, o_success_ethnicity_create.parentCategory
+    }
+
+
+    @Test
+    void testCreateEthnicityWithUserInputGuid() {
+        Map content = newEthnicityMap()
+        content.guid = i_success_guid
+        def o_success_ethnicity_create = ethnicityCompositeService.create(content)
+        assertNotNull o_success_ethnicity_create
+        assertEquals i_success_guid, o_success_ethnicity_create.guid
+        assertEquals i_success_code, o_success_ethnicity_create.code
+        assertEquals i_success_description, o_success_ethnicity_create.description
+        assertEquals i_success_data_origin, o_success_ethnicity_create.dataOrigin
+        assertEquals i_success_parent_category, o_success_ethnicity_create.parentCategory
+    }
+
+
+    @Test
+    void testCreateInvalidEthnicityCode() {
+        Map content = newEthnicityMap()
+        content.remove('code')
+        try {
+            ethnicityCompositeService.create(content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "code.required.message"
         }
-        return null
+    }
+
+
+    @Test
+    void testCreateInvalidEthnicityDescription() {
+        Map content = newEthnicityMap()
+        content.remove('description')
+        try {
+            ethnicityCompositeService.create(content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "description.required.message"
+        }
+    }
+
+
+    @Test
+    void testUpdateEthnicity() {
+        Map create_content = newEthnicityMap()
+        def o_success_ethnicity_create = ethnicityCompositeService.create(create_content)
+        assertNotNull o_success_ethnicity_create
+        assertNotNull o_success_ethnicity_create.guid
+        assertEquals i_success_code, o_success_ethnicity_create.code
+        assertEquals i_success_description, o_success_ethnicity_create.description
+        assertEquals i_success_data_origin, o_success_ethnicity_create.dataOrigin
+        assertEquals i_success_parent_category, o_success_ethnicity_create.parentCategory
+
+        Map update_content = updateEthnicityMap(o_success_ethnicity_create.guid)
+        def o_success_ethnicity_update = ethnicityCompositeService.update(update_content)
+        assertNotNull o_success_ethnicity_update
+        assertEquals o_success_ethnicity_create.guid, o_success_ethnicity_update.guid
+        assertEquals i_success_code, o_success_ethnicity_update.code
+        assertEquals u_success_description, o_success_ethnicity_update.description
+        assertEquals u_success_data_origin, o_success_ethnicity_update.dataOrigin
+        assertEquals u_success_parent_category, o_success_ethnicity_update.parentCategory
+    }
+
+
+    private Map newEthnicityMap() {
+        Map params = [code          : i_success_code,
+                      description   : i_success_description,
+                      metadata      : [dataOrigin: i_success_data_origin],
+                      parentCategory: i_success_parent_category
+        ]
+        return params
+    }
+
+
+    private Map updateEthnicityMap(guid) {
+        Map params = [id            : guid,
+                      description         : u_success_description,
+                      metadata      : [dataOrigin: u_success_data_origin],
+                      parentCategory: u_success_parent_category
+        ]
+
+        return params
     }
 
 
@@ -155,4 +259,5 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         )
         ethnicity.save(failOnError: true, flush: true)
     }
+
 }

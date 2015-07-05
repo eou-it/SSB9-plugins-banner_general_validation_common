@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm.v1
 
@@ -33,15 +33,6 @@ class RestrictionType {
         if (metadata != that.metadata) return false
         if (guid != that.guid) return false
         return true
-    }
-
-
-    int hashCode() {
-        int result
-        result = (holdType != null ? holdType.hashCode() : 0)
-        result = 31 * result + (guid != null ? guid.hashCode() : 0)
-        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
-        return result
     }
 
 

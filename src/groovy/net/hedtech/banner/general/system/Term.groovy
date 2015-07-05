@@ -3,6 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import org.apache.commons.lang.StringUtils
 import org.hibernate.annotations.Type
 import javax.persistence.*
 
@@ -17,9 +18,11 @@ query = """FROM Term a WHERE a.code = ( SELECT MAX(b.code) FROM Term b WHERE b.c
 @NamedQuery(name = "Term.fetchMaxTermWithStartDateLessThanGivenDate",
 query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.startDate <= :givenDate)"""),
 @NamedQuery(name = "Term.fetchMaxTermWithHousingStartDateLessThanEqualDate",
-query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.housingStartDate <= :housingStartDate)""")
+query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.housingStartDate <= :housingStartDate)"""),
+@NamedQuery(name = "Term.fetchAllByTerm",
+query = """SELECT a.code,a.description FROM Term a WHERE UPPER(a.code) LIKE UPPER(:filter) OR UPPER(a.description) LIKE UPPER(:filter)
+           ORDER BY a.code desc""")
 ])
-
 class Term implements Serializable {
 
     /**
@@ -267,6 +270,34 @@ class Term implements Serializable {
         Term.withSession { session ->
             session.getNamedQuery('Term.fetchMaxTermWithStartDateLessThanGivenDate').setDate('givenDate', beginDate).list()[0]
         }
+    }
+
+
+    static List fetchAllByTerm(String filter, Integer max =0, Integer offset=0) {
+        List terms = []
+        Term.withSession { session ->
+            org.hibernate.Query query = session.getNamedQuery('Term.fetchAllByTerm')
+                    .setString("filter", prepareParams(filter))
+            if (max) {
+                query.setMaxResults(max)
+            }
+            if (offset) {
+                query.setFirstResult(offset)
+            }
+            terms = query.list().collect{
+                [code:it[0], description: it[1]]
+            }
+        }
+        return terms
+    }
+
+    private static String prepareParams(value) {
+        if (StringUtils.isBlank(value)) {
+            value = "%"
+        } else if (!(value =~ /%/)) {
+            value = "%" + value + "%"
+        }
+        return value
     }
 
 }

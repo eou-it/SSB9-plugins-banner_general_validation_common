@@ -1,13 +1,19 @@
 /*******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall
+
 import org.hibernate.annotations.Type
 
 import javax.persistence.*
 
 @Entity
 @Table(name = 'GOVROLE')
+@NamedQueries(value = [
+@NamedQuery(name = "UserRole.fetchByPidm",
+    query = """FROM  UserRole a
+	           WHERE a.pidm = :pidm """)
+])
 class UserRole implements Serializable {
 
     /**
@@ -132,4 +138,15 @@ class UserRole implements Serializable {
                 finaidIndicator=$finaidIndicator,
                 studentAidForCanadaIndicator=$studentAidForCanadaIndicator]"""
     }
+
+
+    static def UserRole fetchByPidm(Integer pidm) {
+        UserRole UserRole = UserRole.withSession { session ->
+            session.getNamedQuery('UserRole.fetchByPidm').setInteger('pidm', pidm).list()[0]
+        }
+
+        return UserRole
+    }
+
+
 }

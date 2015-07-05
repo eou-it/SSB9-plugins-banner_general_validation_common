@@ -2,14 +2,11 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
-import org.junit.Before
-import org.junit.Test
-import org.junit.After
-
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.Before
+import org.junit.Test
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
-
 /**
  * Integration test for the 'term' model.
  * */
@@ -203,6 +200,19 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull term.id
         Term fetchedTerm = Term.fetchMaxTermWithStartDateLessThanGivenDate(new Date() + 5)
         assertEquals term, fetchedTerm
+    }
+
+
+    @Test
+    void testListWithFilter() {
+        def filter = "2014"
+        def terms = Term.fetchAllByTerm(filter, 10, 0)
+        assertTrue terms.size() > 0
+        assertNotNull terms.find { it.code == "201410" }
+
+        filter = "%2%"
+        terms = Term.fetchAllByTerm(filter, 10, 0)
+        assertTrue terms.size() == 10
     }
 
 

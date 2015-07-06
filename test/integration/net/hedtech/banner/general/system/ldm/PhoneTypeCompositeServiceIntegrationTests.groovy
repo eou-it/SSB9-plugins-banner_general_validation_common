@@ -1,0 +1,186 @@
+/*******************************************************************************
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
+package net.hedtech.banner.general.system.ldm
+
+import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.system.PhoneTypeView
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+
+/**
+ * <p>Integration test cases for phone type composite service.</p>
+ */
+class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase {
+
+ def phoneTypeCompositeService
+
+    def invalid_resource_guid
+    def success_guid
+    def invalid_guid
+    
+    @Before
+    public void setUp() {
+        formContext = ['GUAGMNU']
+        super.setUp()
+        initializeDataReferences()
+    }
+
+    private void initializeDataReferences() {
+        invalid_resource_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
+        success_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList('phone-types',PhoneTypeView.findAll()?.code)
+         invalid_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList('phone-types',PhoneTypeView.findAll()?.code)
+    }
+
+    @After
+    public void tearDown() {
+        super.tearDown()
+    }
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService count method
+     */
+    @Test
+    void testCount(){
+        def expectedCount= phoneTypeCompositeService.count([:])
+        assertNotNull expectedCount
+        def actualCount= PhoneTypeView.count()
+        assertNotNull actualCount
+        assertEquals expectedCount,actualCount
+    }
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService list method passing with invalid sort order
+     */
+    @Test
+    void testListWithInvalidSortOrder(){
+        shouldFail(RestfulApiValidationException) {
+            def map = [order:'test']
+            phoneTypeCompositeService.list(map)
+        }
+    }
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService list method passing with invalid sort field
+     */
+    @Test
+    void testListWithInvalidSortField(){
+        shouldFail(RestfulApiValidationException) {
+            def map = [sort:'test']
+            phoneTypeCompositeService.list(map)
+        }
+    }
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService list method without pagination
+     */
+    @Test
+    void testListWithoutPaginationParams() {
+        List phoneTypes = phoneTypeCompositeService.list([:])
+        assertNotNull phoneTypes
+        assertFalse phoneTypes.isEmpty()
+        List actualTypes= PhoneTypeView.list(max:'500')
+        assertNotNull actualTypes
+        assertFalse actualTypes.isEmpty()
+        assertTrue phoneTypes.code.containsAll(actualTypes.code)
+        assertEquals phoneTypes.size() , actualTypes.size()
+    }
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService list method with pagination (max 4 and offset 0)
+     */
+    @Test
+    void testListWithPagination() {
+        def paginationParams = [max: '4', offset: '0']
+        List phoneTypes = phoneTypeCompositeService.list(paginationParams)
+        assertNotNull phoneTypes
+        assertFalse phoneTypes.isEmpty()
+        assertTrue phoneTypes.size() == 4
+    }
+
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService get method with guid as a null
+     */
+    @Test
+    void testGetWithNullGuid() {
+        try {
+            phoneTypeCompositeService.get(null)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService get method with guid as an empty
+     */
+    @Test
+    void testGetWithEmptyGuid() {
+        try {
+            phoneTypeCompositeService.get("")
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+   /**
+     * This test case is checking for PhoneTypeCompositeService get method with other than phone types valid guid
+    */
+    @Test
+    void testGetWithValidGuidAndNonExitsInPhoneTypes(){
+        shouldFail(RestfulApiValidationException) {
+            phoneTypeCompositeService.get(invalid_resource_guid?.guid)//invalid_resource_guid variable is defined at the top of the class
+        }
+    }
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService get method with valid guid
+     */
+    @Test
+    void testGetWithValidGuid(){
+        assertNotNull success_guid
+        def guid=success_guid?.guid //success_guid variable is defined at the top of the class
+        assertNotNull guid
+        def  phoneType= phoneTypeCompositeService.get(guid)
+        assertNotNull phoneType
+        assertNotNull phoneType.code
+        assertNotNull phoneType.id
+        assertNotNull phoneType.type
+    }
+
+   /**
+     * This test case is checking for PhoneTypeCompositeService get method with an invalid guid
+     */
+    @Test
+    void testGetWithInValidGuid(){
+        assertNotNull success_guid
+        def guid=success_guid?.guid//success_guid variable is defined at the top of the class
+        assertNotNull guid
+        try {
+            phoneTypeCompositeService.get(guid + '2')
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+    /**
+     * This test case is checking for PhoneTypeCompositeService get method with an valid guid but not mapped goriccr
+     */
+    @Test
+    void testGetWithNotMappedGuid(){
+        assertNotNull invalid_guid
+        def guid=invalid_guid?.guid//success_guid variable is defined at the top of the class
+        assertNotNull guid
+        try {
+            phoneTypeCompositeService.get(guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+}

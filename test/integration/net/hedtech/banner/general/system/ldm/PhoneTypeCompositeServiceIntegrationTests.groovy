@@ -131,7 +131,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
      * This test case is checking for PhoneTypeCompositeService get method with other than phone types valid guid
     */
     @Test
-    void testGetWithValidGuidAndNonExitsInPhoneTypes(){
+    void testGetWithValidGuidAndNonExistsInPhoneTypes(){
         shouldFail(RestfulApiValidationException) {
             phoneTypeCompositeService.get(invalid_resource_guid?.guid)//invalid_resource_guid variable is defined at the top of the class
         }
@@ -142,10 +142,8 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
      */
     @Test
     void testGetWithValidGuid(){
-        assertNotNull success_guid
-        def guid=success_guid?.guid //success_guid variable is defined at the top of the class
-        assertNotNull guid
-        def  phoneType= phoneTypeCompositeService.get(guid)
+        assertNotNull success_guid //success_guid variable is defined at the top of the class
+        def  phoneType= phoneTypeCompositeService.get(success_guid?.guid)
         assertNotNull phoneType
         assertNotNull phoneType.code
         assertNotNull phoneType.id
@@ -157,28 +155,59 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
      */
     @Test
     void testGetWithInValidGuid(){
-        assertNotNull success_guid
-        def guid=success_guid?.guid//success_guid variable is defined at the top of the class
-        assertNotNull guid
+        assertNotNull success_guid //success_guid variable is defined at the top of the class
         try {
-            phoneTypeCompositeService.get(guid + '2')
+            phoneTypeCompositeService.get(success_guid?.guid + '2')
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
     }
 
     /**
-     * This test case is checking for PhoneTypeCompositeService get method with an valid guid but not mapped goriccr
+     *Test Case to check the get method with a valid guid that is not mapped to GORICCR table with respect to the phone-types of person or organization
      */
     @Test
     void testGetWithNotMappedGuid(){
-        assertNotNull invalid_guid
-        def guid=invalid_guid?.guid//success_guid variable is defined at the top of the class
-        assertNotNull guid
+        assertNotNull invalid_guid //success_guid variable is defined at the top of the class
         try {
-            phoneTypeCompositeService.get(guid)
+            phoneTypeCompositeService.get(invalid_guid?.guid)
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+    /**
+     * <p> Test to check the sort order and sorting field on PhoneTypeCompositeService</p>
+     * */
+    @Test
+    public void testSortOrder(){
+        params.order='DESC'
+        params.sort='code'
+        List list = phoneTypeCompositeService.list(params)
+        String tempParam
+        list.each{
+            phoneType->
+                String code=phoneType.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+
+        params.clear()
+        params.order='ASC'
+        params.sort='code'
+        list = phoneTypeCompositeService.list(params)
+        tempParam=null
+        list.each{
+            phoneType->
+                String code=phoneType.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
+                tempParam=code
         }
     }
 

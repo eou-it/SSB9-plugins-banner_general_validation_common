@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 class PhoneTypeCompositeService {
 
-    //This filed is used for only to create and update of phone type data
+    //Injection of transactional service
     def  telephoneTypeService
 
     private static final String DEFAULT_SORT_FIELD = 'code'
@@ -41,8 +41,8 @@ class PhoneTypeCompositeService {
         params?.order = params?.order ? params?.order : DEFAULT_ORDER_TYPE
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
-        getDataFromDB(false, params).each { phoneTypeView ->
-            phoneTypeList << new PhoneType(phoneTypeView, new Metadata(phoneTypeView.dataOrigin), phoneTypeView.phoneType, phoneTypeView.translationValue)
+        getDataFromDB(false, params).each { phoneTypeViewRecord ->
+            phoneTypeList << new PhoneType(phoneTypeViewRecord, new Metadata(phoneTypeViewRecord.dataOrigin), phoneTypeViewRecord.phoneType, phoneTypeViewRecord.translationValue)
         }
         return phoneTypeList
     }
@@ -62,9 +62,9 @@ class PhoneTypeCompositeService {
      */
     @Transactional(readOnly = true)
     PhoneType get(String guid) {
-        PhoneTypeView  phoneTypeView = PhoneTypeView.get(guid?.trim())
-        if (phoneTypeView) {
-            new PhoneType(phoneTypeView, new Metadata(phoneTypeView.dataOrigin), phoneTypeView.phoneType, phoneTypeView.translationValue)
+        PhoneTypeView  phoneTypeViewRecord = PhoneTypeView.get(guid?.trim())
+        if (phoneTypeViewRecord) {
+            new PhoneType(phoneTypeViewRecord, new Metadata(phoneTypeViewRecord.dataOrigin), phoneTypeViewRecord.phoneType, phoneTypeViewRecord.translationValue)
         } else {
             GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
             if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME) {

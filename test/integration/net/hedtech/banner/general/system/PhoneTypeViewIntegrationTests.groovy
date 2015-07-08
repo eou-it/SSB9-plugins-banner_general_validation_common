@@ -20,7 +20,7 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
     private String i_success_translationValue = 'pager'
     private String i_failure_translationValue = 'Pager'
     private String i_success_description = 'Billing'
-    private String i_success_code = 'MOBL'
+    private String i_success_code = 'HOME'
 
     @Before
     public void setUp() {

@@ -192,7 +192,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     }
 
     /**
-     * Test to check  LocationTypeCompositeService get method with an valid guid but not mapped goriccr
+     * Test Case to check the get method with a valid guid that is not mapped to GORICCR table with respect to the location-types of person or organization
      */
     @Test
     void testGetWithNotMappedGuid() {

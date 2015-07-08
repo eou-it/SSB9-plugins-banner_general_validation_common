@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 class LocationTypeCompositeService {
 
-    //This filed is used for only to create and update of Location type data
+    //Injection of transactional service
     def  locationTypeService
 
     private static final String DEFAULT_SORT_FIELD = 'code'
@@ -75,9 +75,9 @@ class LocationTypeCompositeService {
      */
     @Transactional(readOnly = true)
     LocationType get(String guid) {
-        LocationTypeView locationTypeView = LocationTypeView.get(guid?.trim())
-        if (locationTypeView) {
-            new LocationType(locationTypeView, new Metadata(locationTypeView.dataOrigin), locationTypeView.locationType,locationTypeView.translationValue)
+        LocationTypeView locationTypeViewRecord = LocationTypeView.findById(guid)
+        if (locationTypeViewRecord) {
+            new LocationType(locationTypeViewRecord, new Metadata(locationTypeViewRecord.dataOrigin), locationTypeViewRecord.locationType,locationTypeViewRecord.translationValue)
         } else {
             GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
             if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME) {

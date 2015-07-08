@@ -156,6 +156,7 @@
         <mapping class="net.hedtech.banner.general.system.AcademicHonorView"/> 
         <mapping class="net.hedtech.banner.general.system.PhoneTypeView"/>
         <mapping class="net.hedtech.banner.general.system.LocationTypeView"/>
+        <mapping class="net.hedtech.banner.general.system.EmailTypesView"/>
 
     </session-factory>
 </hibernate-configuration>

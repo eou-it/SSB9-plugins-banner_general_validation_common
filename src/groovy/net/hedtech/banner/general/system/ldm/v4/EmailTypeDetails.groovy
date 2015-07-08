@@ -13,7 +13,7 @@ import net.hedtech.banner.general.system.ldm.v1.Metadata
 class EmailTypeDetails {
 
     Metadata metadata
-    def titles
+    def titles = []
     def descriptions = null
     def types = [:]
 
@@ -24,7 +24,7 @@ class EmailTypeDetails {
         this.metadata = metadata
         this.types = types
         this.emailTypesView=emailTypesView
-        this.titles = ['en':emailTypesView?.description]
+        this.titles << ['en':emailTypesView?.description]
     }
 
 

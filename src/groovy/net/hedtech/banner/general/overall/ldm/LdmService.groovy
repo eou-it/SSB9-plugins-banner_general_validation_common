@@ -3,11 +3,13 @@
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
+import grails.validation.ValidationException
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.utility.MessageResolver
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -20,6 +22,9 @@ import java.text.SimpleDateFormat
 class LdmService {
 
     def sessionFactory
+    def grailsWebDataBinder
+    def globalUniqueIdentifierService
+
     String timeFormat = ''
 
     private static HashMap ldmFieldToBannerDomainPropertyMap = [
@@ -28,6 +33,8 @@ class LdmService {
             number      : 'roomNumber'
     ]
 
+    private static List globalBindExcludes = ['id', 'version', 'dataOrigin']
+    private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
 
     static String fetchBannerDomainPropertyForLdmField(String ldmField) {
         return ldmFieldToBannerDomainPropertyMap[ldmField]
@@ -45,7 +52,7 @@ class LdmService {
      * @return
      */
     IntegrationConfiguration fetchAllByProcessCodeAndSettingNameAndTranslationValue(String processCode, String settingName, String translationValue) {
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue('LDM', settingName, translationValue)
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue(processCode, settingName, translationValue)
         IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
         LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
@@ -65,7 +72,7 @@ class LdmService {
      * @return
      */
     IntegrationConfiguration findAllByProcessCodeAndSettingNameAndValue(String processCode, String settingName, String value) {
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue('LDM', settingName, value)
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue(processCode, settingName, value)
         IntegrationConfiguration integrationConfig = integrationConfigs.size() > 0 ? integrationConfigs.get(0) : null
         LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
@@ -282,6 +289,57 @@ class LdmService {
             request = ((ServletRequestAttributes) requestAttributes).getRequest()
         }
         return request
+    }
+
+    /**
+     * Used to bind map properties onto grails domains.
+     * Can provide an exclusion and inclusion list in the third param.
+     */
+    public void bindData (def domain, Map properties, Map includeExcludeMap ) {
+        if (includeExcludeMap?.exclude instanceof List) {
+            includeExcludeMap.exclude.addAll(globalBindExcludes)
+        }
+        else {
+            includeExcludeMap.put('exclude', globalBindExcludes)
+        }
+         grailsWebDataBinder.bind(domain,
+                 properties as SimpleMapDataBindingSource,
+                 null,
+                 includeExcludeMap?.include,
+                 includeExcludeMap?.exclude,
+                 null)
+        if ( domain.hasErrors() ){
+            throw new ApplicationException("${domain.class.simpleName}", new ValidationException("${domain.class.simpleName}",domain.errors))
+        }
+    }
+
+    /**
+     * Used to set the GUID to a specific value when update method
+     * calls create.
+     */
+    private GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
+        // Update the GUID to the one we received.
+        GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ldmName, id)
+        if (!newEntity) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: ldmName))
+        }
+        newEntity.guid = guid
+        globalUniqueIdentifierService.update(newEntity)
+    }
+
+    /**
+     * This method will not perform well because of lack of keys for domain keys.
+     *  Use the method above to use the faster indexed method.
+     *  This is only used when there is no single master table for the GUID or no single record for the GUID.
+     */
+    private GlobalUniqueIdentifier updateGuidValueByDomainKey(String domainKey, String guid, String ldmName) {
+        // Update the GUID to the one we received.
+        GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ldmName, domainKey)
+        if (!newEntity) {
+            throw new ApplicationException(GlobalUniqueIdentifierService.API, new NotFoundException(id: ldmName))
+        }
+        newEntity.guid = guid
+        globalUniqueIdentifierService.update(newEntity)
     }
 
 }

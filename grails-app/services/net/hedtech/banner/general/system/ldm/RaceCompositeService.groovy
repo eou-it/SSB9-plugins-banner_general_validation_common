@@ -26,8 +26,8 @@ import org.springframework.transaction.annotation.Transactional
 class RaceCompositeService extends LdmService {
 
     def raceService
+    private static final String PROCESS_CODE = 'HEDM'
     private static final String RACE_LDM_NAME = 'races'
-    static final String PROCESS_CODE = "LDM"
     static final String RACE_PARENT_CATEGORY = "RACE.PARENTCATEGORY"
 
     List<RaceDetail> list(Map params) {

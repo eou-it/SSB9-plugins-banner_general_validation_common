@@ -15,7 +15,7 @@ class EmailTypeDetails {
     Metadata metadata
     def titles = []
     def descriptions = null
-    def types = [:]
+    def types = [:] 
 
     @Delegate
     EmailTypesView emailTypesView

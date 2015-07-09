@@ -20,9 +20,6 @@ import org.springframework.transaction.annotation.Transactional
  */
 class LocationTypeCompositeService {
 
-    //Injection of transactional service
-    def  locationTypeService
-
     private static final String DEFAULT_SORT_FIELD = 'code'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
     private static final String LDM_NAME ='location-types'

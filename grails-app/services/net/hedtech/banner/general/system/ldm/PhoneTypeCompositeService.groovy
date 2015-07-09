@@ -19,9 +19,6 @@ import org.springframework.transaction.annotation.Transactional
  */
 class PhoneTypeCompositeService {
 
-    //Injection of transactional service
-    def  telephoneTypeService
-
     private static final String DEFAULT_SORT_FIELD = 'code'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
     private static final List<String> allowedSortFields = [DEFAULT_SORT_FIELD]

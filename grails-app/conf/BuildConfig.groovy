@@ -19,7 +19,7 @@ grails.project.dependency.resolution = {
         // uncomment to disable ehcache
         // excludes 'ehcache'
     }
-    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
 
     repositories {
         if (System.properties['PROXY_SERVER_NAME']) {

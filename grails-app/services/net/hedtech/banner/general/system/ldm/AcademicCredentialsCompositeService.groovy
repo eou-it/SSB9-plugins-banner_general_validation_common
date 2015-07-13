@@ -26,13 +26,14 @@ import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 @Transactional
 class AcademicCredentialsCompositeService {
 
+    //Injection of transactional service
     def degreeService
     
     private static final String DEFAULT_SORT_FIELD = 'abbreviation'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
     private static final String PROCESS_CODE = "HEDM"
     private static final String SETTING_CREDENTIAL_TYPE = "CREDENTIALS.TYPE"
-    private static final List allowedSortFields = [DEFAULT_SORT_FIELD]
+    private static final List allowedSortFields = [DEFAULT_SORT_FIELD,'type']
     private static final String LDM_NAME ='academic-credentials'
     private final static HashMap searchFielddMap = [
             degree: '1',
@@ -58,7 +59,7 @@ class AcademicCredentialsCompositeService {
         degreeList.each { degree ->
             academicCredentialsList << new AcademicCredentials(degree, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, degree.id)?.guid,new Metadata(degree.dataOrigin),populateTypeValue(degree.degreeType))
         }
-        return academicCredentialsList
+        return params?.sort==allowedSortFields[0] ? academicCredentialsList : (params?.order==DEFAULT_ORDER_TYPE ? academicCredentialsList.sort{it.type} :academicCredentialsList.sort{it.type}.reverse())
     }
 
     /**

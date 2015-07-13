@@ -259,4 +259,41 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
             assertApplicationException ae, "NotFoundException"
         }
     }
-}
+
+
+    /**
+     * <p> Test to check the sort order  and sorting field  by type on AcademicCredentialsCompositeService</p>
+     * */
+    @Test
+    public void testSortOrderByType(){
+        params.order='DESC'
+        params.sort='type'
+        List list = academicCredentialsCompositeService.list(params)
+        String tempParam
+        list.each{
+            academicCredential->
+                String type=academicCredential.type
+                if(!tempParam){
+                    tempParam=type
+                }
+                assertTrue tempParam.compareTo(type)>0 || tempParam.compareTo(type)==0
+                tempParam=type
+        }
+
+        params.clear()
+        params.order='ASC'
+        params.sort='type'
+        list = academicCredentialsCompositeService.list(params)
+        tempParam=null
+        list.each{
+            academicCredential->
+                String type=academicCredential.type
+                if(!tempParam){
+                    tempParam=type
+                }
+                assertTrue tempParam.compareTo(type)<0 || tempParam.compareTo(type)==0
+                tempParam=type
+        }
+    }
+
+   }

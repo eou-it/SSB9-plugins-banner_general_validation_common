@@ -59,7 +59,7 @@ class AcademicCredentialsCompositeService {
         degreeList.each { degree ->
             academicCredentialsList << new AcademicCredentials(degree, GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, degree.id)?.guid,new Metadata(degree.dataOrigin),populateTypeValue(degree.degreeType))
         }
-        return params?.sort==allowedSortFields[0] ? academicCredentialsList : (params?.order==DEFAULT_ORDER_TYPE ? academicCredentialsList.sort{it.type} :academicCredentialsList.sort{it.type}.reverse())
+        return params?.sort=='code'? academicCredentialsList : (params?.order==DEFAULT_ORDER_TYPE ? academicCredentialsList.sort{it.type} :academicCredentialsList.sort{it.type}.reverse())
     }
 
     /**

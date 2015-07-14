@@ -128,7 +128,7 @@ class EmailTypeCompositeService {
             }
             if (!emailTypesView) {
                 GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
-                if (globalUniqueIdentifier) {
+                if (globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME_EMAIL_TYPES) {
                     throw new ApplicationException("emailTypeCompositeService", new BusinessLogicValidationException("invalid.guid", []))
                 } else {
                     throw new ApplicationException("emailTypeCompositeService", new NotFoundException())

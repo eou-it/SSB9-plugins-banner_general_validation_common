@@ -13,7 +13,7 @@ import javax.persistence.*
 @NamedQueries(value = [
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNamesAndGuid",
                 query = """FROM  GlobalUniqueIdentifier a
-	  	                WHERE a.ldmName IN ('colleges', 'departments','divisions')
+	  	                WHERE a.ldmName IN ('colleges', 'departments')
 	  	                AND a.guid = :guid """),
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId",
                 query = """FROM GlobalUniqueIdentifier a

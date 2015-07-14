@@ -1,12 +1,14 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.College
 import net.hedtech.banner.general.system.Department
 import net.hedtech.banner.general.system.ldm.v1.Organization
+import net.hedtech.banner.general.system.ldm.v1.OrganizationType
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -34,12 +36,11 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
      * Test case for List method
      */
     @Test
-    void testListWithPagination() {
-        def paginationParams = [max: '20', offset: '0']
+    void testListWithSortAndPagination() {
+        def paginationParams = [max: '20', offset: '0', sort: 'abbreviation', order: 'asc']
         List organizationList = organizationCompositeService.list(paginationParams)
         assertNotNull organizationList
         assertFalse organizationList.isEmpty()
-        assertTrue organizationList.abbreviation.contains(college.code)
     }
 
     /**
@@ -64,12 +65,28 @@ class OrganizationCompositeServiceIntegrationTests extends BaseIntegrationTestCa
         assertTrue organizationList.size() > 0
         assertNotNull organizationList[0].guid
         def organization = organizationCompositeService.get(organizationList[0].guid)
-        assertNotNull organization
+        assertNotNull organization.toString()
         assertEquals organizationList[0].abbreviation, organization.abbreviation
         assertEquals organizationList[0].title, organization.title
         assertEquals organizationList[0].metadata.dataOrigin, organization.metadata.dataOrigin
         assertEquals organizationList[0].guid, organization.guid
         assertEquals organizationList[0].organizationType, organization.organizationType
+        assertEquals organizationList[0], organization
+    }
+
+    /**
+     * Testcase for show method
+     */
+    @Test
+    void testGetByDepartmentGuid() {
+        String departmentGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey('departments', department.code)?.guid
+        def organization = organizationCompositeService.get(departmentGuid)
+        assertNotNull organization
+        assertEquals department.code, organization.abbreviation
+        assertEquals department.description, organization.title
+        assertEquals department.dataOrigin, organization.metadata.dataOrigin
+        assertEquals departmentGuid, organization.guid
+        assertEquals OrganizationType.DEPARTMENT.value, organization.organizationType
     }
 
     /**

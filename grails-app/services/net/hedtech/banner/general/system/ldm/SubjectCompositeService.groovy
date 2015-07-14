@@ -142,6 +142,7 @@ class SubjectCompositeService extends LdmService {
         if (subject.code != content?.code?.trim()) {
             content.put("code", subject.code)
         }
+        validateRequest(content)
         subject = bindSubject(subject, content)
 
         return getDecorator(subject, subjectGuid)

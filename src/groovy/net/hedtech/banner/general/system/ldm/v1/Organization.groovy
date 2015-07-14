@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm.v1
 
@@ -42,20 +42,6 @@ class Organization {
         if (organizationType != that.organizationType) return false
         if (metadata != that.metadata) return false
         return true
-    }
-
-    /**
-     *  returns hash code
-     * @return int
-     */
-    int hashCode() {
-        int result
-        result = (guid != null ? guid.hashCode() : 0)
-        result = 31 * result + (abbreviation != null ? abbreviation.hashCode() : 0)
-        result = 31 * result + (title != null ? title.hashCode() : 0)
-        result = 31 * result + (organizationType != null ? organizationType.hashCode() : 0)
-        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
-        return result
     }
 
 

@@ -36,6 +36,7 @@ class LdmService {
     private static List globalBindExcludes = ['id', 'version', 'dataOrigin']
     private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
 
+
     static String fetchBannerDomainPropertyForLdmField(String ldmField) {
         return ldmFieldToBannerDomainPropertyMap[ldmField]
     }
@@ -269,6 +270,31 @@ class LdmService {
         return requestBodyMediaType()
     }
 
+    /**
+     * HeDM APIs will have Content-Type headers like application/vnd.hedtech.integration.v1+json, application/vnd.hedtech.integration.room-availability.v1+json so on.
+     *
+     * Content-Type header can contain generic media types like application/vnd.hedtech.integration+json or application/vnd.hedtech.integration.room-availability+json or
+     * application/json that represent latest (current) request version of the API.  In such cases, this method does not return anything.
+     *
+     * @return version (v1,v2 so on) extracted from Content-Type header
+     */
+    public static String getRequestRepresentationVersion() {
+        String version
+        String contentTypeHeader = requestBodyMediaType()
+        if (contentTypeHeader) {
+            int indexOfDotBeforeVersion = contentTypeHeader.lastIndexOf(".")
+            int indexOfPlus = contentTypeHeader.lastIndexOf("+")
+            if (indexOfDotBeforeVersion != -1 && indexOfPlus != -1 && indexOfDotBeforeVersion + 1 < indexOfPlus) {
+                version = contentTypeHeader.substring(indexOfDotBeforeVersion + 1, indexOfPlus)
+                if (!version?.toLowerCase()?.startsWith("v")) {
+                    // May be generic Content-Type header like "application/vnd.hedtech.integration.room-availability+json"
+                    version = null
+                }
+            }
+        }
+        return version?.toLowerCase()
+    }
+
 
     private static String requestBodyMediaType() {
         HttpServletRequest request = getHttpServletRequest()
@@ -295,21 +321,20 @@ class LdmService {
      * Used to bind map properties onto grails domains.
      * Can provide an exclusion and inclusion list in the third param.
      */
-    public void bindData (def domain, Map properties, Map includeExcludeMap ) {
+    public void bindData(def domain, Map properties, Map includeExcludeMap) {
         if (includeExcludeMap?.exclude instanceof List) {
             includeExcludeMap.exclude.addAll(globalBindExcludes)
-        }
-        else {
+        } else {
             includeExcludeMap.put('exclude', globalBindExcludes)
         }
-         grailsWebDataBinder.bind(domain,
-                 properties as SimpleMapDataBindingSource,
-                 null,
-                 includeExcludeMap?.include,
-                 includeExcludeMap?.exclude,
-                 null)
-        if ( domain.hasErrors() ){
-            throw new ApplicationException("${domain.class.simpleName}", new ValidationException("${domain.class.simpleName}",domain.errors))
+        grailsWebDataBinder.bind(domain,
+                properties as SimpleMapDataBindingSource,
+                null,
+                includeExcludeMap?.include,
+                includeExcludeMap?.exclude,
+                null)
+        if (domain.hasErrors()) {
+            throw new ApplicationException("${domain.class.simpleName}", new ValidationException("${domain.class.simpleName}", domain.errors))
         }
     }
 

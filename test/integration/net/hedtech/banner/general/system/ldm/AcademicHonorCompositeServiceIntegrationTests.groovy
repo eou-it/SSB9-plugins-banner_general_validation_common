@@ -78,7 +78,7 @@ class AcademicHonorCompositeServiceIntegrationTests extends BaseIntegrationTestC
      * <p> Test to check the sort order and sorting field on AcademicHonorsCompositeService</p>
      * */
     @Test
-    public void testSortOrder(){
+    public void testSortOrderOnCode(){
         params.order='DESC'
         params.sort='code'
         List list = academicHonorCompositeService.list(params)
@@ -106,6 +106,40 @@ class AcademicHonorCompositeServiceIntegrationTests extends BaseIntegrationTestC
                 }
                 assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
                 tempParam=code
+        }
+    }
+
+    @Test
+    public void testSortByType(){
+        params.order='ASC'
+        params.sort='type'
+        List list = academicHonorCompositeService.list(params)
+        assertNotNull list
+        def tempParam=null
+        list.each{
+            academicHonor->
+                String type=academicHonor.honorType
+                if(!tempParam){
+                    tempParam=type
+                }
+                assertTrue tempParam.compareTo(type)<0 || tempParam.compareTo(type)==0
+                tempParam=type
+        }
+
+        params.clear()
+        params.order='DESC'
+        params.sort='type'
+        list = academicHonorCompositeService.list(params)
+        assertNotNull list
+        tempParam=null
+        list.each{
+            academicHonor->
+                String type=academicHonor.honorType
+                if(!tempParam){
+                    tempParam=type
+                }
+                assertTrue tempParam.compareTo(type)>0 || tempParam.compareTo(type)==0
+                tempParam=type
         }
     }
 

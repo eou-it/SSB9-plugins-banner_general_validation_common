@@ -262,6 +262,29 @@ class LdmService {
     }
 
     /**
+     * Utility method used to decide which version flow should be executed for given Accept header.
+     *
+     * @param apiVersions List of HEDM versions supported by API
+     * @return
+     */
+    public static String getAcceptVersion(List<String> apiVersions) {
+        List<String> sortedApiVersions = apiVersions?.sort(false)
+        String representationVersion = LdmService.getResponseRepresentationVersion()
+        if (sortedApiVersions) {
+            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+                // Assume latest (current) version
+                representationVersion = sortedApiVersions.last()
+            } else {
+                int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
+                if (index != -1) {
+                    representationVersion = sortedApiVersions.get(index)
+                }
+            }
+        }
+        return representationVersion
+    }
+
+    /**
      * Returns "Content-Type" header
      *
      * @return
@@ -295,6 +318,28 @@ class LdmService {
         return version?.toLowerCase()
     }
 
+    /**
+     * Utility method used to decide which version flow should be executed for given Content-Type header.
+     *
+     * @param apiVersions List of HEDM versions supported by API
+     * @return
+     */
+    public static String getContentTypeVersion(List<String> apiVersions) {
+        List<String> sortedApiVersions = apiVersions?.sort(false)
+        String representationVersion = LdmService.getRequestRepresentationVersion()
+        if (sortedApiVersions) {
+            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+                // Assume latest (current) version
+                representationVersion = sortedApiVersions.last()
+            } else {
+                int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
+                if (index != -1) {
+                    representationVersion = sortedApiVersions.get(index)
+                }
+            }
+        }
+        return representationVersion
+    }
 
     private static String requestBodyMediaType() {
         HttpServletRequest request = getHttpServletRequest()

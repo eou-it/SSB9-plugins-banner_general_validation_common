@@ -229,7 +229,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Accept header
      */
-    public static String getResponseRepresentationVersion() {
+    private static String getResponseRepresentationVersion() {
         String version
         String acceptHeader = responseBodyMediaType()
         if (acceptHeader) {
@@ -269,7 +269,7 @@ class LdmService {
      */
     public static String getAcceptVersion(List<String> apiVersions) {
         List<String> sortedApiVersions = apiVersions?.sort(false)
-        String representationVersion = LdmService.getResponseRepresentationVersion()
+        String representationVersion = getResponseRepresentationVersion()
         if (sortedApiVersions) {
             if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
                 // Assume latest (current) version
@@ -301,7 +301,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Content-Type header
      */
-    public static String getRequestRepresentationVersion() {
+    private static String getRequestRepresentationVersion() {
         String version
         String contentTypeHeader = requestBodyMediaType()
         if (contentTypeHeader) {
@@ -326,7 +326,7 @@ class LdmService {
      */
     public static String getContentTypeVersion(List<String> apiVersions) {
         List<String> sortedApiVersions = apiVersions?.sort(false)
-        String representationVersion = LdmService.getRequestRepresentationVersion()
+        String representationVersion = getRequestRepresentationVersion()
         if (sortedApiVersions) {
             if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
                 // Assume latest (current) version

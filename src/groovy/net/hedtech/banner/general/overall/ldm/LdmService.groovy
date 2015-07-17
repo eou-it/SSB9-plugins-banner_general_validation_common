@@ -30,7 +30,8 @@ class LdmService {
     private static HashMap ldmFieldToBannerDomainPropertyMap = [
             abbreviation: 'code',
             title       : 'description',
-            number      : 'roomNumber'
+            number      : 'roomNumber',
+            code        : 'code'
     ]
 
     private static List globalBindExcludes = ['id', 'version', 'dataOrigin']

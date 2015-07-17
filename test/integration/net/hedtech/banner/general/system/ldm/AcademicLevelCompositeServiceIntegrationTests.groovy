@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -162,4 +163,77 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         return level
     }
 
+    /**
+     * Test to check the AcademicLevelCompositeService list method with valid sort and order field and supported version
+     * If No "Accept" header is provided, by default it takes the latest supported version
+     */
+    @Test
+    void testListWithValidSortAndOrderFieldWithSupportedVersion() {
+        def params = [order: 'ASC', sort: 'code']
+        def academicLevelList = academicLevelCompositeService.list(params)
+        assertNotNull academicLevelList
+        assertFalse academicLevelList.isEmpty()
+        assertTrue academicLevelList.code.contains(i_success_level.code)
+    }
+
+
+    /**
+     * Test to check the AcademicLevelCompositeService list method with invalid order field
+     */
+    @Test
+    void testListWithInvalidSortOrder() {
+        shouldFail(RestfulApiValidationException) {
+            def map = [order: 'test']
+            academicLevelCompositeService.list(map)
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService list method with invalid sort field
+     */
+    @Test
+    void testListWithInvalidSortField() {
+        shouldFail(RestfulApiValidationException) {
+            def map = [sort: 'test']
+            academicLevelCompositeService.list(map)
+        }
+    }
+
+
+    /**
+     * Test to check the sort by code on AcademicLevelCompositeService
+     * */
+    @Test
+    public void testSortByCode(){
+        params.order='ASC'
+        params.sort='code'
+        List list = academicLevelCompositeService.list(params)
+        assertNotNull list
+        def tempParam=null
+        list.each{
+            academicLevel->
+                String code=academicLevel.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+
+        params.clear()
+        params.order='DESC'
+        params.sort='code'
+        list = academicLevelCompositeService.list(params)
+        assertNotNull list
+        tempParam=null
+        list.each{
+            academicLevel->
+                String code=academicLevel.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+    }
 }

@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
+import net.hedtech.banner.general.system.ldm.v4.AcademicLevelDetail
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
@@ -22,16 +23,14 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
     def academicLevelCompositeService
 
     Level i_success_level
-
     def i_success_code = "TZ"
     def i_success_description = "Test Description"
     def i_success_academicIndicator = true
     def i_success_continuingEducationIndicator = true
-
     def i_success_systemRequiredIndicator = true
     def i_success_voiceResponseMessageNumber = 1
-
     def i_success_electronicDataInterchangeEquivalent = "TT"
+    def i_success_content
 
     @Before
     public void setUp() {
@@ -43,6 +42,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     private void initiializeDataReferences() {
         i_success_level = Level.findByCode('LW')
+        i_success_content = [code: 'SV',title:[[en:'Test Title']], description: [[en:'Test description']], metadata: [dataOrigin: 'Banner']]
     }
 
     @Test
@@ -149,20 +149,6 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         }
     }
 
-
-    private def newValidForCreateLevel() {
-        def level = new Level(
-                code: i_success_code,
-                description: i_success_description,
-                acadInd: i_success_academicIndicator,
-                ceuInd: i_success_continuingEducationIndicator,
-                systemReqInd: i_success_systemRequiredIndicator,
-                vrMsgNo: i_success_voiceResponseMessageNumber,
-                ediEquiv: i_success_electronicDataInterchangeEquivalent
-        )
-        return level
-    }
-
     /**
      * Test to check the AcademicLevelCompositeService list method with valid sort and order field and supported version
      * If No "Accept" header is provided, by default it takes the latest supported version
@@ -236,4 +222,189 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
                 tempParam=code
         }
     }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with valid in request content
+     */
+    @Test
+    void testCreate() {
+        AcademicLevelDetail academicLevelDetail = academicLevelCompositeService.create(i_success_content)
+        assertNotNull academicLevelDetail
+        assertNotNull academicLevelDetail.guid
+        assertEquals i_success_content.code, academicLevelDetail.code
+        assertEquals i_success_content.title[0].en, academicLevelDetail.description
+        assertEquals i_success_content.metadata.dataOrigin, academicLevelDetail.dataOrigin
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with no code in request content
+     */
+    @Test
+    void testCreateNoCode(){
+        i_success_content.remove('code')
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with empty code in request content
+     */
+    @Test
+    void testCreateEmptyCode(){
+        i_success_content.code=''
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.empty/null.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with null code in request content data
+     */
+    @Test
+    void testCreateNullCode(){
+        i_success_content.code=null
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.empty/null.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with exceed code in request content
+     */
+    @Test
+    void testCreateExceedSizeCode(){
+        i_success_content.code='abc'
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.exceed.size.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with exists code in request content
+     */
+    @Test
+    void testCreateExistsCode(){
+        i_success_content.code='LW'
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.exists.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with no title in request content
+     */
+    @Test
+    void testCreateNoTitle(){
+        i_success_content.remove('title')
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with empty title in request content
+     */
+    @Test
+    void testCreateEmptyTitle(){
+        i_success_content.title=''
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with null title in request content
+     */
+    @Test
+    void testCreateNullTitle(){
+        i_success_content.title=null
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with empty title value in request content
+     */
+    @Test
+    void testCreateEmptyTitleValue(){
+        i_success_content.title=[[en:'']]
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.empty/null.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with null title value in request content
+     */
+    @Test
+    void testCreateNullTitleValue(){
+        i_success_content.title=[[en:null]]
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.empty/null.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with fr as title multi-lingual in request content
+     */
+    @Test
+    void testCreateInvalidMultiLingualTitle(){
+        i_success_content.title=[['fr':'null']]
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.invalid.Multi-lingual.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService create method with title value is more than 30 char in request content 
+     */
+    @Test
+    void testCreateExceedTitle(){
+        i_success_content.title=[[en:'Test academic level title is more than 30 characters']]
+        AcademicLevelDetail academicLevelDetail = academicLevelCompositeService.create(i_success_content)
+        assertNotNull academicLevelDetail
+        assertNotNull academicLevelDetail.guid
+        assertEquals i_success_content.code, academicLevelDetail.code
+        assertEquals i_success_content.title[0].en.substring(0,30), academicLevelDetail.description
+        assertEquals i_success_content.metadata.dataOrigin, academicLevelDetail.dataOrigin
+    }
+
+
+    private def newValidForCreateLevel() {
+        def level = new Level(
+                code: i_success_code,
+                description: i_success_description,
+                acadInd: i_success_academicIndicator,
+                ceuInd: i_success_continuingEducationIndicator,
+                systemReqInd: i_success_systemRequiredIndicator,
+                vrMsgNo: i_success_voiceResponseMessageNumber,
+                ediEquiv: i_success_electronicDataInterchangeEquivalent
+        )
+        return level
+    }
+
 }

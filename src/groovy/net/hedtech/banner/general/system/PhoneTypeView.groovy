@@ -12,7 +12,7 @@ import javax.persistence.Table
  * <p>Read only view for phone types.</p>
  */
 @Entity
-@Table(name = "GVQ_STVTELE")
+@Table(name = "GVQ_PHONE_TYPES")
 class PhoneTypeView implements Serializable {
 
 

@@ -29,6 +29,7 @@ class MaritalStatusCompositeService extends LdmService {
     private static final String PROCESS_CODE = 'HEDM'
     private static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
     static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
+    private static final List<String> VERSIONS = ["v1", "v2","v3","v4"]
 
     /**
      * GET /api/marital-statuses
@@ -42,7 +43,7 @@ class MaritalStatusCompositeService extends LdmService {
 
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
-        List allowedSortFields = ['abbreviation', 'title']
+        List allowedSortFields = ("v4".equals(LdmService.getAcceptVersion(VERSIONS))? ['code', 'title']:['abbreviation', 'title'])
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)

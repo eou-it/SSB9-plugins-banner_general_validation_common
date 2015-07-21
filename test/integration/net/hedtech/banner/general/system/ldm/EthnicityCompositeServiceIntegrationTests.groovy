@@ -8,6 +8,7 @@ import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.IpedsEthnicity
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -26,6 +27,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
     def u_success_description = 'Update Ethnicity'
     def u_success_data_origin = 'Banner'
     def u_success_parent_category = 'Non-Hispanic'
+    private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
 
 
     @Before
@@ -260,4 +262,85 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         ethnicity.save(failOnError: true, flush: true)
     }
 
+    /**
+     * Test to check the EthnicityCompositeService list method with valid sort and order field and supported version
+     * If No "Accept" header is provided, by default it takes the latest supported version
+     */
+    @Test
+    void testListWithValidSortAndOrderFieldWithSupportedVersion() {
+        def params = [order: 'ASC', sort: 'code']
+        def ethnicityList = ethnicityCompositeService.list(params)
+        assertNotNull ethnicityList
+        assertFalse ethnicityList.isEmpty()
+        assertNotNull ethnicityList.code
+        assertEquals Ethnicity.count(), ethnicityList.size()
+        assertNotNull i_success_ethnicity
+        assertTrue ethnicityList.code.contains(i_success_ethnicity.code)
+        assertTrue ethnicityList.description.contains(i_success_ethnicity.description)
+        assertTrue ethnicityList.dataOrigin.contains(i_success_ethnicity.dataOrigin)
+
+    }
+
+    /**
+     * Test to check the sort by code on EthnicityCompositeService
+     * */
+    @Test
+    public void testSortByCode(){
+        params.order='ASC'
+        params.sort='code'
+        List list = ethnicityCompositeService.list(params)
+        assertNotNull list
+        def tempParam=null
+        list.each{
+            ethnicity->
+                String code=ethnicity.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+
+        params.clear()
+        params.order='DESC'
+        params.sort='code'
+        list = ethnicityCompositeService.list(params)
+        assertNotNull list
+        tempParam=null
+        list.each{
+            ethnicity->
+                String code=ethnicity.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+    }
+
+    /**
+     * Test to check the EthnicityCompositeService list method with invalid sort field
+     */
+    @Test
+    void testListWithInvalidSortOrder() {
+        try {
+            def map = [sort: 'test']
+            ethnicityCompositeService.list(map)
+            fail()
+        } catch (RestfulApiValidationException e) {
+            assertEquals 400, e.getHttpStatusCode()
+            assertEquals invalid_sort_orderErrorMessage , e.messageCode.toString()
+        }
+    }
+
+    /**
+     * Test to check the EthnicityCompositeService list method with invalid sort field
+     */
+    @Test
+    void testListWithInvalidSortField() {
+        shouldFail(RestfulApiValidationException) {
+            def map = [order: 'test']
+            ethnicityCompositeService.list(map)
+        }
+    }
 }

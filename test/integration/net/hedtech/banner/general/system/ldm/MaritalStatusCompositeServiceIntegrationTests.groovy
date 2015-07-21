@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -16,6 +17,7 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
     Map i_success_input_content
     def i_creation_guid = '11599c85-afe8-4624-9832-106a716624a7'
     def i_update_description = 'Updating the description'
+    private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
 
     def maritalStatusCompositeService
     def globalUniqueIdentifierService
@@ -232,6 +234,88 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_input_content.code, maritalStatusDetail.code
         assertEquals i_update_description, maritalStatusDetail.description
         assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
+    }
+
+    /**
+     * Test to check the MaritalStatusCompositeService list method with valid sort and order field and supported version
+     * If No "Accept" header is provided, by default it takes the latest supported version
+     */
+    @Test
+    void testListWithValidSortAndOrderFieldWithSupportedVersion() {
+        def params = [order: 'ASC', sort: 'code']
+        def maritalStatusList = maritalStatusCompositeService.list(params)
+        assertNotNull maritalStatusList
+        assertFalse maritalStatusList.isEmpty()
+        assertNotNull maritalStatusList.code
+        assertEquals MaritalStatus.count(), maritalStatusList.size()
+        assertNotNull i_success_maritalStatus
+        assertTrue maritalStatusList.code.contains(i_success_maritalStatus.code)
+        assertTrue maritalStatusList.description.contains(i_success_maritalStatus.description)
+        assertTrue maritalStatusList.dataOrigin.contains(i_success_maritalStatus.dataOrigin)
+
+    }
+
+    /**
+     * Test to check the sort by code on MaritalStatusCompositeService
+     * */
+    @Test
+    public void testListSortByCode(){
+        params.order='ASC'
+        params.sort='code'
+        List list = maritalStatusCompositeService.list(params)
+        assertNotNull list
+        def tempParam=null
+        list.each{
+            maritalStatus->
+                String code=maritalStatus.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+
+        params.clear()
+        params.order='DESC'
+        params.sort='code'
+        list = maritalStatusCompositeService.list(params)
+        assertNotNull list
+        tempParam=null
+        list.each{
+            maritalStatus->
+                String code=maritalStatus.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+    }
+
+    /**
+     * Test to check the MaritalStatusCompositeService list method with invalid sort field
+     */
+    @Test
+    void testListWithInvalidSortOrder() {
+        try {
+            def map = [sort: 'test']
+            maritalStatusCompositeService.list(map)
+            fail()
+        } catch (RestfulApiValidationException e) {
+            assertEquals 400, e.getHttpStatusCode()
+            assertEquals invalid_sort_orderErrorMessage , e.messageCode.toString()
+        }
+    }
+
+    /**
+     * Test to check the MaritalStatusCompositeService list method with invalid sort field
+     */
+    @Test
+    void testListWithInvalidSortField() {
+        shouldFail(RestfulApiValidationException) {
+            def map = [order: 'test']
+            maritalStatusCompositeService.list(map)
+        }
     }
 
 }

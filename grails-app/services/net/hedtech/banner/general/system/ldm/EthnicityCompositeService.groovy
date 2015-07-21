@@ -24,6 +24,7 @@ class EthnicityCompositeService extends LdmService {
 
     def ethnicityService
     private static final String ETHNICITY_LDM_NAME = 'ethnicities'
+    private static final List<String> VERSIONS = ["v1", "v2","v3","v4"]
 
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -32,7 +33,7 @@ class EthnicityCompositeService extends LdmService {
 
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
-        List allowedSortFields = ['abbreviation', 'title']
+        List allowedSortFields = ("v4".equals(LdmService.getAcceptVersion(VERSIONS))? ['code', 'title']:['abbreviation', 'title'])
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)

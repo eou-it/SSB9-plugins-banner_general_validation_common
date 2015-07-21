@@ -10,7 +10,7 @@ import net.hedtech.banner.general.system.ldm.v1.Metadata
  * Decorator for Academic Level
  *
  */
-class AcademicLevelDetail {
+class AcademicLevel {
 
     @Delegate
     private final Level level
@@ -20,7 +20,7 @@ class AcademicLevelDetail {
     List<Map<String, String>> descriptionList
 
 
-    AcademicLevelDetail(Level level, String guid, Metadata metadata) {
+    AcademicLevel(Level level, String guid, Metadata metadata) {
         this.level = level
         this.guid = guid
         this.metadata = metadata
@@ -35,7 +35,7 @@ class AcademicLevelDetail {
         if (this.is(o)) return true
         if (getClass() != o.class) return false
 
-        AcademicLevelDetail that = (AcademicLevelDetail) o
+        AcademicLevel that = (AcademicLevel) o
 
         if (descriptionList != that.descriptionList) return false
         if (guid != that.guid) return false
@@ -49,7 +49,7 @@ class AcademicLevelDetail {
 
     @Override
     public String toString() {
-        return "AcademicLevelDetail[" +
+        return "AcademicLevel[" +
                 "level=" + level +
                 ", metadata=" + metadata +
                 ", guid='" + guid + '\'' +

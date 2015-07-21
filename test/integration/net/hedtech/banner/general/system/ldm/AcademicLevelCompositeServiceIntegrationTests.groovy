@@ -5,8 +5,6 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Level
-import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
-import net.hedtech.banner.general.system.ldm.v4.AcademicLevelDetail
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
@@ -83,7 +81,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         Level level = newValidForCreateLevel()
         save level
         assertNotNull level.id
-        AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelId(level.id)
+        def academicLevel = academicLevelCompositeService.fetchByLevelId(level.id)
         assertNotNull academicLevel.toString()
         assertNotNull academicLevel.guid
         assertEquals academicLevel.id, level.id
@@ -116,7 +114,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     @Test
     void testFetchByAcademicLevelId() {
-        AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelId(i_success_level.id)
+        def academicLevel = academicLevelCompositeService.fetchByLevelId(i_success_level.id)
         assertNotNull academicLevel
         assertEquals i_success_level.id, academicLevel.id
         assertEquals i_success_level.code, academicLevel.code
@@ -131,7 +129,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
     @Test
     void testFetchByAcademicLevel() {
-        AcademicLevel academicLevel = academicLevelCompositeService.fetchByLevelCode(i_success_level.code)
+        def academicLevel = academicLevelCompositeService.fetchByLevelCode(i_success_level.code)
         assertNotNull academicLevel
         assertEquals i_success_level.id, academicLevel.id
         assertEquals i_success_level.code, academicLevel.code
@@ -228,12 +226,12 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
      */
     @Test
     void testCreate() {
-        AcademicLevelDetail academicLevelDetail = academicLevelCompositeService.create(i_success_content)
-        assertNotNull academicLevelDetail
-        assertNotNull academicLevelDetail.guid
-        assertEquals i_success_content.code, academicLevelDetail.code
-        assertEquals i_success_content.title[0].en, academicLevelDetail.description
-        assertEquals i_success_content.metadata.dataOrigin, academicLevelDetail.dataOrigin
+        def academicLevel = academicLevelCompositeService.create(i_success_content)
+        assertNotNull academicLevel
+        assertNotNull academicLevel.guid
+        assertEquals i_success_content.code, academicLevel.code
+        assertEquals i_success_content.title[0].en, academicLevel.description
+        assertEquals i_success_content.metadata.dataOrigin, academicLevel.dataOrigin
     }
 
     /**
@@ -258,7 +256,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         try{
             academicLevelCompositeService.create(i_success_content)
         }catch (ApplicationException ae){
-            assertApplicationException ae, "code.empty/null.message"
+            assertApplicationException ae, "code.emptyornull.message"
         }
     }
 
@@ -271,7 +269,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         try{
             academicLevelCompositeService.create(i_success_content)
         }catch (ApplicationException ae){
-            assertApplicationException ae, "code.empty/null.message"
+            assertApplicationException ae, "code.emptyornull.message"
         }
     }
 
@@ -349,7 +347,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         try{
             academicLevelCompositeService.create(i_success_content)
         }catch (ApplicationException ae){
-            assertApplicationException ae, "title.empty/null.message"
+            assertApplicationException ae, "title.emptyornull.message"
         }
     }
 
@@ -362,7 +360,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         try{
             academicLevelCompositeService.create(i_success_content)
         }catch (ApplicationException ae){
-            assertApplicationException ae, "title.empty/null.message"
+            assertApplicationException ae, "title.emptyornull.message"
         }
     }
 
@@ -385,12 +383,12 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
     @Test
     void testCreateExceedTitle(){
         i_success_content.title=[[en:'Test academic level title is more than 30 characters']]
-        AcademicLevelDetail academicLevelDetail = academicLevelCompositeService.create(i_success_content)
-        assertNotNull academicLevelDetail
-        assertNotNull academicLevelDetail.guid
-        assertEquals i_success_content.code, academicLevelDetail.code
-        assertEquals i_success_content.title[0].en.substring(0,30), academicLevelDetail.description
-        assertEquals i_success_content.metadata.dataOrigin, academicLevelDetail.dataOrigin
+        def academicLevel = academicLevelCompositeService.create(i_success_content)
+        assertNotNull academicLevel
+        assertNotNull academicLevel.guid
+        assertEquals i_success_content.code, academicLevel.code
+        assertEquals i_success_content.title[0].en.substring(0,30), academicLevel.description
+        assertEquals i_success_content.metadata.dataOrigin, academicLevel.dataOrigin
     }
 
 

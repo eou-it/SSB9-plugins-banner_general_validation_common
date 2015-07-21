@@ -9,9 +9,8 @@ import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Level
-import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.general.system.ldm.v1.Metadata
-import net.hedtech.banner.general.system.ldm.v4.AcademicLevelDetail
+import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import net.hedtech.restfulapi.UnsupportedMethodException
 import org.springframework.transaction.annotation.Transactional
@@ -85,7 +84,33 @@ class AcademicLevelCompositeService {
             throw new UnsupportedMethodException(supportedMethods:['GET'],pluralizedResourceName:LDM_NAME)
         }
     }
-    
+
+    /**
+     * PUT /api/academic-levels/<guid>
+     *
+     * @param content Request body
+     */
+    def update(content) {
+        if(LATEST_VERSION.equals(LdmService.getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(LdmService.getAcceptVersion(VERSIONS))) {
+        String levelGuid = content?.id?.trim()?.toLowerCase()
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(levelGuid)
+        if(!globalUniqueIdentifier){
+            create(content)
+        }else if (globalUniqueIdentifier && globalUniqueIdentifier.ldmName!=LDM_NAME){
+            throw new ApplicationException('level', new BusinessLogicValidationException('invalid.guid.message', null))
+        }else{
+           Level level= Level.findByCode(globalUniqueIdentifier.domainKey)
+            if(level && level.code?.equals(content?.code)){
+            throw new ApplicationException('level', new BusinessLogicValidationException('invalid.code.message', null))
+            }
+           validateTitle(content)
+           level = bindLevel(level, content)
+           return getDecorator(level,null,Boolean.TRUE)
+        }
+        }else{
+            throw new UnsupportedMethodException(supportedMethods:['GET'],pluralizedResourceName:LDM_NAME)
+        }
+    }
     
     AcademicLevel fetchByLevelId(Long domainId) {
         if (null == domainId) {
@@ -114,7 +139,7 @@ class AcademicLevelCompositeService {
         if(!content.containsKey("code")){
             throw new ApplicationException('level', new BusinessLogicValidationException('code.required.message', null))
         }else if (!content?.code) {
-            throw new ApplicationException('level', new BusinessLogicValidationException('code.empty/null.message', null))
+            throw new ApplicationException('level', new BusinessLogicValidationException('code.emptyornull.message', null))
         }else if(content?.code.size()>2) {
             throw new ApplicationException('level', new BusinessLogicValidationException('code.exceed.size.message', null))
         }else if(Level.findByCode(content?.code)!=null){
@@ -128,18 +153,19 @@ class AcademicLevelCompositeService {
         }else if (!content?.title[0]?.containsKey("en")) {
             throw new ApplicationException('level', new BusinessLogicValidationException('title.invalid.Multi-lingual.message', null))
         }else if(!content?.title[0].en){
-            throw new ApplicationException('level', new BusinessLogicValidationException('title.empty/null.message', null))
+            throw new ApplicationException('level', new BusinessLogicValidationException('title.emptyornull.message', null))
         }
         
     }
 
   private  def bindLevel(Level level, Map content) {
-        LdmService.setDataOrigin(level, content)
         bindData(level, content)
         levelService.createOrUpdate(level)
     }
 
     private void bindData(domainModel,content){
+        def dataOrigin=content?.metadata?.dataOrigin
+        domainModel.dataOrigin = dataOrigin.size()>30 ? dataOrigin.substring(0,LEVEL_TITLE_LENGTH) :dataOrigin
         domainModel.code=content?.code
         def description= content?.title[0].en
         domainModel.description=description?.size()>30 ? description?.substring(0,LEVEL_TITLE_LENGTH) : description
@@ -151,7 +177,7 @@ class AcademicLevelCompositeService {
             if(!levelGuid)
                 levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid
             if(versionFlag)
-                new AcademicLevelDetail(level, levelGuid, new Metadata(level.dataOrigin))
+                new net.hedtech.banner.general.system.ldm.v4.AcademicLevel(level, levelGuid, new Metadata(level.dataOrigin))
             else
                 new AcademicLevel(level,levelGuid, new Metadata(level.dataOrigin))
 

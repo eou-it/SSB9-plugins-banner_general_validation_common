@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -29,6 +30,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
     def i_success_voiceResponseMessageNumber = 1
     def i_success_electronicDataInterchangeEquivalent = "TT"
     def i_success_content
+    private static final String LDM_NAME = 'academic-levels'
 
     @Before
     public void setUp() {
@@ -391,6 +393,242 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_content.metadata.dataOrigin, academicLevel.dataOrigin
     }
 
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with valid guid and different code in request content
+     */
+    @Test
+    void testUpdateInvalidCode(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName(LDM_NAME)
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "invalid.code.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with valid other resource guid in request content
+     */
+    @Test
+    void testUpdateOtherResourceGuid(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName('subjects')
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "invalid.guid.message"
+        }
+    }
+
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with valid guid  and no title in request content
+     */
+    @Test
+    void testUpdateNoTitle(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName(LDM_NAME)
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        i_success_content.remove('title')
+        i_success_content.code=globalUniqueIdentifier.domainKey
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with valid guid  and null title in request content
+     */
+    @Test
+    void testUpdateNullTitle(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName(LDM_NAME)
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        i_success_content.title=null
+        i_success_content.code=globalUniqueIdentifier.domainKey
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with valid guid  and empty title in request content
+     */
+    @Test
+    void testUpdateEmptyTitle(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName(LDM_NAME)
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        i_success_content.title=null
+        i_success_content.code=globalUniqueIdentifier.domainKey
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with valid guid  and empty title value in request content
+     */
+    @Test
+    void testUpdateEmptyTitleValue(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName(LDM_NAME)
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        i_success_content.title=[[en:'']]
+        i_success_content.code=globalUniqueIdentifier.domainKey
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.emptyornull.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with valid guid  and null title value in request content
+     */
+    @Test
+    void testUpdateNullTitleValue(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName(LDM_NAME)
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        i_success_content.title=[[en:null]]
+        i_success_content.code=globalUniqueIdentifier.domainKey
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.emptyornull.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with fr as title multi-lingual in request content
+     */
+    @Test
+    void testUpdateInvalidMultiLingualTitle(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName(LDM_NAME)
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        i_success_content.code=globalUniqueIdentifier.domainKey
+        i_success_content.title=[['fr':'null']]
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.invalid.Multi-lingual.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with valid guid in request content
+     */
+    @Test
+    void testUpdate(){
+        GlobalUniqueIdentifier  globalUniqueIdentifier=  GlobalUniqueIdentifier.findByLdmName(LDM_NAME)
+        assertNotNull globalUniqueIdentifier
+        i_success_content.put('id',globalUniqueIdentifier.guid)
+        i_success_content.code=globalUniqueIdentifier.domainKey
+        i_success_content.title=[[en:'Test academic level title is more than 30 characters']]
+        def  academicLevel=   academicLevelCompositeService.update(i_success_content)
+        assertNotNull academicLevel
+        assertEquals academicLevel.guid,i_success_content?.id
+        assertEquals i_success_content.code, academicLevel.code
+        assertEquals i_success_content.title[0].en.substring(0,30), academicLevel.description
+        assertEquals i_success_content.metadata.dataOrigin, academicLevel.dataOrigin
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with non exists guid in request content
+     */
+    @Test
+    void testUpdateWithNonExistsGuid(){
+        i_success_content.put('id','Invalid_Guid')
+        i_success_content.title=[[en:'Test academic level title is more than 30 characters']]
+        def  academicLevel=   academicLevelCompositeService.update(i_success_content)
+        assertNotNull academicLevel
+        assertEquals academicLevel.guid,i_success_content?.id?.trim()?.toLowerCase()
+        assertEquals i_success_content.code, academicLevel.code
+        assertEquals i_success_content.title[0].en.substring(0,30), academicLevel.description
+        assertEquals i_success_content.metadata.dataOrigin, academicLevel.dataOrigin
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with non exists guid and no code in request content
+     */
+    @Test
+    void testUpdateWithNonExistsGuidNoCode(){
+        i_success_content.put('id','Invalid_Guid')
+        i_success_content.remove('code')
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with non exists guid and null code in request content
+     */
+    @Test
+    void testUpdateWithNonExistsGuidNullCode(){
+        i_success_content.put('id','Invalid_Guid')
+        i_success_content.code=null
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.emptyornull.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with non exists guid and empty code in request content
+     */
+    @Test
+    void testUpdateWithNonExistsGuidEmptyCode(){
+        i_success_content.put('id','Invalid_Guid')
+        i_success_content.code=''
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.emptyornull.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicLevelCompositeService update method with non exists guid and exceed code size in request content
+     */
+    @Test
+    void testUpdateWithNonExistsGuidExceedCodeSize(){
+        i_success_content.put('id','Invalid_Guid')
+        i_success_content.code='Test'
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.exceed.size.message"
+        }
+    }
+
+/**
+ * Test to check the AcademicLevelCompositeService update method with non exists guid and exists code in request content
+ */
+    @Test
+    void testUpdateWithNonExistsGuidExistsCode(){
+        i_success_content.put('id','Invalid_Guid')
+        i_success_content.code=i_success_level?.code
+        try{
+            academicLevelCompositeService.update(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.exists.message"
+        }
+    }
 
     private def newValidForCreateLevel() {
         def level = new Level(

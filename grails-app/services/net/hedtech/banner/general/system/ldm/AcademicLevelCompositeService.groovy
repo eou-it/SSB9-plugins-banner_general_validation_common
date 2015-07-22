@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 
 @Transactional
-class AcademicLevelCompositeService {
+class AcademicLevelCompositeService extends  LdmService {
 
     def levelService
 
@@ -35,11 +35,11 @@ class AcademicLevelCompositeService {
     def list(Map params) {
         List academicLevels = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        List allowedSortFields = (LATEST_VERSION.equals(LdmService.getAcceptVersion(VERSIONS))? ['code', 'title']:['abbreviation', 'title'])
+        List allowedSortFields = (LATEST_VERSION.equals(getAcceptVersion(VERSIONS))? ['code', 'title']:['abbreviation', 'title'])
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)
-        def flag=LATEST_VERSION.equals(LdmService.getAcceptVersion(VERSIONS))
+        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+        def flag=LATEST_VERSION.equals(getAcceptVersion(VERSIONS))
         List<Level> levels = levelService.list(params) as List
         levels.each { level ->
             academicLevels << getDecorator(level,null,flag)
@@ -66,7 +66,7 @@ class AcademicLevelCompositeService {
             throw new ApplicationException("academicLevel", new NotFoundException())
         }
 
-        return getDecorator(level,globalUniqueIdentifier.guid,LATEST_VERSION.equals(LdmService.getAcceptVersion(VERSIONS)))
+        return getDecorator(level,globalUniqueIdentifier.guid,LATEST_VERSION.equals(getAcceptVersion(VERSIONS)))
     }
 
     /**
@@ -75,11 +75,18 @@ class AcademicLevelCompositeService {
      * @param content Request body
      */
     def create(Map content) {
-        if(LATEST_VERSION.equals(LdmService.getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(LdmService.getAcceptVersion(VERSIONS))) {
+        if(LATEST_VERSION.equals(getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(getAcceptVersion(VERSIONS))) {
             validateCode(content)
             validateTitle(content)
             Level level = bindLevel(new Level(), content)
-            return getDecorator(level,null,Boolean.TRUE)
+            String levelGuid = content?.id?.trim()?.toLowerCase()
+            if (levelGuid) {
+                // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
+                levelGuid=  updateGuidValue(level.id, levelGuid, LDM_NAME)?.guid
+            } else {
+                levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level?.id)?.guid
+            }
+            return getDecorator(level,levelGuid,Boolean.TRUE)
         }else{
             throw new UnsupportedMethodException(supportedMethods:['GET'],pluralizedResourceName:LDM_NAME)
         }
@@ -91,7 +98,7 @@ class AcademicLevelCompositeService {
      * @param content Request body
      */
     def update(content) {
-        if(LATEST_VERSION.equals(LdmService.getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(LdmService.getAcceptVersion(VERSIONS))) {
+        if(LATEST_VERSION.equals(getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(getAcceptVersion(VERSIONS))) {
         String levelGuid = content?.id?.trim()?.toLowerCase()
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(levelGuid)
         if(!globalUniqueIdentifier){
@@ -100,7 +107,7 @@ class AcademicLevelCompositeService {
             throw new ApplicationException('level', new BusinessLogicValidationException('invalid.guid.message', null))
         }else{
            Level level= Level.findByCode(globalUniqueIdentifier.domainKey)
-            if(level && level.code?.equals(content?.code)){
+            if(level && !level.code?.equals(content?.code)){
             throw new ApplicationException('level', new BusinessLogicValidationException('invalid.code.message', null))
             }
            validateTitle(content)
@@ -174,13 +181,12 @@ class AcademicLevelCompositeService {
 
     private def  getDecorator(Level level,String levelGuid,Boolean versionFlag) {
         if (level) {
-            if(!levelGuid)
-                levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid
-            if(versionFlag)
-                new net.hedtech.banner.general.system.ldm.v4.AcademicLevel(level, levelGuid, new Metadata(level.dataOrigin))
-            else
-                new AcademicLevel(level,levelGuid, new Metadata(level.dataOrigin))
-
+            if(!levelGuid){
+                levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid}
+            if(versionFlag){
+                new net.hedtech.banner.general.system.ldm.v4.AcademicLevel(level, levelGuid, new Metadata(level.dataOrigin))}
+            else{
+                new AcademicLevel(level,levelGuid, new Metadata(level.dataOrigin))}
         }
     }
 

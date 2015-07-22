@@ -296,7 +296,7 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
      * Test to check the MaritalStatusCompositeService list method with invalid sort field
      */
     @Test
-    void testListWithInvalidSortOrder() {
+    void testListWithInvalidSortField() {
         try {
             def map = [sort: 'test']
             maritalStatusCompositeService.list(map)
@@ -308,10 +308,10 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
     }
 
     /**
-     * Test to check the MaritalStatusCompositeService list method with invalid sort field
+     * Test to check the MaritalStatusCompositeService list method with invalid order field
      */
     @Test
-    void testListWithInvalidSortField() {
+    void testListWithInvalidOrderField() {
         shouldFail(RestfulApiValidationException) {
             def map = [order: 'test']
             maritalStatusCompositeService.list(map)

@@ -322,7 +322,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
      * Test to check the EthnicityCompositeService list method with invalid sort field
      */
     @Test
-    void testListWithInvalidSortOrder() {
+    void testListWithInvalidSortFiled() {
         try {
             def map = [sort: 'test']
             ethnicityCompositeService.list(map)
@@ -334,10 +334,10 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
     /**
-     * Test to check the EthnicityCompositeService list method with invalid sort field
+     * Test to check the EthnicityCompositeService list method with invalid order field
      */
     @Test
-    void testListWithInvalidSortField() {
+    void testListWithInvalidOrderField() {
         shouldFail(RestfulApiValidationException) {
             def map = [order: 'test']
             ethnicityCompositeService.list(map)

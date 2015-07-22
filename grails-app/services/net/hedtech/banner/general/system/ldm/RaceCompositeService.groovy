@@ -1,14 +1,12 @@
 /*********************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
-import grails.util.GrailsNameUtils
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.ldm.v1.Metadata
@@ -17,7 +15,6 @@ import net.hedtech.banner.general.system.ldm.v1.RaceParentCategory
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-
 
 /**
  * Service used to support "races" resource for LDM
@@ -29,16 +26,17 @@ class RaceCompositeService extends LdmService {
     private static final String PROCESS_CODE = 'HEDM'
     private static final String RACE_LDM_NAME = 'races'
     static final String RACE_PARENT_CATEGORY = "RACE.PARENTCATEGORY"
+    private static final List<String> VERSIONS = ["v1","v2","v3","v4"]
 
     List<RaceDetail> list(Map params) {
         List raceDetailList = []
-        List allowedSortFields = ['abbreviation', 'title']
+        List allowedSortFields = ("v4".equals(LdmService.getAcceptVersion(VERSIONS))? ['code', 'title']:['abbreviation', 'title'])
 
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
 
-        Map ldmPropertyToDomainPropertyMap = [abbreviation: 'race', title: 'description']
+        Map ldmPropertyToDomainPropertyMap = [abbreviation: 'race', title: 'description',code: 'race']
         params.sort = ldmPropertyToDomainPropertyMap[params.sort]
         List<Race> raceList = raceService.list(params) as List
         raceList.each { race ->

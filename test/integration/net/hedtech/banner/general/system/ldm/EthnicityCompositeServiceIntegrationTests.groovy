@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.IpedsEthnicity
@@ -66,6 +67,23 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
 
     @Test
+    void testListV3() {
+        List<GlobalUniqueIdentifier> globUniqIds = ethnicityCompositeService.getUnitedStatesEthnicCodes()
+        assertTrue globUniqIds?.size() > 0
+        def expectedGuids = globUniqIds.collect { it.guid }
+
+        setAcceptHeader("application/vnd.hedtech.integration.v3+json")
+
+        List ethnicities = ethnicityCompositeService.list([:])
+        assertTrue ethnicities?.size() > 0
+        def actualGuids = ethnicities.collect { it.guid }
+        assertEquals expectedGuids.size(), actualGuids.size()
+        assertTrue expectedGuids.containsAll(actualGuids)
+        assertEquals expectedGuids.size(), ethnicityCompositeService.count()
+    }
+
+
+    @Test
     void testCount() {
         setAcceptHeader("application/vnd.hedtech.integration.v1+json")
         assertNotNull i_success_ethnicity
@@ -113,6 +131,44 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertNotNull ethnicityDetail.metadata
         assertEquals ethnicityDetails[0].metadata.dataOrigin, ethnicityDetail.metadata.dataOrigin
         assertEquals ethnicityDetails[0], ethnicityDetail
+    }
+
+
+    @Test
+    void testGetV3_InvalidGuid() {
+        setAcceptHeader("application/vnd.hedtech.integration.v3+json")
+        try {
+            ethnicityCompositeService.get('Invalid-guid')
+            fail("Expected NotFoundException")
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testGetV3_NullGuid() {
+        setAcceptHeader("application/vnd.hedtech.integration.v3+json")
+        try {
+            ethnicityCompositeService.get(null)
+            fail("Expected NotFoundException")
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testGetV3() {
+        List<GlobalUniqueIdentifier> globUniqIds = ethnicityCompositeService.getUnitedStatesEthnicCodes()
+        assertTrue globUniqIds?.size() > 0
+
+        setAcceptHeader("application/vnd.hedtech.integration.v3+json")
+
+        def result = ethnicityCompositeService.get(globUniqIds[0].guid)
+        assertNotNull result
+        assertEquals globUniqIds[0].guid, result.guid
+        assertEquals globUniqIds[0].domainKey, result.title
     }
 
 

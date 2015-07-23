@@ -283,7 +283,7 @@ class EthnicityCompositeService extends LdmService {
      *
      * @return
      */
-    public List<GlobalUniqueIdentifier> getUnitedStatesEthnicCodes() {
+    List<GlobalUniqueIdentifier> getUnitedStatesEthnicCodes() {
         return GlobalUniqueIdentifier.findAllByLdmName(ETHNICITIES_US)
     }
 

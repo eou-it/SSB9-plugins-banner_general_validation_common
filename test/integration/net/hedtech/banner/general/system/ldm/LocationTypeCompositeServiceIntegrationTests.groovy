@@ -205,4 +205,42 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
             assertApplicationException e, invalid_guid_errorMessage
         }
     }
+
+    /**
+     * Test to check the sort by code on LocationTypeCompositeService
+     * */
+    @Test
+    public void testSortByCode(){
+        params.order='ASC'
+        params.sort='code'
+        List list = locationTypeCompositeService.list(params)
+        assertNotNull list
+        def tempParam=null
+        list.each{
+            location->
+                String code=location.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+
+        params.clear()
+        params.order='DESC'
+        params.sort='code'
+        list = locationTypeCompositeService.list(params)
+        assertNotNull list
+        tempParam=null
+        list.each{
+            location->
+                String code=location.code
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+    }
+
 }

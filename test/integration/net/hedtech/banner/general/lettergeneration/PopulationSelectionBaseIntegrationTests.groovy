@@ -4,14 +4,14 @@
 package net.hedtech.banner.general.lettergeneration
 
 import grails.validation.ValidationException
-import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
-import java.text.SimpleDateFormat
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 
+import java.text.SimpleDateFormat
 
 class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
 
@@ -68,7 +68,7 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testCreateValidLetterGenerationPopulationSelectionBase() {
         def letterGenerationPopulationSelectionBase = newValidForCreateLetterGenerationPopulationSelectionBase()
-        letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionBase.save(failOnError: true, flush: true)
         //Test if the generated entity now has an id assigned
         assertNotNull letterGenerationPopulationSelectionBase.id
     }
@@ -77,8 +77,8 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testCreateInvalidLetterGenerationPopulationSelectionBase() {
         def letterGenerationPopulationSelectionBase = newInvalidForCreateLetterGenerationPopulationSelectionBase()
-        shouldFail( ValidationException ) {
-            letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
+        shouldFail(ValidationException) {
+            letterGenerationPopulationSelectionBase.save(failOnError: true, flush: true)
         }
     }
 
@@ -86,7 +86,7 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testUpdateValidLetterGenerationPopulationSelectionBase() {
         def letterGenerationPopulationSelectionBase = newValidForCreateLetterGenerationPopulationSelectionBase()
-        letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionBase.save(failOnError: true, flush: true)
         assertNotNull letterGenerationPopulationSelectionBase.id
         assertEquals 0L, letterGenerationPopulationSelectionBase.version
         assertEquals i_success_application, letterGenerationPopulationSelectionBase.application
@@ -103,7 +103,7 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
         //letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
         save letterGenerationPopulationSelectionBase
         //Assert for sucessful update
-        letterGenerationPopulationSelectionBase = PopulationSelectionBase.get( letterGenerationPopulationSelectionBase.id )
+        letterGenerationPopulationSelectionBase = PopulationSelectionBase.get(letterGenerationPopulationSelectionBase.id)
         assertEquals 1L, letterGenerationPopulationSelectionBase?.version
         assertEquals u_success_description, letterGenerationPopulationSelectionBase.description
         assertEquals u_success_lockIndicator, letterGenerationPopulationSelectionBase.lockIndicator
@@ -114,7 +114,7 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testUpdateInvalidLetterGenerationPopulationSelectionBase() {
         def letterGenerationPopulationSelectionBase = newValidForCreateLetterGenerationPopulationSelectionBase()
-        letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionBase.save(failOnError: true, flush: true)
         assertNotNull letterGenerationPopulationSelectionBase.id
         assertEquals 0L, letterGenerationPopulationSelectionBase.version
         assertEquals i_success_application, letterGenerationPopulationSelectionBase.application
@@ -128,39 +128,40 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
         letterGenerationPopulationSelectionBase.description = u_failure_description
         letterGenerationPopulationSelectionBase.lockIndicator = u_failure_lockIndicator
         letterGenerationPopulationSelectionBase.typeIndicator = u_failure_typeIndicator
-        shouldFail( ValidationException ) {
-            letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
+        shouldFail(ValidationException) {
+            letterGenerationPopulationSelectionBase.save(failOnError: true, flush: true)
         }
     }
 
 
     @Test
     void testDates() {
-        def hour = new SimpleDateFormat( 'HH' )
-        def date = new SimpleDateFormat( 'yyyy-M-d' )
+        def hour = new SimpleDateFormat('HH')
+        def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()
 
         def letterGenerationPopulationSelectionBase = newValidForCreateLetterGenerationPopulationSelectionBase()
-        letterGenerationPopulationSelectionBase.save( flush: true, failOnError: true )
+        letterGenerationPopulationSelectionBase.save(flush: true, failOnError: true)
         letterGenerationPopulationSelectionBase.refresh()
         assertNotNull "LetterGenerationPopulationSelectionBase should have been saved", letterGenerationPopulationSelectionBase.id
 
         // test date values -
-        assertEquals date.format( today ), date.format( letterGenerationPopulationSelectionBase.lastModified )
-        assertEquals hour.format( today ), hour.format( letterGenerationPopulationSelectionBase.lastModified )
+        assertEquals date.format(today), date.format(letterGenerationPopulationSelectionBase.lastModified)
+        assertEquals hour.format(today), hour.format(letterGenerationPopulationSelectionBase.lastModified)
     }
 
 
     @Test
     void testOptimisticLock() {
         def letterGenerationPopulationSelectionBase = newValidForCreateLetterGenerationPopulationSelectionBase()
-        letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionBase.save(failOnError: true, flush: true)
 
         def sql
         try {
-            sql = new Sql( sessionFactory.getCurrentSession().connection() )
-            sql.executeUpdate( "update GLBSLCT set GLBSLCT_VERSION = 999 where GLBSLCT_SURROGATE_ID = ?", [letterGenerationPopulationSelectionBase.id] )
-        } finally {
+            sql = new Sql(sessionFactory.getCurrentSession().connection())
+            sql.executeUpdate("update GLBSLCT set GLBSLCT_VERSION = 999 where GLBSLCT_SURROGATE_ID = ?", [letterGenerationPopulationSelectionBase.id])
+        }
+        finally {
             sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
@@ -168,8 +169,8 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
         letterGenerationPopulationSelectionBase.description = u_success_description
         letterGenerationPopulationSelectionBase.lockIndicator = u_success_lockIndicator
         letterGenerationPopulationSelectionBase.typeIndicator = u_success_typeIndicator
-        shouldFail( HibernateOptimisticLockingFailureException ) {
-            letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
+        shouldFail(HibernateOptimisticLockingFailureException) {
+            letterGenerationPopulationSelectionBase.save(failOnError: true, flush: true)
         }
     }
 
@@ -177,11 +178,11 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testDeleteLetterGenerationPopulationSelectionBase() {
         def letterGenerationPopulationSelectionBase = newValidForCreateLetterGenerationPopulationSelectionBase()
-        letterGenerationPopulationSelectionBase.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionBase.save(failOnError: true, flush: true)
         def id = letterGenerationPopulationSelectionBase.id
         assertNotNull id
         letterGenerationPopulationSelectionBase.delete()
-        assertNull PopulationSelectionBase.get( id )
+        assertNull PopulationSelectionBase.get(id)
     }
 
 
@@ -201,24 +202,24 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
         def letterGenerationPopulationSelectionBase = new PopulationSelectionBase()
         assertFalse "PopulationSelectionBase should have failed validation", letterGenerationPopulationSelectionBase.validate()
         assertErrorsFor letterGenerationPopulationSelectionBase, 'nullable',
-                        [
-                                'application',
-                                'selection',
-                                'creatorId',
-                                'description',
-                                'lockIndicator'
-                        ]
+                [
+                        'application',
+                        'selection',
+                        'creatorId',
+                        'description',
+                        'lockIndicator'
+                ]
         assertNoErrorsFor letterGenerationPopulationSelectionBase,
-                          [
-                                  'typeIndicator'
-                          ]
+                [
+                        'typeIndicator'
+                ]
     }
 
 
     @Test
     void testMaxSizeValidationFailures() {
         def letterGenerationPopulationSelectionBase = new PopulationSelectionBase(
-                typeIndicator: 'XXX' )
+                typeIndicator: 'XXX')
         assertFalse "PopulationSelectionBase should have failed validation", letterGenerationPopulationSelectionBase.validate()
         assertErrorsFor letterGenerationPopulationSelectionBase, 'maxSize', ['typeIndicator']
     }
@@ -248,7 +249,7 @@ class PopulationSelectionBaseIntegrationTests extends BaseIntegrationTestCase {
                 description: i_failure_description,
                 lockIndicator: i_failure_lockIndicator,
                 typeIndicator: i_failure_typeIndicator,
-                )
+        )
         return letterGenerationPopulationSelectionBase
     }
 

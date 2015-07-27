@@ -3,6 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.lettergeneration.ldm
 
+import groovy.sql.Sql
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.lettergeneration.PopulationSelectionExtract
 import net.hedtech.banner.general.lettergeneration.ldm.v2.PersonFilter
@@ -24,6 +25,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     String selection1
     String guid
     String key
+    Integer pidm_key
 
 
     @Before
@@ -43,7 +45,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     private void initiializeDataReferences() {
         application = "GENERAL"
         user = "GRAILS_USER"
-        selection = "SAT_Test"
+        selection = "SAT_TEST"
         selection1 = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         key = "1001"
     }
@@ -104,12 +106,17 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
 
     @Test
     void testSchemaPropertiesForList() {
-        PopulationSelectionExtract populationSelectionExtract = createPopulationSelectionExtract(application, selection, user, user, key)
+        def sql = new Sql(sessionFactory.getCurrentSession().connection())
+        def pidm_key_result = sql.rows("select spriden_pidm from spriden where spriden_id = ? and spriden_change_ind is null", ["HOS00001"])[0]
+        assertNotNull pidm_key_result?.spriden_pidm
+        pidm_key = pidm_key_result.spriden_pidm.toInteger()
+
+        PopulationSelectionExtract populationSelectionExtract = createPopulationSelectionExtract(application, selection, user, user, pidm_key.toString())
         String domain_key = "${populationSelectionExtract.application}-^${populationSelectionExtract.selection}-^${populationSelectionExtract.creatorId}-^${populationSelectionExtract.lastModifiedBy}"
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(LDM_NAME, domain_key)
         assertNotNull globalUniqueIdentifier
         assertNotNull globalUniqueIdentifier.guid
-        List<PersonFilter> personFiltersList = personFilterCompositeService.list([:])
+        List<PersonFilter> personFiltersList = personFilterCompositeService.list(['filter[0][field]': 'abbreviation', 'filter[0][operator]': 'contains', 'filter[0][value]': selection])
         assertNotNull personFiltersList
         assertTrue personFiltersList.size() > 0
         assertTrue personFiltersList[0] instanceof PersonFilter
@@ -118,7 +125,7 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
             it.abbreviation == selection
         }
 
-        assertEquals selection, personFilter.abbreviation
+        assertEquals selection.toUpperCase(), personFilter.abbreviation
         assertEquals "Banner", personFilter.metadata.dataOrigin
         assertEquals globalUniqueIdentifier.guid, personFilter.guid
         assertEquals globalUniqueIdentifier.domainKey, personFilter.title
@@ -167,10 +174,9 @@ class PersonFilterCompositeServiceIntegrationTests extends BaseIntegrationTestCa
     def createPopulationSelectionExtract(String application, String selection, String creator, String user, String key) {
         def populationSelectionExtract = new PopulationSelectionExtract(
                 application: application,
-                selection: selection,
+                selection: selection ,
                 creatorId: creator,
                 key: key,
-                description: "Test",
                 systemIndicator: "S",
                 lastModified: new Date(),
                 lastModifiedBy: user,

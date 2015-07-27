@@ -1,21 +1,17 @@
-
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.lettergeneration
 
 import grails.validation.ValidationException
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
 import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
-
 import java.text.SimpleDateFormat
-
 
 class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase {
 
@@ -78,31 +74,36 @@ class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase
 
     }
 
+
     @After
     public void tearDown() {
         super.tearDown()
     }
 
+
     @Test
     void testCreateValidLetterGenerationPopulationSelectionExtract() {
         def letterGenerationPopulationSelectionExtract = newValidForCreateLetterGenerationPopulationSelectionExtract()
-        letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionExtract.save(failOnError: true, flush: true)
         //Test if the generated entity now has an id assigned
         assertNotNull letterGenerationPopulationSelectionExtract.id
+
     }
+
 
     @Test
     void testCreateInvalidLetterGenerationPopulationSelectionExtract() {
         def letterGenerationPopulationSelectionExtract = newInvalidForCreateLetterGenerationPopulationSelectionExtract()
         shouldFail(ValidationException) {
-            letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
+            letterGenerationPopulationSelectionExtract.save(failOnError: true, flush: true)
         }
     }
+
 
     @Test
     void testUpdateValidLetterGenerationPopulationSelectionExtract() {
         def letterGenerationPopulationSelectionExtract = newValidForCreateLetterGenerationPopulationSelectionExtract()
-        letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionExtract.save(failOnError: true, flush: true)
         assertNotNull letterGenerationPopulationSelectionExtract.id
         assertEquals 0L, letterGenerationPopulationSelectionExtract.version
         assertEquals i_success_application, letterGenerationPopulationSelectionExtract.application
@@ -118,16 +119,17 @@ class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase
         //letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
         save letterGenerationPopulationSelectionExtract
         //Assert for sucessful update
-        letterGenerationPopulationSelectionExtract = PopulationSelectionExtract.get( letterGenerationPopulationSelectionExtract.id )
+        letterGenerationPopulationSelectionExtract = PopulationSelectionExtract.get(letterGenerationPopulationSelectionExtract.id)
         assertEquals 1L, letterGenerationPopulationSelectionExtract?.version
         assertEquals u_success_systemIndicator, letterGenerationPopulationSelectionExtract.systemIndicator
         assertEquals u_success_selectIndicator, letterGenerationPopulationSelectionExtract.selectIndicator
     }
 
+
     @Test
     void testUpdateInvalidLetterGenerationPopulationSelectionExtract() {
         def letterGenerationPopulationSelectionExtract = newValidForCreateLetterGenerationPopulationSelectionExtract()
-        letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionExtract.save(failOnError: true, flush: true)
         assertNotNull letterGenerationPopulationSelectionExtract.id
         assertEquals 0L, letterGenerationPopulationSelectionExtract.version
         assertEquals i_success_application, letterGenerationPopulationSelectionExtract.application
@@ -141,9 +143,10 @@ class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase
         letterGenerationPopulationSelectionExtract.systemIndicator = u_failure_systemIndicator
         letterGenerationPopulationSelectionExtract.selectIndicator = u_failure_selectIndicator
         shouldFail(ValidationException) {
-            letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
+            letterGenerationPopulationSelectionExtract.save(failOnError: true, flush: true)
         }
     }
+
 
     @Test
     void testDates() {
@@ -153,8 +156,6 @@ class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase
         def today = new Date()
 
         def letterGenerationPopulationSelectionExtract = newValidForCreateLetterGenerationPopulationSelectionExtract()
-
-
 
         letterGenerationPopulationSelectionExtract.save(flush: true, failOnError: true)
         letterGenerationPopulationSelectionExtract.refresh()
@@ -167,42 +168,47 @@ class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase
 
     }
 
+
     @Test
     void testOptimisticLock() {
         def letterGenerationPopulationSelectionExtract = newValidForCreateLetterGenerationPopulationSelectionExtract()
-        letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionExtract.save(failOnError: true, flush: true)
 
         def sql
         try {
-            sql = new Sql( sessionFactory.getCurrentSession().connection() )
-            sql.executeUpdate( "update GLBEXTR set GLBEXTR_VERSION = 999 where GLBEXTR_SURROGATE_ID = ?", [ letterGenerationPopulationSelectionExtract.id ] )
-        } finally {
+            sql = new Sql(sessionFactory.getCurrentSession().connection())
+            sql.executeUpdate("update GLBEXTR set GLBEXTR_VERSION = 999 where GLBEXTR_SURROGATE_ID = ?", [letterGenerationPopulationSelectionExtract.id])
+        }
+        finally {
             sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
         //Update the entity
         letterGenerationPopulationSelectionExtract.systemIndicator = u_success_systemIndicator
         letterGenerationPopulationSelectionExtract.selectIndicator = u_success_selectIndicator
-        shouldFail( HibernateOptimisticLockingFailureException ) {
-            letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
+        shouldFail(HibernateOptimisticLockingFailureException) {
+            letterGenerationPopulationSelectionExtract.save(failOnError: true, flush: true)
         }
     }
+
 
     @Test
     void testDeleteLetterGenerationPopulationSelectionExtract() {
         def letterGenerationPopulationSelectionExtract = newValidForCreateLetterGenerationPopulationSelectionExtract()
-        letterGenerationPopulationSelectionExtract.save( failOnError: true, flush: true )
+        letterGenerationPopulationSelectionExtract.save(failOnError: true, flush: true)
         def id = letterGenerationPopulationSelectionExtract.id
         assertNotNull id
         letterGenerationPopulationSelectionExtract.delete()
-        assertNull PopulationSelectionExtract.get( id )
+        assertNull PopulationSelectionExtract.get(id)
     }
+
 
     @Test
     void testValidation() {
         def letterGenerationPopulationSelectionExtract = newInvalidForCreateLetterGenerationPopulationSelectionExtract()
         assertFalse "LetterGenerationPopulationSelectionExtract could not be validated as expected due to ${letterGenerationPopulationSelectionExtract.errors}", letterGenerationPopulationSelectionExtract.validate()
     }
+
 
     @Test
     void testNullValidationFailure() {
@@ -222,13 +228,77 @@ class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase
                 ]
     }
 
+
     @Test
     void testMaxSizeValidationFailures() {
         def letterGenerationPopulationSelectionExtract = new PopulationSelectionExtract(
-                selectIndicator:'XXX' )
+                selectIndicator: 'XXX')
         assertFalse "LetterGenerationPopulationSelectionExtract should have failed validation", letterGenerationPopulationSelectionExtract.validate()
-        assertErrorsFor letterGenerationPopulationSelectionExtract, 'maxSize', [ 'selectIndicator' ]
+        assertErrorsFor letterGenerationPopulationSelectionExtract, 'maxSize', ['selectIndicator']
     }
+
+
+    @Test
+    void testFetchAllPidmsByApplicationSelectionCreatorIdLastModifiedBy() {
+        /*
+        <GLBEXTR_APPLICATION>STUDENT</GLBEXTR_APPLICATION>
+        <GLBEXTR_SELECTION>HEDM</GLBEXTR_SELECTION>
+        <GLBEXTR_CREATOR_ID>BANNER</GLBEXTR_CREATOR_ID>
+        <GLBEXTR_USER_ID>GRAILS</GLBEXTR_USER_ID>
+         */
+        def popsel = PopulationSelectionExtract.findAllByApplicationAndSelection("STUDENT", 'HEDM')
+        assertEquals 7, popsel.size()
+        assertEquals 7, popsel.findAll { it.creatorId == "BANNER" }?.size()
+        assertEquals 7, popsel.findAll { it.lastModifiedBy == "GRAILS" }?.size()
+
+        def popselFetched =
+                PopulationSelectionExtract.fetchByApplicationSelectionCreatorIdLastModifiedBy("STUDENT", "HEDM", "BANNER", "GRAILS")
+
+        assertEquals 7, popselFetched.size()
+
+    }
+
+
+    @Test
+    void testFetchAllPidmsByApplicationSelectionCreatorIdLastModifiedByWithPagination() {
+
+        def popsel = PopulationSelectionExtract.findAllByApplicationAndSelection("STUDENT", 'HEDM')
+        assertEquals 7, popsel.size()
+        assertEquals 7, popsel.findAll { it.creatorId == "BANNER" }?.size()
+        assertEquals 7, popsel.findAll { it.lastModifiedBy == "GRAILS" }?.size()
+
+        def popselFetched =
+                PopulationSelectionExtract.fetchByApplicationSelectionCreatorIdLastModifiedBy("STUDENT", "HEDM", "BANNER", "GRAILS",
+                        [max: 3, offset: 0])
+
+        assertEquals 3, popselFetched.size()
+        popselFetched =
+                PopulationSelectionExtract.fetchByApplicationSelectionCreatorIdLastModifiedBy("STUDENT", "HEDM", "BANNER", "GRAILS",
+                        [max: 3, offset: 3])
+        assertEquals 3, popselFetched.size()
+        popselFetched =
+                PopulationSelectionExtract.fetchByApplicationSelectionCreatorIdLastModifiedBy("STUDENT", "HEDM", "BANNER", "GRAILS",
+                        [max: 3, offset: 6])
+        assertEquals 1, popselFetched.size()
+    }
+
+
+    @Test
+    void testFetchAllPidmsByApplicationSelectionCreatorIdLastModifiedByWithAlphaPagination() {
+
+        def popsel = PopulationSelectionExtract.findAllByApplicationAndSelection("STUDENT", 'HEDM')
+        assertEquals 7, popsel.size()
+        assertEquals 7, popsel.findAll { it.creatorId == "BANNER" }?.size()
+        assertEquals 7, popsel.findAll { it.lastModifiedBy == "GRAILS" }?.size()
+
+        def popselFetched =
+                PopulationSelectionExtract.fetchByApplicationSelectionCreatorIdLastModifiedBy("STUDENT", "HEDM", "BANNER", "GRAILS",
+                        [max: '3', offset: '0'])
+
+        assertEquals 3, popselFetched.size()
+
+    }
+
 
     private def newValidForCreateLetterGenerationPopulationSelectionExtract() {
         def letterGenerationPopulationSelectionExtract = new PopulationSelectionExtract(
@@ -242,6 +312,7 @@ class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase
         return letterGenerationPopulationSelectionExtract
     }
 
+
     private def newInvalidForCreateLetterGenerationPopulationSelectionExtract() {
         def letterGenerationPopulationSelectionExtract = new PopulationSelectionExtract(
                 application: i_failure_application,
@@ -253,4 +324,6 @@ class PopulationSelectionExtractIntegrationTests extends BaseIntegrationTestCase
         )
         return letterGenerationPopulationSelectionExtract
     }
+
+
 }

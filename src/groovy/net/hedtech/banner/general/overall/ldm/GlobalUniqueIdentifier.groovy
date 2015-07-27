@@ -15,14 +15,22 @@ import javax.persistence.*
                 query = """FROM  GlobalUniqueIdentifier a
 	  	                WHERE a.ldmName IN ('colleges', 'departments')
 	  	                AND a.guid = :guid """),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndGuid",
+                query = """FROM  GlobalUniqueIdentifier a
+	  	                WHERE a.ldmName = :ldmName
+	  	                AND a.guid = :guid """),
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId",
                 query = """FROM GlobalUniqueIdentifier a
                         WHERE a.ldmName = :ldmName
                         AND a.domainId in (:domainSurrogateIds)"""),
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainKeys",
-                        query = """FROM GlobalUniqueIdentifier a
+                query = """FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName
-                                AND a.domainKey in (:domainKeys)""")
+                                AND a.domainKey in (:domainKeys)"""),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainKey",
+                query = """FROM GlobalUniqueIdentifier a
+                                WHERE a.ldmName = :ldmName
+                                AND a.domainKey =   :domainKey  """)
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**
@@ -141,7 +149,7 @@ class GlobalUniqueIdentifier implements Serializable {
     }
 
 
-    static GlobalUniqueIdentifier fetchByLdmNameAndGuid(ldmName, guid) {
+    static GlobalUniqueIdentifier fetchByGuid(ldmName, guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
         if (globalUniqueIdentifier?.ldmName != ldmName) {
             globalUniqueIdentifier = null
@@ -158,6 +166,16 @@ class GlobalUniqueIdentifier implements Serializable {
         return globalUniqueIdentifier
     }
 
+
+    static GlobalUniqueIdentifier fetchByLdmNameAndGuid(String ldmName, String guid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndGuid').setString('guid', guid).setString("ldmName", ldmName).uniqueResult()
+        }
+
+        return globalUniqueIdentifier
+    }
+
+
     static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainSurrogateIds(ldmName, surrogateIds) {
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
             session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId').setString('ldmName', ldmName).setParameterList('domainSurrogateIds', surrogateIds).list();
@@ -166,9 +184,20 @@ class GlobalUniqueIdentifier implements Serializable {
         return globalUniqueIdentifierList
     }
 
+
     static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainKeys(ldmName, domainKeys) {
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
             session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainKeys').setString('ldmName', ldmName).setParameterList('domainKeys', domainKeys).list();
+        }
+
+        return globalUniqueIdentifierList
+    }
+
+
+    static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainKey(ldmName, domainKey) {
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainKey').setString('ldmName', ldmName)
+                    .setString('domainKey', domainKey).list();
         }
 
         return globalUniqueIdentifierList

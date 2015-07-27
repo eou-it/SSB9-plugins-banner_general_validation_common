@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.lettergeneration.PopulationSelectionExtract
+import net.hedtech.banner.general.lettergeneration.PopulationSelectionExtractReadonly
 import net.hedtech.banner.general.lettergeneration.ldm.v2.PersonFilter
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.ldm.v1.Metadata
@@ -84,8 +85,10 @@ class PersonFilterCompositeService {
      * @param guid
      * @return
      */
-    PersonFilter get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
+    PersonFilter get(def guid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier
+        if ( guid instanceof  GlobalUniqueIdentifier) globalUniqueIdentifier = guid
+        else  globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException("personFilter", new NotFoundException())
         }
@@ -93,18 +96,12 @@ class PersonFilterCompositeService {
         // As only one record is inserted in GLBEXTR for application,selection, creatorId and userId combination, can't rely on domain surrogate id. Hence, domain key
         def domainKeyParts = splitDomainKey(globalUniqueIdentifier.domainKey)
 
-        def pidms = PopulationSelectionExtract.fetchAllPidmsByApplicationSelectionCreatorIdLastModifiedBy(domainKeyParts.application, domainKeyParts.selection, domainKeyParts.creatorId, domainKeyParts.lastModifiedBy)
-
-        if (!pidms) {
-            throw new ApplicationException("personFilter", new NotFoundException())
-        }
-
         return new PersonFilter(domainKeyParts.selection, globalUniqueIdentifier.guid, globalUniqueIdentifier.domainKey, new Metadata(globalUniqueIdentifier.dataOrigin));
     }
 
 
     private def fetchPersonFilterByCriteria(Map content, boolean count = false) {
-        log.trace "fetchPersonFilterByCriteria:Begin"
+        log.trace "fetchPersonFilterByCriteria:Begin content map ${content}"
         def result
 
         def searchFilters = QueryBuilder.createFilters(content)
@@ -118,20 +115,20 @@ class PersonFilterCompositeService {
 
         String query = ""
         if (count) {
-            query = "select count(a) from PopulationSelectionExtract a where 1=1 "
+            query = "select count(a) from PopulationSelectionExtractReadonly a where 1=1 "
         } else {
-            query = "select distinct a.application, a.selection, a.creatorId, a.lastModifiedBy from PopulationSelectionExtract a where 1=1"
+            query = "select a.application, a.selection, a.creatorId, a.lastModifiedBy from PopulationSelectionExtractReadonly a where 1=1"
         }
 
         Map namedParams = [:]
         if (params.containsKey("abbreviation")) {
             // filter[index][field]=abbreviation
             retainSingleCriterionForFilter(criteria, "abbreviation")
-            query += """ and lower(a.selection) like lower(:selection) """
-            namedParams.put("selection", params.abbreviation)
+            query += """ and  a.selection  like  :selection  """
+            namedParams.put("selection", params.abbreviation.toUpperCase())
         } else if (content.containsKey("abbreviation")) {
-            query += """ and lower(a.selection) like lower(:selection) """
-            namedParams.put("selection", (!content.abbreviation.trim().contains("%")) ? "%${content.abbreviation.trim()}%" : content.abbreviation.trim())
+            query += """ and  a.selection like  :selection  """
+            namedParams.put("selection", (!content.abbreviation.trim().contains("%")) ? "%${content.abbreviation.trim().toUpperCase()}%" : content.abbreviation.trim().toUpperCase())
         }
 
         if (count) {
@@ -146,7 +143,7 @@ class PersonFilterCompositeService {
                 query += """ order by $sort $order """
             }
 
-            result = PopulationSelectionExtract.executeQuery(query, namedParams, [max: max, offset: offset])
+            result = PopulationSelectionExtractReadonly.executeQuery(query, namedParams, [max: max, offset: offset])
         }
 
         log.trace "fetchPersonFilterByCriteria:End"

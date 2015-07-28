@@ -630,6 +630,19 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         }
     }
 
+    /**
+     * Test to check the AcademicLevelCompositeService create method with invalid title in request content
+     */
+    @Test
+    void testCreateInvalidTitle(){
+        i_success_content.title='ab'
+        try{
+            academicLevelCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "title.invalid.format.message"
+        }
+    }
+
     private def newValidForCreateLevel() {
         def level = new Level(
                 code: i_success_code,

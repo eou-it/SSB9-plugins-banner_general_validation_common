@@ -26,7 +26,7 @@ class AcademicLevelCompositeService extends  LdmService {
     def levelService
 
     private static final String LDM_NAME = 'academic-levels'
-    private static final List<String> VERSIONS = ["v1", "v2","v3","v4"]
+    private static final List<String> VERSIONS = ["v1", "v2", "v3", "v4"]
     private static final int LEVEL_TITLE_LENGTH = 30
     private static final String LATEST_VERSION = "v4"
 
@@ -35,14 +35,14 @@ class AcademicLevelCompositeService extends  LdmService {
     def list(Map params) {
         List academicLevels = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        List allowedSortFields = (LATEST_VERSION.equals(getAcceptVersion(VERSIONS))? ['code', 'title']:['abbreviation', 'title'])
+        List allowedSortFields = (LATEST_VERSION.equals(getAcceptVersion(VERSIONS)) ? ['code', 'title'] : ['abbreviation', 'title'])
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
-        def flag=LATEST_VERSION.equals(getAcceptVersion(VERSIONS))
+        def flag = LATEST_VERSION.equals(getAcceptVersion(VERSIONS))
         List<Level> levels = levelService.list(params) as List
         levels.each { level ->
-            academicLevels << getDecorator(level,null,flag)
+            academicLevels << getDecorator(level, null, flag)
         }
         return academicLevels
     }
@@ -66,7 +66,7 @@ class AcademicLevelCompositeService extends  LdmService {
             throw new ApplicationException("academicLevel", new NotFoundException())
         }
 
-        return getDecorator(level,globalUniqueIdentifier.guid,LATEST_VERSION.equals(getAcceptVersion(VERSIONS)))
+        return getDecorator(level, globalUniqueIdentifier.guid, LATEST_VERSION.equals(getAcceptVersion(VERSIONS)))
     }
 
     /**
@@ -75,20 +75,20 @@ class AcademicLevelCompositeService extends  LdmService {
      * @param content Request body
      */
     def create(Map content) {
-        if(LATEST_VERSION.equals(getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(getAcceptVersion(VERSIONS))) {
+        if (LATEST_VERSION.equals(getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(getAcceptVersion(VERSIONS))) {
             validateCode(content)
             validateTitle(content)
             Level level = bindLevel(new Level(), content)
             String levelGuid = content?.id?.trim()?.toLowerCase()
             if (levelGuid) {
                 // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-                levelGuid=  updateGuidValue(level.id, levelGuid, LDM_NAME)?.guid
+                levelGuid = updateGuidValue(level.id, levelGuid, LDM_NAME)?.guid
             } else {
                 levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level?.id)?.guid
             }
-            return getDecorator(level,levelGuid,Boolean.TRUE)
-        }else{
-            throw new UnsupportedMethodException(supportedMethods:['GET'],pluralizedResourceName:LDM_NAME)
+            return getDecorator(level, levelGuid, Boolean.TRUE)
+        } else {
+            throw new UnsupportedMethodException(supportedMethods: ['GET'], pluralizedResourceName: LDM_NAME)
         }
     }
 
@@ -98,27 +98,30 @@ class AcademicLevelCompositeService extends  LdmService {
      * @param content Request body
      */
     def update(content) {
-        if(LATEST_VERSION.equals(getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(getAcceptVersion(VERSIONS))) {
-        String levelGuid = content?.id?.trim()?.toLowerCase()
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(levelGuid)
-        if(!globalUniqueIdentifier){
-            create(content)
-        }else if (globalUniqueIdentifier && globalUniqueIdentifier.ldmName!=LDM_NAME){
-            throw new ApplicationException('level', new BusinessLogicValidationException('invalid.guid.message', null))
-        }else{
-           Level level= Level.findByCode(globalUniqueIdentifier.domainKey)
-            if(level && !level.code?.equals(content?.code)){
-            throw new ApplicationException('level', new BusinessLogicValidationException('invalid.code.message', null))
+        if (LATEST_VERSION.equals(getContentTypeVersion(VERSIONS)) && LATEST_VERSION.equals(getAcceptVersion(VERSIONS))) {
+            String levelGuid = content?.id?.trim()?.toLowerCase()
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(levelGuid)
+            if (levelGuid) {
+                if (!globalUniqueIdentifier) {
+                    return create(content)
+                } else if (globalUniqueIdentifier && globalUniqueIdentifier.ldmName != LDM_NAME) {
+                    throw new ApplicationException('level', new BusinessLogicValidationException('invalid.guid.message', null))
+                }
+            } else {
+                throw new ApplicationException("academicLevel", new NotFoundException())
             }
-           validateTitle(content)
-           level = bindLevel(level, content)
-           return getDecorator(level,null,Boolean.TRUE)
-        }
-        }else{
-            throw new UnsupportedMethodException(supportedMethods:['GET'],pluralizedResourceName:LDM_NAME)
+            Level level = Level.findByCode(globalUniqueIdentifier.domainKey)
+            if (level && !level.code?.equals(content?.code)) {
+                throw new ApplicationException('level', new BusinessLogicValidationException('invalid.code.message', null))
+            }
+            validateTitle(content)
+            level = bindLevel(level, content)
+            return getDecorator(level, null, Boolean.TRUE)
+        } else {
+            throw new UnsupportedMethodException(supportedMethods: ['GET'], pluralizedResourceName: LDM_NAME)
         }
     }
-    
+
     AcademicLevel fetchByLevelId(Long domainId) {
         if (null == domainId) {
             return null
@@ -143,50 +146,55 @@ class AcademicLevelCompositeService extends  LdmService {
     }
 
     private void validateCode(content) {
-        if(!content.containsKey("code")){
+        if (!content?.containsKey("code")) {
             throw new ApplicationException('level', new BusinessLogicValidationException('code.required.message', null))
-        }else if (!content?.code) {
+        } else if (!content?.code) {
             throw new ApplicationException('level', new BusinessLogicValidationException('code.emptyornull.message', null))
-        }else if(content?.code.size()>2) {
+        } else if (content?.code?.size() > 2) {
             throw new ApplicationException('level', new BusinessLogicValidationException('code.exceed.size.message', null))
-        }else if(Level.findByCode(content?.code)!=null){
+        } else if (Level.findByCode(content?.code)) {
             throw new ApplicationException('level', new BusinessLogicValidationException('code.exists.message', null))
         }
     }
-    
-    private void validateTitle(content){
-        if(!content?.title){
+
+    private void validateTitle(content) {
+        if (!content?.containsKey("title")) {
             throw new ApplicationException('level', new BusinessLogicValidationException('title.required.message', null))
-        }else if (!content?.title[0]?.containsKey("en")) {
+        } else if (!content?.title) {
+            throw new ApplicationException('level', new BusinessLogicValidationException('title.emptyornull.message', null))
+        } else if (!(content?.title instanceof List) || !(content?.title[0] instanceof Map)) {
+            throw new ApplicationException('level', new BusinessLogicValidationException('title.invalid.format.message', null))
+        } else if (!content?.title[0]?.containsKey("en")) {
             throw new ApplicationException('level', new BusinessLogicValidationException('title.invalid.Multi-lingual.message', null))
-        }else if(!content?.title[0].en){
+        } else if (!content?.title[0]?.en) {
             throw new ApplicationException('level', new BusinessLogicValidationException('title.emptyornull.message', null))
         }
-        
     }
 
-  private  def bindLevel(Level level, Map content) {
+    private def bindLevel(Level level, Map content) {
         bindData(level, content)
         levelService.createOrUpdate(level)
     }
 
-    private void bindData(domainModel,content){
-        def dataOrigin=content?.metadata?.dataOrigin
-        domainModel.dataOrigin = dataOrigin.size()>30 ? dataOrigin.substring(0,LEVEL_TITLE_LENGTH) :dataOrigin
-        domainModel.code=content?.code
-        def description= content?.title[0].en
-        domainModel.description=description?.size()>30 ? description?.substring(0,LEVEL_TITLE_LENGTH) : description
-        domainModel.ceuInd=Boolean.FALSE
+    private void bindData(domainModel, content) {
+        def dataOrigin = content?.metadata?.dataOrigin
+        domainModel.dataOrigin = dataOrigin?.size() > 30 ? dataOrigin.substring(0, LEVEL_TITLE_LENGTH) : dataOrigin
+        domainModel.code = content?.code
+        def description = content?.title[0].en
+        domainModel.description = description?.size() > 30 ? description?.substring(0, LEVEL_TITLE_LENGTH) : description
+        domainModel.ceuInd = Boolean.FALSE
     }
 
-    private def  getDecorator(Level level,String levelGuid,Boolean versionFlag) {
+    private def getDecorator(Level level, String levelGuid, Boolean versionFlag) {
         if (level) {
-            if(!levelGuid){
-                levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid}
-            if(versionFlag){
-                new net.hedtech.banner.general.system.ldm.v4.AcademicLevel(level, levelGuid, new Metadata(level.dataOrigin))}
-            else{
-                new AcademicLevel(level,levelGuid, new Metadata(level.dataOrigin))}
+            if (!levelGuid) {
+                levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid
+            }
+            if (versionFlag) {
+                new net.hedtech.banner.general.system.ldm.v4.AcademicLevel(level, levelGuid, new Metadata(level.dataOrigin))
+            } else {
+                new AcademicLevel(level, levelGuid, new Metadata(level.dataOrigin))
+            }
         }
     }
 

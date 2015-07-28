@@ -21,7 +21,6 @@ class AcademicHonor {
     List<String> organization
 
     def titles=[]
-    def descriptions=null
 
     AcademicHonor(AcademicHonorView academicHonorView) {
         this.academicHonorView=academicHonorView
@@ -55,7 +54,6 @@ class AcademicHonor {
                 ", honorType='" + honorType + '\'' +
                 ", organization=" + organization +
                 ", titles=" + titles +
-                ", descriptions=" + descriptions +
                 '}';
     }
 }

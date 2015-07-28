@@ -17,7 +17,6 @@ class AcademicLevel {
     Metadata metadata
     String guid
     List<Map<String, String>> title
-    List<Map<String, String>> descriptionList
 
 
     AcademicLevel(Level level, String guid, Metadata metadata) {
@@ -37,7 +36,6 @@ class AcademicLevel {
 
         AcademicLevel that = (AcademicLevel) o
 
-        if (descriptionList != that.descriptionList) return false
         if (guid != that.guid) return false
         if (level != that.level) return false
         if (metadata != that.metadata) return false
@@ -54,7 +52,6 @@ class AcademicLevel {
                 ", metadata=" + metadata +
                 ", guid='" + guid + '\'' +
                 ", title=" + title +
-                ", descriptionList=" + descriptionList +
                 ']';
     }
 }

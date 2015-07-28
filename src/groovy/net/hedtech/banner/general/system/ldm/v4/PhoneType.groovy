@@ -15,7 +15,6 @@ class PhoneType {
     Metadata metadata
     Map<String,String> type
     List<Map<String, String>> title
-    List<Map<String, String>> descriptionList=null //as of now it does not have any DB mapping, so that it has to be set to null
 
     PhoneType(PhoneTypeView phoneTypeView,Metadata metadata,String entityType,String phoneType){
         this.metadata=metadata
@@ -35,7 +34,6 @@ class PhoneType {
                 ", metadata=" + metadata +
                 ", type=" + type +
                 ", title=" + title +
-                ", descriptionList=" + descriptionList +
                 '}';
     }
 }

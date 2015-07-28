@@ -17,7 +17,6 @@ class AcademicCredentials {
     String type
     List<Map<String, String>>  abbreviation
     List<Map<String, String>> title
-    List<Map<String, String>> descriptionList
 
     AcademicCredentials(Degree degree,String guid,Metadata metadata,String type) {
         this.degree = degree
@@ -41,7 +40,6 @@ class AcademicCredentials {
                 ", guid='" + guid + '\'' +
                 ", type='" + type + '\'' +
                 ", title=" + title +
-                ", descriptionList=" + descriptionList +
                 '}';
     }
 }

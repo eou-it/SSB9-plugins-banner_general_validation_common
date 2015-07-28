@@ -147,9 +147,7 @@
         <mapping class="net.hedtech.banner.general.system.VisaType"/>
         <mapping class="net.hedtech.banner.general.system.Zip"/>
         <mapping class="net.hedtech.banner.general.utility.InformationText"/>
-        <mapping class="net.hedtech.banner.general.lettergeneration.PopulationSelectionBase"/>
-        <mapping class="net.hedtech.banner.general.lettergeneration.PopulationSelectionExtract"/>
-        <mapping class="net.hedtech.banner.general.lettergeneration.PopulationSelectionExtractReadonly"/>
+
 
    </session-factory>
    </hibernate-configuration>

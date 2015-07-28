@@ -14,8 +14,7 @@ class EmailTypeDetails {
 
     Metadata metadata
     def titles = []
-    def descriptions = null
-    def types = [:] 
+    def types = [:]
 
     @Delegate
     EmailTypesView emailTypesView
@@ -33,7 +32,6 @@ class EmailTypeDetails {
         return "EmailTypeDetails{" +
                 "metadata=" + metadata +
                 ", titles=" + titles +
-                ", descriptions=" + descriptions +
                 ", types=" + types +
                 '}';
     }

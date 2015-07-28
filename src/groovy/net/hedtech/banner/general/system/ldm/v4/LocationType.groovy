@@ -15,7 +15,6 @@ class LocationType {
     Metadata metadata
     Map<String, String> type
     List<Map<String, String>> title
-    List<Map<String, String>> descriptionList= null
 
     LocationType(LocationTypeView locationTypeView, Metadata metadata, String entityType, String locationType) {
         this.metadata = metadata
@@ -27,6 +26,7 @@ class LocationType {
         this.type = [entityType: entityType, locationType: locationType]
     }
 
+
     @Override
     public String toString() {
         return "LocationType{" +
@@ -34,7 +34,6 @@ class LocationType {
                 ", metadata=" + metadata +
                 ", type=" + type +
                 ", title=" + title +
-                ", descriptionList=" + descriptionList +
                 '}';
     }
 }

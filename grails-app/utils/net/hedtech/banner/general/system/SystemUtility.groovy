@@ -44,4 +44,18 @@ class SystemUtility {
         }
         return false
     }
+
+
+    public static def splitList(List inList, partitionSize ){
+        int partitionCount =  inList.size() / partitionSize
+        def partitions = []
+        partitionCount.times { partitionNumber ->
+            def start = partitionNumber * partitionSize
+            def end = start + partitionSize - 1
+            if ( end > inList.size()) end = inList.size() - 1
+            partitions <<inList[start..end]
+        }
+        if ( inList.size() % partitionSize) partitions << inList[partitionCount * partitionSize..-1]
+        return partitions
+    }
 }

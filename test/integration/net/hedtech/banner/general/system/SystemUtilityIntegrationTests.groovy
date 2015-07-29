@@ -172,4 +172,26 @@ class SystemUtilityIntegrationTests extends BaseIntegrationTestCase {
 
     }
 
+    @Test
+    void testSplitSize() {
+
+        def list = ['a','b','c','e', 'f', 'g', 'h', 'i', 'j', 'k']
+        assertEquals 10, list.size()
+
+        def list1 = SystemUtility.splitList(list, 4)
+        assertEquals 3,  list1.size()
+        assertEquals 4,  list1[0].size()
+        assertEquals 4,  list1[1].size()
+        assertEquals 2,  list1[2].size()
+
+        list1 = SystemUtility.splitList(list, 5)
+        assertEquals 2,  list1.size()
+        assertEquals 5,  list1[0].size()
+        assertEquals 5,  list1[1].size()
+
+        list1 = SystemUtility.splitList(list, 100)
+        assertEquals 1,  list1.size()
+        assertEquals 10,  list1[0].size()
+
+    }
 }

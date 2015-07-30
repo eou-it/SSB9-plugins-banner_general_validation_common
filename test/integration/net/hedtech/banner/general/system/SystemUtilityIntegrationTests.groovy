@@ -193,5 +193,9 @@ class SystemUtilityIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 1,  list1.size()
         assertEquals 10,  list1[0].size()
 
+        def list2 = []
+        list1 = SystemUtility.splitList(list2, 100)
+        assertEquals 0, list1.size()
+
     }
 }

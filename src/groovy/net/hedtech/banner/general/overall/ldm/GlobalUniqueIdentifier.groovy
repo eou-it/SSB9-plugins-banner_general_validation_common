@@ -30,7 +30,11 @@ import javax.persistence.*
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainKey",
                 query = """FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName
-                                AND a.domainKey =   :domainKey  """)
+                                AND a.domainKey =   :domainKey  """),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainId",
+                query = """FROM GlobalUniqueIdentifier a
+                                WHERE a.ldmName = :ldmName
+                                AND a.domainId =   :id  """)
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**
@@ -170,6 +174,15 @@ class GlobalUniqueIdentifier implements Serializable {
     static GlobalUniqueIdentifier fetchByLdmNameAndGuid(String ldmName, String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.withSession { session ->
             session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndGuid').setString('guid', guid).setString("ldmName", ldmName).uniqueResult()
+        }
+
+        return globalUniqueIdentifier
+    }
+
+
+    static GlobalUniqueIdentifier fetchByLdmNameAndDomainId(String ldmName, Long id) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainId').setLong('id', id).setString("ldmName", ldmName).uniqueResult()
         }
 
         return globalUniqueIdentifier

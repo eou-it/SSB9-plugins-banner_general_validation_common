@@ -3,6 +3,7 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.overall.ldm
 
+import net.hedtech.banner.general.system.EmailType
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -178,6 +179,16 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         def globalUniqueIdentifier1 = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(i_success_ldmName, globalUniqueIdentifier.guid)
         assertNotNull globalUniqueIdentifier1
         assertEquals globalUniqueIdentifier, globalUniqueIdentifier1
+    }
+
+    @Test
+    void testFetchByLdmNameAndDomainId() {
+        def emails = EmailType.findAll()
+        assertNotNull emails[0]
+
+        def guid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId('email-types', emails[0].id)
+        assertNotNull guid
+        assertEquals guid.domainId, emails[0].id
     }
 
 

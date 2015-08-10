@@ -82,9 +82,8 @@ class IntegrationConfigurationIntegrationTest extends BaseIntegrationTestCase {
                 fetchByProcessCodeAndSettingNameAndValues(PROCESS_CODE_HEDM,SETTING_NAME_MARITAL_STATUS_PARENT_CATEGORY,[VALUE_D,VALUE_M])
         assertNotNull integrationConfigurationList
         assertEquals 2, integrationConfigurationList.size()
-        integrationConfigurationList.sort()
-        assertEquals TRANSLATION_VALUE_DIVORCED, integrationConfigurationList[0].translationValue
-        assertEquals TRANSLATION_VALUE_MARRIED, integrationConfigurationList[1].translationValue
+        assertEquals integrationConfigurationList[0].value==VALUE_D?TRANSLATION_VALUE_DIVORCED:TRANSLATION_VALUE_MARRIED, integrationConfigurationList[0].translationValue
+        assertEquals integrationConfigurationList[1].value==VALUE_M?TRANSLATION_VALUE_MARRIED:TRANSLATION_VALUE_DIVORCED, integrationConfigurationList[1].translationValue
     }
 
     @Test

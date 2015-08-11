@@ -12,8 +12,8 @@ class MetadataV4 extends MetadataV3{
     String createdBy
 
 
-    MetadataV4(String dataOrigin, Date createdOn, Date modifiedOn,String createdBy) {
-        super(dataOrigin,createdOn,modifiedOn)
+    MetadataV4(String createdBy) {
+        super(null,null,null)
         this.createdBy = createdBy
     }
 }

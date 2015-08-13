@@ -117,7 +117,9 @@ class OrganizationCompositeService {
         if (!college) {
             return null
         }
+        log.debug( "Start of GlobalUniqueIdentifier.findByLdmNameAndDomainId + Organization-colleges" )
         return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(COLLEGE_LDM_NAME, college.id).guid, college.code, college.description, OrganizationType.COLLEGE.value, new Metadata(college.dataOrigin))
+        log.debug( "End of GlobalUniqueIdentifier.findByLdmNameAndDomainId + Organization-colleges" )
     }
 
 
@@ -141,7 +143,9 @@ class OrganizationCompositeService {
         if (!department) {
             return null
         }
+        log.debug( "Start of GlobalUniqueIdentifier.findByLdmNameAndDomainId + Organization-departments" )
         return new Organization(GlobalUniqueIdentifier.findByLdmNameAndDomainId(DEPARTMENT_LDM_NAME, department.id)?.guid, department.code, department.description, OrganizationType.DEPARTMENT.value, new Metadata(department.dataOrigin))
+        log.debug( "End of GlobalUniqueIdentifier.findByLdmNameAndDomainId + Organization-departments" )
     }
 
 

@@ -83,7 +83,7 @@ class AcademicLevelCompositeService extends  LdmService {
             throw new ApplicationException('academicLevel', new BusinessLogicValidationException('code.exists.message', [parameterValue]))
         }
          level = bindLevel(new Level(), content)
-        String levelGuid = content?.id?.trim()?.toLowerCase()
+        String levelGuid = content?.guid?.trim()?.toLowerCase()
         if (levelGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
             levelGuid= updateGuidValue(level.id, levelGuid, LDM_NAME)?.guid

@@ -6,6 +6,7 @@ package net.hedtech.banner.general.overall.ldm
 import net.hedtech.banner.general.system.EmailType
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
@@ -182,6 +183,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
+    @Ignore
     void testFetchByLdmNameAndDomainId() {
         def emails = EmailType.findAll()
         assertNotNull emails[0]

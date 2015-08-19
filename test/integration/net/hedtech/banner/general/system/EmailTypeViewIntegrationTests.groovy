@@ -17,6 +17,7 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException
 class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
 
     public static final String EMAIL_TYPE_HEDM_NAME = 'email-types'
+    private final String MAIL_CODE='SCHL'
 
     @Before
     public void setUp() {
@@ -73,11 +74,11 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     void testFetchByguid() {
-        String emailGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, 'BUSI')?.guid
+        String emailGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, MAIL_CODE)?.guid
         assertNotNull emailGuid
         EmailTypesView emailTypesView = EmailTypesView.findByGuid(emailGuid)
         assertNotNull emailTypesView
-        assertEquals 'BUSI',emailTypesView.code
+        assertEquals MAIL_CODE,emailTypesView.code
     }
 
     /**
@@ -108,7 +109,7 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
      */
     @Test
     void testReadOnlyForUpdateEmailType(){
-        String emailTypeGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, 'BUSI')?.guid
+        String emailTypeGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, MAIL_CODE)?.guid
         assertNotNull emailTypeGuid
         def emailType = EmailTypesView.findByGuid(emailTypeGuid)
         assertNotNull emailType
@@ -124,9 +125,9 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
      */
     @Test
     void testReadOnlyForDeleteEmailType(){
-        String emailTypeGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, 'BUSI')?.guid
+        String emailTypeGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, MAIL_CODE)?.guid
         assertNotNull emailTypeGuid
-        def emailType = EmailTypesView.fetchByGuid(emailTypeGuid)
+        def emailType = EmailTypesView.findByGuid(emailTypeGuid)
         assertNotNull emailType
         shouldFail(InvalidDataAccessResourceUsageException) {
             emailType.delete(flush: true, onError: true)

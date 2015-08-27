@@ -11,7 +11,6 @@ import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Level
 import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.general.system.ldm.v1.Metadata
-import net.hedtech.banner.general.system.ldm.v4.MetadataV4
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
@@ -139,16 +138,10 @@ class AcademicLevelCompositeService extends  LdmService {
 
     private def  getDecorator(Level level,String levelGuid=null) {
         if (level) {
-            def metaData
             if(!levelGuid){
                 levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, level.id)?.guid
             }
-            if ("v4".equals(LdmService.getAcceptVersion(VERSIONS))) {
-                metaData = new MetadataV4(level?.lastModifiedBy)
-            } else if ("v1".equals(LdmService.getAcceptVersion(VERSIONS))) {
-                metaData = new Metadata(level?.dataOrigin)
-            }
-                new AcademicLevel(level,levelGuid, metaData)
+             return   new AcademicLevel(level,levelGuid,  new Metadata(level?.dataOrigin))
         }
     }
 

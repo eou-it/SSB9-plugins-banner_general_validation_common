@@ -202,7 +202,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
                 if(!tempParam){
                     tempParam=code
                 }
-                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
+                assertTrue tempParam.compareToIgnoreCase(code)<0 || tempParam.compareToIgnoreCase(code)==0
                 tempParam=code
         }
 
@@ -218,7 +218,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
                 if(!tempParam){
                     tempParam=code
                 }
-                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
+                assertTrue tempParam.compareToIgnoreCase(code)>0 || tempParam.compareToIgnoreCase(code)==0
                 tempParam=code
         }
     }

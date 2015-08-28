@@ -19,6 +19,9 @@ class DateConvertHelperService {
      * @return
      */
     def convertDateIntoUTCFormat(Date date, def timeZone = null) {
+        if(!date){
+            return date
+        }
         def dbtimezone
         timeZone = timeZone ?: getDBTimeZone()
         if (timeZone) {

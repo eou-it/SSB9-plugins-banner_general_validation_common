@@ -32,6 +32,20 @@ class DateConvertHelperService {
         return date?.format("yyyy-MM-dd'T'HH:mm:ss") + dbtimezone
     }
 
+    def convertDateIntoUTCFormat(Date date,String time,def timeZone = null) {
+        if(!date){
+            return date
+        }
+        def dbtimezone
+        timeZone = timeZone ?: getDBTimeZone()
+        if (timeZone) {
+            if (timeZone.size() == 1) {
+                dbtimezone = timeZone[0][0]
+            }
+        }
+        return date?.format("yyyy-MM-dd'T'")+time+ dbtimezone
+    }
+
     /**
      * fetching time zone from database
      * @return

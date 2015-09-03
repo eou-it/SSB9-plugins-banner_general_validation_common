@@ -32,16 +32,29 @@ class DateConvertHelperService {
         return date?.format("yyyy-MM-dd'T'HH:mm:ss") + dbtimezone
     }
 
+    /**
+     * converting date into utc date time format 'yyyy-MM-dd'T'HH:mm:ssZ'
+     * if the time is null , returns date in UTC date time format with HH:mm:ss as 00:00:00 with the timeZone
+     *if the time is not null , returns date as UTC date time format along with actual time with the timeZone
+     * @param date
+     * @param timeZone
+     * @param time
+     * @return
+     */
     def convertDateIntoUTCFormat(Date date,String time,def timeZone = null) {
         if(!date){
             return date
         }
         def dbtimezone
+        time =!time ? null : time?.substring( 0, 2 ) + ':' + time?.substring( 2, 4 ) + ':' + '00'
         timeZone = timeZone ?: getDBTimeZone()
         if (timeZone) {
             if (timeZone.size() == 1) {
                 dbtimezone = timeZone[0][0]
             }
+        }
+        if(!time){
+            return date?.format("yyyy-MM-dd'T'HH:mm:ss") + dbtimezone
         }
         return date?.format("yyyy-MM-dd'T'")+time+ dbtimezone
     }

@@ -30,12 +30,6 @@ class PhoneTypeView implements Serializable {
     String value
 
     /**
-     * PROCESS CODE: The integration configuration setting process code.
-     */
-    @Column(name = "SQPR_CODE")
-    String processCode
-    
-    /**
      * Telephone Type Description.
      */
     @Column(name = "DESCRIPTION")
@@ -50,8 +44,8 @@ class PhoneTypeView implements Serializable {
     /**
      * TRANSLATION VALUE: A value that is the technical equivalent of the value in the VALUE field.
      */
-    @Column(name = "TRANSLATION_VALUE")
-    String translationValue
+    @Column(name = "PHONE_TYPE")
+    String phoneType
 
     /**
      * Telephone Type code.
@@ -62,38 +56,22 @@ class PhoneTypeView implements Serializable {
     /**
      * Telephone Type .
      */
-    @Column(name = "TYPE")
-    String phoneType
-
-
-    @Override
-    public String toString() {
-        return "PhoneTypeView[" +
-                "id='" + id + '\'' +
-                ", value='" + value + '\'' +
-                ", processCode='" + processCode + '\'' +
-                ", description='" + description + '\'' +
-                ", dataOrigin='" + dataOrigin + '\'' +
-                ", translationValue='" + translationValue + '\'' +
-                ", code='" + code + '\'' +
-                ", phoneType='" + phoneType + '\'' +
-                ']';
-    }
+    @Column(name = "ENTITY_TYPE")
+    String entityType
 
     boolean equals(o) {
         if (this.is(o)) return true
-        if (getClass() != o.class) return false
+        if (!(o instanceof PhoneTypeView)) return false
 
         PhoneTypeView that = (PhoneTypeView) o
 
         if (code != that.code) return false
         if (dataOrigin != that.dataOrigin) return false
         if (description != that.description) return false
+        if (entityType != that.entityType) return false
         if (id != that.id) return false
-        if (processCode != that.processCode) return false
-        if (translationValue != that.translationValue) return false
-        if (value != that.value) return false
         if (phoneType != that.phoneType) return false
+        if (value != that.value) return false
 
         return true
     }
@@ -102,12 +80,25 @@ class PhoneTypeView implements Serializable {
         int result
         result = (id != null ? id.hashCode() : 0)
         result = 31 * result + (value != null ? value.hashCode() : 0)
-        result = 31 * result + (processCode != null ? processCode.hashCode() : 0)
         result = 31 * result + (description != null ? description.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (translationValue != null ? translationValue.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
         result = 31 * result + (phoneType != null ? phoneType.hashCode() : 0)
+        result = 31 * result + (code != null ? code.hashCode() : 0)
+        result = 31 * result + (entityType != null ? entityType.hashCode() : 0)
         return result
+    }
+
+
+    @Override
+    public String toString() {
+        return "PhoneTypeView{" +
+                "id='" + id + '\'' +
+                ", value='" + value + '\'' +
+                ", description='" + description + '\'' +
+                ", dataOrigin='" + dataOrigin + '\'' +
+                ", phoneType='" + phoneType + '\'' +
+                ", code='" + code + '\'' +
+                ", entityType='" + entityType + '\'' +
+                '}';
     }
 }

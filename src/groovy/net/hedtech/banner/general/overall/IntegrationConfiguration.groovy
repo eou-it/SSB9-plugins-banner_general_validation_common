@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall
 
@@ -31,6 +31,10 @@ import javax.persistence.*
                               WHERE a.processCode = :processCode
                               and a.settingName = :settingName
                               and a.value = :value"""),
+        @NamedQuery(name = "IntegrationConfiguration.fetchAllByProcessCodeAndSettingName",
+                query = """FROM IntegrationConfiguration a
+                              WHERE a.processCode = :processCode
+                              and a.settingName = :settingName"""),
         @NamedQuery(name = "IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValues",
                 query = """FROM IntegrationConfiguration a
                                       WHERE a.processCode = :processCode
@@ -240,4 +244,13 @@ class IntegrationConfiguration implements Serializable {
 
     }
 
+    static List<IntegrationConfiguration> fetchByProcessCodeAndSettingName(String processCode, String settingName) {
+        List<IntegrationConfiguration> integrationList = null
+        if (!processCode) return integrationList
+        integrationList = IntegrationConfiguration.withSession { session ->
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingName')
+                    .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+        }
+        return integrationList
+    }
 }

@@ -16,12 +16,11 @@ class EmailTypesView implements Serializable{
     @EmbeddedId
     EmailTypePrimary emailTypePrimary
 
-   /**
-    * GUID  for email types
-    */
+    /**
+     * GUID  for email types
+     */
     @Column(name = 'GUID')
     String guid
-
 
     /**
      * Code for Email Type
@@ -44,42 +43,28 @@ class EmailTypesView implements Serializable{
     /**
      * Translation value from GORICCR
      * */
-    @Column(name = 'TRANSLATION_VALUE')
-    String translationValue
+    @Column(name = 'EMAIL_TYPE')
+    String emailType
 
     /**
      * Type of email either from Person or Organization
      * */
-    @Column(name = 'TYPE')
-    String type
-
-
-    @Override
-    public String toString() {
-        return "EmailTypesView{" +
-                "emailTypePrimary=" + emailTypePrimary +
-                ", guid='" + guid + '\'' +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", dataOrigin='" + dataOrigin + '\'' +
-                ", translationValue='" + translationValue + '\'' +
-                ", type='" + type + '\'' +
-                '}';
-    }
+    @Column(name = 'ENTITY_TYPE')
+    String entityType
 
     boolean equals(o) {
         if (this.is(o)) return true
-        if (getClass() != o.class) return false
+        if (!(o instanceof EmailTypesView)) return false
 
         EmailTypesView that = (EmailTypesView) o
 
         if (code != that.code) return false
         if (dataOrigin != that.dataOrigin) return false
         if (description != that.description) return false
+        if (emailType != that.emailType) return false
         if (emailTypePrimary != that.emailTypePrimary) return false
+        if (entityType != that.entityType) return false
         if (guid != that.guid) return false
-        if (translationValue != that.translationValue) return false
-        if (type != that.type) return false
 
         return true
     }
@@ -91,8 +76,22 @@ class EmailTypesView implements Serializable{
         result = 31 * result + (code != null ? code.hashCode() : 0)
         result = 31 * result + (description != null ? description.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (translationValue != null ? translationValue.hashCode() : 0)
-        result = 31 * result + (type != null ? type.hashCode() : 0)
+        result = 31 * result + (emailType != null ? emailType.hashCode() : 0)
+        result = 31 * result + (entityType != null ? entityType.hashCode() : 0)
         return result
+    }
+
+
+    @Override
+    public String toString() {
+        return "EmailTypesView{" +
+                "emailTypePrimary=" + emailTypePrimary +
+                ", guid='" + guid + '\'' +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", dataOrigin='" + dataOrigin + '\'' +
+                ", emailType='" + emailType + '\'' +
+                ", entityType='" + entityType + '\'' +
+                '}';
     }
 }

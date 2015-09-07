@@ -40,17 +40,17 @@ class EmailTypeCompositeService {
                 boolean isValid = false
                 def types = [:]
 
-                if (result.type == ContactEntityType.ORGANIZATION?.value?.toUpperCase()) {
+                if (result.entityType == ContactEntityType.ORGANIZATION?.value?.toUpperCase()) {
                     types.put('entityType', ContactEntityType.ORGANIZATION.value)
-                    if (checkPersonEmailType(result?.translationValue, ContactEntityType.ORGANIZATION?.value)) {
-                        types.put('emailType', result?.translationValue)
+                    if (checkPersonEmailType(result?.emailType, ContactEntityType.ORGANIZATION?.value)) {
+                        types.put('emailType', result?.emailType)
                         isValid = true
                     }
 
-                } else if (result.type == ContactEntityType.PERSON?.value?.toUpperCase()) {
+                } else if (result.entityType == ContactEntityType.PERSON?.value?.toUpperCase()) {
                     types.put('entityType', ContactEntityType.PERSON?.value)
-                    if (checkPersonEmailType(result?.translationValue, ContactEntityType.PERSON?.value)) {
-                        types.put('emailType', result?.translationValue)
+                    if (checkPersonEmailType(result?.emailType, ContactEntityType.PERSON?.value)) {
+                        types.put('emailType', result?.emailType)
                         isValid = true
                     }
 
@@ -87,7 +87,7 @@ class EmailTypeCompositeService {
         RestfulApiValidationUtility.validateSortField(params?.sort, allowedSortFields)
         RestfulApiValidationUtility.correctMaxAndOffset(params, 0, MAX_UPPER_LIMIT)
         params.sort = params?.sort ? sortFieldMap[params.sort] : DEFAULT_SORTED_FIELD
-        params.order = params?.order ? params.order : DEFAULT_ORDER_TYPE
+        params?.order = params?.order ?: DEFAULT_ORDER_TYPE
         RestfulApiValidationUtility.validateSortOrder(params.order)
         results = EmailTypesView.list(params)
 
@@ -113,16 +113,16 @@ class EmailTypeCompositeService {
         if (guid) {
             emailTypesView = EmailTypesView.findByGuid(guid)
 
-            if (emailTypesView?.type == ContactEntityType.ORGANIZATION?.value?.toUpperCase()) {
+            if (emailTypesView?.entityType == ContactEntityType.ORGANIZATION?.value?.toUpperCase()) {
                 types.put('entityType', ContactEntityType.ORGANIZATION?.value)
-                if (checkPersonEmailType(emailTypesView?.translationValue, ContactEntityType.ORGANIZATION?.value)) {
-                    types.put('emailType', emailTypesView?.translationValue)
+                if (checkPersonEmailType(emailTypesView?.emailType, ContactEntityType.ORGANIZATION?.value)) {
+                    types.put('emailType', emailTypesView?.emailType)
                 }
 
-            } else if (emailTypesView?.type == ContactEntityType.PERSON?.value?.toUpperCase()) {
+            } else if (emailTypesView?.entityType == ContactEntityType.PERSON?.value?.toUpperCase()) {
                 types.put('entityType', ContactEntityType.PERSON?.value)
-                if (checkPersonEmailType(emailTypesView?.translationValue, ContactEntityType.PERSON?.value)) {
-                    types.put('emailType', emailTypesView.translationValue)
+                if (checkPersonEmailType(emailTypesView?.emailType, ContactEntityType.PERSON?.value)) {
+                    types.put('emailType', emailTypesView.emailType)
                 }
 
             }
@@ -130,7 +130,7 @@ class EmailTypeCompositeService {
                 GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
                 if (globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME_EMAIL_TYPES) {
                     throw new ApplicationException("emailTypeCompositeService", new BusinessLogicValidationException("invalid.guid", []))
-                } else { 
+                } else {
                     throw new ApplicationException("emailTypeCompositeService", new NotFoundException())
                 }
 

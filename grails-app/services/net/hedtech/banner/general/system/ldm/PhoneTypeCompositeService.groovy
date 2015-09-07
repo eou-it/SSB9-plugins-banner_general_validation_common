@@ -34,12 +34,12 @@ class PhoneTypeCompositeService {
     def  list(Map params) {
         List<PhoneType> phoneTypeList=[]
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        params?.sort = params?.sort ? params?.sort : DEFAULT_SORT_FIELD
-        params?.order = params?.order ? params?.order : DEFAULT_ORDER_TYPE
+        params?.sort = params?.sort ?: DEFAULT_SORT_FIELD
+        params?.order = params?.order ?: DEFAULT_ORDER_TYPE
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         getDataFromDB(false, params).each { phoneTypeViewRecord ->
-            phoneTypeList << new PhoneType(phoneTypeViewRecord, new Metadata(phoneTypeViewRecord.dataOrigin), phoneTypeViewRecord.phoneType, phoneTypeViewRecord.translationValue)
+            phoneTypeList << new PhoneType(phoneTypeViewRecord, new Metadata(phoneTypeViewRecord.dataOrigin), phoneTypeViewRecord.entityType, phoneTypeViewRecord.phoneType)
         }
         return phoneTypeList
     }
@@ -61,7 +61,7 @@ class PhoneTypeCompositeService {
     PhoneType get(String guid) {
         PhoneTypeView  phoneTypeViewRecord = PhoneTypeView.get(guid?.trim())
         if (phoneTypeViewRecord) {
-            new PhoneType(phoneTypeViewRecord, new Metadata(phoneTypeViewRecord.dataOrigin), phoneTypeViewRecord.phoneType, phoneTypeViewRecord.translationValue)
+            new PhoneType(phoneTypeViewRecord, new Metadata(phoneTypeViewRecord.dataOrigin), phoneTypeViewRecord.entityType, phoneTypeViewRecord.phoneType)
         } else {
             GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
             if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME) {
@@ -79,5 +79,5 @@ class PhoneTypeCompositeService {
             PhoneTypeView.list(params)
         }
     }
-    
+
 }

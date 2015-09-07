@@ -22,8 +22,8 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     def invalid_resource_guid
     def success_guid
     def invalid_guid
-    private String i_success_translationValue = 'billing'
-    private String i_failure_translationValue = 'testFailure'
+    private String i_success_locationType = 'billing'
+    private String i_failure_locationType = 'testFailure'
     private String i_success_description = 'Business'
     private String i_success_code = 'BU'
     private String i_failure_ldmName = 'subjects'
@@ -70,10 +70,10 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         def params = [order: 'ASC', sort: 'code']
         def locationTypeList = locationTypeCompositeService.list(params)
         assertNotNull locationTypeList
-        assertTrue locationTypeList.translationValue.contains(i_success_translationValue)
+        assertTrue locationTypeList.locationType.contains(i_success_locationType)
         assertTrue locationTypeList.description.contains(i_success_description)
         assertTrue locationTypeList.code.contains(i_success_code)
-        assertFalse locationTypeList.translationValue.contains(i_failure_translationValue)
+        assertFalse locationTypeList.locationType.contains(i_failure_locationType)
     }
 
     /**
@@ -120,7 +120,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     void testListWithPagination() {
         def paginationParams = [max: '5', offset: '0']
         List locationTypes = locationTypeCompositeService.list(paginationParams)
-        assertTrue locationTypes.translationValue.contains(i_success_translationValue)
+        assertTrue locationTypes.locationType.contains(i_success_locationType)
         assertNotNull locationTypes
         assertFalse locationTypes.isEmpty()
         assertTrue locationTypes.size() == 5

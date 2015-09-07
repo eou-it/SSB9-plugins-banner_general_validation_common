@@ -17,8 +17,8 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException
 class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
 
 
-    private String i_success_translationValue = 'pager'
-    private String i_failure_translationValue = 'Pager'
+    private String i_success_phoneType = 'pager'
+    private String i_failure_phoneType = 'Pager'
     private String i_success_description = 'Billing'
     private String i_success_code = 'HOME'
 
@@ -51,7 +51,7 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForUpdatePhoneType(){
-        PhoneTypeView phoneType = PhoneTypeView.findByTranslationValue('business')
+        PhoneTypeView phoneType = PhoneTypeView.findByPhoneType('business')
         assertNotNull phoneType
         phoneType.description='Test for Update'
         shouldFail(InvalidDataAccessResourceUsageException) {
@@ -64,7 +64,7 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForDeletePhoneType(){
-        PhoneTypeView phoneType = PhoneTypeView.findByTranslationValue('business')
+        PhoneTypeView phoneType = PhoneTypeView.findByPhoneType('business')
         assertNotNull phoneType
         shouldFail(InvalidDataAccessResourceUsageException) {
             phoneType.delete(flush: true, onError: true)
@@ -80,10 +80,10 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
         List phoneTypeList= PhoneTypeView.list(params)
         assertNotNull phoneTypeList
         assertFalse phoneTypeList.isEmpty()
-        assertTrue phoneTypeList.translationValue.contains(i_success_translationValue)
+        assertTrue phoneTypeList.phoneType.contains(i_success_phoneType)
         assertTrue phoneTypeList.description.contains(i_success_description)
         assertTrue phoneTypeList.code.contains(i_success_code)
-        assertFalse phoneTypeList.translationValue.contains(i_failure_translationValue)
+        assertFalse phoneTypeList.phoneType.contains(i_failure_phoneType)
     }
 
     /**
@@ -91,28 +91,28 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testGet() {
-       assertNull PhoneTypeView.get("")
-       assertNull  PhoneTypeView.get(null)
-        
-       PhoneTypeView phoneTypeView=PhoneTypeView.findByTranslationValue(i_success_translationValue)
-       assertNotNull phoneTypeView
-        
-       TelephoneType telephoneType= TelephoneType.findByCode(phoneTypeView.value)
-       assertNotNull telephoneType
-        
-       assertEquals phoneTypeView.code,telephoneType.code
-       assertEquals phoneTypeView.description,telephoneType.description
-       assertEquals phoneTypeView.dataOrigin,telephoneType.dataOrigin
-        
-       GlobalUniqueIdentifier  globalUniqueIdentifier= GlobalUniqueIdentifier.findByLdmNameAndDomainKey('phone-types',telephoneType.code)
-       assertEquals  globalUniqueIdentifier.guid,phoneTypeView.id
-       assertEquals  globalUniqueIdentifier.domainKey,phoneTypeView.value
-       assertEquals  globalUniqueIdentifier.domainKey,phoneTypeView.code
-        
-       IntegrationConfiguration integrationConfiguration=   IntegrationConfiguration.findBySettingNameAndTranslationValue('PERSON.PHONETYPES',i_success_translationValue)
-       assertNotNull integrationConfiguration
-       assertEquals integrationConfiguration.value, phoneTypeView.value
-       assertEquals integrationConfiguration.value, telephoneType.code
+        assertNull PhoneTypeView.get("")
+        assertNull  PhoneTypeView.get(null)
+
+        PhoneTypeView phoneTypeView=PhoneTypeView.findByPhoneType(i_success_phoneType)
+        assertNotNull phoneTypeView
+
+        TelephoneType telephoneType= TelephoneType.findByCode(phoneTypeView.value)
+        assertNotNull telephoneType
+
+        assertEquals phoneTypeView.code,telephoneType.code
+        assertEquals phoneTypeView.description,telephoneType.description
+        assertEquals phoneTypeView.dataOrigin,telephoneType.dataOrigin
+
+        GlobalUniqueIdentifier  globalUniqueIdentifier= GlobalUniqueIdentifier.findByLdmNameAndDomainKey('phone-types',telephoneType.code)
+        assertEquals  globalUniqueIdentifier.guid,phoneTypeView.id
+        assertEquals  globalUniqueIdentifier.domainKey,phoneTypeView.value
+        assertEquals  globalUniqueIdentifier.domainKey,phoneTypeView.code
+
+        IntegrationConfiguration integrationConfiguration=   IntegrationConfiguration.findBySettingNameAndTranslationValue('PERSON.PHONETYPES',i_success_phoneType)
+        assertNotNull integrationConfiguration
+        assertEquals integrationConfiguration.value, phoneTypeView.value
+        assertEquals integrationConfiguration.value, telephoneType.code
     }
 
 
@@ -122,10 +122,10 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
                 description:'test data',
                 dataOrigin:'test',
                 id:'test_guid',
-                translationValue:'test',
-                type:'person'
+                phoneType:'test',
+                entityType:'person'
         )
-        
+
     }
 }
 

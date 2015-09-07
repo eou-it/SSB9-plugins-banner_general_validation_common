@@ -13,8 +13,8 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException
  * Integration Test cases for LocationTypeView, which is Read Only view.
  */
 class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
-    private String i_success_translationValue = 'billing'
-    private String i_failure_translationValue = 'testFailure'
+    private String i_success_locationType = 'billing'
+    private String i_failure_locationType = 'testFailure'
     private String i_success_description = 'Business'
     private String i_success_code = 'BU'
     private String i_failure_description = 'Test data Update'
@@ -39,9 +39,9 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
     void testViewCount() {
         def locationTypeCount= LocationTypeView.count()
         assertNotNull locationTypeCount
-        def personLocationTypeCount = LocationTypeView.findAllByLocationType(typePerson).size()
+        def personLocationTypeCount = LocationTypeView.findAllByEntityType(typePerson).size()
         assertNotNull personLocationTypeCount
-        def orgLocationTypeCount = LocationTypeView.findAllByLocationType(typeOrganization).size()
+        def orgLocationTypeCount = LocationTypeView.findAllByEntityType(typeOrganization).size()
         assertNotNull orgLocationTypeCount
         assertEquals locationTypeCount,personLocationTypeCount+orgLocationTypeCount
     }
@@ -54,10 +54,10 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
         def params = [max: '500', offset: '0',order: 'ASC']
         def locationTypeList= LocationTypeView.list(params)
         assertNotNull locationTypeList
-        assertTrue locationTypeList.translationValue.contains(i_success_translationValue)
+        assertTrue locationTypeList.locationType.contains(i_success_locationType)
         assertTrue locationTypeList.description.contains(i_success_description)
         assertTrue locationTypeList.code.contains(i_success_code)
-        assertFalse locationTypeList.translationValue.contains(i_failure_translationValue)
+        assertFalse locationTypeList.locationType.contains(i_failure_locationType)
     }
 
     /**
@@ -77,7 +77,7 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForUpdateLocationType(){
-        LocationTypeView locationType = LocationTypeView.findByTranslationValue(i_success_translationValue)
+        LocationTypeView locationType = LocationTypeView.findByLocationType(i_success_locationType)
         assertNotNull locationType
         locationType.description=i_failure_description
         shouldFail(InvalidDataAccessResourceUsageException) {
@@ -90,7 +90,7 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForDeleteLocationType(){
-        LocationTypeView locationType = LocationTypeView.findByTranslationValue(i_success_translationValue)
+        LocationTypeView locationType = LocationTypeView.findByLocationType(i_success_locationType)
         assertNotNull locationType
         shouldFail(InvalidDataAccessResourceUsageException) {
             locationType.delete(flush: true, onError: true)
@@ -104,10 +104,10 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
                 description:'test data',
                 dataOrigin:'test',
                 id:'test_guid',
-                translationValue:'test',
-                type:'person'
+                locationType:'test',
+                entityType: 'person'
         )
-        
+
     }
 }
 

@@ -34,21 +34,21 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
      * <p> Test to get the record based on type and validate them</p>
      * */
     @Test
-    public void testFetchDataByType(){
+    public void testFetchDataByEntityType(){
         def type = 'PERSON'
-        List<EmailTypesView> emailTypesViews= EmailTypesView.findAllByType(type)
+        List<EmailTypesView> emailTypesViews= EmailTypesView.findAllByEntityType(type)
         assertFalse emailTypesViews==null
 
         for(EmailTypesView typesView : emailTypesViews){
-            assertEquals typesView.type,type
+            assertEquals typesView.entityType,type
         }
 
         type = 'ORGANIZATION'
-        emailTypesViews= EmailTypesView.findAllByType(type)
+        emailTypesViews= EmailTypesView.findAllByEntityType(type)
         assertFalse emailTypesViews==null
 
         for(EmailTypesView typesView : emailTypesViews){
-            assertEquals typesView.type,type
+            assertEquals typesView.entityType,type
         }
 
     }
@@ -59,11 +59,11 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
     @Test
     void testCount(){
         def type = 'PERSON'
-        List<EmailTypesView> emailTypesOnPerson= EmailTypesView.findAllByType(type)
+        List<EmailTypesView> emailTypesOnPerson= EmailTypesView.findAllByEntityType(type)
         assertFalse emailTypesOnPerson==null
 
         type = 'ORGANIZATION'
-        List<EmailTypesView> emailTypesforOrganization= EmailTypesView.findAllByType(type)
+        List<EmailTypesView> emailTypesforOrganization= EmailTypesView.findAllByEntityType(type)
         assertFalse emailTypesforOrganization==null
 
         assertEquals EmailTypesView.count(),emailTypesOnPerson.size()+emailTypesforOrganization.size()
@@ -137,7 +137,7 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
     private def newEmailType(){
         def compositeEmailType = new EmailTypePrimary(settingValue:'AA',processCode:'BB')
         new EmailTypesView(
-                emailTypePrimary: compositeEmailType,code: 'SS',description: 'Dummy Description',type: EMAIL_TYPE_HEDM_NAME
+                emailTypePrimary: compositeEmailType,code: 'SS',description: 'Dummy Description',entityType: EMAIL_TYPE_HEDM_NAME
         )
     }
 

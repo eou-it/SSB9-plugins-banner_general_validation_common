@@ -44,8 +44,8 @@ class LocationTypeView implements Serializable {
     /**
      * TRANSLATION VALUE: A value that is the technical equivalent of the value in the VALUE field (GORICCR Table)
      * */
-    @Column(name = "TRANSLATION_VALUE")
-    String translationValue
+    @Column(name = "LOCATION_TYPE")
+    String locationType
 
     /**
      * VALUE: Value of configuration setting (GORICCR Table)
@@ -54,16 +54,10 @@ class LocationTypeView implements Serializable {
     String value
 
     /**
-     * PROCESS CODE: The integration configuration setting process code (GORICCR Table)
-     */
-    @Column(name = "SQPR_CODE")
-    String processCode
-
-    /**
      * TYPE: Filed to identify the type of the location
      */
-    @Column(name = "TYPE")
-    String locationType
+    @Column(name = "ENTITY_TYPE")
+    String entityType
 
     boolean equals(o) {
         if (this.is(o)) return true
@@ -74,10 +68,9 @@ class LocationTypeView implements Serializable {
         if (code != that.code) return false
         if (dataOrigin != that.dataOrigin) return false
         if (description != that.description) return false
+        if (entityType != that.entityType) return false
         if (id != that.id) return false
         if (locationType != that.locationType) return false
-        if (processCode != that.processCode) return false
-        if (translationValue != that.translationValue) return false
         if (value != that.value) return false
 
         return true
@@ -89,12 +82,12 @@ class LocationTypeView implements Serializable {
         result = 31 * result + (code != null ? code.hashCode() : 0)
         result = 31 * result + (description != null ? description.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (translationValue != null ? translationValue.hashCode() : 0)
-        result = 31 * result + (value != null ? value.hashCode() : 0)
-        result = 31 * result + (processCode != null ? processCode.hashCode() : 0)
         result = 31 * result + (locationType != null ? locationType.hashCode() : 0)
+        result = 31 * result + (value != null ? value.hashCode() : 0)
+        result = 31 * result + (entityType != null ? entityType.hashCode() : 0)
         return result
     }
+
 
     @Override
     public String toString() {
@@ -103,10 +96,9 @@ class LocationTypeView implements Serializable {
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 ", dataOrigin='" + dataOrigin + '\'' +
-                ", translationValue='" + translationValue + '\'' +
-                ", value='" + value + '\'' +
-                ", processCode='" + processCode + '\'' +
                 ", locationType='" + locationType + '\'' +
+                ", value='" + value + '\'' +
+                ", entityType='" + entityType + '\'' +
                 '}';
     }
 }

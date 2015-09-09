@@ -3,43 +3,28 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
 
-import net.hedtech.banner.general.system.Degree
+import net.hedtech.banner.general.system.AcademicCredentialsView
 import net.hedtech.banner.general.system.ldm.v1.Metadata
 
 /**
  * Decorator for "academic-credentials" API
  */
 class AcademicCredentials {
-    @Delegate
-    private final  Degree degree
-    Metadata metadata
-    String guid
-    String type
-    List<Map<String, String>>  abbreviation
-    List<Map<String, String>> title
 
-    AcademicCredentials(Degree degree,String guid,Metadata metadata,String type) {
-        this.degree = degree
-        this.type=type
-        this.guid = guid
+    @Delegate
+    private final  AcademicCredentialsView academicCredential
+    Metadata metadata
+
+    AcademicCredentials(AcademicCredentialsView academicCredential,Metadata metadata) {
+        this.academicCredential = academicCredential
         this.metadata = metadata
-        if(degree.description){
-            title = []
-            this.title <<["en": degree.description]
-        }
-        if(degree.code){
-            abbreviation=[]
-            this.abbreviation <<["en": degree.code]
-        }
     }
 
     @Override
     public String toString() {
         return "AcademicCredentials{" +
+                "academicCredential=" + academicCredential +
                 ", metadata=" + metadata +
-                ", guid='" + guid + '\'' +
-                ", type='" + type + '\'' +
-                ", title=" + title +
                 '}';
     }
 }

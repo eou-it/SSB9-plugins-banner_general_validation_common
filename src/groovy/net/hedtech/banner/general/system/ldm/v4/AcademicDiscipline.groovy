@@ -15,18 +15,10 @@ class AcademicDiscipline {
     Metadata metadata
     String type
     String guid
-    List<Map<String, String>> title
-    List<Map<String, String>> descriptionList
 
     AcademicDiscipline(AcademicDisciplineView academicDisciplineView) {
-        title = []
         this.metadata = new Metadata(academicDisciplineView.dataOrigin)
         this.guid=academicDisciplineView.guid
-        this.title << ["en": academicDisciplineView.code]
-        if(academicDisciplineView.description){
-            descriptionList = []
-            this.descriptionList << ["en": academicDisciplineView.description]
-        }
         this.type = academicDisciplineView.type
         this.academicDisciplineView = academicDisciplineView
     }
@@ -36,8 +28,6 @@ class AcademicDiscipline {
         return "AcademicDiscipline{" +
                 ", metadata=" + metadata +
                 ", guid='" + guid + '\'' +
-                ", title=" + title +
-                ", descriptionList=" + descriptionList +
                 ", type='" + type + '\'' +
                 '}';
     }

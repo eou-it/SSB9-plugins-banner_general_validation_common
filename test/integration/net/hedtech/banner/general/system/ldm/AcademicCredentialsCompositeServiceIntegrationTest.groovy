@@ -225,8 +225,10 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
      */
     @Test
     void testGetWithValidGuidAndNonExitsInAcademicCredentials(){
-        shouldFail(RestfulApiValidationException) {
-            academicCredentialsCompositeService.get(invalid_resource_guid?.guid)//invalid_resource_guid variable is defined at the top of the class
+        try {
+            academicCredentialsCompositeService.get(invalid_resource_guid?.guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
         }
     }
 
@@ -240,7 +242,7 @@ class AcademicCredentialsCompositeServiceIntegrationTest extends  BaseIntegratio
        assertNotNull guid
        def  academicCredential= academicCredentialsCompositeService.get(guid)
        assertNotNull academicCredential
-       assertNotNull academicCredential.abbreviation
+        assertNotNull academicCredential.code
        assertNotNull academicCredential.guid
        assertNotNull academicCredential.type
     }

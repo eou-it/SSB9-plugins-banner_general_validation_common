@@ -14,15 +14,10 @@ class LocationType {
     private final LocationTypeView locationTypeView
     Metadata metadata
     Map<String, String> type
-    List<Map<String, String>> title
 
     LocationType(LocationTypeView locationTypeView, Metadata metadata, String entityType, String locationType) {
         this.metadata = metadata
         this.locationTypeView = locationTypeView
-        if (locationTypeView.description) {
-            title = []
-            this.title << ["en": locationTypeView.description]
-        }
         this.type = [entityType: entityType, locationType: locationType]
     }
 
@@ -33,7 +28,6 @@ class LocationType {
                 "locationTypeView=" + locationTypeView +
                 ", metadata=" + metadata +
                 ", type=" + type +
-                ", title=" + title +
                 '}';
     }
 }

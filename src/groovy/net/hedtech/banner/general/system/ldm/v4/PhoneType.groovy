@@ -14,15 +14,10 @@ class PhoneType {
     private final  PhoneTypeView phoneTypeView
     Metadata metadata
     Map<String,String> type
-    List<Map<String, String>> title
 
     PhoneType(PhoneTypeView phoneTypeView,Metadata metadata,String entityType,String phoneType){
         this.metadata=metadata
         this.phoneTypeView=phoneTypeView
-        if(phoneTypeView.description){
-            title = []
-            this.title <<["en": phoneTypeView.description]
-        }
         this.type=[entityType:entityType,phoneType:phoneType]
     }
 
@@ -33,7 +28,6 @@ class PhoneType {
                 "phoneTypeView=" + phoneTypeView +
                 ", metadata=" + metadata +
                 ", type=" + type +
-                ", title=" + title +
                 '}';
     }
 }

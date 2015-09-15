@@ -29,7 +29,7 @@ class MaritalStatusCompositeService extends LdmService {
     private static final String PROCESS_CODE = 'HEDM'
     private static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
     static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
-    private static final List<String> VERSIONS = ["v1", "v2","v3","v4"]
+    private static final List<String> VERSIONS = ["v1","v4"]
 
     /**
      * GET /api/marital-statuses

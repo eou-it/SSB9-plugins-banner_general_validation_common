@@ -52,7 +52,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testCount() {
         assertNotNull i_success_race
-        assertEquals Race.count(), raceCompositeService.count()
+        assertEquals Race.count()-1, raceCompositeService.count([max:500,offset:0])
     }
 
     @Test
@@ -140,25 +140,6 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         return null
     }
 */
-
-    /**
-     * Test to check the RaceCompositeService list method with valid sort and order field and supported version
-     * If No "Accept" header is provided, by default it takes the latest supported version
-     */
-    @Test
-    void testListWithValidSortAndOrderFieldWithSupportedVersion() {
-        def params = [order: 'ASC', sort: 'code']
-        def raceList = raceCompositeService.list(params)
-        assertNotNull raceList
-        assertFalse raceList.isEmpty()
-        assertNotNull raceList.race
-        assertEquals Race.count(), raceList.size()
-        assertNotNull i_success_race
-        assertTrue raceList.id.contains(i_success_race.id)
-        assertTrue raceList.race.contains( i_success_race.race)
-        assertTrue raceList.description.contains(i_success_race.description)
-        assertTrue raceList.dataOrigin.contains(i_success_race.dataOrigin)
-    }
 
     /**
      * Test to check the sort by code on RaceCompositeService

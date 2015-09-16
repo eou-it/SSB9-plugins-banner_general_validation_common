@@ -4,10 +4,12 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
 import org.junit.Before
 import org.junit.Test
 
@@ -38,13 +40,26 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     @Test
-    void testListWithoutPaginationParams() {
+    void testListWithoutPaginationParamsV1Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v1+json")
         List maritalStatuses = maritalStatusCompositeService.list([:])
         assertNotNull maritalStatuses
         assertFalse maritalStatuses.isEmpty()
         assertTrue maritalStatuses.size() > 0
     }
 
+    @Test
+    void testListWithoutPaginationParamsV4Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
+        List maritalStatuses = maritalStatusCompositeService.list([:])
+        assertNotNull maritalStatuses
+        assertFalse maritalStatuses.isEmpty()
+        assertTrue maritalStatuses.size() > 0
+    }
 
     @Test
     void testListWithPagination() {
@@ -57,11 +72,22 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     @Test
-    void testCount() {
+    void testCountV4Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         assertNotNull i_success_maritalStatus
-        assertEquals MaritalStatus.count(), maritalStatusCompositeService.count()
+        assertEquals MaritalStatus.count(), maritalStatusCompositeService.count([max:500,offset:0])
     }
 
+    @Test
+    void testCountV1Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v1+json")
+        assertNotNull i_success_maritalStatus
+        assertEquals MaritalStatus.count(), maritalStatusCompositeService.count([max:500,offset:0])
+    }
 
     @Test
     void testGetInvalidGuid() {
@@ -158,13 +184,26 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     @Test
-    void testGetLdmMaritalStatus() {
+    void testGetLdmMaritalStatusV1Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v1+json")
         def result = maritalStatusCompositeService.getHeDMEnumeration('S')
         assertNotNull result
         assertEquals result, 'Single'
 
     }
 
+    @Test
+    void testGetLdmMaritalStatusV4Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
+        def result = maritalStatusCompositeService.getHeDMEnumeration('S')
+        assertNotNull result
+        assertEquals result, 'single'
+
+    }
 
     @Test
     void testGetLdmMaritalStatusNull() {

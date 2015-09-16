@@ -2,18 +2,19 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
+
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.EmailTypesView
-import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v4.ContactEntityType
 import net.hedtech.banner.general.system.ldm.v4.EmailTypeDetails
 import net.hedtech.banner.general.system.ldm.v4.OrganizationEmailType
 import net.hedtech.banner.general.system.ldm.v4.PersonEmailType
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
+
 /**
  * <p> Service to retrive the data from a email validation table </p>
  */
@@ -56,7 +57,7 @@ class EmailTypeCompositeService {
 
                 }
                 if (isValid) {
-                    emailTypes << new EmailTypeDetails(new Metadata(result?.dataOrigin), types, result)
+                    emailTypes << new EmailTypeDetails(types, result)
                 }
 
 
@@ -135,7 +136,7 @@ class EmailTypeCompositeService {
                 }
 
             }
-            new EmailTypeDetails(new Metadata(emailTypesView?.dataOrigin), types, emailTypesView)
+            new EmailTypeDetails(types, emailTypesView)
         }
 
     }

@@ -7,7 +7,6 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.LocationTypeView
-import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v4.LocationType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -39,7 +38,7 @@ class LocationTypeCompositeService {
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         getLocationTypes(false,params).each {locationTypeView ->
-            locationTypeArrayList <<  new LocationType(locationTypeView, new Metadata(locationTypeView.dataOrigin), locationTypeView.entityType,locationTypeView.locationType)
+            locationTypeArrayList <<  new LocationType(locationTypeView, locationTypeView.entityType,locationTypeView.locationType)
         }
         locationTypeArrayList
     }
@@ -74,7 +73,7 @@ class LocationTypeCompositeService {
     LocationType get(String guid) {
         LocationTypeView locationTypeViewRecord = LocationTypeView.findById(guid)
         if (locationTypeViewRecord) {
-            new LocationType(locationTypeViewRecord, new Metadata(locationTypeViewRecord.dataOrigin), locationTypeViewRecord.entityType,locationTypeViewRecord.locationType)
+            new LocationType(locationTypeViewRecord, locationTypeViewRecord.entityType,locationTypeViewRecord.locationType)
         } else {
             GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
             if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME) {

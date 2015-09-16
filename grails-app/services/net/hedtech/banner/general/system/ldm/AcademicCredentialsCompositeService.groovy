@@ -48,7 +48,7 @@ class AcademicCredentialsCompositeService {
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)?:params.sort
         List<AcademicCredentialsView> academicCredentialList=fetchAcademicCredentialByCriteria(params)
         academicCredentialList.each { academicCredential ->
-            academicCredentialsList << new AcademicCredentials(academicCredential,new Metadata(academicCredential.dataOrigin))
+            academicCredentialsList << new AcademicCredentials(academicCredential)
         }
         return academicCredentialsList
     }
@@ -72,7 +72,7 @@ class AcademicCredentialsCompositeService {
         if(!academicCredential){
             throw new ApplicationException("academicCredential", new NotFoundException())
         }
-       return new AcademicCredentials(academicCredential,new Metadata(academicCredential.dataOrigin))
+       return new AcademicCredentials(academicCredential)
     }
 
 
@@ -86,7 +86,7 @@ class AcademicCredentialsCompositeService {
 
         if (content.containsKey("type")) {
             params.put("type", content.get("type").trim().toLowerCase())
-            criteria.add([key: "type", binding: "type", operator: Operators.EQUALS_IGNORE_CASE])
+            criteria.add([key: "type", binding: "type", operator: Operators.EQUALS])
         }
         def query = "from AcademicCredentialsView a where 1 = 1"
 

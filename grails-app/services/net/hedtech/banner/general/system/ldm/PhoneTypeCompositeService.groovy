@@ -7,7 +7,6 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.PhoneTypeView
-import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v4.PhoneType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -38,8 +37,8 @@ class PhoneTypeCompositeService {
         params?.order = params?.order ?: DEFAULT_ORDER_TYPE
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
-        getDataFromDB(false, params).each { phoneTypeViewRecord ->
-            phoneTypeList << new PhoneType(phoneTypeViewRecord, new Metadata(phoneTypeViewRecord.dataOrigin), phoneTypeViewRecord.entityType, phoneTypeViewRecord.phoneType)
+        getFetchPhoneDetails(false, params).each { phoneTypeViewRecord ->
+            phoneTypeList << new PhoneType(phoneTypeViewRecord, phoneTypeViewRecord.entityType, phoneTypeViewRecord.phoneType)
         }
         return phoneTypeList
     }
@@ -49,7 +48,7 @@ class PhoneTypeCompositeService {
      */
     @Transactional(readOnly = true)
     Long count(Map params) {
-        getDataFromDB(true,[:])
+        getFetchPhoneDetails(true,[:])
     }
 
     /**
@@ -61,7 +60,7 @@ class PhoneTypeCompositeService {
     PhoneType get(String guid) {
         PhoneTypeView  phoneTypeViewRecord = PhoneTypeView.get(guid?.trim())
         if (phoneTypeViewRecord) {
-            new PhoneType(phoneTypeViewRecord, new Metadata(phoneTypeViewRecord.dataOrigin), phoneTypeViewRecord.entityType, phoneTypeViewRecord.phoneType)
+            new PhoneType(phoneTypeViewRecord, phoneTypeViewRecord.entityType, phoneTypeViewRecord.phoneType)
         } else {
             GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
             if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME) {
@@ -72,7 +71,7 @@ class PhoneTypeCompositeService {
         }
     }
 
-    private def getDataFromDB(Boolean count, Map params) {
+    private def getFetchPhoneDetails(Boolean count, Map params) {
         if (count) {
             PhoneTypeView.count()
         } else {

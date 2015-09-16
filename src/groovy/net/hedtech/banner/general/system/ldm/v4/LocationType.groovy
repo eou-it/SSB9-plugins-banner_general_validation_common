@@ -4,7 +4,6 @@
 package net.hedtech.banner.general.system.ldm.v4
 
 import net.hedtech.banner.general.system.LocationTypeView
-import net.hedtech.banner.general.system.ldm.v1.Metadata
 
 /**
  * Decorator for "location-types" API
@@ -12,11 +11,9 @@ import net.hedtech.banner.general.system.ldm.v1.Metadata
 class LocationType {
     @Delegate
     private final LocationTypeView locationTypeView
-    Metadata metadata
     Map<String, String> type
 
-    LocationType(LocationTypeView locationTypeView, Metadata metadata, String entityType, String locationType) {
-        this.metadata = metadata
+    LocationType(LocationTypeView locationTypeView, String entityType, String locationType) {
         this.locationTypeView = locationTypeView
         this.type = [entityType: entityType, locationType: locationType]
     }
@@ -26,7 +23,6 @@ class LocationType {
     public String toString() {
         return "LocationType{" +
                 "locationTypeView=" + locationTypeView +
-                ", metadata=" + metadata +
                 ", type=" + type +
                 '}';
     }

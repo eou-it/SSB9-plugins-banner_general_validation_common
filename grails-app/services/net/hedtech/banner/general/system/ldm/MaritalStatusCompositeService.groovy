@@ -13,6 +13,7 @@ import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusParentCategory
 import net.hedtech.banner.general.system.ldm.v1.Metadata
+import net.hedtech.banner.general.system.ldm.v4.MaritalStatusMaritalCategory
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -29,6 +30,7 @@ class MaritalStatusCompositeService extends LdmService {
     private static final String PROCESS_CODE = 'HEDM'
     private static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
     static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
+    static final String MARITAL_STATUS_MARTIAL_CATEGORY = "MARITALSTATUS.MARITALCATEGORY"
     private static final List<String> VERSIONS = ["v1","v4"]
 
     /**
@@ -40,18 +42,24 @@ class MaritalStatusCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<MaritalStatusDetail> list(Map params) {
         List maritalStatusDetailList = []
-
+        def version = LdmService.getAcceptVersion(VERSIONS)
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
-        List allowedSortFields = ("v4".equals(LdmService.getAcceptVersion(VERSIONS))? ['code', 'title']:['abbreviation', 'title'])
+        List allowedSortFields = ("v4".equals(version)? ['code', 'title']:['abbreviation', 'title'])
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
-
-        List<MaritalStatus> maritalStatusList = maritalStatusService.list(params) as List
-        maritalStatusList.each { maritalStatus ->
-            maritalStatusDetailList << getDecorator(maritalStatus)
+        if("v4".equals(version)){
+            fetchMartialStatusDetails(params).each {maritalStatus ->
+                maritalStatusDetailList << getDecorator(maritalStatus[0],maritalStatus[1]?.translationValue)
+            }
+        } else if("v1".equals(version)){
+            List<MaritalStatus> maritalStatusList = maritalStatusService.list(params) as List
+            maritalStatusList.each { maritalStatus ->
+                maritalStatusDetailList << getDecorator(maritalStatus,null)
+            }
         }
+
         return maritalStatusDetailList
     }
 
@@ -65,8 +73,13 @@ class MaritalStatusCompositeService extends LdmService {
      * @return
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    Long count() {
-        return MaritalStatus.count()
+    Long count(Map params) {
+        def version = LdmService.getAcceptVersion(VERSIONS)
+        if("v4".equals(version)){
+            return  fetchMartialStatusDetails(params,true)
+        }else  if("v1".equals(version)) {
+            return MaritalStatus.count()
+        }
     }
 
     /**
@@ -86,8 +99,11 @@ class MaritalStatusCompositeService extends LdmService {
         if (!maritalStatus) {
             throw new ApplicationException("maritalStatus", new NotFoundException())
         }
-
-        return getDecorator(maritalStatus, globalUniqueIdentifier.guid)
+       def maritalCategory = getHeDMEnumeration(maritalStatus?.code)
+        if("v4".equals(LdmService.getAcceptVersion(VERSIONS)) && !maritalCategory ){
+            throw new ApplicationException("race", new NotFoundException())
+        }
+        return getDecorator(maritalStatus, globalUniqueIdentifier.guid,maritalCategory)
     }
 
     /**
@@ -115,7 +131,7 @@ class MaritalStatusCompositeService extends LdmService {
         }
         log.debug("GUID: ${msGuid}")
 
-        return getDecorator(maritalStatus, msGuid)
+        return getDecorator(maritalStatus, msGuid,null)
     }
 
     /**
@@ -151,7 +167,7 @@ class MaritalStatusCompositeService extends LdmService {
         validateRequest(content)
         maritalStatus = bindMaritalStatus(maritalStatus, content)
 
-        return getDecorator(maritalStatus, msGuid)
+        return getDecorator(maritalStatus, msGuid,null)
     }
 
 
@@ -160,7 +176,7 @@ class MaritalStatusCompositeService extends LdmService {
             return null
         }
         MaritalStatus maritalStatus = maritalStatusService.get(maritalStatusId) as MaritalStatus
-        return getDecorator(maritalStatus)
+        return getDecorator(maritalStatus,null)
     }
 
 
@@ -171,7 +187,7 @@ class MaritalStatusCompositeService extends LdmService {
             if (!maritalStatus) {
                 return maritalStatusDetail
             }
-            maritalStatusDetail = getDecorator(maritalStatus)
+            maritalStatusDetail = getDecorator(maritalStatus,null)
         }
         return maritalStatusDetail
     }
@@ -198,13 +214,16 @@ class MaritalStatusCompositeService extends LdmService {
     }
 
 
-    private MaritalStatusDetail getDecorator(MaritalStatus maritalStatus, String msGuid = null) {
+    private MaritalStatusDetail getDecorator(MaritalStatus maritalStatus, String msGuid = null,String martialStatusCategory) {
         MaritalStatusDetail decorator
         if (maritalStatus) {
             if (!msGuid) {
                 msGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid
             }
-            decorator = new MaritalStatusDetail(maritalStatus, msGuid, getHeDMEnumeration(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
+            if(!martialStatusCategory){
+                martialStatusCategory =  getHeDMEnumeration(maritalStatus.code)
+            }
+            decorator = new MaritalStatusDetail(maritalStatus, msGuid, martialStatusCategory, new Metadata(maritalStatus.dataOrigin))
         }
         return decorator
     }
@@ -218,13 +237,36 @@ class MaritalStatusCompositeService extends LdmService {
     String getHeDMEnumeration(String maritalStatusCode) {
         String hedmEnum
         if (maritalStatusCode) {
-            IntegrationConfiguration intgConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(PROCESS_CODE, MARITAL_STATUS_PARENT_CATEGORY, maritalStatusCode)
+            def version = LdmService.getAcceptVersion(VERSIONS)
+            def maritalStatusCategory = "v4".equals(version) ? MARITAL_STATUS_MARTIAL_CATEGORY : MARITAL_STATUS_PARENT_CATEGORY
+            IntegrationConfiguration intgConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(PROCESS_CODE, maritalStatusCategory, maritalStatusCode)
             log.debug "Value ${intgConf?.value} - TranslationValue ${intgConf?.translationValue}"
-            if (intgConf && MaritalStatusParentCategory.MARITAL_STATUS_PARENT_CATEGORY.contains(intgConf.translationValue)) {
-                hedmEnum = intgConf.translationValue
+            if("v4".equals(version)){
+                hedmEnum = MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY.contains(intgConf?.translationValue) ? intgConf?.translationValue : null
+            }else  if("v1".equals(version)){
+                hedmEnum = MaritalStatusParentCategory.MARITAL_STATUS_PARENT_CATEGORY.contains(intgConf?.translationValue) ? intgConf?.translationValue : null
             }
         }
         return hedmEnum
     }
 
+    def fetchMartialStatusDetails(def content, def count = false) {
+        def query = "from MaritalStatus r,IntegrationConfiguration i where r.code = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
+        MaritalStatus.withSession { session ->
+            if (content?.sort && !count) {
+                def sort = content.sort
+                def order = content.order ?: 'asc'
+                query += " order by LOWER(r.$sort) $order"
+            } else if(count){
+                query = "select count(*) " + query
+            }
+            def maritalQuery = session.createQuery(query).
+                    setString('settingName', MARITAL_STATUS_MARTIAL_CATEGORY).
+                    setString('processCode', PROCESS_CODE).
+                    setParameterList('translationValueList', MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY).
+                    setMaxResults(content?.max as Integer).
+                    setFirstResult((content?.offset ?: '0') as Integer)
+            return count ? maritalQuery.uniqueResult() : maritalQuery.list()
+        }
+    }
 }

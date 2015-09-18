@@ -101,7 +101,7 @@ class MaritalStatusCompositeService extends LdmService {
         }
        def maritalCategory = getHeDMEnumeration(maritalStatus?.code)
         if("v4".equals(LdmService.getAcceptVersion(VERSIONS)) && !maritalCategory ){
-            throw new ApplicationException("race", new NotFoundException())
+            throw new ApplicationException("maritalStatus", new NotFoundException())
         }
         return getDecorator(maritalStatus, globalUniqueIdentifier.guid,maritalCategory)
     }

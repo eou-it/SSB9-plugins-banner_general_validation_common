@@ -130,8 +130,9 @@ class MaritalStatusCompositeService extends LdmService {
             msGuid = globalUniqueIdentifier.guid
         }
         log.debug("GUID: ${msGuid}")
+        def maritalCategory = "v4".equals(LdmService.getAcceptVersion(VERSIONS)) ? content?.maritalCategory : null
 
-        return getDecorator(maritalStatus, msGuid,null)
+        return getDecorator(maritalStatus, msGuid,maritalCategory)
     }
 
     /**
@@ -164,10 +165,13 @@ class MaritalStatusCompositeService extends LdmService {
         if (maritalStatus.code != content?.code?.trim()) {
             content.put("code", maritalStatus.code)
         }
+        if("v4".equals(LdmService.getContentTypeVersion(VERSIONS))){
+            content.put("maritalCategory", getHeDMEnumeration(maritalStatus.code))
+        }
         validateRequest(content)
         maritalStatus = bindMaritalStatus(maritalStatus, content)
-
-        return getDecorator(maritalStatus, msGuid,null)
+        def maritalCategory = "v4".equals(LdmService.getAcceptVersion(VERSIONS)) ? content?.maritalCategory : null
+        return getDecorator(maritalStatus, msGuid,maritalCategory)
     }
 
 
@@ -199,6 +203,12 @@ class MaritalStatusCompositeService extends LdmService {
         }
         if (!content?.description) {
             throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('description.required.message', null))
+        }
+        if('v4'.equals(LdmService.getContentTypeVersion(VERSIONS))){
+            if(!content?.maritalCategory || !MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY.contains(content?.maritalCategory)){
+                throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('maritalCategory.required.message', null))
+            }
+
         }
     }
 

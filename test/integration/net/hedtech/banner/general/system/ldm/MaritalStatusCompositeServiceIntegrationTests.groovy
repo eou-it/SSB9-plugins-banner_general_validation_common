@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
@@ -220,7 +221,11 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     @Test
-    void testCreate() {
+    void testCreateV1Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v1+json")
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v1+json")
         MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.create(i_success_input_content)
         assertNotNull maritalStatusDetail
         assertEquals i_success_input_content.code, maritalStatusDetail.code
@@ -228,6 +233,19 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
     }
 
+    @Test
+    void testCreateV4Header() {
+        i_success_input_content.put('maritalCategory','divorced')
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
+        MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.create(i_success_input_content)
+        assertNotNull maritalStatusDetail
+        assertEquals i_success_input_content.code, maritalStatusDetail.code
+        assertEquals i_success_input_content.description, maritalStatusDetail.description
+        assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
+    }
 
     @Test
     void testCreateNoCode() {
@@ -250,9 +268,52 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         }
     }
 
+    @Test
+    void testCreateWithAlreadyExistCodeV4Header() {
+        i_success_input_content.put('maritalCategory','divorced')
+        i_success_input_content?.code = i_success_maritalStatus?.code
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
+       try{
+           maritalStatusCompositeService.create(i_success_input_content)
+       }catch (Exception ae){
+           assertApplicationException ae, "exists"
+       }
+
+    }
+
 
     @Test
-    void testUpdateCreate() {
+    void testCreateNoMaritalCategoryV4Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
+        try {
+            MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "maritalCategory.required"
+        }
+    }
+
+    @Test
+    void testUpdateNoId() {
+        try {
+            maritalStatusCompositeService.update(i_success_input_content)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testUpdateCreateV1Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v1+json")
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v1+json")
         i_success_input_content.put('id', i_creation_guid)
         MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.update(i_success_input_content)
         assertNotNull maritalStatusDetail
@@ -262,9 +323,28 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
     }
 
+    @Test
+    void testUpdateCreateV4Header() {
+        i_success_input_content.put('maritalCategory','divorced')
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
+        i_success_input_content.put('id', i_creation_guid)
+        MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.update(i_success_input_content)
+        assertNotNull maritalStatusDetail
+        assertEquals i_creation_guid, maritalStatusDetail.guid
+        assertEquals i_success_input_content.code, maritalStatusDetail.code
+        assertEquals i_success_input_content.description, maritalStatusDetail.description
+        assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
+    }
 
     @Test
-    void testUpdate() {
+    void testUpdateV1Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v1+json")
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v1+json")
         MaritalStatusDetail maritalStatusDetail = maritalStatusCompositeService.create(i_success_input_content)
         assertNotNull maritalStatusDetail
         i_success_input_content.put('id', maritalStatusDetail.guid)
@@ -272,6 +352,19 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         maritalStatusDetail = maritalStatusCompositeService.update(i_success_input_content)
         assertEquals i_success_input_content.code, maritalStatusDetail.code
         assertEquals i_update_description, maritalStatusDetail.description
+        assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
+    }
+
+    @Test
+    void testUpdateV4Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
+        i_success_input_content.put('id',GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_maritalStatus?.code,MaritalStatusCompositeService.MARITAL_STATUS_LDM_NAME)?.guid)
+        def maritalStatusDetail = maritalStatusCompositeService.update(i_success_input_content)
+        assertEquals i_success_maritalStatus?.code, maritalStatusDetail.code
+        assertEquals i_success_maritalStatus?.description, maritalStatusDetail.description
         assertEquals i_success_input_content.metadata.dataOrigin, maritalStatusDetail.dataOrigin
     }
 

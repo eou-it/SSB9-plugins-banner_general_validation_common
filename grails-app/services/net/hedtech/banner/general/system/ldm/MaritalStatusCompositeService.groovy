@@ -116,7 +116,8 @@ class MaritalStatusCompositeService extends LdmService {
 
         MaritalStatus maritalStatus = MaritalStatus.findByCode(content?.code?.trim())
         if (maritalStatus) {
-            throw new ApplicationException("maritalStatus", new BusinessLogicValidationException("exists.message", null))
+            def messageCode = 'v4'.equals(LdmService.getContentTypeVersion(VERSIONS)) ? 'code.exists.message' : 'exists.message'
+            throw new ApplicationException("maritalStatus", new BusinessLogicValidationException(messageCode, null))
         }
 
         maritalStatus = bindMaritalStatus(new MaritalStatus(), content)
@@ -198,17 +199,18 @@ class MaritalStatusCompositeService extends LdmService {
 
 
     private void validateRequest(content) {
+       def version = LdmService.getContentTypeVersion(VERSIONS)
         if (!content?.code) {
-            throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('code.required.message', null))
+            def parameterValue = 'v4'.equals(version) ? 'Code' : 'Abbreviation'
+            throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('code.required.message',[parameterValue]))
         }
         if (!content?.description) {
             throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('description.required.message', null))
         }
-        if('v4'.equals(LdmService.getContentTypeVersion(VERSIONS))){
+        if('v4'.equals(version)){
             if(!content?.maritalCategory || !MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY.contains(content?.maritalCategory)){
                 throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('maritalCategory.required.message', null))
             }
-
         }
     }
 

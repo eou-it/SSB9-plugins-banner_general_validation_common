@@ -15,6 +15,7 @@ class BankRoutingInfo implements Serializable {
     /**
      * Surrogate ID for GXVDIRD
      */
+    @Id
     @Column(name = "GXVDIRD_SURROGATE_ID")
     @SequenceGenerator(name = "GXVDIRD_SEQ_GEN", allocationSize = 1, sequenceName = "GXVDIRD_SURROGATE_ID_SEQUENCE")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GXVDIRD_SEQ_GEN")
@@ -31,7 +32,6 @@ class BankRoutingInfo implements Serializable {
      * BANK ROUTING NUMBER:  Routing number for bank.
      * Id annotation is here to allow joins on this field with GXRDIRD.
      */
-    @Id
     @Column(name = "GXVDIRD_CODE_BANK_ROUT_NUM")
     String bankRoutingNum
 

@@ -24,47 +24,82 @@ class EthnicityCompositeService extends LdmService {
 
     def ethnicityService
     private static final String ETHNICITY_LDM_NAME = 'ethnicities'
-    private static final List<String> VERSIONS = ["v1", "v2","v3","v4"]
+    private static final String ETHNICITIES_US = 'ethnicities-us'
+    private static final List<String> VERSIONS = ["v1", "v3"]
 
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<EthnicityDetail> list(Map params) {
+        log.debug "list:Begin:$params"
         List ethnicityDetailList = []
 
-        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+        if ("v1".equals(getAcceptVersion(VERSIONS))) {
+            RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
-        List allowedSortFields = ("v4".equals(LdmService.getAcceptVersion(VERSIONS))? ['code', 'title']:['abbreviation', 'title'])
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+            List allowedSortFields = ['abbreviation', 'title']
+            RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
+            RestfulApiValidationUtility.validateSortOrder(params.order)
+            params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
 
-        List<Ethnicity> ethnicityList = ethnicityService.list(params) as List
-        ethnicityList.each { ethnicity ->
-            ethnicityDetailList << getDecorator(ethnicity)
+            List<Ethnicity> ethnicityList = ethnicityService.list(params) as List
+            ethnicityList.each { ethnicity ->
+                ethnicityDetailList << getDecorator(ethnicity)
+            }
+        } else if ("v3".equals(getAcceptVersion(VERSIONS))) {
+            def results = getUnitedStatesEthnicCodes()
+            results?.each {
+                ethnicityDetailList << ["guid": it.guid, "title": it.domainKey]
+            }
         }
+
+        log.debug "list:End:${ethnicityDetailList?.size()}"
         return ethnicityDetailList
     }
 
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     Long count() {
-        return Ethnicity.count()
+        log.debug "count:Begin"
+        int total
+
+        if ("v1".equals(getAcceptVersion(VERSIONS))) {
+            total = Ethnicity.count()
+        } else if ("v3".equals(getAcceptVersion(VERSIONS))) {
+            total = GlobalUniqueIdentifier.countByLdmName(ETHNICITIES_US)
+        }
+
+        log.debug "count:End:$total"
+        return total
     }
 
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    EthnicityDetail get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITY_LDM_NAME, guid)
-        if (!globalUniqueIdentifier) {
-            throw new ApplicationException("ethnicity", new NotFoundException())
+    def get(String guid) {
+        log.debug "get:Begin:$guid"
+        def result
+
+        if ("v1".equals(getAcceptVersion(VERSIONS))) {
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITY_LDM_NAME, guid)
+            if (!globalUniqueIdentifier) {
+                throw new ApplicationException("ethnicity", new NotFoundException())
+            }
+
+            Ethnicity ethnicity = Ethnicity.get(globalUniqueIdentifier.domainId)
+            if (!ethnicity) {
+                throw new ApplicationException("ethnicity", new NotFoundException())
+            }
+
+            result = getDecorator(ethnicity, globalUniqueIdentifier.guid)
+        } else if ("v3".equals(getAcceptVersion(VERSIONS))) {
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITIES_US, guid?.trim()?.toLowerCase())
+            if (!globalUniqueIdentifier) {
+                throw new ApplicationException("ethnicity", new NotFoundException())
+            }
+            result = ["guid": globalUniqueIdentifier.guid, "title": globalUniqueIdentifier.domainKey]
         }
 
-        Ethnicity ethnicity = Ethnicity.get(globalUniqueIdentifier.domainId)
-        if (!ethnicity) {
-            throw new ApplicationException("ethnicity", new NotFoundException())
-        }
-
-        return getDecorator(ethnicity, globalUniqueIdentifier.guid);
+        log.debug "get:End:$result"
+        return result;
     }
 
     /**
@@ -241,6 +276,15 @@ class EthnicityCompositeService extends LdmService {
         if (!content?.description) {
             throw new ApplicationException('ethnicity', new BusinessLogicValidationException('description.required.message', null))
         }
+    }
+
+    /**
+     * Ethnic codes defined by the U.S. government
+     *
+     * @return
+     */
+    List<GlobalUniqueIdentifier> getUnitedStatesEthnicCodes() {
+        return GlobalUniqueIdentifier.findAllByLdmName(ETHNICITIES_US)
     }
 
 }

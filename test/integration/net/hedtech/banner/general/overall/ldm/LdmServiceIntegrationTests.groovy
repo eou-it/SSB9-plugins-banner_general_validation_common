@@ -2,6 +2,7 @@ package net.hedtech.banner.general.overall.ldm
 
 import net.hedtech.banner.general.system.AcademicYear
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
 import org.junit.Before
 import org.junit.Test
 
@@ -124,4 +125,115 @@ class LdmServiceIntegrationTests extends BaseIntegrationTestCase {
             assertApplicationException e, "NotFoundException"
         }
     }
+
+
+    @Test
+    void testGetAcceptVersion_scenario1() {
+        // Generic Accept header and no API versions - return null
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/json")
+        def apiVersions = null
+        String acceptVersion = LdmService.getAcceptVersion(apiVersions)
+        assertNull acceptVersion
+    }
+
+
+    @Test
+    void testGetAcceptVersion_scenario2() {
+        // v1 Accept header and no API versions - return v1
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v1+json")
+        def apiVersions = null
+        String acceptVersion = LdmService.getAcceptVersion(apiVersions)
+        assertEquals "v1", acceptVersion
+    }
+
+
+    @Test
+    void testGetAcceptVersion_scenario3() {
+        // Generic Accept header - return latest version
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/json")
+        List<String> apiVersions = ["v3", "v1"]
+        String acceptVersion = LdmService.getAcceptVersion(apiVersions)
+        assertEquals "v3", acceptVersion
+    }
+
+
+    @Test
+    void testGetAcceptVersion_scenario4() {
+        // v3 Accept header for API which is up to v2 only - return v2 version
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v3+json")
+        List<String> apiVersions = ["v1", "v2"]
+        String acceptVersion = LdmService.getAcceptVersion(apiVersions)
+        assertEquals "v2", acceptVersion
+    }
+
+
+    @Test
+    void testGetAcceptVersion_scenario5() {
+        // v2 Accept header which API never handling - return previous version to v2 i.e. v1 version
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v2+json")
+        List<String> apiVersions = ["v1", "v3"]
+        String acceptVersion = LdmService.getAcceptVersion(apiVersions)
+        assertEquals "v1", acceptVersion
+    }
+
+
+    @Test
+    void testGetContentTypeVersion_scenario1() {
+        // Generic Content-Type header and no API versions - return null
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Content-Type", "application/json")
+        def apiVersions = null
+        String ctVersion = LdmService.getContentTypeVersion(apiVersions)
+        assertNull ctVersion
+    }
+
+
+    @Test
+    void testGetContentTypeVersion_scenario2() {
+        // v1 Content-Type header and no API versions - return v1
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v1+json")
+        def apiVersions = null
+        String ctVersion = LdmService.getContentTypeVersion(apiVersions)
+        assertEquals "v1", ctVersion
+    }
+
+
+    @Test
+    void testGetContentTypeVersion_scenario3() {
+        // Generic Content-Type header - return latest version
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Content-Type", "application/json")
+        List<String> apiVersions = ["v3", "v1"]
+        String ctVersion = LdmService.getContentTypeVersion(apiVersions)
+        assertEquals "v3", ctVersion
+    }
+
+
+    @Test
+    void testGetContentTypeVersion_scenario4() {
+        // v3 Content-Type header for API which is up to v2 only - return v2 version
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v3+json")
+        List<String> apiVersions = ["v1", "v2"]
+        String ctVersion = LdmService.getContentTypeVersion(apiVersions)
+        assertEquals "v2", ctVersion
+    }
+
+
+    @Test
+    void testGetContentTypeVersion_scenario5() {
+        // v2 Content-Type header which API never handling - return previous version to v2 i.e. v1 version
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Content-Type", "application/vnd.hedtech.integration.v2+json")
+        List<String> apiVersions = ["v1", "v3"]
+        String ctVersion = LdmService.getContentTypeVersion(apiVersions)
+        assertEquals "v1", ctVersion
+    }
+
 }

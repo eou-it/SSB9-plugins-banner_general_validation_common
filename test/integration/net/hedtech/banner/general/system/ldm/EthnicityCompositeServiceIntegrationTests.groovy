@@ -4,12 +4,14 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.IpedsEthnicity
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
-import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
 import org.junit.Before
 import org.junit.Test
 
@@ -27,7 +29,6 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
     def u_success_description = 'Update Ethnicity'
     def u_success_data_origin = 'Banner'
     def u_success_parent_category = 'Non-Hispanic'
-    private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
 
 
     @Before
@@ -46,6 +47,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
     @Test
     void testListWithoutPaginationParams() {
+        setAcceptHeader("application/vnd.hedtech.integration.v1+json")
         List ethnicities = ethnicityCompositeService.list([:])
         assertNotNull ethnicities
         assertFalse ethnicities.isEmpty()
@@ -55,6 +57,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
     @Test
     void testListWithPagination() {
+        setAcceptHeader("application/vnd.hedtech.integration.v1+json")
         def paginationParams = [max: '2', offset: '0']
         List ethnicities = ethnicityCompositeService.list(paginationParams)
         assertNotNull ethnicities
@@ -64,7 +67,25 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
 
     @Test
+    void testListV3() {
+        List<GlobalUniqueIdentifier> globUniqIds = ethnicityCompositeService.getUnitedStatesEthnicCodes()
+        assertTrue globUniqIds?.size() > 0
+        def expectedGuids = globUniqIds.collect { it.guid }
+
+        setAcceptHeader("application/vnd.hedtech.integration.v3+json")
+
+        List ethnicities = ethnicityCompositeService.list([:])
+        assertTrue ethnicities?.size() > 0
+        def actualGuids = ethnicities.collect { it.guid }
+        assertEquals expectedGuids.size(), actualGuids.size()
+        assertTrue expectedGuids.containsAll(actualGuids)
+        assertEquals expectedGuids.size(), ethnicityCompositeService.count()
+    }
+
+
+    @Test
     void testCount() {
+        setAcceptHeader("application/vnd.hedtech.integration.v1+json")
         assertNotNull i_success_ethnicity
         assertEquals Ethnicity.count(), ethnicityCompositeService.count()
     }
@@ -72,6 +93,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
     @Test
     void testGetInvalidGuid() {
+        setAcceptHeader("application/vnd.hedtech.integration.v1+json")
         try {
             ethnicityCompositeService.get('Invalid-guid')
         } catch (ApplicationException ae) {
@@ -82,6 +104,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
     @Test
     void testGetNullGuid() {
+        setAcceptHeader("application/vnd.hedtech.integration.v1+json")
         try {
             ethnicityCompositeService.get(null)
         } catch (ApplicationException ae) {
@@ -92,6 +115,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
     @Test
     void testGet() {
+        setAcceptHeader("application/vnd.hedtech.integration.v1+json")
         def paginationParams = [max: '1', offset: '0']
         def ethnicityDetails = ethnicityCompositeService.list(paginationParams)
         assertNotNull ethnicityDetails
@@ -107,6 +131,44 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertNotNull ethnicityDetail.metadata
         assertEquals ethnicityDetails[0].metadata.dataOrigin, ethnicityDetail.metadata.dataOrigin
         assertEquals ethnicityDetails[0], ethnicityDetail
+    }
+
+
+    @Test
+    void testGetV3_InvalidGuid() {
+        setAcceptHeader("application/vnd.hedtech.integration.v3+json")
+        try {
+            ethnicityCompositeService.get('Invalid-guid')
+            fail("Expected NotFoundException")
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testGetV3_NullGuid() {
+        setAcceptHeader("application/vnd.hedtech.integration.v3+json")
+        try {
+            ethnicityCompositeService.get(null)
+            fail("Expected NotFoundException")
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testGetV3() {
+        List<GlobalUniqueIdentifier> globUniqIds = ethnicityCompositeService.getUnitedStatesEthnicCodes()
+        assertTrue globUniqIds?.size() > 0
+
+        setAcceptHeader("application/vnd.hedtech.integration.v3+json")
+
+        def result = ethnicityCompositeService.get(globUniqIds[0].guid)
+        assertNotNull result
+        assertEquals globUniqIds[0].guid, result.guid
+        assertEquals globUniqIds[0].domainKey, result.title
     }
 
 
@@ -236,7 +298,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
     private Map updateEthnicityMap(guid) {
         Map params = [id            : guid,
-                      description         : u_success_description,
+                      description   : u_success_description,
                       metadata      : [dataOrigin: u_success_data_origin],
                       parentCategory: u_success_parent_category
         ]
@@ -262,85 +324,10 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         ethnicity.save(failOnError: true, flush: true)
     }
 
-    /**
-     * Test to check the EthnicityCompositeService list method with valid sort and order field and supported version
-     * If No "Accept" header is provided, by default it takes the latest supported version
-     */
-    @Test
-    void testListWithValidSortAndOrderFieldWithSupportedVersion() {
-        def params = [order: 'ASC', sort: 'code']
-        def ethnicityList = ethnicityCompositeService.list(params)
-        assertNotNull ethnicityList
-        assertFalse ethnicityList.isEmpty()
-        assertNotNull ethnicityList.code
-        assertEquals Ethnicity.count(), ethnicityList.size()
-        assertNotNull i_success_ethnicity
-        assertTrue ethnicityList.code.contains(i_success_ethnicity.code)
-        assertTrue ethnicityList.description.contains(i_success_ethnicity.description)
-        assertTrue ethnicityList.dataOrigin.contains(i_success_ethnicity.dataOrigin)
 
+    private void setAcceptHeader(String acceptHeader) {
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", acceptHeader)
     }
 
-    /**
-     * Test to check the sort by code on EthnicityCompositeService
-     * */
-    @Test
-    public void testSortByCode(){
-        params.order='ASC'
-        params.sort='code'
-        List list = ethnicityCompositeService.list(params)
-        assertNotNull list
-        def tempParam=null
-        list.each{
-            ethnicity->
-                String code=ethnicity.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-
-        params.clear()
-        params.order='DESC'
-        params.sort='code'
-        list = ethnicityCompositeService.list(params)
-        assertNotNull list
-        tempParam=null
-        list.each{
-            ethnicity->
-                String code=ethnicity.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-    }
-
-    /**
-     * Test to check the EthnicityCompositeService list method with invalid sort field
-     */
-    @Test
-    void testListWithInvalidSortFiled() {
-        try {
-            def map = [sort: 'test']
-            ethnicityCompositeService.list(map)
-            fail()
-        } catch (RestfulApiValidationException e) {
-            assertEquals 400, e.getHttpStatusCode()
-            assertEquals invalid_sort_orderErrorMessage , e.messageCode.toString()
-        }
-    }
-
-    /**
-     * Test to check the EthnicityCompositeService list method with invalid order field
-     */
-    @Test
-    void testListWithInvalidOrderField() {
-        shouldFail(RestfulApiValidationException) {
-            def map = [order: 'test']
-            ethnicityCompositeService.list(map)
-        }
-    }
 }

@@ -10,6 +10,10 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GXVDIRD")
+@NamedQueries(value = [
+    @NamedQuery(name = "BankRoutingInfo.fetchByRoutingNum",
+        query = """ FROM BankRoutingInfo a WHERE a.bankRoutingNum = :bankRoutingNum """),
+])
 class BankRoutingInfo implements Serializable {
 
     /**
@@ -77,5 +81,16 @@ class BankRoutingInfo implements Serializable {
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
+    }
+    
+    public static fetchByRoutingNum(String bankRoutingNum) {
+        def bankInfo
+
+        BankRoutingInfo.withSession { session ->
+            bankInfo = session.getNamedQuery(
+                    'BankRoutingInfo.fetchByRoutingNum')
+                    .setString('bankRoutingNum', bankRoutingNum).list()
+        }
+        return bankInfo
     }
 }

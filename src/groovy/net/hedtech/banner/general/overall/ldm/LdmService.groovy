@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
@@ -79,6 +79,14 @@ class LdmService {
         LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
         LdmService.log.debug("ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
         return integrationConfig
+    }
+
+    List<IntegrationConfiguration> findAllByProcessCodeAndSettingName(String processCode, String settingName) {
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(processCode, settingName)
+        LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
+        LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
+        LdmService.log.debug("ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
+        return integrationConfigs.size() > 0 ? integrationConfigs : null
     }
 
     /**
@@ -229,7 +237,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Accept header
      */
-    public static String getResponseRepresentationVersion() {
+    private static String getResponseRepresentationVersion() {
         String version
         String acceptHeader = responseBodyMediaType()
         if (acceptHeader) {
@@ -262,6 +270,29 @@ class LdmService {
     }
 
     /**
+     * Utility method used to decide which version flow should be executed for given Accept header.
+     *
+     * @param apiVersions List of HEDM versions supported by API
+     * @return
+     */
+    public static String getAcceptVersion(List<String> apiVersions) {
+        List<String> sortedApiVersions = apiVersions?.sort(false)
+        String representationVersion = getResponseRepresentationVersion()
+        if (sortedApiVersions) {
+            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+                // Assume latest (current) version
+                representationVersion = sortedApiVersions.last()
+            } else {
+                int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
+                if (index != -1) {
+                    representationVersion = sortedApiVersions.get(index)
+                }
+            }
+        }
+        return representationVersion
+    }
+
+    /**
      * Returns "Content-Type" header
      *
      * @return
@@ -278,7 +309,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Content-Type header
      */
-    public static String getRequestRepresentationVersion() {
+    private static String getRequestRepresentationVersion() {
         String version
         String contentTypeHeader = requestBodyMediaType()
         if (contentTypeHeader) {
@@ -293,6 +324,29 @@ class LdmService {
             }
         }
         return version?.toLowerCase()
+    }
+
+    /**
+     * Utility method used to decide which version flow should be executed for given Content-Type header.
+     *
+     * @param apiVersions List of HEDM versions supported by API
+     * @return
+     */
+    public static String getContentTypeVersion(List<String> apiVersions) {
+        List<String> sortedApiVersions = apiVersions?.sort(false)
+        String representationVersion = getRequestRepresentationVersion()
+        if (sortedApiVersions) {
+            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+                // Assume latest (current) version
+                representationVersion = sortedApiVersions.last()
+            } else {
+                int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
+                if (index != -1) {
+                    representationVersion = sortedApiVersions.get(index)
+                }
+            }
+        }
+        return representationVersion
     }
 
 

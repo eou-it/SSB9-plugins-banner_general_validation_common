@@ -3,8 +3,11 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.overall.ldm
 
+import net.hedtech.banner.general.system.EmailType
+import net.hedtech.banner.general.system.IntegrationPartner
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
@@ -17,11 +20,13 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
 
     Long u_success_domainId = 2L
 
+
     @Before
     public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
     }
+
 
     @Test
     void testCreateGlobalUniqueIdentifier() {
@@ -34,6 +39,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_domainId, globalUniqueIdentifier.domainId
         assertEquals i_success_domainKey, globalUniqueIdentifier.domainKey
     }
+
 
     @Test
     void testUpdateGlobalUniqueIdentifier() {
@@ -50,6 +56,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertEquals u_success_domainId, globalUniqueIdentifier.domainId
     }
 
+
     @Test
     void testDeleteGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
@@ -60,6 +67,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         globalUniqueIdentifier.delete(flush: true)
         assertNull GlobalUniqueIdentifier.get(id)
     }
+
 
     @Test
     void testOptimisticLock() {
@@ -72,6 +80,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     @Test
     void testNullableConstraints() {
         GlobalUniqueIdentifier globalUniqueIdentifier = new GlobalUniqueIdentifier()
@@ -79,6 +88,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor globalUniqueIdentifier, 'nullable', ['guid', 'ldmName', 'domainId']
         assertNoErrorsFor globalUniqueIdentifier, ['domainKey']
     }
+
 
     @Test
     void testMaxSizeConstraints() {
@@ -91,6 +101,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor globalUniqueIdentifier, 'maxSize', ['guid', 'ldmName', 'domainKey']
     }
 
+
     @Test
     void testFetchByLdmNameAndGuidForInvalidLdmName() {
         GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
@@ -98,6 +109,67 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull globalUniqueIdentifier.id
         assertNotNull globalUniqueIdentifier.guid
         assertNull GlobalUniqueIdentifier.fetchByLdmNameAndGuid('invalid-ldm-name', globalUniqueIdentifier.guid)
+    }
+
+
+    @Test
+    void testFetchByLdmNamesAndGuid() {
+        GlobalUniqueIdentifier globalUniqueIdentifier = createNewGlobalUniqueIdentifier()
+        globalUniqueIdentifier = globalUniqueIdentifier.save(failOnError: true, flush: true)
+        assertNotNull globalUniqueIdentifier.id
+        assertNotNull globalUniqueIdentifier.guid
+        def globalUniqueIdentifier1 = GlobalUniqueIdentifier.fetchByGuid(i_success_ldmName, globalUniqueIdentifier.guid)
+        assertNotNull globalUniqueIdentifier1
+        assertEquals globalUniqueIdentifier, globalUniqueIdentifier1
+    }
+
+
+    @Test
+    void testFetchByLdmNameAndDomainSurrogateIds() {
+        String ldmName = GlobalUniqueIdentifier.findAll([max: 1])[0].ldmName
+        List<Long> domainIds = GlobalUniqueIdentifier.findAllByLdmName(ldmName, [max: 10]).domainId
+
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateIds(ldmName, domainIds)
+        assertNotNull globalUniqueIdentifierList
+        globalUniqueIdentifierList.collect {
+            assertEquals it.ldmName, ldmName
+            assertTrue domainIds.contains(it.domainId)
+        }
+
+    }
+
+
+    @Test
+    void testFetchByLdmNameAndDomainKeys() {
+
+        def ldmName = 'person-filters'
+        def key1 = 'STUDENT-^HEDM-^BANNER-^GRAILS'
+        def key2 = 'STUDENT-^HEDM2-^BANNER-^GRAILS'
+        def domainIds = GlobalUniqueIdentifier.findAllByLdmName(ldmName)
+        assertNotNull domainIds.find { it.domainKey == key1 }
+        assertNotNull domainIds.find { it.domainKey == key2 }
+
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.fetchByLdmNameAndDomainKeys(ldmName, [key1, key2])
+        assertEquals 2, globalUniqueIdentifierList.size()
+        assertNotNull globalUniqueIdentifierList.find { it.domainKey == key1 }
+        assertNotNull globalUniqueIdentifierList.find { it.domainKey == key2 }
+
+
+    }
+
+
+    @Test
+    void testFetchByLdmNameAndDomainKey() {
+
+        def ldmName = 'person-filters'
+        def key1 = 'STUDENT-^HEDM-^BANNER-^GRAILS'
+        def domainIds = GlobalUniqueIdentifier.findAllByLdmName(ldmName)
+        assertNotNull domainIds.find { it.domainKey == key1 }
+
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.fetchByLdmNameAndDomainKey(ldmName, key1)
+        assertEquals 1, globalUniqueIdentifierList.size()
+        assertNotNull globalUniqueIdentifierList.find { it.domainKey == key1 }
+
     }
 
     @Test
@@ -112,17 +184,15 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void testFetchByLdmNameAndDomainSurrogateIds(){
-        String ldmName = GlobalUniqueIdentifier.findAll([max:1])[0].ldmName
-        List<Long> domainIds = GlobalUniqueIdentifier.findAllByLdmName(ldmName,[max:10]).domainId
+    @Ignore
+    void testFetchByLdmNameAndDomainId() {
+        def integrations = IntegrationPartner.findAll()
+        assertNotNull integrations[0]
 
-        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateIds(ldmName, domainIds)
-        assertNotNull globalUniqueIdentifierList
-        globalUniqueIdentifierList.collect {
-            assertEquals it.ldmName,ldmName
-            assertTrue domainIds.contains(it.domainId)
-        }
-
+        def guid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId('instructional-platformss',
+                integrations[0].id)
+        assertNotNull guid
+        assertEquals guid.domainId, integrations[0].id
     }
 
 

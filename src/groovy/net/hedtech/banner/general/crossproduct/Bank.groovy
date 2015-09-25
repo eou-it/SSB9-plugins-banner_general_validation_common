@@ -34,7 +34,7 @@ class Bank implements Serializable {
      * All bank codes and other attributes are displayed on form GXVBANK.
      */
     @Column(name = "GXVBANK_BANK_CODE")
-    String bank
+    String bank 
 
     /**
      * EFFECTIVE DATE:  The effective date of this particular record.

@@ -3,6 +3,9 @@ Copyright 2015 Ellucian Company L.P. and its affiliates.
 *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
 import javax.persistence.*
  
 /**
@@ -14,6 +17,9 @@ import javax.persistence.*
     @NamedQuery(name = "BankRoutingInfo.fetchByRoutingNum",
         query = """ FROM BankRoutingInfo a WHERE a.bankRoutingNum = :bankRoutingNum """),
 ])
+
+@ToString(includeNames = true, ignoreNulls = false)
+@EqualsAndHashCode(includeFields = true)
 class BankRoutingInfo implements Serializable {
 
     /**
@@ -63,17 +69,6 @@ class BankRoutingInfo implements Serializable {
      */
     @Column(name = "GXVDIRD_DATA_ORIGIN")
     String dataOrigin
-
-    public String toString() {
-        """BankRoutingInfo [
-            id= $id,
-            version= $version,
-            bankRoutingNum= $bankRoutingNum,
-            bankName= $bankName,
-            lastModified= $lastModified,
-            lastModifiedBy= $lastModifiedBy,
-            dataOrigin= $dataOrigin]"""
-    }
 
     static constraints = {
         bankRoutingNum(nullable: false, maxSize: 11)

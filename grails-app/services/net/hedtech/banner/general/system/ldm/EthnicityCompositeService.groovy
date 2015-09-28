@@ -25,7 +25,7 @@ class EthnicityCompositeService extends LdmService {
     def ethnicityService
     private static final String ETHNICITY_LDM_NAME = 'ethnicities'
     private static final String ETHNICITIES_US = 'ethnicities-us'
-    private static final List<String> VERSIONS = ["v1", "v3"]
+    private static final List<String> VERSIONS = ["v1", "v3", "v4"]
 
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -50,7 +50,18 @@ class EthnicityCompositeService extends LdmService {
             results?.each {
                 ethnicityDetailList << ["guid": it.guid, "title": it.domainKey]
             }
+        }else if ("v4".equals(getAcceptVersion(VERSIONS))) {
+            def results = getUnitedStatesEthnicCodes()
+            results?.each {
+                switch (it?.domainId){
+                    case 1L : ethnicityDetailList << ["id": it.guid, "title": it.domainKey, "ethnicCategory":"nonHispanic"]
+                        break
+                    case 2L  :  ethnicityDetailList << ["id": it.guid, "title": it.domainKey, "ethnicCategory":"hispanic"]
+                        break
+                }
+            }
         }
+
 
         log.debug "list:End:${ethnicityDetailList?.size()}"
         return ethnicityDetailList
@@ -66,6 +77,8 @@ class EthnicityCompositeService extends LdmService {
             total = Ethnicity.count()
         } else if ("v3".equals(getAcceptVersion(VERSIONS))) {
             total = GlobalUniqueIdentifier.countByLdmName(ETHNICITIES_US)
+        } else if ("v4".equals(getAcceptVersion(VERSIONS))) {
+            total = GlobalUniqueIdentifier.countByLdmNameAndDomainIdGreaterThan(ETHNICITIES_US,0L)
         }
 
         log.debug "count:End:$total"
@@ -96,6 +109,17 @@ class EthnicityCompositeService extends LdmService {
                 throw new ApplicationException("ethnicity", new NotFoundException())
             }
             result = ["guid": globalUniqueIdentifier.guid, "title": globalUniqueIdentifier.domainKey]
+        } else if ("v4".equals(getAcceptVersion(VERSIONS))) {
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITIES_US, guid?.trim()?.toLowerCase())
+            if (!globalUniqueIdentifier || globalUniqueIdentifier.domainId<=0) {
+                throw new ApplicationException("ethnicity", new NotFoundException())
+            }
+            switch (globalUniqueIdentifier?.domainId){
+                case 1L :  result = ["id": globalUniqueIdentifier?.guid, "title": globalUniqueIdentifier?.domainKey, "ethnicCategory":"nonHispanic"]
+                    break
+                case 2L  :  result = ["id": globalUniqueIdentifier?.guid, "title": globalUniqueIdentifier?.domainKey, "ethnicCategory":"hispanic"]
+                    break
+            }
         }
 
         log.debug "get:End:$result"

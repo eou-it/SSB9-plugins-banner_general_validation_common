@@ -112,11 +112,17 @@ class MaritalStatusCompositeService extends LdmService {
      * @param content Request body
      */
     def create(content) {
-        validateRequest(content)
+        def version = LdmService.getContentTypeVersion(VERSIONS)
+        validateRequest(content,version)
+        if('v4'.equals(version)){
+            if(!content?.maritalCategory || !MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY.contains(content?.maritalCategory)){
+                throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('maritalCategory.required.message', null))
+            }
+        }
 
         MaritalStatus maritalStatus = MaritalStatus.findByCode(content?.code?.trim())
         if (maritalStatus) {
-            def messageCode = 'v4'.equals(LdmService.getContentTypeVersion(VERSIONS)) ? 'code.exists.message' : 'exists.message'
+            def messageCode = 'v4'.equals(version) ? 'code.exists.message' : 'exists.message'
             throw new ApplicationException("maritalStatus", new BusinessLogicValidationException(messageCode, null))
         }
 
@@ -166,12 +172,9 @@ class MaritalStatusCompositeService extends LdmService {
         if (maritalStatus.code != content?.code?.trim()) {
             content.put("code", maritalStatus.code)
         }
-        if("v4".equals(LdmService.getContentTypeVersion(VERSIONS))){
-            content.put("maritalCategory", getHeDMEnumeration(maritalStatus.code))
-        }
-        validateRequest(content)
+        validateRequest(content,LdmService.getContentTypeVersion(VERSIONS))
         maritalStatus = bindMaritalStatus(maritalStatus, content)
-        def maritalCategory = "v4".equals(LdmService.getAcceptVersion(VERSIONS)) ? content?.maritalCategory : null
+        def maritalCategory = "v4".equals(LdmService.getAcceptVersion(VERSIONS)) ? getHeDMEnumeration(maritalStatus?.code) : null
         return getDecorator(maritalStatus, msGuid,maritalCategory)
     }
 
@@ -198,19 +201,13 @@ class MaritalStatusCompositeService extends LdmService {
     }
 
 
-    private void validateRequest(content) {
-       def version = LdmService.getContentTypeVersion(VERSIONS)
+    private void validateRequest(content,version) {
         if (!content?.code) {
             def parameterValue = 'v4'.equals(version) ? 'Code' : 'Abbreviation'
             throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('code.required.message',[parameterValue]))
         }
         if (!content?.description) {
             throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('description.required.message', null))
-        }
-        if('v4'.equals(version)){
-            if(!content?.maritalCategory || !MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY.contains(content?.maritalCategory)){
-                throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('maritalCategory.required.message', null))
-            }
         }
     }
 

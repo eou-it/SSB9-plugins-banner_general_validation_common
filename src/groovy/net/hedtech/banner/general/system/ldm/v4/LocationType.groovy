@@ -15,7 +15,12 @@ class LocationType {
 
     LocationType(LocationTypeView locationTypeView, String entityType, String locationType) {
         this.locationTypeView = locationTypeView
-        this.type = [entityType: entityType, locationType: locationType]
+        if (entityType =='organization'){
+            this.type = ["organization" : ["locationType": locationType]]
+        }
+        if (entityType =='person'){
+            this.type = ["person" : ["locationType": locationType]]
+        }
     }
 
 

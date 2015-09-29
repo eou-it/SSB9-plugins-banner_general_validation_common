@@ -13,6 +13,8 @@ public enum PersonEmailType {
     BUSINESS('business'),
     SCHOOL('school'),
     OTHERS('other'),
+    PARENT('parent'),
+    FAMILY('family')
 
     def value
 

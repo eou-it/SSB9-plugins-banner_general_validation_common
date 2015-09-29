@@ -39,19 +39,17 @@ class EmailTypeCompositeService {
         results.each {
             result ->
                 boolean isValid = false
-                def types = [:]
+                Map<String, String> types
 
                 if (result.entityType == ContactEntityType.ORGANIZATION?.value?.toUpperCase()) {
-                    types.put('entityType', ContactEntityType.ORGANIZATION.value)
                     if (checkPersonEmailType(result?.emailType, ContactEntityType.ORGANIZATION?.value)) {
-                        types.put('emailType', result?.emailType)
+                        types = ([(ContactEntityType.ORGANIZATION?.value) : ["emailType": result?.emailType]])
                         isValid = true
                     }
 
                 } else if (result.entityType == ContactEntityType.PERSON?.value?.toUpperCase()) {
-                    types.put('entityType', ContactEntityType.PERSON?.value)
                     if (checkPersonEmailType(result?.emailType, ContactEntityType.PERSON?.value)) {
-                        types.put('emailType', result?.emailType)
+                        types = ([(ContactEntityType.PERSON?.value) : ["emailType": result?.emailType]])
                         isValid = true
                     }
 
@@ -110,20 +108,18 @@ class EmailTypeCompositeService {
     @Transactional(readOnly = true)
     EmailTypeDetails get(String guid) {
         EmailTypesView emailTypesView = null
-        def types = [:]
+        Map<String, String> types
         if (guid) {
             emailTypesView = EmailTypesView.findByGuid(guid)
 
             if (emailTypesView?.entityType == ContactEntityType.ORGANIZATION?.value?.toUpperCase()) {
-                types.put('entityType', ContactEntityType.ORGANIZATION?.value)
                 if (checkPersonEmailType(emailTypesView?.emailType, ContactEntityType.ORGANIZATION?.value)) {
-                    types.put('emailType', emailTypesView?.emailType)
+                     types = ([(ContactEntityType.ORGANIZATION?.value) : ["emailType": emailTypesView?.emailType]])
                 }
 
             } else if (emailTypesView?.entityType == ContactEntityType.PERSON?.value?.toUpperCase()) {
-                types.put('entityType', ContactEntityType.PERSON?.value)
                 if (checkPersonEmailType(emailTypesView?.emailType, ContactEntityType.PERSON?.value)) {
-                    types.put('emailType', emailTypesView.emailType)
+                    types = ([(ContactEntityType.PERSON?.value) : ["emailType": emailTypesView?.emailType]])
                 }
 
             }

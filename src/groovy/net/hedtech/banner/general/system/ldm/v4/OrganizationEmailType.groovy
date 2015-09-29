@@ -15,7 +15,8 @@ public enum OrganizationEmailType {
     LEGAL('legal'),
     HR('hr'),
     MEDIA('media'),
-    OTHERS('other')
+    OTHERS('other'),
+    MATCHINGGIFTS('matchingGifts')
 
     def value
 

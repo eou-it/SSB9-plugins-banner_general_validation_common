@@ -15,7 +15,12 @@ class PhoneType {
 
     PhoneType(PhoneTypeView phoneTypeView,String entityType,String phoneType){
         this.phoneTypeView=phoneTypeView
-        this.type=[entityType:entityType,phoneType:phoneType]
+        if (entityType =='organization'){
+            this.type = ["organization" : ["phoneType": phoneType]]
+        }
+        if (entityType =='person'){
+            this.type = ["person" : ["phoneType": phoneType]]
+        }
     }
 
 

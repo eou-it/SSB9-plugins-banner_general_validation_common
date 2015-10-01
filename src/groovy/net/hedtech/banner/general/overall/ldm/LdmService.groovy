@@ -35,7 +35,8 @@ class LdmService {
     ]
 
     private static List globalBindExcludes = ['id', 'version', 'dataOrigin']
-    private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
+    //TODO unused variable has to remove
+   // private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
 
 
     static String fetchBannerDomainPropertyForLdmField(String ldmField) {
@@ -397,7 +398,7 @@ class LdmService {
      * Used to set the GUID to a specific value when update method
      * calls create.
      */
-    private GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
+     public GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ldmName, id)
         if (!newEntity) {
@@ -412,7 +413,7 @@ class LdmService {
      *  Use the method above to use the faster indexed method.
      *  This is only used when there is no single master table for the GUID or no single record for the GUID.
      */
-    private GlobalUniqueIdentifier updateGuidValueByDomainKey(String domainKey, String guid, String ldmName) {
+    public GlobalUniqueIdentifier updateGuidValueByDomainKey(String domainKey, String guid, String ldmName) {
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ldmName, domainKey)
         if (!newEntity) {

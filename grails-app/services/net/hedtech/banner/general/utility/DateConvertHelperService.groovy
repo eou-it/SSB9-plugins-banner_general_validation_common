@@ -46,7 +46,7 @@ class DateConvertHelperService {
             return date
         }
         def dbtimezone
-        time =!time ? null : time?.substring( 0, 2 ) + ':' + time?.substring( 2, 4 ) + ':' + '00'
+        time = time ? time?.substring( 0, 2 ) + ':' + time?.substring( 2, 4 ) + ':' + '00' : null
         timeZone = timeZone ?: getDBTimeZone()
         if (timeZone) {
             if (timeZone.size() == 1) {

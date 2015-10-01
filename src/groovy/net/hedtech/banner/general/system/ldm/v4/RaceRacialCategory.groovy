@@ -8,7 +8,7 @@ package net.hedtech.banner.general.system.ldm.v4
  */
 public enum RaceRacialCategory {
 
-    private static final List<String> RACE_RACIAL_CATEGORY = ["africanAmerican",
+    public static final List<String> RACE_RACIAL_CATEGORY = ["africanAmerican",
                                                               "alaskaNative",
                                                               "americanIndian",
                                                               "asian",

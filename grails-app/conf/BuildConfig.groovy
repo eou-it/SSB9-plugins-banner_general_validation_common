@@ -6,10 +6,7 @@ grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
-grails.plugin.location.'banner-core' = "../banner_core.git"
 grails.plugin.location.'banner-seeddata-catalog' = "../banner_seeddata_catalog.git"
-grails.plugin.location.'banner-codenarc' = "../banner_codenarc.git"
-grails.plugin.location.'i18n-core'="../i18n_core.git"
 
 grails.project.dependency.resolver = "maven"
 

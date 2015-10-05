@@ -3,10 +3,6 @@
  **********************************************************************************/
 package net.hedtech.banner.general.utility
 
-import org.springframework.context.ApplicationContext
-import org.codehaus.groovy.grails.web.context.ServletContextHolder
-import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
-
 class InformationTextPersona implements Serializable {
 
     /**

@@ -3,8 +3,6 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.query.DynamicFinder
-
 import javax.persistence.*
 
 @Entity

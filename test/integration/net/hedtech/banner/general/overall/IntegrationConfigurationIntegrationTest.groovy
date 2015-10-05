@@ -35,7 +35,7 @@ class IntegrationConfigurationIntegrationTest extends BaseIntegrationTestCase {
         assertNull integrationConfigurationList
         integrationConfigurationList = IntegrationConfiguration.fetchAllByProcessCode(PROCESS_CODE_HEDM)
         assertNotNull integrationConfigurationList
-        assertEquals 87, integrationConfigurationList.size()
+        assertEquals IntegrationConfiguration.countByProcessCode(PROCESS_CODE_HEDM), integrationConfigurationList.size()
     }
 
     @Test

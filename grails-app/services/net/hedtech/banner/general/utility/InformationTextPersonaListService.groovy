@@ -26,9 +26,10 @@ class InformationTextPersonaListService {
         }
     }
 
+   /* TODO unused method has to remove
     private static boolean isDefaultPersonaAdded() {
         return webTailorRoleList.any { it.code == PERSONA_DEFAULT }
-    }
+    }*/
 
     private static void addDefaultPersonaIfNotExists() {
 

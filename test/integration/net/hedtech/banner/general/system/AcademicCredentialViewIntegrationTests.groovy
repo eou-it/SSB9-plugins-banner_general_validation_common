@@ -13,7 +13,7 @@ import org.springframework.jdbc.UncategorizedSQLException
 /**
  * Integration Test cases for AcademicCredentialView which is Read Only view
  */
-class AcademicCredentialsViewIntegrationTests extends BaseIntegrationTestCase {
+class AcademicCredentialViewIntegrationTests extends BaseIntegrationTestCase {
 
 
     @Before
@@ -45,7 +45,7 @@ class AcademicCredentialsViewIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testReadOnlyForUpdateAcademicCredential() {
-        AcademicCredentialsView academicCredential = AcademicCredentialsView.findByCode('MA')
+        AcademicCredentialView academicCredential = AcademicCredentialView.findByCode('MA')
         assertNotNull academicCredential
         academicCredential.description = 'Test for Update'
         shouldFail(InvalidDataAccessResourceUsageException) {
@@ -59,7 +59,7 @@ class AcademicCredentialsViewIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testReadOnlyForDeleteAcademicCredential() {
-        AcademicCredentialsView academicCredential = AcademicCredentialsView.findByCode('MA')
+        AcademicCredentialView academicCredential = AcademicCredentialView.findByCode('MA')
         assertNotNull academicCredential
         shouldFail(UncategorizedSQLException) {
             academicCredential.delete(flush: true, onError: true)
@@ -75,10 +75,11 @@ class AcademicCredentialsViewIntegrationTests extends BaseIntegrationTestCase {
         def params = [max: '500', offset: '0', order: 'ASC']
         def degree = Degree.findByCode('MA')
         assertNotNull degree
-        List academicCredentialList = AcademicCredentialsView.list(params)
+        List academicCredentialList = AcademicCredentialView.list(params)
         assertNotNull academicCredentialList
         assertFalse academicCredentialList.isEmpty()
-        assertTrue academicCredentialList.type.containsAll(['degree', 'honorary', 'diploma', 'certificate'])
+        def typeList = ['degree', 'honorary', 'diploma', 'certificate']
+        assertTrue typeList.containsAll(academicCredentialList.type)
         assertTrue academicCredentialList.description.contains(degree.description)
         assertTrue academicCredentialList.code.contains(degree.code)
     }
@@ -89,11 +90,11 @@ class AcademicCredentialsViewIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testGet() {
-        assertNull AcademicCredentialsView.get("")
-        assertNull AcademicCredentialsView.get(null)
+        assertNull AcademicCredentialView.get("")
+        assertNull AcademicCredentialView.get(null)
         def degree = Degree.findByCode('MA')
         assertNotNull degree
-        def academicCredential = AcademicCredentialsView.get(degree.id)
+        def academicCredential = AcademicCredentialView.get(degree.id)
         assertNotNull academicCredential
         def typeList = ['degree', 'honorary', 'diploma', 'certificate']
         assertTrue typeList.contains(academicCredential.type)
@@ -102,7 +103,7 @@ class AcademicCredentialsViewIntegrationTests extends BaseIntegrationTestCase {
     }
 
     private def newAcademicCredentialView() {
-        new AcademicCredentialsView(
+        new AcademicCredentialView(
                 id: 'test',
                 code: 'test',
                 description: 'test data',

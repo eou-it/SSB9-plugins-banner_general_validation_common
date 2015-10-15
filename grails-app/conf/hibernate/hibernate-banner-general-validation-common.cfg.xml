@@ -152,7 +152,7 @@
         <mapping class="net.hedtech.banner.general.system.PhoneTypeView"/>
         <mapping class="net.hedtech.banner.general.system.LocationTypeView"/>
         <mapping class="net.hedtech.banner.general.system.EmailTypesView"/>
-        <mapping class="net.hedtech.banner.general.system.AcademicCredentialsView"/>
+        <mapping class="net.hedtech.banner.general.system.AcademicCredentialView"/>
 
    </session-factory>
    </hibernate-configuration>

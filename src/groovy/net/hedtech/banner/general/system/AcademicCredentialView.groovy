@@ -3,6 +3,8 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.query.DynamicFinder
+
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -16,7 +18,7 @@ import javax.persistence.TemporalType
 
 @Entity
 @Table(name = "gvq_academic_credentials")
-class AcademicCredentialsView implements Serializable{
+class AcademicCredentialView implements Serializable{
 
     /**
      * Surrogate ID for STVDEGC
@@ -71,9 +73,9 @@ class AcademicCredentialsView implements Serializable{
 
     boolean equals(o) {
         if (this.is(o)) return true
-        if (!(o instanceof AcademicCredentialsView)) return false
+        if (!(o instanceof AcademicCredentialView)) return false
 
-        AcademicCredentialsView that = (AcademicCredentialsView) o
+        AcademicCredentialView that = (AcademicCredentialView) o
 
         if (code != that.code) return false
         if (dataOrigin != that.dataOrigin) return false
@@ -102,7 +104,7 @@ class AcademicCredentialsView implements Serializable{
 
     @Override
     public String toString() {
-        return "AcademicCredentialsView{" +
+        return "AcademicCredentialView{" +
                 "id='" + id + '\'' +
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
@@ -112,5 +114,20 @@ class AcademicCredentialsView implements Serializable{
                 ", type='" + type + '\'' +
                 ", guid='" + guid + '\'' +
                 '}';
+    }
+
+    def static countAll(filterData) {
+       return finderByAll().count(filterData)
+    }
+
+
+    def static fetchSearch(filterData, pagingAndSortParams) {
+        return finderByAll().find(filterData, pagingAndSortParams)
+
+    }
+
+    def private static finderByAll = {
+        def query = "from AcademicCredentialView a where 1 = 1"
+        return new DynamicFinder(AcademicCredentialView.class, query, "a")
     }
 }

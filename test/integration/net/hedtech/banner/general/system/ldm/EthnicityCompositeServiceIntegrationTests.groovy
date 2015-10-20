@@ -82,6 +82,22 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertEquals expectedGuids.size(), ethnicityCompositeService.count()
     }
 
+    @Test
+    void testListV4() {
+        List<GlobalUniqueIdentifier> globUniqIds = GlobalUniqueIdentifier.findAllByLdmNameAndDomainIdGreaterThan('ethnicities-us',0L)
+        assertTrue globUniqIds?.size() > 0
+        def expectedGuids = globUniqIds.collect { it.guid }
+
+        setAcceptHeader("application/vnd.hedtech.integration.v4+json")
+
+        List ethnicities = ethnicityCompositeService.list([:])
+        assertTrue ethnicities?.size() > 0
+        def actualGuids = ethnicities.collect { it.id }
+        assertEquals expectedGuids.size(), actualGuids.size()
+        assertTrue expectedGuids.containsAll(actualGuids)
+        assertEquals expectedGuids.size(), ethnicityCompositeService.count()
+    }
+
 
     @Test
     void testCount() {
@@ -171,6 +187,45 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertEquals globUniqIds[0].domainKey, result.title
     }
 
+    @Test
+    void testGetV4WithNonHispanicCategory() {
+        GlobalUniqueIdentifier globUniqIds = GlobalUniqueIdentifier.findByLdmNameAndDomainId('ethnicities-us',1L)
+        assertNotNull globUniqIds
+
+        setAcceptHeader("application/vnd.hedtech.integration.v4+json")
+        def result = ethnicityCompositeService.get(globUniqIds.guid)
+        assertNotNull result
+        assertEquals globUniqIds.guid, result.id
+        assertEquals globUniqIds.domainKey, result.title
+        assertEquals 'nonHispanic', result.ethnicCategory
+    }
+
+    @Test
+    void testGetV4WithHispanicCategory() {
+        GlobalUniqueIdentifier globUniqIds = GlobalUniqueIdentifier.findByLdmNameAndDomainId('ethnicities-us',2L)
+        assertNotNull globUniqIds
+
+        setAcceptHeader("application/vnd.hedtech.integration.v4+json")
+        def result = ethnicityCompositeService.get(globUniqIds.guid)
+        assertNotNull result
+        assertEquals globUniqIds.guid, result.id
+        assertEquals globUniqIds.domainKey, result.title
+        assertEquals 'hispanic', result.ethnicCategory
+    }
+
+    @Test
+    void testGetV4WithInvalidGuid() {
+        GlobalUniqueIdentifier globUniqIds = GlobalUniqueIdentifier.findByLdmNameAndDomainId('ethnicities-us', 0L)
+        assertNotNull globUniqIds
+
+        setAcceptHeader("application/vnd.hedtech.integration.v4+json")
+        try {
+            ethnicityCompositeService.get(globUniqIds.guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+
+    }
 
     @Test
     void testFetchByEthnicityIdInvalid() {
@@ -285,6 +340,11 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertEquals u_success_parent_category, o_success_ethnicity_update.parentCategory
     }
 
+    @Test
+    void testCountWithV4Header() {
+        setAcceptHeader("application/vnd.hedtech.integration.v4+json")
+        assertEquals GlobalUniqueIdentifier.countByLdmNameAndDomainIdGreaterThan('ethnicities-us',0L), ethnicityCompositeService.count()
+    }
 
     private Map newEthnicityMap() {
         Map params = [code          : i_success_code,

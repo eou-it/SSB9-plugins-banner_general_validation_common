@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.RegulatoryRace
 import net.hedtech.banner.general.system.ldm.v1.RaceDetail
+import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -16,6 +17,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     Race i_success_race
     def raceCompositeService
+    private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
 
     @Before
     public void setUp() {
@@ -50,7 +52,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testCount() {
         assertNotNull i_success_race
-        assertEquals Race.count(), raceCompositeService.count()
+        assertEquals Race.count()-1, raceCompositeService.count([max:500,offset:0])
     }
 
     @Test
@@ -138,6 +140,69 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         return null
     }
 */
+
+    /**
+     * Test to check the sort by code on RaceCompositeService
+     * */
+    @Test
+    public void testSortByCode(){
+        params.order='ASC'
+        params.sort='code'
+        List list = raceCompositeService.list(params)
+        assertNotNull list
+        def tempParam=null
+        list.each{
+            race->
+                String code=race.race
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+
+        params.clear()
+        params.order='DESC'
+        params.sort='code'
+        list = raceCompositeService.list(params)
+        assertNotNull list
+        tempParam=null
+        list.each{
+            race->
+                String code=race.race
+                if(!tempParam){
+                    tempParam=code
+                }
+                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
+                tempParam=code
+        }
+    }
+
+    /**
+     * Test to check the RaceCompositeService list method with invalid sort field
+     */
+    @Test
+    void testListWithInvalidSortField() {
+        try {
+            def map = [sort: 'test']
+            raceCompositeService.list(map)
+            fail()
+        } catch (RestfulApiValidationException e) {
+            assertEquals 400, e.getHttpStatusCode()
+            assertEquals invalid_sort_orderErrorMessage , e.messageCode.toString()
+        }
+    }
+
+    /**
+     * Test to check the RaceCompositeService list method with invalid order field
+     */
+    @Test
+    void testListWithInvalidOrderField() {
+        shouldFail(RestfulApiValidationException) {
+            def map = [order: 'test']
+            raceCompositeService.list(map)
+        }
+    }
 
     private def newRace() {
         def regulatoryRace = RegulatoryRace.findByCode("1")

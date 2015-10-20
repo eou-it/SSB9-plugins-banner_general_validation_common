@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 grails.project.class.dir = "target/classes"
@@ -35,6 +35,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+
     }
 	
     dependencies {

@@ -5,7 +5,6 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.query.DynamicFinder
 import net.hedtech.banner.query.QueryBuilder
-import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:

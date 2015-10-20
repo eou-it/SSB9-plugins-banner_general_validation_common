@@ -122,9 +122,14 @@ class Degree implements Serializable {
     ])
     DegreeLevel degreeLevelCode
 
+    /**
+     * type column for STVDEGC
+     */
+    @Column(name = "STVDEGC_TYPE_CDE", length = 1)
+    String degreeType
 
     public String toString() {
-        "Degree[id=$id, code=$code, description=$description, levelOne=$levelOne, levelTwo=$levelTwo, levelThree=$levelThree, financeCountIndicator=$financeCountIndicator, lastModified=$lastModified, systemRequiredIndicator=$systemRequiredIndicator, voiceResponseMsgNumber=$voiceResponseMsgNumber, displayWebIndicator=$displayWebIndicator, version=$version, lastModifiedBy=$lastModifiedBy, dataOrigin=$dataOrigin]"
+        "Degree[id=$id, code=$code, description=$description, levelOne=$levelOne, levelTwo=$levelTwo, levelThree=$levelThree, financeCountIndicator=$financeCountIndicator, lastModified=$lastModified, systemRequiredIndicator=$systemRequiredIndicator, voiceResponseMsgNumber=$voiceResponseMsgNumber, displayWebIndicator=$displayWebIndicator,degreeType=$degreeType, version=$version, lastModifiedBy=$lastModifiedBy, dataOrigin=$dataOrigin]"
     }
 
 
@@ -143,6 +148,7 @@ class Degree implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
         awardCatCode(nullable: true)
         degreeLevelCode(nullable: true)
+        degreeType(nullable:true,maxSize:1)
     }
 
 
@@ -169,6 +175,7 @@ class Degree implements Serializable {
         if (systemRequiredIndicator != degree.systemRequiredIndicator) return false
         if (version != degree.version) return false
         if (voiceResponseMsgNumber != degree.voiceResponseMsgNumber) return false
+        if (degreeType != degree.degreeType) return false
 
         return true
     }
@@ -193,6 +200,7 @@ class Degree implements Serializable {
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
         result = 31 * result + (awardCatCode != null ? awardCatCode.hashCode() : 0)
         result = 31 * result + (degreeLevelCode != null ? degreeLevelCode.hashCode() : 0)
+        result = 31 * result + (degreeType != null ? degreeType.hashCode() : 0)
         return result
     }
 

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
  * <p> It will return location types of person and organization.</p>
  * <p> If location type code was configure for both person and organization, then priority is given to person.</p>
  */
+@Transactional
 class LocationTypeCompositeService extends LdmService{
 
     private static final String DEFAULT_SORT_FIELD = 'code'

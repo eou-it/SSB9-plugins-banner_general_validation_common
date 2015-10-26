@@ -103,7 +103,7 @@ class LocationTypeCompositeService extends LdmService{
             throw new ApplicationException("locationType", new BusinessLogicValidationException("exists.message", null))
         }
         addressType = bindaddressType(new AddressType(), content)
-        String addressTypeGuid = content?.guid?.trim()?.toLowerCase()
+        String addressTypeGuid = content?.id?.trim()?.toLowerCase()
         if (addressTypeGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
             updateGuidValue(addressType.id, addressTypeGuid, LDM_NAME)

@@ -4,8 +4,11 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.overall.ldm.LdmService
+import net.hedtech.banner.general.system.AddressType
 import net.hedtech.banner.general.system.LocationTypeView
 import net.hedtech.banner.general.system.ldm.v4.LocationType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
@@ -17,12 +20,14 @@ import org.springframework.transaction.annotation.Transactional
  * <p> It will return location types of person and organization.</p>
  * <p> If location type code was configure for both person and organization, then priority is given to person.</p>
  */
-class LocationTypeCompositeService {
+class LocationTypeCompositeService extends LdmService{
 
     private static final String DEFAULT_SORT_FIELD = 'code'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
     private static final String LDM_NAME ='location-types'
     private static final List<String> allowedSortFields = ['code']
+
+    def addressTypeService
 
     /**
      * GET /api/location-types
@@ -82,6 +87,50 @@ class LocationTypeCompositeService {
                 throw new ApplicationException("locationType", new NotFoundException())
             }
         }
+    }
+
+    /**
+     * POST /api/location-types
+     *
+     * @param content Request body
+     */
+    def create(Map content) {
+       if (!content?.code) {
+            throw new ApplicationException('locationType', new BusinessLogicValidationException('code.required.message', null))
+        }
+        AddressType addressType = AddressType.findByCode(content?.code?.trim())
+        if (addressType) {
+            throw new ApplicationException("locationType", new BusinessLogicValidationException("exists.message", null))
+        }
+        addressType = bindaddressType(new AddressType(), content)
+        String addressTypeGuid = content?.guid?.trim()?.toLowerCase()
+        if (addressTypeGuid) {
+            // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
+            updateGuidValue(addressType.id, addressTypeGuid, LDM_NAME)
+        } else {
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, addressType?.id)
+            addressTypeGuid = globalUniqueIdentifier.guid
+        }
+        log.debug("GUID: ${addressTypeGuid}")
+        LocationTypeView locationTypeRecord = setLocationTypesRecord(addressType,addressTypeGuid,content)
+        return  new LocationType(locationTypeRecord, locationTypeRecord.entityType,locationTypeRecord.locationType)
+    }
+
+    def bindaddressType(AddressType addressType, Map content) {
+        bindData(addressType, content, [:])
+        addressTypeService.createOrUpdate(addressType)
+    }
+
+    LocationTypeView setLocationTypesRecord(AddressType addressType,String addressTypeGuid,Map request){
+        LocationTypeView  locationTypeView = new LocationTypeView()
+        locationTypeView.setId(addressTypeGuid)
+        locationTypeView.setCode(addressType?.code)
+        locationTypeView.setDescription(addressType?.description)
+        for (Map.Entry<String, String> entry : request.get("type").entrySet()){
+            locationTypeView.setEntityType(entry.getKey())
+            locationTypeView.setLocationType(entry.getValue().get("locationType"))
+        }
+        return locationTypeView
     }
 
 }

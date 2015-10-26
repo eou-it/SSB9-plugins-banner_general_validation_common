@@ -3,11 +3,12 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.LocationTypeView
+import net.hedtech.banner.general.system.ldm.v4.LocationType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -30,6 +31,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
     private String invalid_guid_errorMessage = 'NotFoundException'
     private String locationTypes = 'location-types'
+    Map i_success_input_content
 
 
     @Before
@@ -43,6 +45,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         invalid_resource_guid = GlobalUniqueIdentifier.findByLdmName(i_failure_ldmName)
         success_guid = GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList(locationTypes, LocationTypeView.findAll()?.code)
         invalid_guid = GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList(locationTypes, LocationTypeView.findAll()?.code)
+        i_success_input_content = [code: 'XY', description: 'Test Description',type:[person:[locationType:"Test"]]]
     }
 
     @After
@@ -240,6 +243,34 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
                 }
                 assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
                 tempParam=code
+        }
+    }
+
+    @Test
+    void testCreateLocationType() {
+        LocationType locationType = locationTypeCompositeService.create(i_success_input_content)
+        assertNotNull locationType
+        assertEquals i_success_input_content.code, locationType.code
+        assertEquals i_success_input_content.description, locationType.description
+    }
+
+    @Test
+    void testCreateLocationTypeWithoutMandatoryCode() {
+        i_success_input_content.remove('code')
+        try {
+            locationTypeCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "code.required"
+        }
+    }
+
+    @Test
+    void testCreateLocationTypeExistingCode() {
+        i_success_input_content.code=i_success_code
+        try {
+            locationTypeCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "exists.message"
         }
     }
 

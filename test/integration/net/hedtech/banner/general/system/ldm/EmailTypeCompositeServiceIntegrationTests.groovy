@@ -17,11 +17,14 @@ import org.junit.Test
 class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
 
     def emailTypeCompositeService
+    Map i_success_input_content
+    private String i_success_code = 'AOL'
 
     @Before
     public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
+        i_success_input_content = [code: 'AB', description: 'Test Description',type:[person:[emailType:"Home"]]]
     }
 
     @After
@@ -41,8 +44,6 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertNotNull totalCount
         assertEquals totalCount, emailTypes.size()
     }
-
-
 
     /**
      * <p>Test to check the count on EmailTypeCompositeService</p>
@@ -173,5 +174,34 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
             assertApplicationException ae, "NotFoundException"
         }
     }
+
+    @Test
+    void testCreateEmailType() {
+        EmailTypeDetails emailType = emailTypeCompositeService.create(i_success_input_content)
+        assertNotNull emailType
+        assertEquals i_success_input_content.code, emailType.code
+        assertEquals i_success_input_content.description, emailType.description
+    }
+
+    @Test
+    void testCreateEmailTypeWithoutMandatoryCode() {
+        i_success_input_content.remove('code')
+        try {
+            emailTypeCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "code.required"
+        }
+    }
+
+    @Test
+    void testCreateEmailTypeExistingCode() {
+        i_success_input_content.code=i_success_code
+        try {
+            emailTypeCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "exists.message"
+        }
+    }
+
 
 }

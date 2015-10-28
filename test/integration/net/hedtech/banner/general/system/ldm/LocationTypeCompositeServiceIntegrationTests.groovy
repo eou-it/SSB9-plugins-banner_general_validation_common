@@ -246,6 +246,9 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         }
     }
 
+    /**
+     * Test to check the create method of LocationTypeCompositeService with valid request payload
+     */
     @Test
     void testCreateLocationType() {
         LocationType locationType = locationTypeCompositeService.create(i_success_input_content)
@@ -254,6 +257,9 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         assertEquals i_success_input_content.description, locationType.description
     }
 
+    /**
+     * Test to check the LocationTypeCompositeService create method without mandatory code in the request payload
+     */
     @Test
     void testCreateLocationTypeWithoutMandatoryCode() {
         i_success_input_content.remove('code')
@@ -264,6 +270,9 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         }
     }
 
+    /**
+     * Test to check the LocationTypeCompositeService create method with existing code in the request payload
+     */
     @Test
     void testCreateLocationTypeExistingCode() {
         i_success_input_content.code=i_success_code
@@ -272,6 +281,73 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         } catch (Exception ae) {
             assertApplicationException ae, "exists.message"
         }
+    }
+
+    /**
+     * Test to update the Location-Type with a valid request payload
+     * */
+    @Test
+    void testUpdateLocationType() {
+        LocationType locationType = locationTypeCompositeService.create(i_success_input_content)
+        assertNotNull locationType
+        assertNotNull locationType.id
+        assertEquals i_success_input_content.code, locationType.code
+        assertEquals i_success_input_content.description, locationType.description
+        Map update_content = updateLocationTypeMap(locationType.id)
+        def o_success_LocationType_update = locationTypeCompositeService.update(update_content)
+        assertNotNull o_success_LocationType_update
+        assertEquals o_success_LocationType_update.id, update_content.id
+        assertEquals o_success_LocationType_update.code, update_content.code
+        assertEquals o_success_LocationType_update.description, update_content.description
+    }
+
+    /**
+     * Test to update the Location-Type with Invalid Guid
+     * */
+    @Test
+    void testUpdateLocationTypeWithInvalidGuid() {
+        LocationType locationType = locationTypeCompositeService.create(i_success_input_content)
+        assertNotNull locationType
+        assertNotNull locationType.id
+        assertEquals i_success_input_content.code, locationType.code
+        assertEquals i_success_input_content.description, locationType.description
+        Map update_content = updateLocationTypeMap(null)
+        shouldFail(ApplicationException) {
+            locationTypeCompositeService.update(update_content)
+        }
+    }
+
+    /**
+     * Test to update the Location-Type with non existing Guid and Code for LocationTypeCompositeService create method invocation
+     * */
+    @Test
+    void testUpdateLocationTypeWithCreateForNewCodeAndGuid() {
+        i_success_input_content.put("id","test-guid")
+        LocationType locationType = locationTypeCompositeService.update(i_success_input_content)
+        assertNotNull locationType
+        assertNotNull locationType.id
+        assertEquals i_success_input_content.id, locationType.id
+        assertEquals i_success_input_content.code, locationType.code
+        assertEquals i_success_input_content.description, locationType.description
+    }
+
+    /**
+     * Test to check the LocationTypeCompositeService update method with existing code and new Guid in the request payload
+     */
+    @Test
+    void testUpdateLocationTypeWithCreateForNewGuidAndExistingCode() {
+        i_success_input_content.put("id","test-guid")
+        i_success_input_content.code=i_success_code
+        try {
+            locationTypeCompositeService.update(i_success_input_content)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "exists.message"
+        }
+    }
+
+    private Map updateLocationTypeMap(id) {
+        Map params = [id: id,code: 'XY', description: 'Description Test',type:[person:[locationType:"Test"]]]
+        return params
     }
 
 }

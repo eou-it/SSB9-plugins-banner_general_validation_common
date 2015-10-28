@@ -113,13 +113,48 @@ class LocationTypeCompositeService extends LdmService{
             addressTypeGuid = globalUniqueIdentifier.guid
         }
         log.debug("GUID: ${addressTypeGuid}")
-        LocationTypeView locationTypeRecord = setLocationTypesRecord(addressType,addressTypeGuid,content)
-        return  new LocationType(locationTypeRecord, locationTypeRecord.entityType,locationTypeRecord.locationType)
+        return getDecorator(addressType,addressTypeGuid,content)
+    }
+
+    /**
+     * PUT /api/location-types/<id>
+     *
+     * @param content Request body
+     * @return
+     */
+    def update(Map content) {
+        String addressTypeGuid = content?.id?.trim()?.toLowerCase()
+        if (!addressTypeGuid) {
+            throw new ApplicationException("locationType", new NotFoundException())
+        }
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, addressTypeGuid)
+        if (!globalUniqueIdentifier) {
+            //Per strategy when a ID was provided, the create should happen.
+            return create(content)
+        }
+        if (!content?.code) {
+            throw new ApplicationException('locationType', new BusinessLogicValidationException('code.required.message', null))
+        }
+        AddressType addressType = AddressType.findById(globalUniqueIdentifier?.domainId)
+        if (!addressType) {
+            throw new ApplicationException("locationType", new NotFoundException())
+        }
+        // Should not allow to update locationType code as it is read-only
+        if (addressType.code != content?.code?.trim()) {
+            content.put("code", addressType.code)
+        }
+        addressType = bindaddressType(addressType, content)
+        return getDecorator(addressType,addressTypeGuid,content)
     }
 
     def bindaddressType(AddressType addressType, Map content) {
         bindData(addressType, content, [:])
         addressTypeService.createOrUpdate(addressType)
+    }
+
+    private def getDecorator(AddressType addressType, String addressTypeGuid = null,Map request) {
+        LocationTypeView locationTypeRecord = setLocationTypesRecord(addressType,addressTypeGuid,request)
+        return  new LocationType(locationTypeRecord, locationTypeRecord.entityType,locationTypeRecord.locationType)
     }
 
     LocationTypeView setLocationTypesRecord(AddressType addressType,String addressTypeGuid,Map request){
@@ -133,5 +168,4 @@ class LocationTypeCompositeService extends LdmService{
         }
         return locationTypeView
     }
-
 }

@@ -13,14 +13,9 @@ class PhoneType {
     private final  PhoneTypeView phoneTypeView
     Map<String,String> type
 
-    PhoneType(PhoneTypeView phoneTypeView,String entityType,String phoneType){
-        this.phoneTypeView=phoneTypeView
-        if (entityType =='organization'){
-            this.type = ["organization" : ["phoneType": phoneType]]
-        }
-        if (entityType =='person'){
-            this.type = ["person" : ["phoneType": phoneType]]
-        }
+    PhoneType(PhoneTypeView phoneTypeView,Map type){
+        this.phoneTypeView = phoneTypeView
+        this.type = type
     }
 
 

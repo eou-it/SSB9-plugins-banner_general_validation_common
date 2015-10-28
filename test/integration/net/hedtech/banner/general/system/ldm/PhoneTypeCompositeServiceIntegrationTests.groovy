@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.PhoneTypeView
+import net.hedtech.banner.general.system.ldm.v4.PhoneType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
@@ -22,6 +23,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
     def invalid_resource_guid
     def success_guid
     def invalid_guid
+    def i_success_input_content
     
     @Before
     public void setUp() {
@@ -33,7 +35,8 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
     private void initializeDataReferences() {
         invalid_resource_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
         success_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList('phone-types',PhoneTypeView.findAll()?.code)
-         invalid_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList('phone-types',PhoneTypeView.findAll()?.code)
+        invalid_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList('phone-types',PhoneTypeView.findAll()?.code)
+        i_success_input_content = [code: 'TEST', description: 'Test Description',type:[organization:[phoneType:"billing"]]]
     }
 
     @After
@@ -211,5 +214,41 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         }
     }
 
+    @Test
+    void testCreate() {
+        assertNotNull i_success_input_content
+        PhoneType phoneType = phoneTypeCompositeService.create(i_success_input_content)
+        assertNotNull phoneType
+        assertEquals phoneType.code, i_success_input_content.code
+        assertEquals phoneType.description, i_success_input_content.description
+        assertEquals phoneType.type, i_success_input_content.type
+        assertNotNull phoneType.id
+    }
 
+    @Test
+    void testCreateWithExistsCode(){
+        assertNotNull i_success_input_content
+        i_success_input_content.id = 'TEST_GUID'
+        PhoneType phoneType = phoneTypeCompositeService.create(i_success_input_content)
+        assertNotNull phoneType
+        assertNotNull phoneType.id
+        assertEquals phoneType.id, i_success_input_content.id.trim().toLowerCase()
+        i_success_input_content.code = phoneType.code
+        try{
+            phoneTypeCompositeService.create(i_success_input_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.exists.message"
+        }
+    }
+
+    @Test
+    void testCreateWithoutMandatoryCode(){
+        assertNotNull i_success_input_content
+        i_success_input_content.remove('code')
+        try{
+            phoneTypeCompositeService.create(i_success_input_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.required.message"
+        }
+    }
 }

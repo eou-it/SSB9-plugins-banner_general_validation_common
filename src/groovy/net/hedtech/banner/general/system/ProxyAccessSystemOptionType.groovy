@@ -11,9 +11,14 @@ import javax.persistence.*
 @Entity
 @Table(name = "GTVOTYP")
 @NamedQueries(value = [
-@NamedQuery(name = "ProxyAccessSystemOptionType.fetchByCode",
-query = """FROM  ProxyAccessSystemOptionType a
-           WHERE a.code = :code
+        @NamedQuery(name = "ProxyAccessSystemOptionType.fetchByCode",
+                query = """FROM  ProxyAccessSystemOptionType a
+                WHERE a.code = :code
+            """),
+        @NamedQuery(name = "ProxyAccessSystemOptionType.fetchByCodeAndSystemCode",
+                query = """FROM  ProxyAccessSystemOptionType a
+                WHERE a.code = :code
+                AND a.systemCode = :systemCode
             """)
 ])
 class ProxyAccessSystemOptionType implements Serializable {
@@ -188,11 +193,20 @@ class ProxyAccessSystemOptionType implements Serializable {
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
         return result;
     }
-	
+
 	public static ProxyAccessSystemOptionType fetchByCode(String code) {
         def proxyAccessSystemOptionType = ProxyAccessSystemOptionType.withSession { session ->
             session.getNamedQuery(
                     'ProxyAccessSystemOptionType.fetchByCode').setString('code', code).list()[0]
+        }
+        return proxyAccessSystemOptionType
+    }
+
+
+    public static ProxyAccessSystemOptionType fetchByCodeAndSystemCode( String code, String systemCode ) {
+        def proxyAccessSystemOptionType = ProxyAccessSystemOptionType.withSession { session ->
+            session.getNamedQuery(
+                    'ProxyAccessSystemOptionType.fetchByCodeAndSystemCode' ).setString( 'code', code ).setString( 'systemCode', systemCode ).list()[0]
         }
         return proxyAccessSystemOptionType
     }

@@ -107,6 +107,33 @@ class PhoneTypeCompositeService extends LdmService {
       return getDecorator(telephoneType,content,telephoneTypeGuid)
     }
 
+    /**
+     * PUT /api/phone-types/{id}
+     *
+     * @param content Request body
+     * @return PhoneType detail object put updating the record
+     */
+    def update(Map content){
+        String telephoneTypeGuid = content?.id?.trim().toLowerCase()
+        if (!telephoneTypeGuid) {
+            throw new ApplicationException("phoneType", new NotFoundException())
+        }
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, telephoneTypeGuid)
+        if (!globalUniqueIdentifier) {
+            return create(content)
+        }
+        TelephoneType telephoneType = TelephoneType.findById(globalUniqueIdentifier?.domainId)
+        if (!telephoneType) {
+            throw new ApplicationException("phoneType", new NotFoundException())
+        }
+        // Should not allow to update TelephoneType.code as it is read-only
+        if (telephoneType?.code != content?.code?.trim()) {
+            content.put("code", telephoneType?.code)
+        }
+        telephoneType = bindTelephoneType(telephoneType, content)
+        return getDecorator(telephoneType, content, telephoneTypeGuid)
+    }
+
     private bindTelephoneType(TelephoneType telephoneType,Map content){
         super.bindData(telephoneType, content, [:])
         telephoneTypeService.createOrUpdate(telephoneType)

@@ -203,5 +203,71 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         }
     }
 
+    /**
+     * Test to update the Email-Type with a valid request payload
+     * */
+    @Test
+    void testUpdateEmailType() {
+        EmailTypeDetails emailTypeDetails = emailTypeCompositeService.create(i_success_input_content)
+        assertNotNull emailTypeDetails
+        assertNotNull emailTypeDetails.guid
+        assertEquals i_success_input_content.code, emailTypeDetails.code
+        assertEquals i_success_input_content.description, emailTypeDetails.description
+        Map update_content = updateEmailTypeMap(emailTypeDetails.guid, 'UEMAIL')
+        def o_success_EmailType_update = emailTypeCompositeService.update(update_content)
+        assertNotNull o_success_EmailType_update
+        assertEquals o_success_EmailType_update.guid, update_content.id
+        assertEquals o_success_EmailType_update.code, emailTypeDetails.code
+        assertEquals o_success_EmailType_update.description, update_content.description
+    }
+
+    /**
+     * Test to update the Email-Type with Invalid Guid
+     * */
+    @Test
+    void testUpdateEmailTypeWithInvalidGuid() {
+        EmailTypeDetails emailType = emailTypeCompositeService.create(i_success_input_content)
+        assertNotNull emailType
+        assertNotNull emailType.guid
+        assertEquals i_success_input_content.code, emailType.code
+        assertEquals i_success_input_content.description, emailType.description
+        Map update_content = updateEmailTypeMap(null,emailType.code)
+        shouldFail(ApplicationException) {
+            emailTypeCompositeService.update(update_content)
+        }
+    }
+
+    /**
+     * Test to update the Email-Type with non existing Guid and Code for EmailTypeCompositeService create method invocation
+     * */
+    @Test
+    void testUpdateEmailTypeWithCreateForNewCodeAndGuid() {
+        i_success_input_content.put("id","test-guid")
+        EmailTypeDetails emailType = emailTypeCompositeService.update(i_success_input_content)
+        assertNotNull emailType
+        assertNotNull emailType.guid
+        assertEquals i_success_input_content.id, emailType.guid
+        assertEquals i_success_input_content.code, emailType.code
+        assertEquals i_success_input_content.description, emailType.description
+    }
+
+    /**
+     * Test to check the EmailTypeCompositeService create method with existing code in the request payload
+     */
+    @Test
+    void testUpdateEmailTypeWithExistingCode() {
+        i_success_input_content.put("id","test-guid")
+        i_success_input_content.code=i_success_code
+        try {
+            emailTypeCompositeService.update(i_success_input_content)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "exists.message"
+        }
+    }
+
+    private Map updateEmailTypeMap(id, code) {
+        Map params = [id: id,code: code, description: 'Description Test',type:[person:[emailType:"Home"]]]
+        return params
+    }
 
 }

@@ -216,7 +216,6 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
 
     @Test
     void testCreate() {
-        assertNotNull i_success_input_content
         PhoneType phoneType = phoneTypeCompositeService.create(i_success_input_content)
         assertNotNull phoneType
         assertEquals phoneType.code, i_success_input_content.code
@@ -226,14 +225,20 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
     }
 
     @Test
-    void testCreateWithExistsCode(){
-        assertNotNull i_success_input_content
+    void testCreateWithId(){
         i_success_input_content.id = 'TEST_GUID'
         PhoneType phoneType = phoneTypeCompositeService.create(i_success_input_content)
         assertNotNull phoneType
         assertNotNull phoneType.id
+        assertEquals phoneType.code, i_success_input_content.code
+        assertEquals phoneType.description, i_success_input_content.description
+        assertEquals phoneType.type, i_success_input_content.type
         assertEquals phoneType.id, i_success_input_content.id.trim().toLowerCase()
-        i_success_input_content.code = phoneType.code
+    }
+
+    @Test
+    void testCreateWithExistsCode(){
+        i_success_input_content.code = 'MA'
         try{
             phoneTypeCompositeService.create(i_success_input_content)
         }catch (ApplicationException ae){
@@ -243,12 +248,50 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
 
     @Test
     void testCreateWithoutMandatoryCode(){
-        assertNotNull i_success_input_content
         i_success_input_content.remove('code')
         try{
             phoneTypeCompositeService.create(i_success_input_content)
         }catch (ApplicationException ae){
             assertApplicationException ae, "code.required.message"
         }
+    }
+
+    @Test
+    void testUpdate(){
+       PhoneType i_phoneType = phoneTypeCompositeService.create(i_success_input_content)
+       assertNotNull i_phoneType
+       assertNotNull i_phoneType.id
+       def u_success_input_content = i_success_input_content.clone()
+       u_success_input_content.code = 'TESTC'
+       u_success_input_content.id = i_phoneType.id
+       u_success_input_content.description = 'Test phone type description'
+       PhoneType u_phoneType = phoneTypeCompositeService.update(u_success_input_content)
+       assertNotNull u_phoneType
+       assertEquals u_phoneType.code, i_phoneType.code
+       assertEquals u_phoneType.description, u_success_input_content.description
+       assertEquals u_phoneType.type, u_success_input_content.type
+       assertEquals u_phoneType.id, u_success_input_content.id
+    }
+
+    @Test
+    void testUpdateNullGuid() {
+        i_success_input_content.put('id', '')
+        try{
+            phoneTypeCompositeService.update(i_success_input_content)
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+    @Test
+    void testUpdateNonExistsGuid() {
+        i_success_input_content.put('id', 'TEST')
+        PhoneType u_phoneType = phoneTypeCompositeService.update(i_success_input_content)
+        assertNotNull u_phoneType
+        assertEquals u_phoneType.code, i_success_input_content.code
+        assertEquals u_phoneType.description, i_success_input_content.description
+        assertEquals u_phoneType.type, i_success_input_content.type
+        assertEquals u_phoneType.id, i_success_input_content.id.toLowerCase()
     }
 }

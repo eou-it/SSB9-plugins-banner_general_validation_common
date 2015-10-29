@@ -115,9 +115,9 @@ class EmailTypeCompositeService extends LdmService {
             if (!emailTypesView) {
                 GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
                 if (globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME_EMAIL_TYPES) {
-                    throw new ApplicationException("emailTypeCompositeService", new BusinessLogicValidationException("invalid.guid", []))
+                    throw new ApplicationException("emailType", new BusinessLogicValidationException("invalid.guid", []))
                 } else {
-                    throw new ApplicationException("emailTypeCompositeService", new NotFoundException())
+                    throw new ApplicationException("emailType", new NotFoundException())
                 }
             }
             new EmailTypeDetails(types, emailTypesView)
@@ -145,6 +145,37 @@ class EmailTypeCompositeService extends LdmService {
         } else {
             emailGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME_EMAIL_TYPES, emailType?.id)?.guid
         }
+        return getDecorator(emailType, content, emailGuid)
+    }
+
+
+    /**
+     * PUT /api/email-types/<guid>
+     *
+     * @param content Request body
+     * @return
+     */
+    def update(Map content) {
+        String emailGuid = content?.id?.trim()?.toLowerCase()
+        if (!emailGuid) {
+            throw new ApplicationException("emailType", new NotFoundException())
+        }
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME_EMAIL_TYPES, emailGuid)
+
+        if (!globalUniqueIdentifier) {
+            //Per strategy when a GUID was provided, the create should happen.
+            return create(content)
+        }
+        EmailType emailType = EmailType.findById(globalUniqueIdentifier?.domainId)
+        if (!emailType) {
+            throw new ApplicationException("emailType", new NotFoundException())
+        }
+        // Should not allow to update EmailType.code as it is read-only
+        if (emailType?.code != content?.code?.trim()) {
+            content.put("code", emailType.code)
+        }
+        emailType = bindEmailType(emailType, content)
+
         return getDecorator(emailType, content, emailGuid)
     }
 

@@ -36,7 +36,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         invalid_resource_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
         success_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList('phone-types',PhoneTypeView.findAll()?.code)
         invalid_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList('phone-types',PhoneTypeView.findAll()?.code)
-        i_success_input_content = [code: 'TEST', description: 'Test Description',type:[organization:[phoneType:"billing"]]]
+        i_success_input_content = [code: 'KKR', description: 'Test Description',type:[organization:[phoneType:"billing"]]]
     }
 
     @After

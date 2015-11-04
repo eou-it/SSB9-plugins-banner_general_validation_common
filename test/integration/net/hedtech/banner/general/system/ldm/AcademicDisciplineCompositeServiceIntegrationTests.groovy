@@ -4,7 +4,6 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.AcademicDisciplineView
 import net.hedtech.banner.general.system.MajorMinorConcentration
 import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineType
@@ -21,8 +20,6 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
 
     def academicDisciplineCompositeService
     def i_fail_academicDiscipline
-    def non_exits_guid
-    def i_fail_academicDiscipline_guid
 
 
     @Before
@@ -39,8 +36,6 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
 
     private void initializeDataReferences() {
         i_fail_academicDiscipline = MajorMinorConcentration.findByValidMinorIndicatorIsNullAndValidMajorIndicatorIsNullAndValidConcentratnIndicatorIsNull()
-        i_fail_academicDiscipline_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines',i_fail_academicDiscipline.code)
-        non_exits_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
     }
     
     /**
@@ -55,10 +50,9 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         assertNotNull academicDisciplines[0].guid
         def academicDiscipline = academicDisciplineCompositeService.get(academicDisciplines[0].guid)
         assertNotNull academicDiscipline
-        assertEquals academicDisciplines[0].guid, academicDiscipline[0].guid
-        assertEquals academicDisciplines[0].code, academicDiscipline[0].code
+        assertEquals academicDisciplines[0].guid, academicDiscipline.guid
+        assertEquals academicDisciplines[0].code, academicDiscipline.code
         assertFalse academicDiscipline.code.contains(i_fail_academicDiscipline?.code)
-        assertFalse academicDiscipline.guid.contains(i_fail_academicDiscipline_guid?.guid)
     }
     
     /**
@@ -102,29 +96,6 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         }
     }
 
-    /**
-     * This test case is checking for AcademicDisciplineCompositeService get method passing with other than academic discipline guid as an argument
-     */
-    @Test
-    void testGetWithValidGuidAndNonExitsInAcademicDiscipline(){
-        shouldFail(RestfulApiValidationException) {
-            academicDisciplineCompositeService.get(non_exits_guid?.guid)
-        }
-    }
-
-    /**
-     * This test case is checking for AcademicDisciplineCompositeService get method passing with MajorMinorConcentration null type of Major and minor and concentration guid as an argument
-     */
-    @Test
-    void testGetWithInvalidAcademicDisciplineGuid() {
-        try {
-           def guid= i_fail_academicDiscipline_guid.guid
-            assertNotNull guid
-            academicDisciplineCompositeService.get(guid)
-        } catch (ApplicationException ae) {
-            assertApplicationException ae, "NotFoundException"
-        }
-    }
 
     /**
      * This test case is checking for AcademicDisciplineCompositeService list method passing with invalid sort filed
@@ -169,7 +140,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines = academicDisciplineCompositeService.list(paginationParams)
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertTrue academicDisciplines.size() == 4
+        assertEquals academicDisciplines.size() , 4
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
 
@@ -241,7 +212,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines = academicDisciplineCompositeService.list(params)
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertTrue academicDisciplines.size()==3
+        assertEquals academicDisciplines.size() , 3
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
 
@@ -254,7 +225,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines = academicDisciplineCompositeService.list(params)
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertTrue academicDisciplines.size()==4
+        assertEquals academicDisciplines.size() , 4
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
     

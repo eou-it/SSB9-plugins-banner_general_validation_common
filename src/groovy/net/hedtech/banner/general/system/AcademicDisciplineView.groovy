@@ -3,23 +3,33 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.query.DynamicFinder
+
 import javax.persistence.Column
-import javax.persistence.EmbeddedId
 import javax.persistence.Entity
+import javax.persistence.Id
 import javax.persistence.Table
 
 /**
  * <p>Read only view for Academic Disciplines.</p>
  */
 @Entity
-@Table(name = "GVQ_MAJORS")
+@Table(name = "SVQ_MAJORS")
 class AcademicDisciplineView implements Serializable {
 
     /**
-     * This field specifies the composite primary key of SVQ_MAJRS
+     * This field specifies the GUID.
      */
-    @EmbeddedId
-    AcademicDisciplinePK id
+    @Id
+    @Column(name = "STVMAJR_GUID")
+    String guid
+
+    /**
+     * Surrogate ID for STVMAJR
+     */
+    @Column(name = "STVMAJR_SURROGATE_ID")
+    Long surrogateId
+
 
     /**
      * This field identifies the major code referenced in the Catalog, Class Sched., Recruit., Admissions, Gen. Student, Registr., and Acad. Hist. Modules. Reqd. value: 00 - Major Not Declared.
@@ -40,12 +50,6 @@ class AcademicDisciplineView implements Serializable {
     String dataOrigin
 
     /**
-     * This field specifies the GUID.
-     */
-    @Column(name = "STVMAJR_GUID")
-    String guid
-
-    /**
      * This field specifies the type of STVMAJR.
 
      */
@@ -54,7 +58,7 @@ class AcademicDisciplineView implements Serializable {
 
     boolean equals(o) {
         if (this.is(o)) return true
-        if (getClass() != o.class) return false
+        if (!(o instanceof AcademicDisciplineView)) return false
 
         AcademicDisciplineView that = (AcademicDisciplineView) o
 
@@ -62,7 +66,7 @@ class AcademicDisciplineView implements Serializable {
         if (dataOrigin != that.dataOrigin) return false
         if (description != that.description) return false
         if (guid != that.guid) return false
-        if (id != that.id) return false
+        if (surrogateId != that.surrogateId) return false
         if (type != that.type) return false
 
         return true
@@ -70,24 +74,39 @@ class AcademicDisciplineView implements Serializable {
 
     int hashCode() {
         int result
-        result = (id != null ? id.hashCode() : 0)
+        result = (guid != null ? guid.hashCode() : 0)
+        result = 31 * result + (surrogateId != null ? surrogateId.hashCode() : 0)
         result = 31 * result + (code != null ? code.hashCode() : 0)
         result = 31 * result + (description != null ? description.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (guid != null ? guid.hashCode() : 0)
         result = 31 * result + (type != null ? type.hashCode() : 0)
         return result
     }
 
     @Override
     public String toString() {
-        """AcademicDisciplineView[
-					id=$id, 
-					code=$code,
-					description=$description, 
-					dataOrigin=$dataOrigin,
-                    guid=$guid,
-                    type=$type]"""
+        return "AcademicDisciplineView{" +
+                "guid='" + guid + '\'' +
+                ", surrogateId=" + surrogateId +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", dataOrigin='" + dataOrigin + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 
+    def static countAll(filterData) {
+        return finderByAll().count(filterData)
+    }
+
+
+    def static fetchSearch(filterData, pagingAndSortParams) {
+        return finderByAll().find(filterData, pagingAndSortParams)
+
+    }
+
+    def private static finderByAll = {
+        def query = "from AcademicDisciplineView a where 1 = 1"
+        return new DynamicFinder(AcademicCredentialView.class, query, "a")
+    }
 }

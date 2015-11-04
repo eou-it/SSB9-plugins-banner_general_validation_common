@@ -147,7 +147,6 @@
         <mapping class="net.hedtech.banner.general.system.VisaType"/>
         <mapping class="net.hedtech.banner.general.system.Zip"/>
         <mapping class="net.hedtech.banner.general.utility.InformationText"/>
-        <mapping class="net.hedtech.banner.general.system.AcademicDisciplinePK"/>
         <mapping class="net.hedtech.banner.general.system.AcademicDisciplineView"/>
         <mapping class="net.hedtech.banner.general.system.PhoneTypeView"/>
         <mapping class="net.hedtech.banner.general.system.LocationTypeView"/>

@@ -4,8 +4,10 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.system.ldm.AcademicDisciplineCompositeService
 import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineType
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.hibernate.sql.ordering.antlr.GeneratedOrderByLexer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -19,7 +21,7 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
     def i_success_academicDiscipline_minor
     def i_success_academicDiscipline_major
     def i_success_academicDiscipline_concentration
-    def i_fail_academicDiscipline_gorguid
+    def i_success_academicDiscipline_code
 
     @Before
     public void setUp() {
@@ -34,11 +36,11 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
     }
     
     private void initializeDataReferences() {
+        i_success_academicDiscipline_code = '101'
         i_fail_academicDiscipline = MajorMinorConcentration.findByValidMinorIndicatorIsNullAndValidMajorIndicatorIsNullAndValidConcentratnIndicatorIsNull()
         i_success_academicDiscipline_minor = MajorMinorConcentration.findAllByValidMinorIndicator(Boolean.TRUE)
         i_success_academicDiscipline_major = MajorMinorConcentration.findAllByValidMajorIndicator(Boolean.TRUE)
         i_success_academicDiscipline_concentration = MajorMinorConcentration.findAllByValidConcentratnIndicator(Boolean.TRUE)
-        i_fail_academicDiscipline_gorguid=  GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines',i_fail_academicDiscipline.code)
     }
 
     /**
@@ -118,7 +120,6 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchByguid() {
         assertEquals AcademicDisciplineView.findAllByGuid("").size , 0
-        assertEquals AcademicDisciplineView.findAllByGuid(i_fail_academicDiscipline_gorguid.guid).size, 0
         assertEquals AcademicDisciplineView.findAllByGuid(null).size , 0
     }
 
@@ -158,15 +159,49 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
                 academicDiscipline.delete(flush: true, onError: true)
             }
     }
-    
+
+    /**
+     * This test case is checking for Academic Discipline View return data does have different guid value with type of major, minor or concentration.
+     */
+    @Test
+    void testAcademicDisciplineGuid(){
+       def majorGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines', i_success_academicDiscipline_code+"^"+AcademicDisciplineType.MAJOR.value)?.guid
+       assertNotNull majorGuid
+       AcademicDisciplineView disciplineView = AcademicDisciplineView.get(majorGuid)
+       assertNotNull disciplineView
+       assertEquals disciplineView.code , i_success_academicDiscipline_code
+       assertEquals disciplineView.type , AcademicDisciplineType.MAJOR.value
+
+        def minorGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines', i_success_academicDiscipline_code+"^"+AcademicDisciplineType.MINOR.value)?.guid
+        assertNotNull majorGuid
+        disciplineView = AcademicDisciplineView.get(minorGuid)
+        assertNotNull disciplineView
+        assertEquals disciplineView.code , i_success_academicDiscipline_code
+        assertEquals disciplineView.type , AcademicDisciplineType.MINOR.value
+
+        def concentrationGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines', i_success_academicDiscipline_code+"^"+AcademicDisciplineType.CONCENTRATION.value)?.guid
+        assertNotNull majorGuid
+        disciplineView = AcademicDisciplineView.get(concentrationGuid)
+        assertNotNull disciplineView
+        assertEquals disciplineView.code , i_success_academicDiscipline_code
+        assertEquals disciplineView.type , AcademicDisciplineType.CONCENTRATION.value
+    }
+
+    /**
+     * This test case is checking for number occurrences Academic Discipline type of major, minor or concentration guid should match with gorguid count.
+     */
+    @Test
+    void testAcademicDisciplineGuidCount(){
+       def expectedCount = GlobalUniqueIdentifier.countByLdmNameAndDomainKeyLike('academic-disciplines',i_success_academicDiscipline_code+"%")
+       assertNotNull expectedCount
+       def actualCount = AcademicDisciplineView.countByCode(i_success_academicDiscipline_code)
+       assertNotNull actualCount
+       assertEquals expectedCount , actualCount
+    }
+
+
     private def newAcademicDiscipline(){
         new AcademicDisciplineView(
-             id:   new AcademicDisciplinePK(
-                     surrogateId:9999,
-                     validMajorIndicator:true,
-                     validMinorIndicator:false,
-                     validConcentratnIndicator:false
-             ),
              code:'test',
              description:'test data',
              dataOrigin:'test',

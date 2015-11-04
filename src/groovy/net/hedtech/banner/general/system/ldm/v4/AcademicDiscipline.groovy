@@ -2,29 +2,29 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
-
-import net.hedtech.banner.general.system.AcademicDisciplineView
-
 /**
  * Decorator for academic disciplines
  */
 class AcademicDiscipline {
-    @Delegate
-    private final AcademicDisciplineView academicDisciplineView
     String type
     String guid
+    String description
+    String code
 
-    AcademicDiscipline(AcademicDisciplineView academicDisciplineView) {
-        this.guid=academicDisciplineView.guid
-        this.type = academicDisciplineView.type
-        this.academicDisciplineView = academicDisciplineView
+    AcademicDiscipline(String code, String description, String type, String guid) {
+        this.guid = guid
+        this.type = type
+        this.code = code
+        this.description = description
     }
 
     @Override
     public String toString() {
         return "AcademicDiscipline{" +
+                "type='" + type + '\'' +
                 ", guid='" + guid + '\'' +
-                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", code='" + code + '\'' +
                 '}';
     }
 }

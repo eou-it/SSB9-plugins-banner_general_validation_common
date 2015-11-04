@@ -5,10 +5,11 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
-import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.AcademicDisciplineView
 import net.hedtech.banner.general.system.ldm.v4.AcademicDiscipline
-import net.hedtech.banner.restfulapi.RestfulApiValidationException
+import net.hedtech.banner.query.QueryBuilder
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
@@ -23,17 +24,9 @@ class AcademicDisciplineCompositeService {
     def majorMinorConcentrationService
     
     private static final String ACADEMIC_DISCIPLINE_HEDM = 'academic-disciplines'
-    private static final String DEFAULT_SORT_FIELD = 'title'
+    private static final String DEFAULT_SORT_FIELD = 'abbreviation'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
-    private static final List allowedSortFields = [DEFAULT_SORT_FIELD]
-    private final static HashMap ldmFieldToBannerDomainPropertyMap = [
-            title: 'code'
-    ]
-
-    private String fetchBannerDomainPropertyForLdmField(String ldmField) {
-        return ldmFieldToBannerDomainPropertyMap[ldmField]
-    }
-
+    private static final List allowedSortFields = [DEFAULT_SORT_FIELD,'type']
 
     /**
      * GET /api/academic-disciplines
@@ -43,25 +36,25 @@ class AcademicDisciplineCompositeService {
     @Transactional(readOnly = true)
     List<AcademicDiscipline> list(Map params) {
         List<AcademicDiscipline> academicDisciplineDetailList = []
-        List<AcademicDisciplineView> majorMinorConcentrationList
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        params?.sort = params?.sort ? params?.sort : DEFAULT_SORT_FIELD
-        params?.order = params?.order ? params?.order : DEFAULT_ORDER_TYPE
+        params?.sort = params?.sort ?: DEFAULT_SORT_FIELD
+        params?.order = params?.order ?: DEFAULT_ORDER_TYPE
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
-        majorMinorConcentrationList = getDataFromDB(false, params)
-        getDisciplineFilterData(majorMinorConcentrationList, academicDisciplineDetailList)
+        params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)?:params.sort
+       fetchAcademicDisciplineByCriteria(false, params).each { academicDiscipline ->
+            academicDisciplineDetailList <<  new AcademicDiscipline(academicDiscipline?.code, academicDiscipline?.description, academicDiscipline?.type, academicDiscipline?.guid)
+        }
         return academicDisciplineDetailList;
     }
 
-/**
- *
- * @return Count
- */
+    /**
+     *
+     * @return Count
+     */
     @Transactional(readOnly = true)
     Long count(Map params) {
-        getDataFromDB(true, params)
+        fetchAcademicDisciplineByCriteria(true, params)
     }
 
     /**
@@ -70,34 +63,36 @@ class AcademicDisciplineCompositeService {
      * @return 
      */
     @Transactional(readOnly = true)
-    List<AcademicDiscipline> get(String guid) {
-        List<AcademicDiscipline> academicDisciplineDetailList = []
-        List<AcademicDisciplineView> majorMinorConcentrationList = AcademicDisciplineView.findAllByGuid(guid?.trim())
-        if (majorMinorConcentrationList) {
-            getDisciplineFilterData(majorMinorConcentrationList, academicDisciplineDetailList)
-        } else {
-            GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
-            if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=ACADEMIC_DISCIPLINE_HEDM) {
-                throw new RestfulApiValidationException("academicDiscipline.invalidGuid")
-            }else {
-                throw new ApplicationException("academicDiscipline", new NotFoundException())
-            }
-            }
-        return academicDisciplineDetailList
+    AcademicDiscipline get(String guid) {
+        if (!guid) {
+            throw new ApplicationException("academicDiscipline", new NotFoundException())
+        }
+        AcademicDisciplineView academicDiscipline = AcademicDisciplineView.get(guid?.trim())
+        if (!academicDiscipline) {
+            throw new ApplicationException("academicDiscipline", new NotFoundException())
+        }
+        return new AcademicDiscipline(academicDiscipline.code, academicDiscipline.description, academicDiscipline.type, academicDiscipline.guid)
     }
 
 
-    private def getDataFromDB(Boolean count, Map params) {
+    private def fetchAcademicDisciplineByCriteria(Boolean count, Map content) {
+        def result
+        def filterMap = QueryBuilder.getFilterData(content)
+        def params = filterMap.params
+        def criteria = filterMap.criteria
+        def pagingAndSortParams = filterMap.pagingAndSortParams
+
+        if (content.containsKey("type")) {
+            params.put("type", content.get("type").trim())
+            criteria.add([key: "type", binding: "type", operator: Operators.EQUALS])
+        }
         if (count) {
-            params?.type ? AcademicDisciplineView.countByType(params.type) : AcademicDisciplineView.count()
+            result = AcademicDisciplineView.countAll([params: params, criteria: criteria])
         } else {
-            params?.type ? AcademicDisciplineView.findAllByType(params.type, params) : AcademicDisciplineView.list(params)
+            result = AcademicDisciplineView.fetchSearch([params: params, criteria: criteria], pagingAndSortParams)
         }
+
+        return result
     }
 
-    private void getDisciplineFilterData(List<AcademicDisciplineView> academicDisciplineList, List<AcademicDiscipline> academicDisciplineDetailList) {
-        academicDisciplineList.each { academicDiscipline ->
-            academicDisciplineDetailList <<  new AcademicDiscipline(academicDiscipline)
-        }
-    }
 }

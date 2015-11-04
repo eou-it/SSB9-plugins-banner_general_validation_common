@@ -8,6 +8,7 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
+import net.hedtech.banner.general.system.ldm.v4.MaritalStatusMaritalCategory
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
@@ -76,9 +77,13 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
     void testCountV4Header() {
         //we will forcefully set the accept header so that the tests go through all possible code flows
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        int maritalStatusCount
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         assertNotNull i_success_maritalStatus
-        assertEquals MaritalStatus.count(), maritalStatusCompositeService.count([max:500,offset:0])
+        for(String s : MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY){
+            maritalStatusCount=maritalStatusCount + MaritalStatus.findAllByDescription(s.capitalize()).size()
+        }
+        assertEquals maritalStatusCount, maritalStatusCompositeService.count([max:500,offset:0])
     }
 
     @Test
@@ -375,11 +380,15 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
     @Test
     void testListWithValidSortAndOrderFieldWithSupportedVersion() {
         def params = [order: 'ASC', sort: 'code']
+        int maritalStatusCount
         def maritalStatusList = maritalStatusCompositeService.list(params)
         assertNotNull maritalStatusList
         assertFalse maritalStatusList.isEmpty()
         assertNotNull maritalStatusList.code
-        assertEquals MaritalStatus.count(), maritalStatusList.size()
+        for(String s : MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY){
+            maritalStatusCount=maritalStatusCount + MaritalStatus.findAllByDescription(s.capitalize()).size()
+        }
+        assertEquals maritalStatusCount, maritalStatusList.size()
         assertNotNull i_success_maritalStatus
         assertTrue maritalStatusList.code.contains(i_success_maritalStatus.code)
         assertTrue maritalStatusList.description.contains(i_success_maritalStatus.description)

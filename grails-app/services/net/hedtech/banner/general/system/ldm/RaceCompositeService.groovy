@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
@@ -14,13 +15,12 @@ import net.hedtech.banner.general.system.ldm.v1.RaceDetail
 import net.hedtech.banner.general.system.ldm.v1.RaceParentCategory
 import net.hedtech.banner.general.system.ldm.v4.RaceRacialCategory
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 /**
  * Service used to support "races" resource for LDM
  */
-@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+@Transactional
 class RaceCompositeService extends LdmService {
 
     def raceService
@@ -30,6 +30,7 @@ class RaceCompositeService extends LdmService {
     static final String RACE_RACIAL_CATEGORY = "RACE.RACIALCATEGORY"
     private static final List<String> VERSIONS = ["v1","v4"]
 
+    @Transactional(readOnly = true)
     List<RaceDetail> list(Map params) {
         List raceDetailList = []
         def version = LdmService.getAcceptVersion(VERSIONS)
@@ -65,6 +66,7 @@ class RaceCompositeService extends LdmService {
 
     }
 
+    @Transactional(readOnly = true)
     RaceDetail get(String guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(RACE_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
@@ -135,10 +137,86 @@ class RaceCompositeService extends LdmService {
             def raceQuery = session.createQuery(query).
                     setString('settingName', RACE_RACIAL_CATEGORY).
                     setString('processCode', PROCESS_CODE).
-                    setParameterList('translationValueList', RaceRacialCategory.RACE_RACIAL_CATEGORY).
-                    setMaxResults(content?.max as Integer).
-                    setFirstResult((content?.offset ?: '0') as Integer)
-           return count ? raceQuery.uniqueResult() : raceQuery.list()
+                    setParameterList('translationValueList', RaceRacialCategory.RACE_RACIAL_CATEGORY)
+
+           return count ? raceQuery.uniqueResult() : raceQuery. setMaxResults(content?.max as Integer).setFirstResult((content?.offset ?: '0') as Integer).list()
         }
     }
+
+    /**
+     * POST /api/races
+     *
+     * @param content Request body
+     */
+    def create(content) {
+        def version = LdmService.getContentTypeVersion(VERSIONS)
+        validateRequest(content,version)
+        Race race = Race.findByRace(content.race.trim())
+        if (race) {
+            def messageCode = 'v4'.equals(version) ? 'code.exists.message' : 'exists.message'
+            throw new ApplicationException("race", new BusinessLogicValidationException(messageCode, null))
+        }
+
+        race = bindRaces(new Race(), content)
+
+        String guid = content.guid?.trim()?.toLowerCase()
+        if (guid) {
+            // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
+            updateGuidValue(race.id, guid, RACE_LDM_NAME)
+        } else {
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainId(RACE_LDM_NAME, race?.id)
+            guid = globalUniqueIdentifier.guid
+        }
+        def racialCategory = "v4".equals(LdmService.getAcceptVersion(VERSIONS)) ? content.racialCategory : content.parentCategory
+        return new RaceDetail(race, guid, racialCategory, new Metadata(race.dataOrigin));
+    }
+
+    private void validateRequest(content,version) {
+        if (!content.race) {
+            def parameterValue = 'v4'.equals(version) ? 'Code' : 'Abbreviation'
+            throw new ApplicationException('race', new BusinessLogicValidationException('code.required.message',[parameterValue]))
+        }
+        if (!content.description) {
+            throw new ApplicationException('race', new BusinessLogicValidationException('description.required.message', null))
+        }
+    }
+
+    // not setting up the GORRACE_RRAC_CODE, GORRACE_EDI_EQUIV, GORRACE_LMS_EQUIV
+    def bindRaces(Race race, Map content) {
+        setDataOrigin(race, content)
+        bindData(race, content, [:])
+        raceService.createOrUpdate(race)
+    }
+
+    /**
+     * PUT /api/races/<guid>
+     *
+     * @param content Request body
+     */
+    def update(content) {
+        String guid = content?.id?.trim()?.toLowerCase()
+        if (!guid) {
+            throw new ApplicationException("race", new NotFoundException())
+        }
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(RACE_LDM_NAME, guid)
+        if (!globalUniqueIdentifier) {
+            if (!content.get('guid')) {
+                content.put('guid', guid)
+            }
+            //Per strategy when a GUID was provided, the create should happen.
+            return create(content)
+        }
+        Race race = Race.findById(globalUniqueIdentifier.domainId)
+        if (!race) {
+            throw new ApplicationException("race", new NotFoundException())
+        }
+        // Should not allow to update Race.code as it is read-only
+        if (race.race != content?.race?.trim()) {
+            content.put("race", race.race)
+        }
+        race = bindRaces(race, content)
+        def racialCategory = getLdmRace(race.race)
+        return new RaceDetail(race, guid, racialCategory, new Metadata(race.dataOrigin));
+    }
+
 }

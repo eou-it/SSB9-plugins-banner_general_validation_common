@@ -4,10 +4,14 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.AcademicDisciplineView
+import net.hedtech.banner.general.system.MajorMinorConcentration
 import net.hedtech.banner.general.system.ldm.v4.AcademicDiscipline
+import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineType
 import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -18,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
  * <p> If we'll pass type is minor then, Academic Discipline minor type of data will return else, It will return all  type of Academic Discipline data.</p>
  */
 @Transactional
-class AcademicDisciplineCompositeService {
+class AcademicDisciplineCompositeService extends LdmService{
     
     //This filed is used for only to create and update of Academic Discipline data
     def majorMinorConcentrationService
@@ -95,4 +99,63 @@ class AcademicDisciplineCompositeService {
         return result
     }
 
+    /**
+     * POST /api/academic-disciplines
+     *
+     * @param content Request body
+     */
+    def create(Map content) {
+        if (!content?.code) {
+            throw new ApplicationException('academicDisciplines', new BusinessLogicValidationException('code.required.message', null))
+        }
+        String majorMinorConcentrationGuid = content?.id?.trim()?.toLowerCase()
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentrationGuid)
+        if (globalUniqueIdentifier) {
+            throw new ApplicationException('academicDisciplines', new BusinessLogicValidationException('exists.message', null))
+        }
+        MajorMinorConcentration majorMinorConcentration = MajorMinorConcentration.findByCode(content?.code?.trim())
+        if (!majorMinorConcentration) {
+            // if code in the request does not exists - create the record
+            majorMinorConcentration = bindmajorMinorConcentration(new MajorMinorConcentration(), content)
+            majorMinorConcentrationGuid = updateGuidIfExist(majorMinorConcentration, content, majorMinorConcentrationGuid)
+        }
+        else{
+            // if code in the request exists - then check with the type
+            AcademicDisciplineView academicDisciplineView = AcademicDisciplineView.findByCodeAndType(content?.code,content.type)
+            if(academicDisciplineView){
+                throw new ApplicationException('academicDisciplines', new BusinessLogicValidationException('exists.message', null))
+            }
+            else{
+                majorMinorConcentration = bindmajorMinorConcentration(majorMinorConcentration, content)
+                majorMinorConcentrationGuid = updateGuidIfExist(majorMinorConcentration, content, majorMinorConcentrationGuid)
+            }
+        }
+        return new AcademicDiscipline(majorMinorConcentration.code, majorMinorConcentration.description, content.type, majorMinorConcentrationGuid)
+    }
+
+    private String updateGuidIfExist(MajorMinorConcentration majorMinorConcentration, Map content, String majorMinorConcentrationGuid = null) {
+        // if id being sent in the request - update the guid else return the generated guid
+        if (majorMinorConcentrationGuid) {
+            majorMinorConcentrationGuid = updateGuidValueByDomainKey(majorMinorConcentration.code+"^"+content.type, majorMinorConcentrationGuid, ACADEMIC_DISCIPLINE_HEDM)?.guid
+        } else {
+            majorMinorConcentrationGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentration.code+"^"+content.type)?.guid
+        }
+        majorMinorConcentrationGuid
+    }
+
+    def bindmajorMinorConcentration(MajorMinorConcentration majorMinorConcentration, Map content) {
+        bindData(majorMinorConcentration, content, [:])
+        switch (content?.type){
+            case AcademicDisciplineType.MAJOR.value :
+                majorMinorConcentration.validMajorIndicator = true
+                break
+            case AcademicDisciplineType.MINOR.value :
+                majorMinorConcentration.validMinorIndicator = true
+                break
+            case AcademicDisciplineType.CONCENTRATION.value :
+                majorMinorConcentration.validConcentratnIndicator = true
+                break
+        }
+        majorMinorConcentrationService.createOrUpdate(majorMinorConcentration)
+    }
 }

@@ -4,8 +4,10 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.AcademicDisciplineView
 import net.hedtech.banner.general.system.MajorMinorConcentration
+import net.hedtech.banner.general.system.ldm.v4.AcademicDiscipline
 import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -20,6 +22,9 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
 
     def academicDisciplineCompositeService
     def i_fail_academicDiscipline
+    def i_success_input_content
+    def i_sucess_academicDiscipline_major
+    private String acedemic_discipline_hedm = 'academic-disciplines'
 
 
     @Before
@@ -36,6 +41,8 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
 
     private void initializeDataReferences() {
         i_fail_academicDiscipline = MajorMinorConcentration.findByValidMinorIndicatorIsNullAndValidMajorIndicatorIsNullAndValidConcentratnIndicatorIsNull()
+        i_success_input_content = [code: 'KKR', description: 'Test Description', type:'major']
+        i_sucess_academicDiscipline_major = MajorMinorConcentration.findByValidMajorIndicatorIsNotNullAndValidMinorIndicatorIsNull()
     }
     
     /**
@@ -248,5 +255,127 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         assertEquals 0, academicDisciplineCompositeService.count([type: AcademicDisciplineType.CONCENTRATION.value+'test'])
     }
 
+    /**
+     * Test to check the create method of AcademicDisciplineCompositeService of Type Major with valid request payload
+     */
+    @Test
+    void testCreateAcademicDisciplineWithTypeMajor() {
+        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+        MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
+        assertNotNull majorMinorConcentration
+        assertTrue majorMinorConcentration.validMajorIndicator
+    }
+
+    /**
+     * Test to check the create method of AcademicDisciplineCompositeService of Type Minor with valid request payload
+     */
+    @Test
+    void testCreateAcademicDisciplineWithTypeMinor() {
+        i_success_input_content.type = 'minor'
+        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+        MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
+        assertNotNull majorMinorConcentration
+        assertTrue majorMinorConcentration.validMinorIndicator
+    }
+
+    /**
+     * Test to check the create method of AcademicDisciplineCompositeService of Type Concentration with valid request payload
+     */
+    @Test
+    void testCreateAcademicDisciplineWithTypeConcentration() {
+        i_success_input_content.type = 'concentration'
+        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+        MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
+        assertNotNull majorMinorConcentration
+        assertTrue majorMinorConcentration.validConcentratnIndicator
+    }
+
+    /**
+     * Test to check the AcademicDisciplineCompositeService create method without mandatory code in the request payload
+     */
+    @Test
+    void testCreateAcademicDisciplineWithoutMandatoryCode() {
+        i_success_input_content.remove('code')
+        try {
+            academicDisciplineCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "code.required.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicDisciplineCompositeService create method with existing guid in the request payload
+     */
+    @Test
+    void testCreateAcademicDisciplineWIthExistingGuid() {
+        String existingGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(acedemic_discipline_hedm, i_sucess_academicDiscipline_major.code+"^"+i_success_input_content.type)?.guid
+        i_success_input_content.id = existingGuid
+        try {
+            academicDisciplineCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "exists.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicDisciplineCompositeService create method with new guid in the request payload
+     */
+    @Test
+    void testCreateAcademicDisciplineWIthNewGuid() {
+        i_success_input_content.id = 'test-guid'
+        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.id, academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+    }
+
+    /**
+     * Test to check the AcademicDisciplineCompositeService create method with new guid but with a existing code and type in the request payload
+     */
+    @Test
+    void testCreateAcademicDisciplineWIthNewGuidExistingCodeAndType() {
+        i_success_input_content.id = 'test-guid'
+        i_success_input_content.code = i_sucess_academicDiscipline_major.code
+        try {
+            academicDisciplineCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "exists.message"
+        }
+    }
+
+    /**
+     * Test to check the AcademicDisciplineCompositeService create method with new guid but with a existing code and new type in the request payload
+     */
+    @Test
+    void testCreateAcademicDisciplineWIthNewGuidExistingCodeWithNewType() {
+        i_success_input_content.id = 'test-guid'
+        i_success_input_content.code = i_sucess_academicDiscipline_major.code
+        i_success_input_content.type = 'minor'
+        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.id, academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+    }
 
 }

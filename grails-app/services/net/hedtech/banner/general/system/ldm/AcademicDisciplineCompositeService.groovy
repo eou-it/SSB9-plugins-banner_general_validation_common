@@ -133,6 +133,38 @@ class AcademicDisciplineCompositeService extends LdmService{
         return new AcademicDiscipline(majorMinorConcentration.code, majorMinorConcentration.description, content.type, majorMinorConcentrationGuid)
     }
 
+    /**
+     * PUT /api/academic-disciplines/<id>
+     *
+     * @param content Request body
+     * @return
+     */
+    def update(Map content) {
+        String majorMinorConcentrationGuid = content?.id?.trim()?.toLowerCase()
+        if (!majorMinorConcentrationGuid) {
+            throw new ApplicationException("academicDiscipline", new NotFoundException())
+        }
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentrationGuid)
+        if (!globalUniqueIdentifier) {
+            //Per strategy when a ID was provided, the create should happen.
+            return create(content)
+        }
+        def codeAndTypeMap = getExistingCodeAndType(globalUniqueIdentifier)
+        MajorMinorConcentration majorMinorConcentration = MajorMinorConcentration.findByCode(codeAndTypeMap.code?.trim())
+        if(!majorMinorConcentration){
+            throw new ApplicationException("academicDiscipline", new NotFoundException())
+        }
+        if (codeAndTypeMap.code != content?.code?.trim()) {
+            content.put("code", majorMinorConcentration.code)
+        }
+        if (codeAndTypeMap.type != content?.type?.trim()) {
+            content.put("type",codeAndTypeMap.type)
+        }
+          majorMinorConcentration = bindmajorMinorConcentration(majorMinorConcentration, content)
+          return new AcademicDiscipline(majorMinorConcentration.code, majorMinorConcentration.description, content.type, majorMinorConcentrationGuid)
+        }
+
+
     private String updateGuidIfExist(MajorMinorConcentration majorMinorConcentration, Map content, String majorMinorConcentrationGuid = null) {
         // if id being sent in the request - update the guid else return the generated guid
         if (majorMinorConcentrationGuid) {
@@ -157,5 +189,12 @@ class AcademicDisciplineCompositeService extends LdmService{
                 break
         }
         majorMinorConcentrationService.createOrUpdate(majorMinorConcentration)
+    }
+
+    private Map getExistingCodeAndType(GlobalUniqueIdentifier globalUniqueIdentifier){
+        Map<String,String> codeAndTypeMap = new HashMap<String,String>()
+        codeAndTypeMap.code = globalUniqueIdentifier?.domainKey.split('\\^')[0]
+        codeAndTypeMap.type = globalUniqueIdentifier?.domainKey.split('\\^')[1]
+        return codeAndTypeMap
     }
 }

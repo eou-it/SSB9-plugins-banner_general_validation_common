@@ -378,4 +378,86 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         assertEquals i_success_input_content.type, academicDiscipline.type
     }
 
+    /**
+     * Test to check the AcademicDisciplineCompositeService update method with a existing Guid,code, but new Title in the request payload
+     * */
+    @Test
+    void testUpdateAcademicDisciplineExistingGuidAndCodeWithNewTitle() {
+        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+        MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
+        assertNotNull majorMinorConcentration
+        assertTrue majorMinorConcentration.validMajorIndicator
+        Map update_content = updateAcademicDisciplineMap(academicDiscipline.guid)
+        def o_success_AcademicDiscipline_update = academicDisciplineCompositeService.update(update_content)
+        assertNotNull o_success_AcademicDiscipline_update
+        assertEquals o_success_AcademicDiscipline_update.guid, update_content.id
+        assertEquals o_success_AcademicDiscipline_update.code, update_content.code
+        assertEquals o_success_AcademicDiscipline_update.description, update_content.description
+    }
+
+    /**
+     * Test to check the AcademicDisciplineCompositeService update method with a existing Guid,code, but new Type in the request payload
+     * */
+    @Test
+    void testUpdateAcademicDisciplineExistingGuidAndCodeWithNewType() {
+        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+        MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
+        assertNotNull majorMinorConcentration
+        assertTrue majorMinorConcentration.validMajorIndicator
+        Map update_content = updateAcademicDisciplineMap(academicDiscipline.guid)
+        update_content.type = 'minor'
+        def o_success_AcademicDiscipline_update = academicDisciplineCompositeService.update(update_content)
+        assertNotNull o_success_AcademicDiscipline_update
+        assertEquals o_success_AcademicDiscipline_update.guid, update_content.id
+        assertEquals o_success_AcademicDiscipline_update.code, update_content.code
+        assertEquals o_success_AcademicDiscipline_update.type, academicDiscipline.type
+        assert o_success_AcademicDiscipline_update.type  !=  'minor'
+    }
+
+    /**
+     * Test to check the AcademicDisciplineCompositeService update method with Invalid Guid
+     * */
+    @Test
+    void testUpdateAcademicDisciplineWithInvalidGuid() {
+        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+        Map update_content = updateAcademicDisciplineMap(null)
+        shouldFail(ApplicationException) {
+            academicDisciplineCompositeService.update(update_content)
+        }
+    }
+
+    /**
+     * Test to check the AcademicDiscipline update method with new Guid and Code -create method invocation
+     * */
+    @Test
+    void testUpdateAcademicDisciplineWithCreateForNewCodeAndGuid() {
+        i_success_input_content.put("id","test-guid")
+        AcademicDiscipline academicDiscipline = academicDisciplineCompositeService.update(i_success_input_content)
+        assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.guid
+        assertEquals i_success_input_content.id, academicDiscipline.guid
+        assertEquals i_success_input_content.code, academicDiscipline.code
+        assertEquals i_success_input_content.description, academicDiscipline.description
+    }
+
+    private Map updateAcademicDisciplineMap(id) {
+        Map params = [id: id,code: 'KKR', description: 'Updated Description', type:'major']
+        return params
+    }
+
 }

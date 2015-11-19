@@ -147,15 +147,23 @@ class LocationTypeCompositeService extends LdmService{
         return getDecorator(addressType,addressTypeGuid,content)
     }
 
+    /**
+     * Invoking the LDM service to bind map properties onto grails domains.
+     * Invoking the ServiceBase to creates or updates a model instance provided within the supplied domainModelOrMap.
+     */
     def bindaddressType(AddressType addressType, Map content) {
         bindData(addressType, content, [:])
         addressTypeService.createOrUpdate(addressType)
     }
 
+    /**
+     * Populating the decorator class with the response as per schema.
+     */
     private def getDecorator(AddressType addressType, String addressTypeGuid = null,Map request) {
         LocationTypeView locationTypeRecord = setLocationTypesRecord(addressType,addressTypeGuid,request)
         return  new LocationType(locationTypeRecord, locationTypeRecord.entityType,locationTypeRecord.locationType)
     }
+
 
     LocationTypeView setLocationTypesRecord(AddressType addressType,String addressTypeGuid,Map request){
         LocationTypeView  locationTypeView = new LocationTypeView()

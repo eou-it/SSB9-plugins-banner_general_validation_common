@@ -78,7 +78,12 @@ class AcademicDisciplineCompositeService extends LdmService{
         return new AcademicDiscipline(academicDiscipline.code, academicDiscipline.description, academicDiscipline.type, academicDiscipline.guid)
     }
 
-
+    /**
+     * fetch academic discipline data based on criteria
+     * @param count
+     * @param content
+     * @return
+     */
     private def fetchAcademicDisciplineByCriteria(Boolean count, Map content) {
         def result
         def filterMap = QueryBuilder.getFilterData(content)

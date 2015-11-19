@@ -154,22 +154,25 @@ class AcademicDisciplineCompositeService extends LdmService{
             //Per strategy when a ID was provided, the create should happen.
             return create(content)
         }
-        def codeAndTypeMap = getExistingCodeAndType(globalUniqueIdentifier)
-        MajorMinorConcentration majorMinorConcentration = MajorMinorConcentration.findByCode(codeAndTypeMap.code?.trim())
-        if(!majorMinorConcentration){
+        String code = globalUniqueIdentifier?.domainKey.split('\\^')[0]
+        String type = globalUniqueIdentifier?.domainKey.split('\\^')[1]
+        MajorMinorConcentration majorMinorConcentration = MajorMinorConcentration.findByCode(code?.trim())
+        if (!majorMinorConcentration) {
             throw new ApplicationException("academicDiscipline", new NotFoundException())
         }
-        if (codeAndTypeMap.code != content?.code?.trim()) {
-            content.put("code", majorMinorConcentration.code)
+        if (code != content?.code?.trim()) {
+            content.put("code", code)
         }
-        if (codeAndTypeMap.type != content?.type?.trim()) {
-            content.put("type",codeAndTypeMap.type)
+        if (type != content?.type?.trim()) {
+            content.put("type", type)
         }
-          majorMinorConcentration = bindmajorMinorConcentration(majorMinorConcentration, content)
-          return new AcademicDiscipline(majorMinorConcentration.code, majorMinorConcentration.description, content.type, majorMinorConcentrationGuid)
-        }
+        majorMinorConcentration = bindmajorMinorConcentration(majorMinorConcentration, content)
+        return new AcademicDiscipline(majorMinorConcentration.code, majorMinorConcentration.description, content.type, majorMinorConcentrationGuid)
+    }
 
-
+    /**
+     * Checking the id - if id is being sent in the request payload - update the id else return the generated id
+     */
     private String updateGuidIfExist(MajorMinorConcentration majorMinorConcentration, Map content, String majorMinorConcentrationGuid = null) {
         // if id being sent in the request - update the guid else return the generated guid
         if (majorMinorConcentrationGuid) {
@@ -180,6 +183,10 @@ class AcademicDisciplineCompositeService extends LdmService{
         majorMinorConcentrationGuid
     }
 
+    /**
+     * Invoking the LDM service to bind map properties onto grails domains.
+     * Invoking the ServiceBase to creates or updates a model instance provided within the supplied domainModelOrMap.
+     */
     def bindmajorMinorConcentration(MajorMinorConcentration majorMinorConcentration, Map content) {
         bindData(majorMinorConcentration, content, [:])
         switch (content?.type){
@@ -194,12 +201,5 @@ class AcademicDisciplineCompositeService extends LdmService{
                 break
         }
         majorMinorConcentrationService.createOrUpdate(majorMinorConcentration)
-    }
-
-    private Map getExistingCodeAndType(GlobalUniqueIdentifier globalUniqueIdentifier){
-        Map<String,String> codeAndTypeMap = new HashMap<String,String>()
-        codeAndTypeMap.code = globalUniqueIdentifier?.domainKey.split('\\^')[0]
-        codeAndTypeMap.type = globalUniqueIdentifier?.domainKey.split('\\^')[1]
-        return codeAndTypeMap
     }
 }

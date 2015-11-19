@@ -260,12 +260,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testCreateAcademicDisciplineWithTypeMajor() {
-        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
-        assertNotNull academicDiscipline
-        assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.code, academicDiscipline.code
-        assertEquals i_success_input_content.description, academicDiscipline.description
-        assertEquals i_success_input_content.type, academicDiscipline.type
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
         MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
         assertNotNull majorMinorConcentration
         assertTrue majorMinorConcentration.validMajorIndicator
@@ -277,12 +272,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testCreateAcademicDisciplineWithTypeMinor() {
         i_success_input_content.type = 'minor'
-        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
-        assertNotNull academicDiscipline
-        assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.code, academicDiscipline.code
-        assertEquals i_success_input_content.description, academicDiscipline.description
-        assertEquals i_success_input_content.type, academicDiscipline.type
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
         MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
         assertNotNull majorMinorConcentration
         assertTrue majorMinorConcentration.validMinorIndicator
@@ -294,12 +284,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testCreateAcademicDisciplineWithTypeConcentration() {
         i_success_input_content.type = 'concentration'
-        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
-        assertNotNull academicDiscipline
-        assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.code, academicDiscipline.code
-        assertEquals i_success_input_content.description, academicDiscipline.description
-        assertEquals i_success_input_content.type, academicDiscipline.type
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
         MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
         assertNotNull majorMinorConcentration
         assertTrue majorMinorConcentration.validConcentratnIndicator
@@ -338,13 +323,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testCreateAcademicDisciplineWIthNewGuid() {
         i_success_input_content.id = 'test-guid'
-        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
-        assertNotNull academicDiscipline
-        assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.id, academicDiscipline.guid
-        assertEquals i_success_input_content.code, academicDiscipline.code
-        assertEquals i_success_input_content.description, academicDiscipline.description
-        assertEquals i_success_input_content.type, academicDiscipline.type
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
     }
 
     /**
@@ -369,13 +348,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         i_success_input_content.id = 'test-guid'
         i_success_input_content.code = i_sucess_academicDiscipline_major.code
         i_success_input_content.type = 'minor'
-        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
-        assertNotNull academicDiscipline
-        assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.id, academicDiscipline.guid
-        assertEquals i_success_input_content.code, academicDiscipline.code
-        assertEquals i_success_input_content.description, academicDiscipline.description
-        assertEquals i_success_input_content.type, academicDiscipline.type
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
     }
 
     /**
@@ -383,12 +356,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
      * */
     @Test
     void testUpdateAcademicDisciplineExistingGuidAndCodeWithNewTitle() {
-        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
-        assertNotNull academicDiscipline
-        assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.code, academicDiscipline.code
-        assertEquals i_success_input_content.description, academicDiscipline.description
-        assertEquals i_success_input_content.type, academicDiscipline.type
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
         MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
         assertNotNull majorMinorConcentration
         assertTrue majorMinorConcentration.validMajorIndicator
@@ -405,12 +373,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
      * */
     @Test
     void testUpdateAcademicDisciplineExistingGuidAndCodeWithNewType() {
-        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
-        assertNotNull academicDiscipline
-        assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.code, academicDiscipline.code
-        assertEquals i_success_input_content.description, academicDiscipline.description
-        assertEquals i_success_input_content.type, academicDiscipline.type
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
         MajorMinorConcentration majorMinorConcentration=  MajorMinorConcentration.findByCode(academicDiscipline.code)
         assertNotNull majorMinorConcentration
         assertTrue majorMinorConcentration.validMajorIndicator
@@ -429,12 +392,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
      * */
     @Test
     void testUpdateAcademicDisciplineWithInvalidGuid() {
-        AcademicDiscipline academicDiscipline= academicDisciplineCompositeService.create(i_success_input_content)
-        assertNotNull academicDiscipline
-        assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.code, academicDiscipline.code
-        assertEquals i_success_input_content.description, academicDiscipline.description
-        assertEquals i_success_input_content.type, academicDiscipline.type
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
         Map update_content = updateAcademicDisciplineMap(null)
         shouldFail(ApplicationException) {
             academicDisciplineCompositeService.update(update_content)
@@ -447,12 +405,20 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testUpdateAcademicDisciplineWithCreateForNewCodeAndGuid() {
         i_success_input_content.put("id","test-guid")
-        AcademicDiscipline academicDiscipline = academicDisciplineCompositeService.update(i_success_input_content)
+        AcademicDiscipline academicDiscipline= createAndTestAcademicDiscipline(i_success_input_content)
+    }
+
+    /**
+     * Common Method to test academicDiscipline create method  based on the request payload and invoked form all the create and update test methods
+     * */
+    AcademicDiscipline createAndTestAcademicDiscipline(Map i_success_input_content){
+        AcademicDiscipline academicDiscipline = academicDisciplineCompositeService.create(i_success_input_content)
         assertNotNull academicDiscipline
         assertNotNull academicDiscipline.guid
-        assertEquals i_success_input_content.id, academicDiscipline.guid
         assertEquals i_success_input_content.code, academicDiscipline.code
         assertEquals i_success_input_content.description, academicDiscipline.description
+        assertEquals i_success_input_content.type, academicDiscipline.type
+        return academicDiscipline
     }
 
     private Map updateAcademicDisciplineMap(id) {

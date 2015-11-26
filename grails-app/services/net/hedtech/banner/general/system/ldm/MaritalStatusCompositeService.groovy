@@ -272,10 +272,9 @@ class MaritalStatusCompositeService extends LdmService {
             def maritalQuery = session.createQuery(query).
                     setString('settingName', MARITAL_STATUS_MARTIAL_CATEGORY).
                     setString('processCode', PROCESS_CODE).
-                    setParameterList('translationValueList', MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY).
-                    setMaxResults(content?.max as Integer).
-                    setFirstResult((content?.offset ?: '0') as Integer)
-            return count ? maritalQuery.uniqueResult() : maritalQuery.list()
+                    setParameterList('translationValueList', MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY)
+
+            return count ? maritalQuery.uniqueResult() : maritalQuery.setMaxResults(content?.max as Integer).setFirstResult((content?.offset ?: '0') as Integer).list()
         }
     }
 }

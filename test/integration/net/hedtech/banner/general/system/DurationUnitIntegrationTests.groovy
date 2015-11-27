@@ -168,6 +168,13 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
+    void testFetchAllByDurationUnitCodes() {
+        List<String> durationUnitCodes = ["DAY","WEEK","DAYS","SEM"]
+        List<DurationUnit> durationUnits = DurationUnit.fetchAllByDurationUnitCodes(durationUnitCodes)
+        assertEquals 4, durationUnits.size()
+    }
+
     private def newValidForCreateDurationUnit() {
         def durationUnit = new DurationUnit(
                 code: i_success_code,

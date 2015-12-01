@@ -131,15 +131,14 @@ class AcademicCredentialCompositeService extends LdmService {
         }
 
         // Should not allow to update instructional-methods.code as it is read-only
-        if (degree?.code != content?.code?.trim()) {
-            content.put("code", degree?.code)
+        if (degree.code != content.code?.trim()) {
+            content.put("code", degree.code)
         }
-        if (!typeList.contains(content?.type) || degree?.degreeType != AcademicCredentialType.("${content?.type}").value) {
-            content.put("degreeType", degree?.degreeType)
-        }
-        degree = bindAcademicCredential(degree, content)
+        content.put("degreeType", degree.degreeType)
+        content.type =  AcademicCredentialView.findByCode(degree.code)?.type
 
-        return new AcademicCredential(degree?.code,degree?.description,degreeGuid,content?.type)
+        degree = bindAcademicCredential(degree, content)
+        return new AcademicCredential(degree.code,degree.description,degreeGuid,content.type)
     }
 
 

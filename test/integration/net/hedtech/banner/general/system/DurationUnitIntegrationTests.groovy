@@ -173,6 +173,14 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
         List<String> durationUnitCodes = ["DAY","WEEK","DAYS","SEM"]
         List<DurationUnit> durationUnits = DurationUnit.fetchAllByDurationUnitCodes(durationUnitCodes)
         assertEquals 4, durationUnits.size()
+
+        assertNull durationUnits.find {it.code == 'MTHS'}
+        assertNull durationUnits.find {it.code == 'HALF'}
+
+        assertNotNull durationUnits.find {it.code == durationUnitCodes[0]}
+        assertNotNull durationUnits.find {it.code == durationUnitCodes[1]}
+        assertNotNull durationUnits.find {it.code == durationUnitCodes[2]}
+        assertNotNull durationUnits.find {it.code == durationUnitCodes[3]}
     }
 
     private def newValidForCreateDurationUnit() {

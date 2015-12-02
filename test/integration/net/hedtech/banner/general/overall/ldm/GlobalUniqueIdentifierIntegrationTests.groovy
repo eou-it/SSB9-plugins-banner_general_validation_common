@@ -3,7 +3,6 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.overall.ldm
 
-import net.hedtech.banner.general.system.EmailType
 import net.hedtech.banner.general.system.IntegrationPartner
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
@@ -195,6 +194,14 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         assertEquals guid.domainId, integrations[0].id
     }
 
+    @Test
+    void testFetchByLdmNameAndDomainKeyLike(){
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyLike('instructional-events', '201410-^20434')
+        assertEquals(2, globalUniqueIdentifierList.size())
+        globalUniqueIdentifierList.each {
+            assertTrue "expected to contain 201410-^20434 but had ${it.domainKey}", it.domainKey.contains('201410-^20434')
+        }
+    }
 
     private GlobalUniqueIdentifier createNewGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = new GlobalUniqueIdentifier(

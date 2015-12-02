@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -92,6 +92,10 @@ class TermService extends ServiceBase {
             term = super.get(id)
         }
         return term
+    }
+
+    public List<Term> fetchAllByTermCodes( List<String> termCodes ) {
+        Term.fetchAllByTermCodes( termCodes )
     }
 
 }

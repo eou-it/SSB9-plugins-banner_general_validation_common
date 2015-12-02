@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import groovy.sql.Sql
@@ -216,6 +216,22 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
+    void testFetchAllByTermCodes(){
+        String TERM_CODE_ONE = "MMMM01"
+        String TERM_CODE_TWO = "201410"
+
+        Term termOne = createValidTerm(code: TERM_CODE_ONE, description: "MMMM01 desc")
+        termOne.save(flush: true)
+        termOne.refresh()
+        List<Term> terms = Term.fetchAllByTermCodes( [TERM_CODE_ONE] )
+        assertTrue terms.size() == 1
+
+        terms = Term.fetchAllByTermCodes( [TERM_CODE_ONE, TERM_CODE_TWO] )
+        assertTrue terms.size() == 2
+        assertNotNull terms.find{ it.code == TERM_CODE_ONE}
+        assertNotNull terms.find{ it.code == TERM_CODE_TWO}
+    }
 
     private Term createValidTerm(Map p) {
         def academicYear = new AcademicYear(code: "TT", description: "TT", sysreqInd: true, lastModified: new Date(),

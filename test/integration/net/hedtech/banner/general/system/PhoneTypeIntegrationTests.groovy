@@ -12,9 +12,9 @@ import org.junit.Test
 import org.springframework.dao.InvalidDataAccessResourceUsageException
 
 /**
- * Integration Test cases for PhoneTypeView, which is Read Only view.
+ * Integration Test cases for PhoneType, which is Read Only view.
  */
-class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
+class PhoneTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
     private String i_success_phoneType = 'pager'
@@ -51,7 +51,7 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForUpdatePhoneType(){
-        PhoneTypeView phoneType = PhoneTypeView.findByPhoneType('business')
+        PhoneType phoneType = PhoneType.findByPhoneType('business')
         assertNotNull phoneType
         phoneType.description='Test for Update'
         shouldFail(InvalidDataAccessResourceUsageException) {
@@ -64,7 +64,7 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForDeletePhoneType(){
-        PhoneTypeView phoneType = PhoneTypeView.findByPhoneType('business')
+        PhoneType phoneType = PhoneType.findByPhoneType('business')
         assertNotNull phoneType
         shouldFail(InvalidDataAccessResourceUsageException) {
             phoneType.delete(flush: true, onError: true)
@@ -77,7 +77,7 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testList() {
         def params = [max: '500', offset: '0',order: 'ASC']
-        List phoneTypeList= PhoneTypeView.list(params)
+        List phoneTypeList= PhoneType.list(params)
         assertNotNull phoneTypeList
         assertFalse phoneTypeList.isEmpty()
         assertTrue phoneTypeList.phoneType.contains(i_success_phoneType)
@@ -91,10 +91,10 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testGet() {
-        assertNull PhoneTypeView.get("")
-        assertNull  PhoneTypeView.get(null)
+        assertNull PhoneType.get("")
+        assertNull  PhoneType.get(null)
 
-        PhoneTypeView phoneTypeView=PhoneTypeView.findByPhoneType(i_success_phoneType)
+        PhoneType phoneTypeView=PhoneType.findByPhoneType(i_success_phoneType)
         assertNotNull phoneTypeView
 
         TelephoneType telephoneType= TelephoneType.findByCode(phoneTypeView.value)
@@ -117,7 +117,7 @@ class PhoneTypeViewIntegrationTests extends BaseIntegrationTestCase {
 
 
     private def newPhoneType(){
-        new PhoneTypeView(
+        new PhoneType(
                 code:'test',
                 description:'test data',
                 dataOrigin:'test',

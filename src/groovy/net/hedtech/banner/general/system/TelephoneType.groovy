@@ -8,6 +8,8 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.Temporal
@@ -21,6 +23,11 @@ import org.hibernate.annotations.Type
 
 @Entity
 @Table(name = "STVTELE")
+@NamedQueries(value = [
+        @NamedQuery(name = "TelephoneType.fetchByCode",query = """FROM TelephoneType a WHERE a.code = :code""")
+])
+
+
 class TelephoneType implements Serializable {
 
     /**
@@ -121,5 +128,18 @@ class TelephoneType implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+    /**
+     * fetching TelephoneType details based on code
+     * @param code
+     * @return
+     */
+    public static TelephoneType fetchByCode(String code){
+       TelephoneType telephoneType = TelephoneType.withSession{ session ->
+            session.getNamedQuery('TelephoneType.fetchByCode').setString('code',code).uniqueResult()
+        }
+        return telephoneType
+
+    }
 
 }

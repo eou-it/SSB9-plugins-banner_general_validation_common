@@ -10,4 +10,13 @@ import net.hedtech.banner.service.ServiceBase
  **/
 class TelephoneTypeService extends ServiceBase {
     boolean transactional = true
+
+    /**
+     * fetching TelephoneType details based on code
+     * @param code
+     * @return
+     */
+      TelephoneType fetchByCode(String code){
+        return TelephoneType.fetchByCode(code)
+    }
 }

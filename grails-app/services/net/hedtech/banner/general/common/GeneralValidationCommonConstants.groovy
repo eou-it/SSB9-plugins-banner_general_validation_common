@@ -21,4 +21,6 @@ class GeneralValidationCommonConstants {
 
     /** Common constants for AcademicDiscipline*/
     final static String ACADEMIC_DISCIPLINE = 'academicDiscipline'
+
+    final static String ERROR_MSG_OPERATION_NOT_SUPPORTED = 'operation not supported'
 }

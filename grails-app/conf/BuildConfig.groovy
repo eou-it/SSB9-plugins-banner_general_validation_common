@@ -6,12 +6,14 @@ grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
-grails.plugin.location.'banner-core' = "../banner_core.git"
 grails.plugin.location.'banner-seeddata-catalog' = "../banner_seeddata_catalog.git"
-grails.plugin.location.'banner-codenarc' = "../banner_codenarc.git"
-grails.plugin.location.'i18n-core'="../i18n_core.git"
+grails.plugin.location.'banner-core'="../banner_core.git"
+grails.plugin.location.'banner-general-utility' = "../banner_general_utility.git"
+grails.plugin.location.'banner-spring-security-cas'   = "../banner_spring_security_cas.git"
+grails.plugin.location.'banner-spring-security-saml'   = "../banner_spring_security_saml.git"
 
-grails.project.dependency.resolver = "ivy"
+
+grails.project.dependency.resolver = "maven"
 
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -19,28 +21,21 @@ grails.project.dependency.resolution = {
         // uncomment to disable ehcache
         // excludes 'ehcache'
     }
-    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
 
     repositories {
         if (System.properties['PROXY_SERVER_NAME']) {
             mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
         } else {
-            grailsPlugins()
-            grailsHome()
             grailsCentral()
             mavenCentral()
             mavenRepo "http://repository.jboss.org/maven2/"
-            mavenRepo "http://repository.codehaus.org"
+            mavenRepo "https://code.lds.org/nexus/content/groups/main-repo"
         }
     }
 
     plugins {
-        runtime  ":hibernate:3.6.10.10"
-        compile ":tomcat:7.0.52.1"
-        compile ':resources:1.2.7' // If the functional-test plugin is being used
-        compile ":functional-test:2.0.0" // If the functional-test plugin is being used
-        compile ":restful-api:1.0.0"
-        test ':code-coverage:2.0.3-3'
+
     }
 	
     dependencies {

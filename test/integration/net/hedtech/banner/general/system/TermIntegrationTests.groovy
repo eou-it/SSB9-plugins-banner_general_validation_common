@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.codehaus.groovy.runtime.InvokerHelper
 import org.junit.Before
 import org.junit.Test
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
@@ -245,7 +246,12 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
                 trmt_code: termType)
 
         // Overwrite any term based properites
-        if (p) term.properties = p
+        if (p) {
+            use(InvokerHelper) {
+                term.setProperties(p)
+            }
+        }
+        //term.properties = p
 
         return term
     }

@@ -6,7 +6,6 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.AddressType
@@ -24,10 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class LocationTypeCompositeService extends LdmService{
 
-    private static final String DEFAULT_SORT_FIELD = GeneralValidationCommonConstants.CODE
+    private static final String DEFAULT_SORT_FIELD = 'code'
     private static final String DEFAULT_ORDER_TYPE = 'ASC'
     private static final String LDM_NAME ='location-types'
-    private static final List<String> allowedSortFields = [GeneralValidationCommonConstants.CODE]
+    private static final List<String> allowedSortFields = ['code']
 
     def addressTypeService
 
@@ -84,9 +83,9 @@ class LocationTypeCompositeService extends LdmService{
         } else {
             GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
             if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME) {
-                throw new RestfulApiValidationException(GeneralValidationCommonConstants.ERROR_MSG_INVALID_GUID)
+                throw new RestfulApiValidationException("locationType.invalidGuid")
             }else {
-                throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new NotFoundException())
+                throw new ApplicationException("locationType", new NotFoundException())
             }
         }
     }
@@ -98,11 +97,11 @@ class LocationTypeCompositeService extends LdmService{
      */
     def create(Map content) {
        if (!content?.code) {
-            throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
+            throw new ApplicationException('locationType', new BusinessLogicValidationException('code.required.message', null))
         }
-        AddressType addressType = addressTypeService.fetchByCode(content?.code?.trim())
+        AddressType addressType = AddressType.findByCode(content?.code?.trim())
         if (addressType) {
-            throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_EXISTS_MESSAGE, null))
+            throw new ApplicationException("locationType", new BusinessLogicValidationException("exists.message", null))
         }
         addressType = bindaddressType(new AddressType(), content)
         String addressTypeGuid = content?.id?.trim()?.toLowerCase()
@@ -110,7 +109,8 @@ class LocationTypeCompositeService extends LdmService{
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
             updateGuidValue(addressType.id, addressTypeGuid, LDM_NAME)
         } else {
-            addressTypeGuid = (globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, addressType?.id)).guid
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, addressType?.id)
+            addressTypeGuid = globalUniqueIdentifier.guid
         }
         log.debug("GUID: ${addressTypeGuid}")
         return getDecorator(addressType,addressTypeGuid,content)
@@ -125,23 +125,23 @@ class LocationTypeCompositeService extends LdmService{
     def update(Map content) {
         String addressTypeGuid = content?.id?.trim()?.toLowerCase()
         if (!addressTypeGuid) {
-            throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new NotFoundException())
+            throw new ApplicationException("locationType", new NotFoundException())
         }
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, addressTypeGuid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, addressTypeGuid)
         if (!globalUniqueIdentifier) {
             //Per strategy when a ID was provided, the create should happen.
             return create(content)
         }
         if (!content?.code) {
-            throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
+            throw new ApplicationException('locationType', new BusinessLogicValidationException('code.required.message', null))
         }
         AddressType addressType = AddressType.findById(globalUniqueIdentifier?.domainId)
         if (!addressType) {
-            throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new NotFoundException())
+            throw new ApplicationException("locationType", new NotFoundException())
         }
         // Should not allow to update locationType code as it is read-only
         if (addressType.code != content?.code?.trim()) {
-            content.put(GeneralValidationCommonConstants.CODE, addressType.code)
+            content.put("code", addressType.code)
         }
         addressType = bindaddressType(addressType, content)
         return getDecorator(addressType,addressTypeGuid,content)
@@ -170,9 +170,9 @@ class LocationTypeCompositeService extends LdmService{
         locationTypeView.setId(addressTypeGuid)
         locationTypeView.setCode(addressType?.code)
         locationTypeView.setDescription(addressType?.description)
-        for (Map.Entry<String, String> entry : request.get(GeneralValidationCommonConstants.TYPE).entrySet()){
+        for (Map.Entry<String, String> entry : request.get("type").entrySet()){
             locationTypeView.setEntityType(entry.getKey())
-            locationTypeView.setLocationType(entry.getValue().get(GeneralValidationCommonConstants.LOCATION_TYPE))
+            locationTypeView.setLocationType(entry.getValue().get("locationType"))
         }
         return locationTypeView
     }

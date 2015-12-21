@@ -10,13 +10,4 @@ import net.hedtech.banner.service.ServiceBase
  */
 class MajorMinorConcentrationService extends ServiceBase {
     boolean transactional = true
-
-    /**
-     * fetch MajorMinorConcentration based on code
-     * @param code
-     * @return MajorMinorConcentration
-     */
-    MajorMinorConcentration fetchByCode(String code){
-        return MajorMinorConcentration.fetchByCode(code)
-    }
 }

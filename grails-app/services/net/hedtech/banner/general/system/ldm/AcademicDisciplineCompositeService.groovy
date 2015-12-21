@@ -6,7 +6,6 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.AcademicDisciplineView
@@ -70,11 +69,11 @@ class AcademicDisciplineCompositeService extends LdmService{
     @Transactional(readOnly = true)
     AcademicDiscipline get(String guid) {
         if (!guid) {
-            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new NotFoundException())
+            throw new ApplicationException("academicDiscipline", new NotFoundException())
         }
         AcademicDisciplineView academicDiscipline = AcademicDisciplineView.get(guid?.trim())
         if (!academicDiscipline) {
-            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new NotFoundException())
+            throw new ApplicationException("academicDiscipline", new NotFoundException())
         }
         return new AcademicDiscipline(academicDiscipline.code, academicDiscipline.description, academicDiscipline.type, academicDiscipline.guid)
     }
@@ -92,9 +91,9 @@ class AcademicDisciplineCompositeService extends LdmService{
         def criteria = filterMap.criteria
         def pagingAndSortParams = filterMap.pagingAndSortParams
 
-        if (content.containsKey(GeneralValidationCommonConstants.TYPE)) {
-            params.put(GeneralValidationCommonConstants.TYPE, content.get(GeneralValidationCommonConstants.TYPE).trim())
-            criteria.add([key: GeneralValidationCommonConstants.TYPE, binding: GeneralValidationCommonConstants.TYPE, operator: Operators.EQUALS])
+        if (content.containsKey("type")) {
+            params.put("type", content.get("type").trim())
+            criteria.add([key: "type", binding: "type", operator: Operators.EQUALS])
         }
         if (count) {
             result = AcademicDisciplineView.countAll([params: params, criteria: criteria])
@@ -112,27 +111,30 @@ class AcademicDisciplineCompositeService extends LdmService{
      */
     def create(Map content) {
         if (!content?.code) {
-            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
+            throw new ApplicationException('academicDisciplines', new BusinessLogicValidationException('code.required.message', null))
         }
         String majorMinorConcentrationGuid = content?.id?.trim()?.toLowerCase()
-        if (globalUniqueIdentifierService.fetchByLdmNameAndGuid(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentrationGuid)) {
-            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_EXISTS_MESSAGE, null))
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentrationGuid)
+        if (globalUniqueIdentifier) {
+            throw new ApplicationException('academicDisciplines', new BusinessLogicValidationException('exists.message', null))
         }
-        MajorMinorConcentration majorMinorConcentration = majorMinorConcentrationService.fetchByCode(content?.code?.trim())
+        MajorMinorConcentration majorMinorConcentration = MajorMinorConcentration.findByCode(content?.code?.trim())
         if (!majorMinorConcentration) {
             // if code in the request does not exists - create the record
             majorMinorConcentration = bindmajorMinorConcentration(new MajorMinorConcentration(), content)
             majorMinorConcentrationGuid = updateGuidIfExist(majorMinorConcentration, content, majorMinorConcentrationGuid)
         }
+        else{
             // if code in the request exists - then check with the type
-            else if(AcademicDisciplineView.findByCodeAndType(content?.code,content.type)){
-                throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_EXISTS_MESSAGE, null))
+            AcademicDisciplineView academicDisciplineView = AcademicDisciplineView.findByCodeAndType(content?.code,content.type)
+            if(academicDisciplineView){
+                throw new ApplicationException('academicDisciplines', new BusinessLogicValidationException('exists.message', null))
             }
             else{
                 majorMinorConcentration = bindmajorMinorConcentration(majorMinorConcentration, content)
                 majorMinorConcentrationGuid = updateGuidIfExist(majorMinorConcentration, content, majorMinorConcentrationGuid)
             }
-
+        }
         return new AcademicDiscipline(majorMinorConcentration.code, majorMinorConcentration.description, content.type, majorMinorConcentrationGuid)
     }
 
@@ -145,24 +147,24 @@ class AcademicDisciplineCompositeService extends LdmService{
     def update(Map content) {
         String majorMinorConcentrationGuid = content?.id?.trim()?.toLowerCase()
         if (!majorMinorConcentrationGuid) {
-            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new NotFoundException())
+            throw new ApplicationException("academicDiscipline", new NotFoundException())
         }
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentrationGuid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentrationGuid)
         if (!globalUniqueIdentifier) {
             //Per strategy when a ID was provided, the create should happen.
             return create(content)
         }
         String code = globalUniqueIdentifier?.domainKey.split('\\^')[0]
         String type = globalUniqueIdentifier?.domainKey.split('\\^')[1]
-        MajorMinorConcentration majorMinorConcentration = majorMinorConcentrationService.fetchByCode(code?.trim())
+        MajorMinorConcentration majorMinorConcentration = MajorMinorConcentration.findByCode(code?.trim())
         if (!majorMinorConcentration) {
-            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new NotFoundException())
+            throw new ApplicationException("academicDiscipline", new NotFoundException())
         }
         if (code != content?.code?.trim()) {
-            content.put(GeneralValidationCommonConstants.CODE, code)
+            content.put("code", code)
         }
         if (type != content?.type?.trim()) {
-            content.put(GeneralValidationCommonConstants.TYPE, type)
+            content.put("type", type)
         }
         majorMinorConcentration = bindmajorMinorConcentration(majorMinorConcentration, content)
         return new AcademicDiscipline(majorMinorConcentration.code, majorMinorConcentration.description, content.type, majorMinorConcentrationGuid)

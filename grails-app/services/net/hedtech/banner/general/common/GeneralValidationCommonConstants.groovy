@@ -23,4 +23,10 @@ class GeneralValidationCommonConstants {
     final static String ACADEMIC_DISCIPLINE = 'academicDiscipline'
 
     final static String ERROR_MSG_OPERATION_NOT_SUPPORTED = 'operation not supported'
+
+    /** Common constants for Location Type*/
+    final static String LOCATION_TYPE = 'locationType'
+    final static String ORGANIZATION = 'organization'
+    final static String PERSON = 'person'
+    final static String ERROR_MSG_INVALID_GUID = 'locationType.invalidGuid'
 }

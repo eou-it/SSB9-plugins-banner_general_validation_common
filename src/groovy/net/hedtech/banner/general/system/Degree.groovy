@@ -12,6 +12,10 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "STVDEGC")
+@NamedQueries(value = [
+        @NamedQuery(name = "Degree.fetchByCode",query = """FROM Degree a WHERE a.code = :code""")
+])
+
 class Degree implements Serializable {
 
     /**
@@ -206,5 +210,18 @@ class Degree implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+    /**
+     * fetching Degree details based on code
+     * @param code
+     * @return
+     */
+    public static Degree fetchByCode(String code){
+        Degree degree = Degree.withSession{ session ->
+            session.getNamedQuery('Degree.fetchByCode').setString('code',code).uniqueResult()
+        }
+        return degree
+
+    }
 
 }

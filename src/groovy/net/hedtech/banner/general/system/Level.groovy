@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system
 
 import org.hibernate.annotations.Type
+
 import javax.persistence.*
 
 /**
@@ -11,6 +12,9 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVLEVL")
+@NamedQueries(value = [
+        @NamedQuery(name = "Level.fetchByCode",query = """FROM Level a WHERE a.code = :code""")
+])
 class Level implements Serializable {
 
     @Id
@@ -184,4 +188,16 @@ class Level implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
+    /**
+     * fetching Level details based on code
+     * @param code
+     * @return
+     */
+    public static Level fetchByCode(String code){
+        Level level = Level.withSession{ session ->
+            session.getNamedQuery('Level.fetchByCode').setString('code',code).uniqueResult()
+        }
+        return level
+
+    }
 }

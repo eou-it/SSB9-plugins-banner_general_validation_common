@@ -11,6 +11,7 @@ import javax.persistence.Id
 import javax.persistence.NamedQueries
 import javax.persistence.NamedQuery
 import javax.persistence.Table
+import javax.persistence.Version
 
 /**
  * <p>Read only view for phone types.</p>
@@ -31,6 +32,13 @@ class PhoneType implements Serializable {
     @Id
     @Column(name = "GUID")
     String id
+
+    /**
+     * VERSION for GVQ_PHONE_TYPES
+     */
+    @Version
+    @Column(name = "VERSION")
+    Long version
 
     /**
      * VALUE: Value of configuration setting.

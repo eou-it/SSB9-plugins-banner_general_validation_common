@@ -41,6 +41,7 @@ class PhoneTypeIntegrationTests extends BaseIntegrationTestCase {
     void testReadOnlyForCreatePhoneType(){
         def phoneType = newPhoneType()
         assertNotNull phoneType
+        phoneType.id = 'test'
         shouldFail(InvalidDataAccessResourceUsageException) {
             phoneType.save(flush: true, onError: true)
         }

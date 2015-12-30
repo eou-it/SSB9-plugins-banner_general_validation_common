@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Ethnicity
@@ -23,9 +24,9 @@ import org.springframework.transaction.annotation.Transactional
 class EthnicityCompositeService extends LdmService {
 
     def ethnicityService
-    private static final String ETHNICITY_LDM_NAME = 'ethnicities'
-    private static final String ETHNICITIES_US = 'ethnicities-us'
-    private static final List<String> VERSIONS = ["v1", "v3", "v4"]
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1,
+                                                  GeneralValidationCommonConstants.VERSION_V3,
+                                                  GeneralValidationCommonConstants.VERSION_V4 ]
 
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -33,10 +34,10 @@ class EthnicityCompositeService extends LdmService {
         log.debug "list:Begin:$params"
         List ethnicityDetailList = []
 
-        if ("v1".equals(getAcceptVersion(VERSIONS))) {
+        if (GeneralValidationCommonConstants.VERSION_V1.equals(getAcceptVersion(VERSIONS))) {
             RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
-            List allowedSortFields = ['abbreviation', 'title']
+            List allowedSortFields = [GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE]
             RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
             RestfulApiValidationUtility.validateSortOrder(params.order)
             params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
@@ -45,20 +46,16 @@ class EthnicityCompositeService extends LdmService {
             ethnicityList.each { ethnicity ->
                 ethnicityDetailList << getDecorator(ethnicity)
             }
-        } else if ("v3".equals(getAcceptVersion(VERSIONS))) {
+        } else if (GeneralValidationCommonConstants.VERSION_V3.equals(getAcceptVersion(VERSIONS))) {
             def results = getUnitedStatesEthnicCodes()
             results?.each {
-                ethnicityDetailList << ["guid": it.guid, "title": it.domainKey]
+                ethnicityDetailList << [guid: it.guid, title: it.domainKey]
             }
-        }else if ("v4".equals(getAcceptVersion(VERSIONS))) {
-            def results = getUnitedStatesEthnicCodes()
-            results?.each {
-                switch (it?.domainId){
-                    case 1L : ethnicityDetailList << ["id": it.guid, "title": it.domainKey, "ethnicCategory":"nonHispanic"]
-                        break
-                    case 2L  :  ethnicityDetailList << ["id": it.guid, "title": it.domainKey, "ethnicCategory":"hispanic"]
-                        break
-                }
+        }else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS))) {
+             getUnitedStatesEthnicCodes().each { ethnicity ->
+                 if(ethnicity.domainId != 0){
+                ethnicityDetailList << fetchV4Data(ethnicity)
+                 }
             }
         }
 
@@ -73,12 +70,12 @@ class EthnicityCompositeService extends LdmService {
         log.debug "count:Begin"
         int total
 
-        if ("v1".equals(getAcceptVersion(VERSIONS))) {
+        if (GeneralValidationCommonConstants.VERSION_V1.equals(getAcceptVersion(VERSIONS))) {
             total = Ethnicity.count()
-        } else if ("v3".equals(getAcceptVersion(VERSIONS))) {
-            total = GlobalUniqueIdentifier.countByLdmName(ETHNICITIES_US)
-        } else if ("v4".equals(getAcceptVersion(VERSIONS))) {
-            total = GlobalUniqueIdentifier.countByLdmNameAndDomainIdGreaterThan(ETHNICITIES_US,0L)
+        } else if (GeneralValidationCommonConstants.VERSION_V3.equals(getAcceptVersion(VERSIONS))) {
+            total = GlobalUniqueIdentifier.countByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
+        } else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS))) {
+            total = GlobalUniqueIdentifier.countByLdmNameAndDomainIdGreaterThan(GeneralValidationCommonConstants.ETHNICITIES_US,0L)
         }
 
         log.debug "count:End:$total"
@@ -91,35 +88,30 @@ class EthnicityCompositeService extends LdmService {
         log.debug "get:Begin:$guid"
         def result
 
-        if ("v1".equals(getAcceptVersion(VERSIONS))) {
-            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITY_LDM_NAME, guid)
+        if (GeneralValidationCommonConstants.VERSION_V1.equals(getAcceptVersion(VERSIONS))) {
+            GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITY_LDM_NAME, guid)
             if (!globalUniqueIdentifier) {
-                throw new ApplicationException("ethnicity", new NotFoundException())
+                throw new ApplicationException(GeneralValidationCommonConstants.ETHNICITY, new NotFoundException())
             }
 
-            Ethnicity ethnicity = Ethnicity.get(globalUniqueIdentifier.domainId)
+            Ethnicity ethnicity = ethnicityService.get(globalUniqueIdentifier.domainId)
             if (!ethnicity) {
-                throw new ApplicationException("ethnicity", new NotFoundException())
+                throw new ApplicationException(GeneralValidationCommonConstants.ETHNICITY, new NotFoundException())
             }
 
             result = getDecorator(ethnicity, globalUniqueIdentifier.guid)
-        } else if ("v3".equals(getAcceptVersion(VERSIONS))) {
-            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITIES_US, guid?.trim()?.toLowerCase())
+        } else if (GeneralValidationCommonConstants.VERSION_V3.equals(getAcceptVersion(VERSIONS))) {
+            GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, guid?.trim()?.toLowerCase())
             if (!globalUniqueIdentifier) {
-                throw new ApplicationException("ethnicity", new NotFoundException())
+                throw new ApplicationException(GeneralValidationCommonConstants.ETHNICITY, new NotFoundException())
             }
-            result = ["guid": globalUniqueIdentifier.guid, "title": globalUniqueIdentifier.domainKey]
-        } else if ("v4".equals(getAcceptVersion(VERSIONS))) {
-            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITIES_US, guid?.trim()?.toLowerCase())
+            result = [guid: globalUniqueIdentifier.guid, title: globalUniqueIdentifier.domainKey]
+        } else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS))) {
+            GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, guid?.trim()?.toLowerCase())
             if (!globalUniqueIdentifier || globalUniqueIdentifier.domainId<=0) {
-                throw new ApplicationException("ethnicity", new NotFoundException())
+                throw new ApplicationException(GeneralValidationCommonConstants.ETHNICITY, new NotFoundException())
             }
-            switch (globalUniqueIdentifier?.domainId){
-                case 1L :  result = ["id": globalUniqueIdentifier?.guid, "title": globalUniqueIdentifier?.domainKey, "ethnicCategory":"nonHispanic"]
-                    break
-                case 2L  :  result = ["id": globalUniqueIdentifier?.guid, "title": globalUniqueIdentifier?.domainKey, "ethnicCategory":"hispanic"]
-                    break
-            }
+            result = fetchV4Data(globalUniqueIdentifier)
         }
 
         log.debug "get:End:$result"
@@ -145,9 +137,9 @@ class EthnicityCompositeService extends LdmService {
         String ethnicityGuid = content?.guid?.trim()?.toLowerCase()
         if (ethnicityGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-            updateGuidValue(ethnicity.id, ethnicityGuid, ETHNICITY_LDM_NAME)
+            updateGuidValue(ethnicity.id, ethnicityGuid, GeneralValidationCommonConstants.ETHNICITY_LDM_NAME)
         } else {
-            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity?.id)
+            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainId(GeneralValidationCommonConstants.ETHNICITY_LDM_NAME, ethnicity?.id)
             ethnicityGuid = globalUniqueIdentifier.guid
         }
         log.debug("GUID: ${ethnicityGuid}")
@@ -164,7 +156,7 @@ class EthnicityCompositeService extends LdmService {
     def update(Map content) {
         String ethnicityGuid = content?.id?.trim()?.toLowerCase()
 
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(ETHNICITY_LDM_NAME, ethnicityGuid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITY_LDM_NAME, ethnicityGuid)
         if (ethnicityGuid) {
             if (!globalUniqueIdentifier) {
                 if (!content.get('guid')) {
@@ -263,7 +255,7 @@ class EthnicityCompositeService extends LdmService {
         EthnicityDetail decorator
         if (ethnicity) {
             if (!ethnicityGuid) {
-                ethnicityGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ETHNICITY_LDM_NAME, ethnicity.id)?.guid
+                ethnicityGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(GeneralValidationCommonConstants.ETHNICITY_LDM_NAME, ethnicity.id)?.guid
             }
             decorator = new EthnicityDetail(ethnicity, ethnicityGuid, getHeDMEnumeration(ethnicity.ethnic), new Metadata(ethnicity.dataOrigin))
         }
@@ -308,7 +300,14 @@ class EthnicityCompositeService extends LdmService {
      * @return
      */
     List<GlobalUniqueIdentifier> getUnitedStatesEthnicCodes() {
-        return GlobalUniqueIdentifier.findAllByLdmName(ETHNICITIES_US)
+        return GlobalUniqueIdentifier.findAllByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
     }
+
+   def fetchV4Data(def ethnicity){
+       switch (ethnicity?.domainId){
+           case 1L :  return [id: ethnicity.guid, title: ethnicity.domainKey, ethnicCategory:GeneralValidationCommonConstants.NON_HISPANIC]
+           case 2L  :  return [id: ethnicity.guid, title: ethnicity.domainKey, ethnicCategory:GeneralValidationCommonConstants.HISPANIC]
+       }
+   }
 
 }

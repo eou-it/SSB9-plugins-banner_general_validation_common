@@ -1,7 +1,8 @@
-/*******************************************************************************
+/** *****************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
- *******************************************************************************/
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
+
 import net.hedtech.banner.service.ServiceBase
 
 
@@ -16,16 +17,36 @@ import net.hedtech.banner.service.ServiceBase
 /**
  * A transactional service supporting persistence of the Academic Year model.
  * */
-class DegreeService extends ServiceBase {
+class AcademicCredentialService extends ServiceBase {
 
     boolean transactional = true
 
     /**
-     * fetching Degree details based on code
-     * @param code
+     * fetching AcademicCredential data based on guid
+     * @param guid
+     * @return AcademicCredential
+     */
+    AcademicCredential fetchByGuid(String guid){
+        return AcademicCredential.fetchByGuid(guid)
+    }
+
+    /**
+     * get count of Academic Credential data based on filter data
+     * @param filterData
      * @return
      */
-    Degree fetchByCode(String code){
-        return Degree.fetchByCode(code)
+    def  countAll(filterData) {
+        return AcademicCredential.countAll(filterData)
+    }
+
+    /**
+     * fetch Academic Credential data based on filter data
+     * @param filterData
+     * @param pagingAndSortParams
+     * @return
+     */
+    def  fetchSearch(filterData, pagingAndSortParams) {
+        return AcademicCredential.fetchSearch(filterData, pagingAndSortParams)
+
     }
 }

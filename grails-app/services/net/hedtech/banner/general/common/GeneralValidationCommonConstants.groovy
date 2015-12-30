@@ -18,13 +18,28 @@ class GeneralValidationCommonConstants {
     final static String CODE = 'code'
     final static String ERROR_MSG_EXISTS_MESSAGE = 'exists.message'
     final static String ERROR_MSG_CODE_REQUIRED = 'code.required.message'
+    final static String ERROR_MSG_DESCRIPTION_REQUIRED =  'description.required.message'
     final static String ERROR_MSG_CODE_EXISTS = 'code.exists.message'
     final static String DEFAULT_ORDER_TYPE = 'ASC'
     final static String DEFAULT_SORT_FIELD_ABBREVIATION = 'abbreviation'
     final static String DEFAULT_SORT_FIELD_CODE = 'code'
+    final static String VERSION_V1 = 'v1'
+    final static String VERSION_V2 = 'v2'
+    final static String VERSION_V3 = 'v3'
+    final static String VERSION_V4 = 'v4'
+    final static String NON_HISPANIC = 'nonHispanic'
+    final static String HISPANIC = 'hispanic'
+    final static String ABBREVIATION = 'abbreviation'
+    final static String TITLE = 'title'
+
 
     /** Common constants for AcademicDiscipline*/
     final static String ACADEMIC_DISCIPLINE = 'academicDiscipline'
+
+    //Ethnicity constants
+    static final String ETHNICITY_LDM_NAME = 'ethnicities'
+    static final String ETHNICITIES_US = 'ethnicities-us'
+    static final String ETHNICITY = 'ethnicity'
 
     final static String ERROR_MSG_OPERATION_NOT_SUPPORTED = 'operation not supported'
 
@@ -50,4 +65,20 @@ class GeneralValidationCommonConstants {
     final static String MEDIA = 'media'
     final static String MATCHINGGIFTS = 'matchingGifts'
     final static String EMAIL_TYPE = 'emailType'
+
+    //common constants for  MaritalStatus
+    static final String PROCESS_CODE = 'HEDM'
+    static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
+    static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
+    static final String MARITAL_STATUS_MARTIAL_CATEGORY = "MARITALSTATUS.MARITALCATEGORY"
+    static final String MARITAL_STATUS = 'maritalStatus'
+
+    //common constants for academic credentials
+    final static String ACADEMIC_CREDENTIAL = 'academicCredential'
+    static final String ACADEMIC_CREDENTIAL_LDM_NAME = 'academic-credentials'
+
+    //common constants for academic level
+    static final String ACADEMIC_LEVEL_LDM_NAME = 'academic-levels'
+    final static String ACADEMIC_LEVEL = 'academicLevel'
+
 }

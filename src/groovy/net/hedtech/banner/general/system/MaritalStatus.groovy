@@ -3,6 +3,9 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.system.ldm.v4.MaritalStatusMaritalCategory
+
 import javax.persistence.*
 
 /**
@@ -10,6 +13,10 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVMRTL")
+@NamedQueries(value = [
+        @NamedQuery(name = "MaritalStatus.fetchByCode",query = """FROM MaritalStatus a WHERE a.code = :code""")
+])
+
 class MaritalStatus implements Serializable {
 
     /**
@@ -131,5 +138,42 @@ class MaritalStatus implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+    /**
+     *fetch marital status details which are mapped on goriccr settings
+     * @param content
+     * @param count
+     */
+    def static fetchMartialStatusDetails(def content, def count = false) {
+        def query = "from MaritalStatus r,IntegrationConfiguration i where r.code = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
+        MaritalStatus.withSession { session ->
+            if (content?.sort && !count) {
+                def sort = content.sort
+                def order = content.order ?: 'asc'
+                query += " order by LOWER(r.$sort) $order"
+            } else if(count){
+                query = "select count(*) " + query
+            }
+            def maritalQuery = session.createQuery(query).
+                    setString('settingName', GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY).
+                    setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE).
+                    setParameterList('translationValueList', MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY)
+
+            return count ? maritalQuery.uniqueResult() : maritalQuery.setMaxResults(content?.max as Integer).setFirstResult((content?.offset ?: '0') as Integer).list()
+        }
+    }
+
+    /**
+     * fetching MaritalStatus details based on code
+     * @param code
+     * @return
+     */
+    public static MaritalStatus fetchByCode(String code){
+        MaritalStatus maritalStatus = MaritalStatus.withSession{ session ->
+            session.getNamedQuery('MaritalStatus.fetchByCode').setString('code',code).uniqueResult()
+        }
+        return maritalStatus
+
+    }
 
 }

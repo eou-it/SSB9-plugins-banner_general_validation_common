@@ -3,18 +3,19 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 import net.hedtech.banner.query.DynamicFinder
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 /**
  * <p>Read only view for Academic Disciplines.</p>
  */
 @Entity
 @Table(name = "SVQ_MAJORS")
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 class AcademicDisciplineView implements Serializable {
 
     /**
@@ -22,13 +23,20 @@ class AcademicDisciplineView implements Serializable {
      */
     @Id
     @Column(name = "STVMAJR_GUID")
-    String guid
+    String id
 
     /**
      * Surrogate ID for STVMAJR
      */
     @Column(name = "STVMAJR_SURROGATE_ID")
     Long surrogateId
+
+    /**
+     * VERSION for STVMAJR
+     */
+    @Version
+    @Column(name = "STVMAJR_VERSION")
+    Long version
 
 
     /**
@@ -56,44 +64,7 @@ class AcademicDisciplineView implements Serializable {
     @Column(name = "STVMAJR_VALID_TYPE", length = 30)
     String type
 
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (!(o instanceof AcademicDisciplineView)) return false
 
-        AcademicDisciplineView that = (AcademicDisciplineView) o
-
-        if (code != that.code) return false
-        if (dataOrigin != that.dataOrigin) return false
-        if (description != that.description) return false
-        if (guid != that.guid) return false
-        if (surrogateId != that.surrogateId) return false
-        if (type != that.type) return false
-
-        return true
-    }
-
-    int hashCode() {
-        int result
-        result = (guid != null ? guid.hashCode() : 0)
-        result = 31 * result + (surrogateId != null ? surrogateId.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (type != null ? type.hashCode() : 0)
-        return result
-    }
-
-    @Override
-    public String toString() {
-        return "AcademicDisciplineView{" +
-                "guid='" + guid + '\'' +
-                ", surrogateId=" + surrogateId +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", dataOrigin='" + dataOrigin + '\'' +
-                ", type='" + type + '\'' +
-                '}';
-    }
 
     def static countAll(filterData) {
         return finderByAll().count(filterData)
@@ -107,6 +78,6 @@ class AcademicDisciplineView implements Serializable {
 
     def private static finderByAll = {
         def query = "from AcademicDisciplineView a where 1 = 1"
-        return new DynamicFinder(AcademicCredentialView.class, query, "a")
+        return new DynamicFinder(AcademicDisciplineView.class, query, "a")
     }
 }

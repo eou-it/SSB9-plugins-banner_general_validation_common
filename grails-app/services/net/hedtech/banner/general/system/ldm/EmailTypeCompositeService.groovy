@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.EmailType
@@ -23,12 +24,9 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class EmailTypeCompositeService extends LdmService {
 
-    public static final def allowedSortFields = ['code']
-    public static final def DEFAULT_SORTED_FIELD = 'code'
+    public static final def allowedSortFields = [GeneralValidationCommonConstants.CODE]
     public static final String LDM_NAME_EMAIL_TYPES = 'email-types'
-    public static final String DEFAULT_ORDER_TYPE = 'ASC'
     public static final Integer MAX_UPPER_LIMIT = 500
-    public final Map sortFieldMap = ['code': 'code']
 
     def emailTypeService
 
@@ -55,14 +53,14 @@ class EmailTypeCompositeService extends LdmService {
 
     private verifyAndSetEntityType(ContactEntityType entityType, def result, Map types) {
         if (result?.entityType == entityType?.value?.toUpperCase()) {
-            if (checkPersonEmailType(result?.emailType, entityType?.value)) {
+            if (checkEmailType(result?.emailType, entityType?.value)) {
                 types << ([(entityType?.value) : ["emailType": result?.emailType]])
             }
         }
     }
 
 
-    private def checkPersonEmailType(def value, String type) {
+    private def checkEmailType(def value, String type) {
         if (type.equalsIgnoreCase(ContactEntityType.PERSON?.value)) {
             for (PersonEmailType emailType : PersonEmailType.values()) {
                 if (emailType?.value == value) {
@@ -84,8 +82,8 @@ class EmailTypeCompositeService extends LdmService {
         def results
         RestfulApiValidationUtility.validateSortField(params?.sort, allowedSortFields)
         RestfulApiValidationUtility.correctMaxAndOffset(params, 0, MAX_UPPER_LIMIT)
-        params.sort = params?.sort ? sortFieldMap[params.sort] : DEFAULT_SORTED_FIELD
-        params?.order = params?.order ?: DEFAULT_ORDER_TYPE
+        params.sort = params?.sort ?: GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_CODE
+        params?.order = params?.order ?: GeneralValidationCommonConstants.DEFAULT_ORDER_TYPE
         RestfulApiValidationUtility.validateSortOrder(params.order)
         results = EmailTypesView.list(params)
 
@@ -112,14 +110,12 @@ class EmailTypeCompositeService extends LdmService {
             emailTypesView = EmailTypesView.findByGuid(guid)
             verifyAndSetEntityType(ContactEntityType.ORGANIZATION, emailTypesView, types)
             verifyAndSetEntityType(ContactEntityType.PERSON, emailTypesView, types)
-            if (!emailTypesView) {
-                GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
-                if (globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME_EMAIL_TYPES) {
-                    throw new ApplicationException("emailType", new BusinessLogicValidationException("invalid.guid", []))
-                } else {
-                    throw new ApplicationException("emailType", new NotFoundException())
-                }
+            if (!emailTypesView && GlobalUniqueIdentifier.findByGuid(guid)?.ldmName!=LDM_NAME_EMAIL_TYPES) {
+                throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new BusinessLogicValidationException("invalid.guid", []))
+            }else if(!emailTypesView){
+                throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
             }
+
             new EmailTypeDetails(types, emailTypesView)
         }
     }
@@ -132,10 +128,10 @@ class EmailTypeCompositeService extends LdmService {
      */
     def create(Map content) {
         if (!(content?.code)) {
-            throw new ApplicationException('emailType', new BusinessLogicValidationException('code.required.message', null))
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
         }
         if (EmailType.findByCode(content.code) != null) {
-            throw new ApplicationException('emailType', new BusinessLogicValidationException('code.exists.message', null))
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS, null))
         }
         EmailType emailType = bindEmailType(new EmailType(), content)
         String emailGuid = content?.id?.trim()?.toLowerCase()
@@ -168,11 +164,11 @@ class EmailTypeCompositeService extends LdmService {
         }
         EmailType emailType = EmailType.findById(globalUniqueIdentifier?.domainId)
         if (!emailType) {
-            throw new ApplicationException("emailType", new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
         }
         // Should not allow to update EmailType.code as it is read-only
         if (emailType?.code != content?.code?.trim()) {
-            content.put("code", emailType.code)
+            content.put(GeneralValidationCommonConstants.CODE, emailType.code)
         }
         emailType = bindEmailType(emailType, content)
 
@@ -200,7 +196,7 @@ class EmailTypeCompositeService extends LdmService {
         view.setCode(emailType.code)
         view.setDescription(emailType.description)
         view.setGuid(emailGuid)
-        for (Map.Entry<String, String> entry : content?.get("type")?.entrySet() ){
+        for (Map.Entry<String, String> entry : content?.get(GeneralValidationCommonConstants.TYPE)?.entrySet() ){
             types << ([(entry.getKey()) : ["emailType": entry.getValue()?.get("emailType")]])
         }
         return new EmailTypeDetails(types, view)

@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -11,12 +13,13 @@ import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.JoinColumns
 import javax.persistence.ManyToOne
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.Version
-import org.hibernate.annotations.Type
 
 /**
  * Address Type Validation Table
@@ -24,6 +27,10 @@ import org.hibernate.annotations.Type
 
 @Entity
 @Table(name = "STVATYP")
+@NamedQueries(value = [
+        @NamedQuery(name = "AddressType.fetchByCode",
+                query = """FROM  AddressType a WHERE a.code = :code """)
+])
 class AddressType implements Serializable {
 
     /**
@@ -148,4 +155,15 @@ class AddressType implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
+    /**
+     * fetch AddressType based on code value
+     * @param code
+     * @return addressType
+     */
+    public static AddressType fetchByCode(String code) {
+        AddressType addressType = AddressType.withSession { session ->
+            session.getNamedQuery('AddressType.fetchByCode').setString(GeneralValidationCommonConstants.CODE, code).uniqueResult()
+        }
+        return addressType
+    }
 }

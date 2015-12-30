@@ -34,7 +34,7 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
     public void tearDown() {
         super.tearDown()
     }
-    
+
     private void initializeDataReferences() {
         i_success_academicDiscipline_code = '101'
         i_fail_academicDiscipline = MajorMinorConcentration.findByValidMinorIndicatorIsNullAndValidMajorIndicatorIsNullAndValidConcentratnIndicatorIsNull()
@@ -81,14 +81,14 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
         assertTrue academicDisciplineList.code.contains(i_success_academicDiscipline_minor[0].code)
         assertTrue academicDisciplineList.code.contains(i_success_academicDiscipline_major[0].code)
         assertTrue academicDisciplineList.code.contains(i_success_academicDiscipline_concentration[0].code)
-        
+
     }
     /**
      * This test case is checking  for Academic Discipline View return type of Major data does contains MajorMinorConcentration records which do not have major, minor or concentration.
      */
     @Test
     void testFetchByMajorType() {
-       def majorList= AcademicDisciplineView.findAllByType(AcademicDisciplineType.MAJOR.value)
+        def majorList= AcademicDisciplineView.findAllByType(AcademicDisciplineType.MAJOR.value)
         assertNotNull majorList
         assertFalse majorList.code.contains(i_fail_academicDiscipline.code)
     }
@@ -119,8 +119,8 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testFetchByguid() {
-        assertEquals AcademicDisciplineView.findAllByGuid("").size , 0
-        assertEquals AcademicDisciplineView.findAllByGuid(null).size , 0
+        assertEquals AcademicDisciplineView.findAllById("").size , 0
+        assertEquals AcademicDisciplineView.findAllById(null).size , 0
     }
 
     /**
@@ -128,36 +128,37 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForCreateAcademicDiscipline(){
-            def academicDiscipline = newAcademicDiscipline()
-            assertNotNull academicDiscipline
+        def academicDiscipline = newAcademicDiscipline()
+        assertNotNull academicDiscipline
+        academicDiscipline.id = 'test'
         shouldFail(InvalidDataAccessResourceUsageException) {
             academicDiscipline.save(flush: true, onError: true)
         }
     }
-    
+
     /**
      * This test case is checking for updating one of record on read only view
      */
     @Test
     void testReadOnlyForUpdateAcademicDiscipline(){
-            def academicDiscipline = AcademicDisciplineView.findByType(AcademicDisciplineType.MINOR.value)
-            assertNotNull academicDiscipline
-            academicDiscipline.description='Test for Update'
-            shouldFail(InvalidDataAccessResourceUsageException) {
-                academicDiscipline.save(flush: true, onError: true)
-            }
+        def academicDiscipline = AcademicDisciplineView.findByType(AcademicDisciplineType.MINOR.value)
+        assertNotNull academicDiscipline
+        academicDiscipline.description='Test for Update'
+        shouldFail(InvalidDataAccessResourceUsageException) {
+            academicDiscipline.save(flush: true, onError: true)
+        }
     }
-    
+
     /**
      * This test case is checking for deletion one of record on read only view
      */
     @Test
     void testReadOnlyForDeleteAcademicDiscipline(){
-            def academicDiscipline = AcademicDisciplineView.findByType(AcademicDisciplineType.MINOR.value)
-            assertNotNull academicDiscipline
-            shouldFail(InvalidDataAccessResourceUsageException) {
-                academicDiscipline.delete(flush: true, onError: true)
-            }
+        def academicDiscipline = AcademicDisciplineView.findByType(AcademicDisciplineType.MINOR.value)
+        assertNotNull academicDiscipline
+        shouldFail(InvalidDataAccessResourceUsageException) {
+            academicDiscipline.delete(flush: true, onError: true)
+        }
     }
 
     /**
@@ -165,12 +166,12 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testAcademicDisciplineGuid(){
-       def majorGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines', i_success_academicDiscipline_code+"^"+AcademicDisciplineType.MAJOR.value)?.guid
-       assertNotNull majorGuid
-       AcademicDisciplineView disciplineView = AcademicDisciplineView.get(majorGuid)
-       assertNotNull disciplineView
-       assertEquals disciplineView.code , i_success_academicDiscipline_code
-       assertEquals disciplineView.type , AcademicDisciplineType.MAJOR.value
+        def majorGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines', i_success_academicDiscipline_code+"^"+AcademicDisciplineType.MAJOR.value)?.guid
+        assertNotNull majorGuid
+        AcademicDisciplineView disciplineView = AcademicDisciplineView.get(majorGuid)
+        assertNotNull disciplineView
+        assertEquals disciplineView.code , i_success_academicDiscipline_code
+        assertEquals disciplineView.type , AcademicDisciplineType.MAJOR.value
 
         def minorGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey('academic-disciplines', i_success_academicDiscipline_code+"^"+AcademicDisciplineType.MINOR.value)?.guid
         assertNotNull majorGuid
@@ -192,21 +193,21 @@ class AcademicDisciplineViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testAcademicDisciplineGuidCount(){
-       def expectedCount = GlobalUniqueIdentifier.countByLdmNameAndDomainKeyLike('academic-disciplines',i_success_academicDiscipline_code+"%")
-       assertNotNull expectedCount
-       def actualCount = AcademicDisciplineView.countByCode(i_success_academicDiscipline_code)
-       assertNotNull actualCount
-       assertEquals expectedCount , actualCount
+        def expectedCount = GlobalUniqueIdentifier.countByLdmNameAndDomainKeyLike('academic-disciplines',i_success_academicDiscipline_code+"%")
+        assertNotNull expectedCount
+        def actualCount = AcademicDisciplineView.countByCode(i_success_academicDiscipline_code)
+        assertNotNull actualCount
+        assertEquals expectedCount , actualCount
     }
 
 
     private def newAcademicDiscipline(){
         new AcademicDisciplineView(
-             code:'test',
-             description:'test data',
-             dataOrigin:'test',
-             guid:'test_guid',
-             type :'test'
+                code:'test',
+                description:'test data',
+                dataOrigin:'test',
+                guid:'test_guid',
+                type :'test'
         )
     }
 

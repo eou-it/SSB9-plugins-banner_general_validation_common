@@ -11,6 +11,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
+import javax.persistence.Version
 
 /**
  *<p>Read only view for Academic Credentials.</p>
@@ -70,6 +71,12 @@ class AcademicCredentialView implements Serializable{
     @Column(name = "GORGUID_GUID")
     String guid
 
+    /**
+     * Optimistic lock token for STVDEGC
+     */
+    @Version
+    @Column(name = "STVDEGC_VERSION")
+    Long version
 
     boolean equals(o) {
         if (this.is(o)) return true
@@ -85,35 +92,23 @@ class AcademicCredentialView implements Serializable{
         if (lastModified != that.lastModified) return false
         if (lastModifiedBy != that.lastModifiedBy) return false
         if (type != that.type) return false
+        if (version != that.version) return false
 
         return true
     }
 
     int hashCode() {
         int result
-        result = id.hashCode()
-        result = 31 * result + code.hashCode()
-        result = 31 * result + description.hashCode()
-        result = 31 * result + lastModifiedBy.hashCode()
-        result = 31 * result + dataOrigin.hashCode()
-        result = 31 * result + lastModified.hashCode()
-        result = 31 * result + type.hashCode()
-        result = 31 * result + guid.hashCode()
+        result = (id != null ? id.hashCode() : 0)
+        result = 31 * result + (code != null ? code.hashCode() : 0)
+        result = 31 * result + (description != null ? description.hashCode() : 0)
+        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
+        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
+        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
+        result = 31 * result + (type != null ? type.hashCode() : 0)
+        result = 31 * result + (guid != null ? guid.hashCode() : 0)
+        result = 31 * result + (version != null ? version.hashCode() : 0)
         return result
-    }
-
-    @Override
-    public String toString() {
-        return "AcademicCredentialView{" +
-                "id='" + id + '\'' +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", lastModifiedBy='" + lastModifiedBy + '\'' +
-                ", dataOrigin='" + dataOrigin + '\'' +
-                ", lastModified=" + lastModified +
-                ", type='" + type + '\'' +
-                ", guid='" + guid + '\'' +
-                '}';
     }
 
     def static countAll(filterData) {
@@ -129,5 +124,20 @@ class AcademicCredentialView implements Serializable{
     def private static finderByAll = {
         def query = "from AcademicCredentialView a where 1 = 1"
         return new DynamicFinder(AcademicCredentialView.class, query, "a")
+    }
+
+    @Override
+    public String toString() {
+        return "AcademicCredentialView{" +
+                "id='" + id + '\'' +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                ", dataOrigin='" + dataOrigin + '\'' +
+                ", lastModified=" + lastModified +
+                ", type='" + type + '\'' +
+                ", guid='" + guid + '\'' +
+                ", version=" + version +
+                '}';
     }
 }

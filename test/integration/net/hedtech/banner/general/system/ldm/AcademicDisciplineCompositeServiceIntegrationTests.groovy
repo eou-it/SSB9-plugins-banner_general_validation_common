@@ -41,10 +41,10 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
 
     private void initializeDataReferences() {
         i_fail_academicDiscipline = MajorMinorConcentration.findByValidMinorIndicatorIsNullAndValidMajorIndicatorIsNullAndValidConcentratnIndicatorIsNull()
-        i_success_input_content = [code: 'KKR', description: 'Test Description', type:'major']
+        i_success_input_content = [code: 'MMC', description: 'Test Description', type:'major']
         i_sucess_academicDiscipline_major = MajorMinorConcentration.findByValidMajorIndicatorIsNotNullAndValidMinorIndicatorIsNull()
     }
-    
+
     /**
      * This test case is checking for AcademicDisciplineCompositeService get method
      */
@@ -54,14 +54,14 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines=AcademicDisciplineView.list(paginationParams)
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertNotNull academicDisciplines[0].guid
-        def academicDiscipline = academicDisciplineCompositeService.get(academicDisciplines[0].guid)
+        assertNotNull academicDisciplines[0].id
+        def academicDiscipline = academicDisciplineCompositeService.get(academicDisciplines[0].id)
         assertNotNull academicDiscipline
-        assertEquals academicDisciplines[0].guid, academicDiscipline.guid
+        assertEquals academicDisciplines[0].id, academicDiscipline.guid
         assertEquals academicDisciplines[0].code, academicDiscipline.code
         assertFalse academicDiscipline.code.contains(i_fail_academicDiscipline?.code)
     }
-    
+
     /**
      * This test case is checking for AcademicDisciplineCompositeService get method passing with invalid guid as an argument
      */
@@ -71,9 +71,9 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         List academicDisciplines=AcademicDisciplineView.list(paginationParams)
         assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
-        assertNotNull academicDisciplines[0].guid
+        assertNotNull academicDisciplines[0].id
         try {
-            academicDisciplineCompositeService.get(academicDisciplines[0].guid + '2')
+            academicDisciplineCompositeService.get(academicDisciplines[0].id + '2')
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
@@ -97,7 +97,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testGetWithEmptyGuid() {
         try {
-          academicDisciplineCompositeService.get("")
+            academicDisciplineCompositeService.get("")
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
@@ -137,7 +137,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         assertEquals academicDisciplines.size() , AcademicDisciplineView.list([max:'500']).size()
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
-    
+
     /**
      * This test case is checking for AcademicDisciplineCompositeService list method with pagination (max 4 and offset 0) 
      */
@@ -209,7 +209,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         assertEquals academicDisciplines.size() , 2
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
-    
+
     /**
      * This test case is checking for AcademicDisciplineCompositeService list method with pagination by type of concentration 
      */
@@ -235,7 +235,7 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         assertEquals academicDisciplines.size() , 4
         assertFalse academicDisciplines.code.contains(i_fail_academicDiscipline.code)
     }
-    
+
     /**
      * This test case is checking for AcademicDisciplineCompositeService count method
      */

@@ -33,6 +33,8 @@ class AcademicCredentialViewIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testReadOnlyForCreateAcademicCredential() {
         def academicCredential = newAcademicCredentialView()
+        academicCredential.id = 'test'
+        academicCredential.version= 0
         assertNotNull academicCredential
         shouldFail(InvalidDataAccessResourceUsageException) {
             academicCredential.save(flush: true, onError: true)

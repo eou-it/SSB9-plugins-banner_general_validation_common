@@ -30,4 +30,24 @@ class GlobalUniqueIdentifierService extends ServiceBase {
     GlobalUniqueIdentifier  fetchByLdmNameAndDomainId(String ldmName, Long domainId){
         return  GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(ldmName, domainId)
     }
+
+
+    /**
+     * fetch GlobalUniqueIdentifier lists based on ldmName
+     * @param ldmName
+     * @return Long
+     */
+    List<GlobalUniqueIdentifier>  fetchByLdmName(String ldmName){
+        return  GlobalUniqueIdentifier.fetchByLdmName(ldmName)
+    }
+
+    /**
+     * fetch the total count based on the LDM Name
+     * @param ldmName
+     * @return Long
+     */
+    Long  fetchCountByLdmName(String ldmName){
+        return  GlobalUniqueIdentifier.fetchCountByLdmName(ldmName)
+    }
+
 }

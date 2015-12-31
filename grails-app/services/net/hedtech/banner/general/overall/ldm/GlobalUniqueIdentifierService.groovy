@@ -50,4 +50,15 @@ class GlobalUniqueIdentifierService extends ServiceBase {
         return  GlobalUniqueIdentifier.fetchCountByLdmName(ldmName)
     }
 
+    /**
+     * fetch GlobalUniqueIdentifier info bases on LdmName and DomainKey
+     * @param ldmName
+     * @param domainKey
+     * @return
+     */
+     GlobalUniqueIdentifier fetchByDomainKeyAndLdmName(domainKey,ldmName) {
+         return GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(domainKey,ldmName)
+
+    }
+
 }

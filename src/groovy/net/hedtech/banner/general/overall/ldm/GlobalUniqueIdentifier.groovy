@@ -229,6 +229,15 @@ class GlobalUniqueIdentifier implements Serializable {
         return globalUniqueIdentifierList
     }
 
+    static GlobalUniqueIdentifier fetchByDomainKeyAndLdmName(domainKey,ldmName) {
+        GlobalUniqueIdentifier globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainKey').setString('ldmName', ldmName)
+                    .setString('domainKey', domainKey).uniqueResult();
+        }
+
+        return globalUniqueIdentifierList
+    }
+
     static List<GlobalUniqueIdentifier> fetchByLdmName(String ldmName) {
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
             session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmName').setString('ldmName', ldmName).list();

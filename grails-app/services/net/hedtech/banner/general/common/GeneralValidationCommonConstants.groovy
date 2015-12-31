@@ -24,13 +24,14 @@ class GeneralValidationCommonConstants {
     final static String DEFAULT_SORT_FIELD_ABBREVIATION = 'abbreviation'
     final static String DEFAULT_SORT_FIELD_CODE = 'code'
     final static String VERSION_V1 = 'v1'
-    final static String VERSION_V2 = 'v2'
     final static String VERSION_V3 = 'v3'
     final static String VERSION_V4 = 'v4'
     final static String NON_HISPANIC = 'nonHispanic'
     final static String HISPANIC = 'hispanic'
     final static String ABBREVIATION = 'abbreviation'
     final static String TITLE = 'title'
+    final static String RACE = 'race'
+    final static String DESCRIPTION = 'description'
 
 
     /** Common constants for AcademicDiscipline*/
@@ -80,5 +81,10 @@ class GeneralValidationCommonConstants {
     //common constants for academic level
     static final String ACADEMIC_LEVEL_LDM_NAME = 'academic-levels'
     final static String ACADEMIC_LEVEL = 'academicLevel'
+
+    //common constants for Races
+    static final String RACE_LDM_NAME = 'races'
+    static final String RACE_PARENT_CATEGORY = "RACE.PARENTCATEGORY"
+    static final String RACE_RACIAL_CATEGORY = "RACE.RACIALCATEGORY"
 
 }

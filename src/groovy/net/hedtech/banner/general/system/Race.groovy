@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.system.ldm.v4.RaceRacialCategory
 import org.apache.commons.lang.StringUtils
 
 import javax.persistence.*
@@ -23,7 +25,9 @@ query = """FROM  Race a
 @NamedQuery(name = "Race.fetchAllByRegulatoryRace",
 query = """FROM Race a
            WHERE a.regulatoryRace.code = :regulatoryRaceCode
-           order by a.description""")
+           order by a.description"""),
+@NamedQuery(name = "Race.fetchByRace",query = """FROM Race a WHERE a.race = :race""")
+
 ])
 class Race implements Serializable {
 
@@ -195,6 +199,45 @@ class Race implements Serializable {
         }
 
         return result
+    }
+
+    /**
+     * if count is false then fetch Race details which are mapped to goriccr setting otherwise it will return count of races which are mapped to goriccr setting
+     * @param content
+     * @param count
+     * @return
+     */
+    def static fetchRaceDetails(def content, def count = false) {
+        def query = "from Race r,IntegrationConfiguration i where r.race = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
+        Race.withSession { session ->
+            if (content?.sort && !count) {
+                def sort = content.sort
+                def order = content.order ?: 'asc'
+                query += " order by LOWER(r.$sort) $order"
+            } else if(count){
+                query = "select count(*) " + query
+            }
+            def raceQuery = session.createQuery(query).
+                    setString('settingName', GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY).
+                    setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE).
+                    setParameterList('translationValueList', RaceRacialCategory.RACE_RACIAL_CATEGORY)
+
+            return count ? raceQuery.uniqueResult() : raceQuery. setMaxResults(content?.max as Integer).setFirstResult((content?.offset ?: '0') as Integer).list()
+        }
+    }
+
+
+    /**
+     * fetching Race details based on code
+     * @param code
+     * @return
+     */
+    public static Race fetchByRace(String racialCode){
+        Race race = Race.withSession{ session ->
+            session.getNamedQuery('Race.fetchByRace').setString('race',racialCode).uniqueResult()
+        }
+        return race
+
     }
 
 }

@@ -22,7 +22,7 @@ import javax.persistence.Version
 class EmailTypesView implements Serializable{
 
     @EmbeddedId
-    EmailTypePrimary emailTypePrimary
+    EmailTypePrimary id
 
     /**
      * GUID  for email types

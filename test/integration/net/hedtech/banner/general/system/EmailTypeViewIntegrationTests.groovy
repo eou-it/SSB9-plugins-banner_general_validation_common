@@ -98,6 +98,8 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
     @Test
     void testReadOnlyForCreateEmailType(){
         def emailType = newEmailType()
+        emailType.id = new EmailTypePrimary(settingValue:'AA',processCode:'BB')
+        emailType.version=0
         assertNotNull emailType
         shouldFail(InvalidDataAccessResourceUsageException) {
             emailType.save(flush: true, onError: true)

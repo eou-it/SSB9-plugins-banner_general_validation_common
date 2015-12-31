@@ -76,7 +76,7 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
     void testFetchByguid() {
         String emailGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, MAIL_CODE)?.guid
         assertNotNull emailGuid
-        EmailTypesView emailTypesView = EmailTypesView.findById(emailGuid)
+        EmailTypesView emailTypesView = EmailTypesView.findByGuid(emailGuid)
         assertNotNull emailTypesView
         assertEquals MAIL_CODE,emailTypesView.code
     }
@@ -88,7 +88,7 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
     void testFetchByInvalidGuid() {
         String emailGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, 'BUSI')?.guid
         assertNotNull emailGuid
-        def emailTypesView = EmailTypesView.findById(emailGuid.substring(0,10));
+        def emailTypesView = EmailTypesView.findByGuid(emailGuid.substring(0,10));
         assertNull emailTypesView
     }
 
@@ -113,7 +113,7 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
     void testReadOnlyForUpdateEmailType(){
         String emailTypeGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, MAIL_CODE)?.guid
         assertNotNull emailTypeGuid
-        def emailType = EmailTypesView.findById(emailTypeGuid)
+        def emailType = EmailTypesView.findByGuid(emailTypeGuid)
         assertNotNull emailType
         emailType.description='Dummy Value'
         shouldFail(InvalidDataAccessResourceUsageException) {
@@ -129,7 +129,7 @@ class EmailTypeViewIntegrationTests extends BaseIntegrationTestCase{
     void testReadOnlyForDeleteEmailType(){
         String emailTypeGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(EMAIL_TYPE_HEDM_NAME, MAIL_CODE)?.guid
         assertNotNull emailTypeGuid
-        def emailType = EmailTypesView.findById(emailTypeGuid)
+        def emailType = EmailTypesView.findByGuid(emailTypeGuid)
         assertNotNull emailType
         shouldFail(InvalidDataAccessResourceUsageException) {
             emailType.delete(flush: true, onError: true)

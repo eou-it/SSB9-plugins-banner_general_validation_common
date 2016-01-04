@@ -86,7 +86,7 @@ class InformationTextPersonaListService {
 
         //apply order by
         def orderByCodeDescLastMod = new OrderBy([{ it.code }, { it.description }, { it.lastModified }])
-        filteredResults.sort(orderByCodeDescLastMod)
+        filteredResults.sort(true, orderByCodeDescLastMod)
 
         return filteredResults
     }

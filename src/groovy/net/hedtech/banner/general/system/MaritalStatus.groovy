@@ -148,16 +148,15 @@ class MaritalStatus implements Serializable {
         def query = "from MaritalStatus r,IntegrationConfiguration i where r.code = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
         MaritalStatus.withSession { session ->
             if (content?.sort && !count) {
-                def sort = content.sort
                 def order = content.order ?: 'asc'
-                query += " order by LOWER(r.$sort) $order"
+                query += " order by LOWER(r.$content.sort) $order"
             } else if(count){
                 query = "select count(*) " + query
             }
             def maritalQuery = session.createQuery(query).
-                    setString('settingName', GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY).
-                    setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE).
-                    setParameterList('translationValueList', MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY)
+                    setString(GeneralValidationCommonConstants.SETTING_NAME, GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY).
+                    setString(GeneralValidationCommonConstants.PROCESS_CODE_NAME, GeneralValidationCommonConstants.PROCESS_CODE).
+                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY)
 
             return count ? maritalQuery.uniqueResult() : maritalQuery.setMaxResults(content?.max as Integer).setFirstResult((content?.offset ?: '0') as Integer).list()
         }

@@ -51,8 +51,7 @@ class MaritalStatusCompositeService extends LdmService {
                 maritalStatusDetailList << getDecorator(maritalStatus[0],maritalStatus[1]?.translationValue)
             }
         } else if(GeneralValidationCommonConstants.VERSION_V1.equals(version)){
-            List<MaritalStatus> maritalStatusList = maritalStatusService.list(params) as List
-            maritalStatusList.each { maritalStatus ->
+            maritalStatusService.list(params).each { maritalStatus ->
                 maritalStatusDetailList << getDecorator(maritalStatus,null)
             }
         }
@@ -96,7 +95,7 @@ class MaritalStatusCompositeService extends LdmService {
         if (!maritalStatus) {
             throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new NotFoundException())
         }
-       def maritalCategory = getHeDMEnumeration(maritalStatus?.code)
+       def maritalCategory = getHeDMEnumeration(maritalStatus.code)
         if(GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS)) && !maritalCategory ){
             throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new NotFoundException())
         }

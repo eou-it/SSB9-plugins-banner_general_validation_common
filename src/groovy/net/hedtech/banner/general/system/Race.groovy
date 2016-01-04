@@ -210,19 +210,18 @@ class Race implements Serializable {
     def static fetchRaceDetails(def content, def count = false) {
         def query = "from Race r,IntegrationConfiguration i where r.race = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
         Race.withSession { session ->
-            if (content?.sort && !count) {
-                def sort = content.sort
+            if (content.sort && !count) {
                 def order = content.order ?: 'asc'
-                query += " order by LOWER(r.$sort) $order"
+                query += " order by LOWER(r.$content.sort) $order"
             } else if(count){
                 query = "select count(*) " + query
             }
             def raceQuery = session.createQuery(query).
-                    setString('settingName', GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY).
-                    setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE).
-                    setParameterList('translationValueList', RaceRacialCategory.RACE_RACIAL_CATEGORY)
+                    setString(GeneralValidationCommonConstants.SETTING_NAME, GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY).
+                    setString(GeneralValidationCommonConstants.PROCESS_CODE_NAME, GeneralValidationCommonConstants.PROCESS_CODE).
+                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, RaceRacialCategory.RACE_RACIAL_CATEGORY)
 
-            return count ? raceQuery.uniqueResult() : raceQuery. setMaxResults(content?.max as Integer).setFirstResult((content?.offset ?: '0') as Integer).list()
+            return count ? raceQuery.uniqueResult() : raceQuery. setMaxResults(content.max as Integer).setFirstResult((content?.offset ?: '0') as Integer).list()
         }
     }
 

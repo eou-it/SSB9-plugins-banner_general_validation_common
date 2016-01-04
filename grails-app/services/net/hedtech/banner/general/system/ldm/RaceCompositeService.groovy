@@ -48,11 +48,10 @@ class RaceCompositeService extends LdmService {
         params.sort = ldmPropertyToDomainPropertyMap[params.sort]
         if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
             raceService.fetchRaceDetails(params).each {race ->
-                  raceDetailList << new RaceDetail(race[0], globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race[0]?.id)?.guid, race[1]?.translationValue, new Metadata(race[0]?.dataOrigin))
+                  raceDetailList << new RaceDetail(race[0], globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race[0]?.id)?.guid, race[1]?.translationValue, null)
               }
         }else {
-            List<Race> raceList = raceService.list(params) as List
-            raceList.each { race ->
+           raceService.list(params).each { race ->
                 raceDetailList << new RaceDetail(race, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race), new Metadata(race.dataOrigin))
             }
         }

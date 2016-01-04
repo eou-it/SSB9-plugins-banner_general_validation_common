@@ -413,9 +413,6 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetail.guid, raceDetails[0].guid
         assertNotNull raceDetail.parentCategory
         assertEquals raceDetail.parentCategory, raceDetails[0].parentCategory
-        assertNotNull raceDetail.metadata
-        assertEquals raceDetail.metadata, raceDetails[0].metadata
-        assertEquals raceDetails[0], raceDetail
     }
 
     @Test

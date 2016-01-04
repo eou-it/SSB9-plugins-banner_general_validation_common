@@ -85,5 +85,8 @@ class GeneralValidationCommonConstants {
     static final String RACE_LDM_NAME = 'races'
     static final String RACE_PARENT_CATEGORY = "RACE.PARENTCATEGORY"
     static final String RACE_RACIAL_CATEGORY = "RACE.RACIALCATEGORY"
+    static final String SETTING_NAME = 'settingName'
+    static final String PROCESS_CODE_NAME = 'processCode'
+   static final String TRANSLATION_VALUE = 'translationValueList'
 
 }

@@ -169,6 +169,19 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     }
 
     /**
+     * Test to check LocationTypeCompositeService get method with other than location types valid guid
+     */
+    @Test
+    void testGetWithValidNonExistingLocationTypeGuid() {
+        assertNotNull invalid_resource_guid
+        try {
+            locationTypeCompositeService.get(invalid_resource_guid.guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+    /**
      * Test to check the  LocationTypeCompositeService get method with valid guid
      */
     @Test

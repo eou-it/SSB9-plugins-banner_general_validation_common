@@ -108,14 +108,11 @@ class EmailTypeCompositeService extends LdmService {
         Map<String, String> types = [:]
         if (guid) {
             emailTypesView = EmailTypesView.findByGuid(guid)
-            verifyAndSetEntityType(ContactEntityType.ORGANIZATION, emailTypesView, types)
-            verifyAndSetEntityType(ContactEntityType.PERSON, emailTypesView, types)
-            if (!emailTypesView && GlobalUniqueIdentifier.findByGuid(guid)?.ldmName!=LDM_NAME_EMAIL_TYPES) {
-                throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new BusinessLogicValidationException("invalid.guid", []))
-            }else if(!emailTypesView){
+            if(!emailTypesView){
                 throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
             }
-
+            verifyAndSetEntityType(ContactEntityType.ORGANIZATION, emailTypesView, types)
+            verifyAndSetEntityType(ContactEntityType.PERSON, emailTypesView, types)
             new EmailTypeDetails(types, emailTypesView)
         }
     }

@@ -4,13 +4,15 @@
 package net.hedtech.banner.general.utility
 
 import groovy.sql.Sql
+import org.apache.log4j.Logger
 
 /**
  * This class is used to handle the UTC date time format conversion.
  */
 class DateConvertHelperService {
 
-    def sessionFactory
+    def static sessionFactory
+    private static final log = Logger.getLogger(getClass())
 
     /**
      * converting date into utc date time format 'yyyy-MM-dd'T'HH:mm:ssZ'
@@ -18,7 +20,7 @@ class DateConvertHelperService {
      * @param timeZone
      * @return
      */
-    def convertDateIntoUTCFormat(Date date, def timeZone = null) {
+    def static convertDateIntoUTCFormat(Date date, def timeZone = null) {
         if(!date){
             return date
         }
@@ -41,17 +43,15 @@ class DateConvertHelperService {
      * @param time
      * @return
      */
-    def convertDateIntoUTCFormat(Date date,String time,def timeZone = null) {
+    def static convertDateIntoUTCFormat(Date date,String time,def timeZone = null) {
         if(!date){
             return date
         }
         def dbtimezone
         time = time ? time?.substring( 0, 2 ) + ':' + time?.substring( 2, 4 ) + ':' + '00' : null
         timeZone = timeZone ?: getDBTimeZone()
-        if (timeZone) {
-            if (timeZone.size() == 1) {
-                dbtimezone = timeZone[0][0]
-            }
+        if (timeZone && timeZone.size() == 1) {
+            dbtimezone = timeZone[0][0]
         }
         if(!time){
             return date?.format("yyyy-MM-dd'T'HH:mm:ss") + dbtimezone
@@ -63,7 +63,7 @@ class DateConvertHelperService {
      * fetching time zone from database
      * @return
      */
-    def getDBTimeZone() {
+    def static getDBTimeZone() {
         def conn
         def rows
         try {

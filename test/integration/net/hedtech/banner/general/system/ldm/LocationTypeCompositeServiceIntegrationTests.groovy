@@ -169,16 +169,6 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     }
 
     /**
-     * Test to check LocationTypeCompositeService get method with other than location types valid guid
-     */
-    @Test
-    void testGetWithValidNonExistingLocationTypeGuid() {
-        shouldFail(RestfulApiValidationException) {
-            locationTypeCompositeService.get(invalid_resource_guid?.guid)
-        }
-    }
-
-    /**
      * Test to check the  LocationTypeCompositeService get method with valid guid
      */
     @Test

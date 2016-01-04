@@ -79,16 +79,10 @@ class LocationTypeCompositeService extends LdmService{
     @Transactional(readOnly = true)
     LocationType get(String guid) {
         LocationTypeView locationTypeViewRecord = LocationTypeView.findById(guid)
-        if (locationTypeViewRecord) {
-            new LocationType(locationTypeViewRecord, locationTypeViewRecord.entityType,locationTypeViewRecord.locationType)
-        } else {
-            GlobalUniqueIdentifier globalUniqueIdentifier=GlobalUniqueIdentifier.findByGuid(guid?.trim())
-            if(globalUniqueIdentifier && globalUniqueIdentifier?.ldmName!=LDM_NAME) {
-                throw new RestfulApiValidationException(GeneralValidationCommonConstants.ERROR_MSG_INVALID_GUID)
-            }else {
-                throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new NotFoundException())
-            }
+        if (!locationTypeViewRecord) {
+            throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new NotFoundException())
         }
+        return new LocationType(locationTypeViewRecord, locationTypeViewRecord.entityType,locationTypeViewRecord.locationType)
     }
 
     /**

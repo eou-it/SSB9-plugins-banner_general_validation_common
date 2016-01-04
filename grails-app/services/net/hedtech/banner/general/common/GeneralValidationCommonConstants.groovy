@@ -48,7 +48,6 @@ class GeneralValidationCommonConstants {
     final static String LOCATION_TYPE = 'locationType'
     final static String ORGANIZATION = 'organization'
     final static String PERSON = 'person'
-    final static String ERROR_MSG_INVALID_GUID = 'locationType.invalidGuid'
 
     /** Common constants for EmailType*/
     final static String PERSONAL = 'personal'

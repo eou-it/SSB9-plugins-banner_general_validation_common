@@ -89,4 +89,10 @@ class GeneralValidationCommonConstants {
     static final String PROCESS_CODE_NAME = 'processCode'
    static final String TRANSLATION_VALUE = 'translationValueList'
 
+    //common constants for Organization
+    static final String COLLEGE = 'college'
+    static final String DEPARTMENT = 'department'
+    static final String DIVISION = 'division'
+    static final String FACULTY = 'faculty'
+    static final String UNIVERSITY = 'university'
 }

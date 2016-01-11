@@ -26,8 +26,17 @@ class MaritalStatusService extends ServiceBase {
      * @param content
      * @param count
      */
-    def static fetchMartialStatusDetails(def content, def count = false) {
-        MaritalStatus.fetchMartialStatusDetails(content,count)
+    def  fetchMartialStatusDetails(def content) {
+      return  MaritalStatus.fetchMartialStatusDetails(content)
+    }
+
+    /**
+     * fetch marital status total count which are mapped on goriccr settings
+     * @param content
+     * @param count
+     */
+    def  fetchMartialStatusDetailsCount() {
+        return  MaritalStatus.fetchMartialStatusDetailsCount()
     }
 
     /**

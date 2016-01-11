@@ -13,13 +13,12 @@ class RaceService extends ServiceBase{
     boolean transactional = true
 
     /**
-     * if count is false then fetch Race details which are mapped to goriccr setting otherwise it will return count of races which are mapped to goriccr setting
+     *fetch Race details which are mapped to goriccr setting
      * @param content
-     * @param count
      * @return
      */
-    def  fetchRaceDetails(def content, def count = false) {
-       return Race.fetchRaceDetails(content,count)
+    def  fetchRaceDetails(def content) {
+       return Race.fetchRaceDetails(content)
     }
 
     /**
@@ -30,4 +29,13 @@ class RaceService extends ServiceBase{
      Race fetchByRace(String racialCode){
         return Race.fetchByRace(racialCode)
     }
+
+    /**
+     * will return count of races which are mapped to goriccr setting
+     * @param content
+     * @return
+     */
+   def fetchRaceDetailsCount(){
+     return Race.fetchRaceDetailsCount()
+   }
 }

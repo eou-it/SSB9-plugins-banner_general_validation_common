@@ -26,7 +26,11 @@ query = """FROM  Race a
 query = """FROM Race a
            WHERE a.regulatoryRace.code = :regulatoryRaceCode
            order by a.description"""),
-@NamedQuery(name = "Race.fetchByRace",query = """FROM Race a WHERE a.race = :race""")
+@NamedQuery(name = "Race.fetchByRace",query = """FROM Race a WHERE a.race = :race"""),
+        @NamedQuery(name = "Race.fetchRaceDetailsCount",
+                query = """select count(*) from Race r,IntegrationConfiguration i where r.race = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"""),
+
+
 
 ])
 class Race implements Serializable {
@@ -202,29 +206,42 @@ class Race implements Serializable {
     }
 
     /**
-     * if count is false then fetch Race details which are mapped to goriccr setting otherwise it will return count of races which are mapped to goriccr setting
+     * fetch Race details which are mapped to goriccr setting otherwise
      * @param content
-     * @param count
      * @return
      */
-    def static fetchRaceDetails(def content, def count = false) {
+    def static fetchRaceDetails(def content) {
         def query = "from Race r,IntegrationConfiguration i where r.race = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
         Race.withSession { session ->
-            if (content.sort && !count) {
+            if (content.sort) {
                 def order = content.order ?: 'asc'
                 query += " order by LOWER(r.$content.sort) $order"
-            } else if(count){
-                query = "select count(*) " + query
             }
             def raceQuery = session.createQuery(query).
                     setString(GeneralValidationCommonConstants.SETTING_NAME, GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY).
                     setString(GeneralValidationCommonConstants.PROCESS_CODE_NAME, GeneralValidationCommonConstants.PROCESS_CODE).
-                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, RaceRacialCategory.RACE_RACIAL_CATEGORY)
+                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, RaceRacialCategory.RACE_RACIAL_CATEGORY).
+                    setMaxResults(content.max as Integer).setFirstResult((content?.offset ?: '0') as Integer)
 
-            return count ? raceQuery.uniqueResult() : raceQuery. setMaxResults(content.max as Integer).setFirstResult((content?.offset ?: '0') as Integer).list()
+            return  raceQuery.list()
         }
     }
 
+    /**
+     *  return count of races which are mapped to goriccr setting
+     * @param content
+     * @return
+     */
+    def static fetchRaceDetailsCount() {
+      def count =  Race.withSession { session ->
+            session.getNamedQuery('Race.fetchRaceDetailsCount').
+                    setString(GeneralValidationCommonConstants.SETTING_NAME, GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY).
+                    setString(GeneralValidationCommonConstants.PROCESS_CODE_NAME, GeneralValidationCommonConstants.PROCESS_CODE).
+                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, RaceRacialCategory.RACE_RACIAL_CATEGORY).uniqueResult()
+
+        }
+        return count;
+    }
 
     /**
      * fetching Race details based on code

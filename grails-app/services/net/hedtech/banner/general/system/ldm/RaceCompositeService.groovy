@@ -69,7 +69,7 @@ class RaceCompositeService extends LdmService {
      */
     Long count(Map params) {
         if(GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS))){
-            return  raceService.fetchRaceDetails(params,true)
+            return  raceService.fetchRaceDetailsCount()
         }else {
             return raceService.count()
         }

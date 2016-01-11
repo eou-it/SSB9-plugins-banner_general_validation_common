@@ -71,7 +71,7 @@ class EthnicityCompositeService extends LdmService {
         int total
 
         if (GeneralValidationCommonConstants.VERSION_V1.equals(getAcceptVersion(VERSIONS))) {
-            total = Ethnicity.count()
+            total = ethnicityService.count()
         } else if (GeneralValidationCommonConstants.VERSION_V3.equals(getAcceptVersion(VERSIONS))) {
             total = GlobalUniqueIdentifier.countByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
         } else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS))) {

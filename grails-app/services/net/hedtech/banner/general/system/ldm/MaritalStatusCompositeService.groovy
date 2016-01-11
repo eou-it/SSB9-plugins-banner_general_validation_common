@@ -72,7 +72,7 @@ class MaritalStatusCompositeService extends LdmService {
     Long count(Map params) {
         def version = LdmService.getAcceptVersion(VERSIONS)
         if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
-            return  maritalStatusService.fetchMartialStatusDetails(params,true)
+            return  maritalStatusService.fetchMartialStatusDetailsCount()
         }else  if(GeneralValidationCommonConstants.VERSION_V1.equals(version)) {
             return maritalStatusService.count()
         }

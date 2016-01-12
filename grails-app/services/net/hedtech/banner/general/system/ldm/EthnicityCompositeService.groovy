@@ -303,10 +303,16 @@ class EthnicityCompositeService extends LdmService {
         return GlobalUniqueIdentifier.findAllByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
     }
 
+    /**
+     * fetching version 4 ethnicity data based on domain id
+     * @param ethnicity
+     * @return
+     */
    def fetchV4Data(def ethnicity){
-       switch (ethnicity?.domainId){
-           case 1L :  return [id: ethnicity.guid, title: ethnicity.domainKey, ethnicCategory:GeneralValidationCommonConstants.NON_HISPANIC]
-           case 2L  :  return [id: ethnicity.guid, title: ethnicity.domainKey, ethnicCategory:GeneralValidationCommonConstants.HISPANIC]
+       if(ethnicity?.domainId == 1L){
+           return [id: ethnicity.guid, title: ethnicity.domainKey, ethnicCategory:GeneralValidationCommonConstants.NON_HISPANIC]
+       } else if(ethnicity?.domainId == 2L){
+           return [id: ethnicity.guid, title: ethnicity.domainKey, ethnicCategory:GeneralValidationCommonConstants.HISPANIC]
        }
    }
 

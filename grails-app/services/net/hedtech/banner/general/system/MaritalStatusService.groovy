@@ -18,6 +18,8 @@ import net.hedtech.banner.service.ServiceBase
  *
  */
 class MaritalStatusService extends ServiceBase {
+    public static final MARITAL_STATUS_QUERY = "from MaritalStatus r,IntegrationConfiguration i where r.code = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
+
 
     boolean transactional = true
 

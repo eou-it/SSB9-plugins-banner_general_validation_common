@@ -211,8 +211,8 @@ class Race implements Serializable {
      * @return
      */
     def static fetchRaceDetails(def content) {
-        def query = "from Race r,IntegrationConfiguration i where r.race = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
         Race.withSession { session ->
+            String query = RaceService.RACE_QUERY
             if (content.sort) {
                 def order = content.order ?: 'asc'
                 query += " order by LOWER(r.$content.sort) $order"

@@ -147,8 +147,8 @@ class MaritalStatus implements Serializable {
      * @param count
      */
     def static fetchMartialStatusDetails(def content) {
-        def query = "from MaritalStatus r,IntegrationConfiguration i where r.code = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
         MaritalStatus.withSession { session ->
+            String query = MaritalStatusService.MARITAL_STATUS_QUERY
             if (content?.sort) {
                 def order = content.order ?: 'asc'
                 query += " order by LOWER(r.$content.sort) $order"

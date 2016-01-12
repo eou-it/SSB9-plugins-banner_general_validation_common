@@ -74,7 +74,7 @@ class MaritalStatusCompositeService extends LdmService {
         if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
             return  maritalStatusService.fetchMartialStatusDetailsCount()
         }else  if(GeneralValidationCommonConstants.VERSION_V1.equals(version)) {
-            return maritalStatusService.count()
+            return maritalStatusService.count(params)
         }
     }
 
@@ -211,13 +211,13 @@ class MaritalStatusCompositeService extends LdmService {
 
     private MaritalStatusDetail getDecorator(MaritalStatus maritalStatus, String msGuid = null,String martialStatusCategory) {
         MaritalStatusDetail decorator
-        if (maritalStatus) {
-            if (!msGuid) {
-                msGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid
-            }
-            if(!martialStatusCategory){
+        if (maritalStatus && !msGuid) {
+            msGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid
+        }
+        if(maritalStatus && !martialStatusCategory){
                 martialStatusCategory =  getHeDMEnumeration(maritalStatus.code)
-            }
+        }
+        if(maritalStatus){
             decorator = new MaritalStatusDetail(maritalStatus, msGuid, martialStatusCategory, new Metadata(maritalStatus.dataOrigin))
         }
         return decorator

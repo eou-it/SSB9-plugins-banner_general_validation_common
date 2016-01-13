@@ -3,27 +3,27 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
 
-import net.hedtech.banner.general.system.PhoneTypeView
+import net.hedtech.banner.general.system.PhoneType
 
 /**
  * Decorator for "phone-types" API
  */
-class PhoneType {
+class PhoneTypeDecorator {
     @Delegate
-    private final  PhoneTypeView phoneTypeView
+    private final PhoneType phoneType
     Map<String,String> type
 
-    PhoneType(PhoneTypeView phoneTypeView,Map type){
-        this.phoneTypeView = phoneTypeView
+    PhoneTypeDecorator(PhoneType phoneType,Map type){
+        this.phoneType = phoneType
         this.type = type
     }
 
 
     @Override
     public String toString() {
-        return "PhoneType{" +
-                "phoneTypeView=" + phoneTypeView +
-                ", type=" + type +
-                '}';
+        return """PhoneTypeDecorator{ +
+                phoneTypeView = $phoneType ,
+                type = $type
+                }"""
     }
 }

@@ -3,6 +3,9 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.system.ldm.v4.MaritalStatusMaritalCategory
+
 import javax.persistence.*
 
 /**
@@ -10,6 +13,12 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVMRTL")
+@NamedQueries(value = [
+        @NamedQuery(name = "MaritalStatus.fetchByCode",query = """FROM MaritalStatus a WHERE a.code = :code"""),
+        @NamedQuery(name = "MaritalStatus.fetchMartialStatusDetailsCount",query = """select count(*) from MaritalStatus r,IntegrationConfiguration i where r.code = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)""")
+
+])
+
 class MaritalStatus implements Serializable {
 
     /**
@@ -131,5 +140,57 @@ class MaritalStatus implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+    /**
+     *fetch marital status details which are mapped on goriccr settings
+     * @param content
+     * @param count
+     */
+    def static fetchMartialStatusDetails(def content) {
+        MaritalStatus.withSession { session ->
+            String query = MaritalStatusService.MARITAL_STATUS_QUERY
+            if (content?.sort) {
+                def order = content.order ?: 'asc'
+                query += " order by LOWER(r.$content.sort) $order"
+            }
+            def maritalQuery = session.createQuery(query).
+                    setString(GeneralValidationCommonConstants.SETTING_NAME, GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY).
+                    setString(GeneralValidationCommonConstants.PROCESS_CODE_NAME, GeneralValidationCommonConstants.PROCESS_CODE).
+                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY).
+                    setMaxResults(content?.max as Integer).setFirstResult((content?.offset ?: '0') as Integer)
+
+            return maritalQuery.list()
+        }
+    }
+
+    /**
+     *fetch marital status details count which are mapped on goriccr settings
+     * @param content
+     * @param count
+     */
+    def static fetchMartialStatusDetailsCount() {
+       def count = MaritalStatus.withSession { session ->
+                   session.getNamedQuery('MaritalStatus.fetchMartialStatusDetailsCount').
+                    setString(GeneralValidationCommonConstants.SETTING_NAME, GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY).
+                    setString(GeneralValidationCommonConstants.PROCESS_CODE_NAME, GeneralValidationCommonConstants.PROCESS_CODE).
+                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY).uniqueResult()
+
+        }
+        return count
+    }
+
+
+    /**
+     * fetching MaritalStatus details based on code
+     * @param code
+     * @return
+     */
+    public static MaritalStatus fetchByCode(String code){
+        MaritalStatus maritalStatus = MaritalStatus.withSession{ session ->
+            session.getNamedQuery('MaritalStatus.fetchByCode').setString('code',code).uniqueResult()
+        }
+        return maritalStatus
+
+    }
 
 }

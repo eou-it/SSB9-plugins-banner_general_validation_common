@@ -1,12 +1,12 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2015 Ellucian Company L.P. and its affiliates.
  ***************************************************************************** */
 package net.hedtech.banner.general.utility
 
 import grails.util.Holders
 import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+import grails.util.Holders
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 
@@ -36,7 +36,7 @@ class InformationTextPersonaListService {
         webTailorRoleList.removeAll{
             it.code == PERSONA_DEFAULT
         }
-        MessageSource messageSource = ApplicationHolder.application.mainContext.getBean('messageSource')
+        MessageSource messageSource = Holders.getGrailsApplication().mainContext.getBean('messageSource')
         webTailorRoleList <<  [
                 code: PERSONA_DEFAULT,
                 description: messageSource.getMessage("net.hedtech.banner.general.utility.InformationTextPersona.default.persona.description", null, LocaleContextHolder.getLocale()),
@@ -86,7 +86,7 @@ class InformationTextPersonaListService {
 
         //apply order by
         def orderByCodeDescLastMod = new OrderBy([{ it.code }, { it.description }, { it.lastModified }])
-        filteredResults.sort(orderByCodeDescLastMod)
+        filteredResults.sort(true, orderByCodeDescLastMod)
 
         return filteredResults
     }

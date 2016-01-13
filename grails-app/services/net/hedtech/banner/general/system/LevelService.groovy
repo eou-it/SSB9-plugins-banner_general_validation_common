@@ -21,4 +21,12 @@ class LevelService extends ServiceBase{
 
     boolean transactional = true
 
+    /**
+     * fetching Level details based on code
+     * @param code
+     * @return
+     */
+    Level fetchByCode(String code){
+        return Level.fetchByCode(code)
+    }
 }

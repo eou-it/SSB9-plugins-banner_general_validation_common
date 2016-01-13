@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+
 import javax.persistence.*
 
 /**
@@ -10,6 +12,10 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVDEPT")
+@NamedQueries(value = [
+        @NamedQuery(name = "Department.fetchByCode",
+                query = """FROM  Department a WHERE a.code = :code """)
+])
 class Department implements Serializable {
 
     /**
@@ -129,6 +135,18 @@ class Department implements Serializable {
 
     public static Object fetchBySomeAttribute(filter) {
         return [list: Department.findAllByCodeIlikeOrDescriptionIlike("%" + filter + "%", "%" + filter + "%", [sort: "code", order: "desc"])]
+    }
+
+    /**
+     * fetch Department based on code value
+     * @param code
+     * @return department
+     */
+    public static Department fetchByCode(String code) {
+        Department department = Department.withSession { session ->
+            session.getNamedQuery('Department.fetchByCode').setString(GeneralValidationCommonConstants.CODE, code).uniqueResult()
+        }
+        return department
     }
 
 }

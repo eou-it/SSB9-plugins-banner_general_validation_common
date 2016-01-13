@@ -4,17 +4,19 @@
 
 package net.hedtech.banner.general.system.ldm.v4
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+
 /**
  * <p>Enum for PersonEmail Type </p>
  */
 public enum PersonEmailType {
 
-    PERSONAL('personal'),
-    BUSINESS('business'),
-    SCHOOL('school'),
-    OTHERS('other'),
-    PARENT('parent'),
-    FAMILY('family')
+    PERSONAL(GeneralValidationCommonConstants.PERSONAL),
+    BUSINESS(GeneralValidationCommonConstants.BUSINESS),
+    SCHOOL(GeneralValidationCommonConstants.SCHOOL),
+    OTHERS(GeneralValidationCommonConstants.OTHERS),
+    PARENT(GeneralValidationCommonConstants.PARENT),
+    FAMILY(GeneralValidationCommonConstants.FAMILY)
 
     def value
 

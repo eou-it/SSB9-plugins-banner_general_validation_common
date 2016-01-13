@@ -5,8 +5,7 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.PhoneTypeView
-import net.hedtech.banner.general.system.ldm.v4.PhoneType
+import net.hedtech.banner.general.system.ldm.v4.PhoneTypeDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
@@ -34,8 +33,8 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
 
     private void initializeDataReferences() {
         invalid_resource_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
-        success_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList('phone-types',PhoneTypeView.findAll()?.code)
-        invalid_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList('phone-types',PhoneTypeView.findAll()?.code)
+        success_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList('phone-types',net.hedtech.banner.general.system.PhoneType.findAll()?.code)
+        invalid_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList('phone-types',net.hedtech.banner.general.system.PhoneType.findAll()?.code)
         i_success_input_content = [code: 'KKR', description: 'Test Description',type:[organization:[phoneType:"billing"]]]
     }
 
@@ -51,7 +50,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
     void testCount(){
         def expectedCount= phoneTypeCompositeService.count([:])
         assertNotNull expectedCount
-        def actualCount= PhoneTypeView.count()
+        def actualCount= net.hedtech.banner.general.system.PhoneType.count()
         assertNotNull actualCount
         assertEquals expectedCount,actualCount
     }
@@ -86,7 +85,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         List phoneTypes = phoneTypeCompositeService.list([:])
         assertNotNull phoneTypes
         assertFalse phoneTypes.isEmpty()
-        List actualTypes= PhoneTypeView.list(max:'500')
+        List actualTypes= net.hedtech.banner.general.system.PhoneType.list(max:'500')
         assertNotNull actualTypes
         assertFalse actualTypes.isEmpty()
         assertTrue phoneTypes.code.containsAll(actualTypes.code)
@@ -127,16 +126,6 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
             phoneTypeCompositeService.get("")
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
-        }
-    }
-
-   /**
-     * This test case is checking for PhoneTypeCompositeService get method with other than phone types valid guid
-    */
-    @Test
-    void testGetWithValidGuidAndNonExistsInPhoneTypes(){
-        shouldFail(RestfulApiValidationException) {
-            phoneTypeCompositeService.get(invalid_resource_guid?.guid)//invalid_resource_guid variable is defined at the top of the class
         }
     }
 
@@ -216,23 +205,21 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
 
     @Test
     void testCreate() {
-        PhoneType phoneType = phoneTypeCompositeService.create(i_success_input_content)
+        PhoneTypeDecorator phoneType = phoneTypeCompositeService.create(i_success_input_content)
         assertNotNull phoneType
         assertEquals phoneType.code, i_success_input_content.code
         assertEquals phoneType.description, i_success_input_content.description
-        assertEquals phoneType.type, i_success_input_content.type
         assertNotNull phoneType.id
     }
 
     @Test
     void testCreateWithId(){
         i_success_input_content.id = 'TEST_GUID'
-        PhoneType phoneType = phoneTypeCompositeService.create(i_success_input_content)
+        PhoneTypeDecorator phoneType = phoneTypeCompositeService.create(i_success_input_content)
         assertNotNull phoneType
         assertNotNull phoneType.id
         assertEquals phoneType.code, i_success_input_content.code
         assertEquals phoneType.description, i_success_input_content.description
-        assertEquals phoneType.type, i_success_input_content.type
         assertEquals phoneType.id, i_success_input_content.id.trim().toLowerCase()
     }
 
@@ -242,7 +229,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         try{
             phoneTypeCompositeService.create(i_success_input_content)
         }catch (ApplicationException ae){
-            assertApplicationException ae, "code.exists.message"
+            assertApplicationException ae, "exists.message"
         }
     }
 
@@ -258,18 +245,17 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
 
     @Test
     void testUpdate(){
-       PhoneType i_phoneType = phoneTypeCompositeService.create(i_success_input_content)
+       PhoneTypeDecorator i_phoneType = phoneTypeCompositeService.create(i_success_input_content)
        assertNotNull i_phoneType
        assertNotNull i_phoneType.id
        def u_success_input_content = i_success_input_content.clone()
        u_success_input_content.code = 'TESTC'
        u_success_input_content.id = i_phoneType.id
        u_success_input_content.description = 'Test phone type description'
-       PhoneType u_phoneType = phoneTypeCompositeService.update(u_success_input_content)
+       PhoneTypeDecorator u_phoneType = phoneTypeCompositeService.update(u_success_input_content)
        assertNotNull u_phoneType
        assertEquals u_phoneType.code, i_phoneType.code
        assertEquals u_phoneType.description, u_success_input_content.description
-       assertEquals u_phoneType.type, u_success_input_content.type
        assertEquals u_phoneType.id, u_success_input_content.id
     }
 
@@ -287,11 +273,10 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
     @Test
     void testUpdateNonExistsGuid() {
         i_success_input_content.put('id', 'TEST')
-        PhoneType u_phoneType = phoneTypeCompositeService.update(i_success_input_content)
+        PhoneTypeDecorator u_phoneType = phoneTypeCompositeService.update(i_success_input_content)
         assertNotNull u_phoneType
         assertEquals u_phoneType.code, i_success_input_content.code
         assertEquals u_phoneType.description, i_success_input_content.description
-        assertEquals u_phoneType.type, i_success_input_content.type
         assertEquals u_phoneType.id, i_success_input_content.id.toLowerCase()
     }
 }

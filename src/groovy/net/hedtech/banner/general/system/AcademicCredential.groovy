@@ -3,14 +3,11 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 import net.hedtech.banner.query.DynamicFinder
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
+import javax.persistence.*
 
 /**
  *<p>Read only view for Academic Credentials.</p>
@@ -18,7 +15,12 @@ import javax.persistence.TemporalType
 
 @Entity
 @Table(name = "gvq_academic_credentials")
-class AcademicCredentialView implements Serializable{
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
+@NamedQueries(value = [
+        @NamedQuery(name = "AcademicCredential.fetchByGuid", query = """FROM AcademicCredential p WHERE p.guid = :guid""")
+])
+class AcademicCredential implements Serializable{
 
     /**
      * Surrogate ID for STVDEGC
@@ -70,51 +72,13 @@ class AcademicCredentialView implements Serializable{
     @Column(name = "GORGUID_GUID")
     String guid
 
+    /**
+     * Optimistic lock token for STVDEGC
+     */
+    @Version
+    @Column(name = "STVDEGC_VERSION")
+    Long version
 
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (!(o instanceof AcademicCredentialView)) return false
-
-        AcademicCredentialView that = (AcademicCredentialView) o
-
-        if (code != that.code) return false
-        if (dataOrigin != that.dataOrigin) return false
-        if (description != that.description) return false
-        if (guid != that.guid) return false
-        if (id != that.id) return false
-        if (lastModified != that.lastModified) return false
-        if (lastModifiedBy != that.lastModifiedBy) return false
-        if (type != that.type) return false
-
-        return true
-    }
-
-    int hashCode() {
-        int result
-        result = id.hashCode()
-        result = 31 * result + code.hashCode()
-        result = 31 * result + description.hashCode()
-        result = 31 * result + lastModifiedBy.hashCode()
-        result = 31 * result + dataOrigin.hashCode()
-        result = 31 * result + lastModified.hashCode()
-        result = 31 * result + type.hashCode()
-        result = 31 * result + guid.hashCode()
-        return result
-    }
-
-    @Override
-    public String toString() {
-        return "AcademicCredentialView{" +
-                "id='" + id + '\'' +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", lastModifiedBy='" + lastModifiedBy + '\'' +
-                ", dataOrigin='" + dataOrigin + '\'' +
-                ", lastModified=" + lastModified +
-                ", type='" + type + '\'' +
-                ", guid='" + guid + '\'' +
-                '}';
-    }
 
     def static countAll(filterData) {
        return finderByAll().count(filterData)
@@ -127,7 +91,20 @@ class AcademicCredentialView implements Serializable{
     }
 
     def private static finderByAll = {
-        def query = "from AcademicCredentialView a where 1 = 1"
-        return new DynamicFinder(AcademicCredentialView.class, query, "a")
+        def query = "from AcademicCredential a where 1 = 1"
+        return new DynamicFinder(AcademicCredential.class, query, "a")
     }
+
+    /**
+     * fetching AcademicCredential data based on guid
+     * @param guid
+     * @return AcademicCredential
+     */
+    public static AcademicCredential fetchByGuid(String guid){
+        AcademicCredential academicCredential = AcademicCredential.withSession{ session ->
+            session.getNamedQuery('AcademicCredential.fetchByGuid').setString('guid',guid).uniqueResult()
+        }
+        return academicCredential
+    }
+
 }

@@ -159,7 +159,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         try {
             emailTypeCompositeService.get(campusGuid)
         } catch (ApplicationException ae) {
-            assertApplicationException ae, "invalid.guid"
+            assertApplicationException ae, "NotFoundException"
         }
     }
 

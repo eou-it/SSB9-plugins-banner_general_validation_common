@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
@@ -362,7 +363,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
-        i_success_input_content.put('id',GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_race.race,RaceCompositeService.RACE_LDM_NAME)?.guid)
+        i_success_input_content.put('id',GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_race.race,GeneralValidationCommonConstants.RACE_LDM_NAME)?.guid)
         RaceDetail raceDetail = raceCompositeService.update(i_success_input_content)
         assertEquals i_success_input_content?.race, raceDetail.race
         assertEquals i_success_input_content?.description, raceDetail.description
@@ -388,7 +389,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         assertNotNull i_success_race
         int racialCount = IntegrationConfiguration.countByTranslationValueInListAndSettingNameAndValueInList(RaceRacialCategory.RACE_RACIAL_CATEGORY,
-                RaceCompositeService.RACE_RACIAL_CATEGORY,
+                GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY,
                 Race.findAll().race)
         assertEquals racialCount, raceCompositeService.count([max:500,offset:0])
     }
@@ -412,9 +413,6 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetail.guid, raceDetails[0].guid
         assertNotNull raceDetail.parentCategory
         assertEquals raceDetail.parentCategory, raceDetails[0].parentCategory
-        assertNotNull raceDetail.metadata
-        assertEquals raceDetail.metadata, raceDetails[0].metadata
-        assertEquals raceDetails[0], raceDetail
     }
 
     @Test
@@ -432,7 +430,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
             //we will forcefully set the accept header so that the tests go through all possible code flows
             GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
             request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
-            raceCompositeService.get(GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_race.race,RaceCompositeService.RACE_LDM_NAME)?.guid)
+            raceCompositeService.get(GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_race.race,GeneralValidationCommonConstants.RACE_LDM_NAME)?.guid)
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }

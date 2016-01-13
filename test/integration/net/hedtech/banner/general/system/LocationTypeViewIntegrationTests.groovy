@@ -66,6 +66,8 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testReadOnlyForCreateLocationType(){
         def locationType = newLocationType()
+        locationType.id='test'
+        locationType.version= 0
         assertNotNull locationType
         shouldFail(InvalidDataAccessResourceUsageException) {
             locationType.save(flush: true, onError: true)
@@ -103,7 +105,7 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
                 code:'tt',
                 description:'test data',
                 dataOrigin:'test',
-                id:'test_guid',
+                id:'test',
                 locationType:'test',
                 entityType: 'person'
         )

@@ -173,8 +173,11 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
      */
     @Test
     void testGetWithValidNonExistingLocationTypeGuid() {
-        shouldFail(RestfulApiValidationException) {
-            locationTypeCompositeService.get(invalid_resource_guid?.guid)
+        assertNotNull invalid_resource_guid
+        try {
+            locationTypeCompositeService.get(invalid_resource_guid.guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
         }
     }
 

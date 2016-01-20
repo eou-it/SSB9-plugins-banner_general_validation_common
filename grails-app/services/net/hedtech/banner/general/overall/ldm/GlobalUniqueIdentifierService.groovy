@@ -61,4 +61,14 @@ class GlobalUniqueIdentifierService extends ServiceBase {
 
     }
 
+    /**
+     * fetch GlobalUniqueIdentifier info bases on guid
+     * @param guid
+     * @return
+     */
+    GlobalUniqueIdentifier fetchByLdmNamesAndGuid(guid) {
+        return GlobalUniqueIdentifier.fetchByLdmNamesAndGuid(guid)
+
+    }
+
 }

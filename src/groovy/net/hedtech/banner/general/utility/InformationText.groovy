@@ -17,36 +17,16 @@ import javax.persistence.*
         query = """ FROM InformationText a
                                WHERE a.pageName = :pageName
                                AND a.persona IN (:roleCode)
-                               AND a.locale = :locale
-                               AND a.sourceIndicator =
-                               (   SELECT nvl( MAX(sourceIndicator),:baseline)
-                                   FROM InformationText
-                                   WHERE pageName = a.pageName
-                                   AND label = a.label
-                                   AND sequenceNumber = a.sequenceNumber
-                                   AND persona = a.persona
-                                   AND locale = a.locale
-                                   AND sourceIndicator = :local
-                                   AND trunc(sysdate) BETWEEN trunc(NVL( startDate, (sysdate - 1) ) ) AND trunc( NVL( endDate, (sysdate + 1) ))
-                               )
+                               AND a.locale IN (:locale)
+                               AND trunc(sysdate) BETWEEN trunc(NVL( a.startDate, (sysdate - 1) ) ) AND trunc( NVL( a.endDate, (sysdate + 1) ))
                                ORDER BY a.label, a.sequenceNumber """),
     @NamedQuery(name = "InformationText.fetchInfoTextByRoleAndLabel",
             query = """ FROM InformationText a
                                    WHERE a.pageName = :pageName
                                    AND a.persona IN (:roleCode)
-                                   AND a.locale = :locale
+                                   AND a.locale IN (:locale)
                                    AND a.label = :labelText
-                                   AND a.sourceIndicator =
-                                   (   SELECT nvl( MAX(sourceIndicator),:baseline)
-                                       FROM InformationText
-                                       WHERE pageName = a.pageName
-                                       AND label = a.label
-                                       AND sequenceNumber = a.sequenceNumber
-                                       AND persona = a.persona
-                                       AND locale = a.locale
-                                       AND sourceIndicator = :local
-                                       AND trunc(sysdate) BETWEEN trunc(NVL( startDate, (sysdate - 1) ) ) AND trunc( NVL( endDate, (sysdate + 1) ))
-                                   )
+                                   AND trunc(sysdate) BETWEEN trunc(NVL( a.startDate, (sysdate - 1) ) ) AND trunc( NVL( a.endDate, (sysdate + 1) ))
                                    ORDER BY a.label, a.sequenceNumber """)
 
 ])
@@ -272,17 +252,13 @@ class InformationText implements Serializable {
      * @return
      */
 
-     public static List fetchInfoTextByRoles(String pageName, List<String> roleCode, String locale) {
-
+     public static List<InformationText> fetchInfoTextByRoles(String pageName, List<String> roleCode, List<String> locale) {
          InformationText.withSession {session ->
              def infoText =  session.getNamedQuery('InformationText.fetchInfoTextByRole')
                     .setString(PAGENAME, pageName)
                     .setParameterList(ROLECODE, roleCode)
-                    .setString(LOCALE,locale)
-                    .setString(BASE_LINE,SourceIndicators.BASELINE.getCode())
-                    .setString(LOCAL,SourceIndicators.LOCAL.getCode())
+                    .setParameterList(LOCALE,locale)
                     .list()
-
             return infoText
          }
     }
@@ -296,15 +272,13 @@ class InformationText implements Serializable {
      * @param label
      * @return
      */
-   public static List<InformationText> fetchInfoTextByRolesAndLabel(String pageName, List<String> roleCode, String locale, String label) {
+   public static List<InformationText> fetchInfoTextByRolesAndLabel(String pageName, List<String> roleCode, List<String> locale, String label) {
         InformationText.withSession {session ->
             def infoText = session.getNamedQuery('InformationText.fetchInfoTextByRoleAndLabel')
                     .setString(PAGENAME, pageName)
                     .setParameterList(ROLECODE, roleCode)
-                    .setString(LOCALE,locale)
+                    .setParameterList(LOCALE,locale)
                     .setString(LABEL_TEXT, label)
-                    .setString(BASE_LINE,SourceIndicators.BASELINE.getCode())
-                    .setString(LOCAL,SourceIndicators.LOCAL.getCode())
                     .list()
             return infoText
         }

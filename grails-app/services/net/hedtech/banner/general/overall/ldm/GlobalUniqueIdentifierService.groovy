@@ -61,6 +61,16 @@ class GlobalUniqueIdentifierService extends ServiceBase {
 
     }
 
+    /**
+     * fetch GlobalUniqueIdentifier info bases on guid
+     * @param guid
+     * @return
+     */
+    GlobalUniqueIdentifier fetchByLdmNamesAndGuid(guid) {
+        return GlobalUniqueIdentifier.fetchByLdmNamesAndGuid(guid)
+
+    }
+
     public List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyLike(ldmName, domainKey){
         log.trace("fetchAllByLdmNameAndDomainKeyLike Begin with ldmName = ${ldmName} and domainKey = ${domainKey}")
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList

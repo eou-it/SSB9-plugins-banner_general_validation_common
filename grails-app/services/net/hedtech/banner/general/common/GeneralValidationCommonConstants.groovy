@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 
 package net.hedtech.banner.general.common
@@ -95,4 +95,10 @@ class GeneralValidationCommonConstants {
     static final String DIVISION = 'division'
     static final String FACULTY = 'faculty'
     static final String UNIVERSITY = 'university'
+
+    //common constants for  citizenship statuses
+    static final String CITIZENSHIP_STATUS = 'citizenshipStatus'
+    static final String CITIZENSHIP_STATUSES_LDM_NAME = 'citizenship-statuses'
+    static final String CITIZENSHIP_STATUSES_CATEGORY_CITIZEN = 'citizen'
+    static final String CITIZENSHIP_STATUSES_CATEGORY_NON_CITIZEN = 'nonCitizen'
 }

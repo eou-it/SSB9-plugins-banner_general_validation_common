@@ -129,7 +129,6 @@ class AcademicCredentialCompositeService extends LdmService {
         if (degree.code != content.code?.trim()) {
             content.code = degree.code
         }
-        content.degreeType = degree.degreeType
 
         degree = bindAcademicCredential(degree, content)
         return new AcademicCredentialDecorator(degree.code,degree.description,degreeGuid,academicCredential.type)
@@ -143,7 +142,6 @@ class AcademicCredentialCompositeService extends LdmService {
 
     private void bindData(domainModel, content) {
         super.bindData(domainModel, content, [:])
-        domainModel.degreeType = content.degreeType
         domainModel.displayWebIndicator = Boolean.FALSE
     }
 

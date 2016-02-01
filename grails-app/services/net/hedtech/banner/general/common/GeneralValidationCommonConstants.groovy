@@ -101,4 +101,8 @@ class GeneralValidationCommonConstants {
     static final String CITIZENSHIP_STATUSES_LDM_NAME = 'citizenship-statuses'
     static final String CITIZENSHIP_STATUSES_CATEGORY_CITIZEN = 'citizen'
     static final String CITIZENSHIP_STATUSES_CATEGORY_NON_CITIZEN = 'nonCitizen'
+
+    //common constants for visa-types
+    static final String IMMIGRANT = 'immigrant'
+    static final String NON_IMMIGRANT = 'nonImmigrant'
 }

@@ -4,12 +4,10 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.VisaType
-import net.hedtech.banner.general.system.VisaTypeService
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.ldm.v4.VisaTypeDetail
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -33,18 +31,17 @@ class VisaTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<VisaTypeDetail> list(Map params) {
-
         log.debug "list:Begin:$params"
-
         List visaTypeDetailList = []
-
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        RestfulApiValidationUtility.validateSortField(params.sort, ['code', 'title'])
+
+        List allowedSortFields = [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE]
+        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
 
         List<VisaType> visaTypeList = visaTypeService.list(params) as List
-        visaTypeList.each { visaTypeDetail ->
+        visaTypeList?.each { visaTypeDetail ->
             visaTypeDetailList << getDecorator(visaTypeDetail)
         }
 
@@ -99,18 +96,18 @@ class VisaTypeCompositeService extends LdmService {
     }
 
 
-    private def getDecorator(VisaType visaType, String visaTypeGuid = null) {
-        VisaTypeDetail decorator
-        if (visaType) {
-            if (!visaTypeGuid) {
-                visaTypeGuid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(VISATYPE_LDM_NAME, visaType.id)?.guid
-            }
-
-            def category=visaType.nonResIndicator=="Y"?GeneralValidationCommonConstants.NON_IMMIGRANT:GeneralValidationCommonConstants.IMMIGRANT
-
-            decorator = new VisaTypeDetail(visaType,category,visaTypeGuid)
+    private VisaTypeDetail getDecorator(VisaType visaType, String visaTypeGuid = null) {
+        if (!visaTypeGuid) {
+            visaTypeGuid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(VISATYPE_LDM_NAME, visaType.id)?.guid
         }
-        return decorator
+        def category = getHeDMEnumeration(visaType.nonResIndicator)
+
+        return new VisaTypeDetail(visaType, category, visaTypeGuid)
+    }
+
+
+    private String getHeDMEnumeration(String nonResIndicator) {
+        return nonResIndicator == "Y" ? GeneralValidationCommonConstants.NON_IMMIGRANT : GeneralValidationCommonConstants.IMMIGRANT
     }
 
 }

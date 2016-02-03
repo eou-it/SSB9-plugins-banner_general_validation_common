@@ -29,6 +29,7 @@ class CitizenshipStatusCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<CitizenshipStatus> list(Map params) {
+        log.debug "list:Begin:$params"
         List<CitizenshipStatus> citizenshipStatuses = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
@@ -42,6 +43,7 @@ class CitizenshipStatusCompositeService extends LdmService {
             citizenshipStatuses << getDecorator(citizenType)
         }
 
+        log.debug "list:End:${citizenshipStatuses?.size()}"
         return citizenshipStatuses
     }
 
@@ -67,6 +69,7 @@ class CitizenshipStatusCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     CitizenshipStatus get(String guid) {
+        log.debug "get:Begin:$guid"
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GeneralValidationCommonConstants.CITIZENSHIP_STATUS, new NotFoundException())
@@ -76,7 +79,7 @@ class CitizenshipStatusCompositeService extends LdmService {
         if (!citizenType) {
             throw new ApplicationException(GeneralValidationCommonConstants.CITIZENSHIP_STATUS, new NotFoundException())
         }
-
+        log.debug("guid: ${globalUniqueIdentifier.guid}")
         return getDecorator(citizenType, globalUniqueIdentifier.guid)
     }
 

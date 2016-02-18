@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -48,7 +48,10 @@ query = """FROM SdaCrosswalkConversion a
         query = """FROM SdaCrosswalkConversion a
            WHERE  UPPER(a.description) LIKE UPPER(:description)
            AND a.internalGroup = :internalGroup
-           ORDER BY a.internal,a.internalSequenceNumber """)
+           ORDER BY a.internal,a.internalSequenceNumber """),
+@NamedQuery(name = "SdaCrosswalkConversion.fetchAllForRegistrationSession",
+        query = """FROM SdaCrosswalkConversion a
+           WHERE a.internalGroup in :internalGroups """)
 ])
 
 @Entity
@@ -271,4 +274,13 @@ class SdaCrosswalkConversion implements Serializable {
         return sdaCrosswalkConversions
     }
 
+
+    static List fetchAllForRegistrationSession(List internalGroups) {
+        def sdaxs
+        SdaCrosswalkConversion.withSession {session ->
+            sdaxs = session.getNamedQuery('SdaCrosswalkConversion.fetchAllForRegistrationSession')
+                    .setParameterList('internalGroups', internalGroups).list()
+        }
+        return sdaxs
+    }
 }

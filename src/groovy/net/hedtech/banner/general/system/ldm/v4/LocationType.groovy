@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.system.LocationTypeView
 
 /**
@@ -15,10 +16,10 @@ class LocationType {
 
     LocationType(LocationTypeView locationTypeView, String entityType, String locationType) {
         this.locationTypeView = locationTypeView
-        if (entityType =='organization'){
+        if (entityType == GeneralValidationCommonConstants.ORGANIZATION){
             this.type = ["organization" : ["locationType": locationType]]
         }
-        if (entityType =='person'){
+        if (entityType ==GeneralValidationCommonConstants.PERSON){
             this.type = ["person" : ["locationType": locationType]]
         }
     }

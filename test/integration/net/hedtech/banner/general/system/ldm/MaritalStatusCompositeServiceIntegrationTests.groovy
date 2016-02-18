@@ -4,10 +4,13 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
+import net.hedtech.banner.general.system.ldm.v4.MaritalStatusMaritalCategory
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
@@ -78,7 +81,10 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         assertNotNull i_success_maritalStatus
-        assertEquals MaritalStatus.count(), maritalStatusCompositeService.count([max:500,offset:0])
+        int maritalStatusCount = IntegrationConfiguration.countByTranslationValueInListAndSettingNameAndValueInList(MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY,
+                GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY,
+                MaritalStatus.findAll().code)
+        assertEquals maritalStatusCount, maritalStatusCompositeService.count([max:500,offset:0])
     }
 
     @Test
@@ -361,7 +367,7 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
-        i_success_input_content.put('id',GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_maritalStatus?.code,MaritalStatusCompositeService.MARITAL_STATUS_LDM_NAME)?.guid)
+        i_success_input_content.put('id',GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_maritalStatus?.code,GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME)?.guid)
         def maritalStatusDetail = maritalStatusCompositeService.update(i_success_input_content)
         assertEquals i_success_maritalStatus?.code, maritalStatusDetail.code
         assertEquals i_success_maritalStatus?.description, maritalStatusDetail.description
@@ -379,7 +385,10 @@ class MaritalStatusCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertNotNull maritalStatusList
         assertFalse maritalStatusList.isEmpty()
         assertNotNull maritalStatusList.code
-        assertEquals MaritalStatus.count(), maritalStatusList.size()
+        int maritalStatusCount = IntegrationConfiguration.countByTranslationValueInListAndSettingNameAndValueInList(MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY,
+                GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY,
+                MaritalStatus.findAll().code)
+        assertEquals maritalStatusCount, maritalStatusList.size()
         assertNotNull i_success_maritalStatus
         assertTrue maritalStatusList.code.contains(i_success_maritalStatus.code)
         assertTrue maritalStatusList.description.contains(i_success_maritalStatus.description)

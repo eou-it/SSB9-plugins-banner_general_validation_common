@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2015 Ellucian Company L.P. and its affiliates.
  ***************************************************************************** */
 package net.hedtech.banner.general.utility
 
@@ -86,7 +86,7 @@ class InformationTextPersonaListService {
 
         //apply order by
         def orderByCodeDescLastMod = new OrderBy([{ it.code }, { it.description }, { it.lastModified }])
-        filteredResults.sort(orderByCodeDescLastMod)
+        filteredResults.sort(true, orderByCodeDescLastMod)
 
         return filteredResults
     }

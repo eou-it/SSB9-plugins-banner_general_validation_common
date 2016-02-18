@@ -6,11 +6,11 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
-import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.LdmService
-import net.hedtech.banner.general.system.AcademicCredentialView
+import net.hedtech.banner.general.system.AcademicCredential
 import net.hedtech.banner.general.system.Degree
-import net.hedtech.banner.general.system.ldm.v4.AcademicCredential
+import net.hedtech.banner.general.system.ldm.v4.AcademicCredentialDecorator
 import net.hedtech.banner.general.system.ldm.v4.AcademicCredentialType
 import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
@@ -29,11 +29,9 @@ class AcademicCredentialCompositeService extends LdmService {
 
     //Injection of transactional service
     def degreeService
+    def academicCredentialService
 
-    private static final String DEFAULT_SORT_FIELD = 'abbreviation'
-    private static final String DEFAULT_ORDER_TYPE = 'ASC'
-    private static final List allowedSortFields = [DEFAULT_SORT_FIELD,'type']
-    private static final String LDM_NAME = 'academic-credentials'
+    private static final List allowedSortFields = [GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_ABBREVIATION,GeneralValidationCommonConstants.TYPE]
     private static final typeList = ['degree', 'honorary', 'diploma', 'certificate']
 
     /**
@@ -42,17 +40,16 @@ class AcademicCredentialCompositeService extends LdmService {
      * @return
      */
     @Transactional(readOnly = true)
-    List<AcademicCredential> list(Map params) {
-        List<AcademicCredential> academicCredentialsList=[]
+    List<AcademicCredentialDecorator> list(Map params) {
+        List<AcademicCredentialDecorator> academicCredentialsList=[]
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        params?.sort = params?.sort ?: DEFAULT_SORT_FIELD
-        params?.order = params?.order ?: DEFAULT_ORDER_TYPE
+        params.sort = params.sort ?: GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_ABBREVIATION
+        params.order = params.order ?: GeneralValidationCommonConstants.DEFAULT_ORDER_TYPE
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)?:params.sort
-        List<AcademicCredentialView> academicCredentialList=fetchAcademicCredentialByCriteria(params)
-        academicCredentialList.each { academicCredential ->
-            academicCredentialsList << new AcademicCredential(academicCredential?.code,academicCredential?.description,academicCredential?.guid,academicCredential?.type)
+        fetchAcademicCredentialByCriteria(params).each { academicCredential ->
+            academicCredentialsList << new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type)
         }
         return academicCredentialsList
     }
@@ -71,12 +68,12 @@ class AcademicCredentialCompositeService extends LdmService {
      * @return
      */
     @Transactional(readOnly = true)
-    AcademicCredential get(String guid) {
-        AcademicCredentialView academicCredential = AcademicCredentialView.findByGuid(guid?.trim())
+    AcademicCredentialDecorator get(String guid) {
+        AcademicCredential academicCredential = academicCredentialService.fetchByGuid(guid?.trim())
         if(!academicCredential){
-            throw new ApplicationException("academicCredential", new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new NotFoundException())
         }
-       return new AcademicCredential(academicCredential?.code,academicCredential?.description,academicCredential?.guid,academicCredential?.type)
+       return new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type)
     }
 
     /**
@@ -84,23 +81,23 @@ class AcademicCredentialCompositeService extends LdmService {
      *
      * @param content Request body
      */
-    AcademicCredential create(Map content) {
-        Degree degree = Degree.findByCode(content?.code)
+    AcademicCredentialDecorator create(Map content) {
+        Degree degree = degreeService.fetchByCode(content.code)
         if (degree) {
-            throw new ApplicationException('academicCredential', new BusinessLogicValidationException('code.exists.message', null))
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS, null))
         }
-        if (typeList.contains(content?.type)) {
-            content.put("degreeType", AcademicCredentialType.("${content?.type}").value)
+        if (typeList.contains(content.type)) {
+            content.degreeType = AcademicCredentialType.("${content.type}")?.value
         }
         degree = bindAcademicCredential(new Degree(), content)
-        String degreeGuid = content?.guid?.trim()?.toLowerCase()
+        String degreeGuid = content.guid?.trim()?.toLowerCase()
         if (degreeGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-            degreeGuid = updateGuidValue(degree.id, degreeGuid, LDM_NAME)?.guid
+            degreeGuid = updateGuidValue(degree.id, degreeGuid, GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL_LDM_NAME)?.guid
         } else {
-            degreeGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME, degree?.id)?.guid
+            degreeGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL_LDM_NAME, degree.id)?.guid
         }
-        return new AcademicCredential(degree?.code, degree?.description, degreeGuid, content?.type)
+        return new AcademicCredentialDecorator(degree.code, degree.description, degreeGuid, content.type)
     }
 
     /**
@@ -110,36 +107,31 @@ class AcademicCredentialCompositeService extends LdmService {
      * @return
      */
     def update(Map content) {
-        String degreeGuid = content?.id?.trim()?.toLowerCase()
-
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, degreeGuid)
-        if (degreeGuid) {
-            if (!globalUniqueIdentifier) {
-                if (!content.get('guid')) {
-                    content.put('guid', degreeGuid)
+        String degreeGuid = content.id?.trim()?.toLowerCase()
+        if(!degreeGuid){
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new NotFoundException())
+        }
+         AcademicCredential academicCredential  = academicCredentialService.fetchByGuid(degreeGuid)
+            if (!academicCredential) {
+                if (!content.guid) {
+                    content.guid = degreeGuid
                 }
                 //Per strategy when a GUID was provided, the create should happen.
                 return create(content)
             }
-        } else {
-            throw new ApplicationException("academicCredential", new NotFoundException())
-        }
 
-        Degree degree = Degree.findById(globalUniqueIdentifier?.domainId)
+        Degree degree = degreeService.get(academicCredential.id)
         if (!degree) {
-            throw new ApplicationException("academicCredential", new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new NotFoundException())
         }
 
         // Should not allow to update instructional-methods.code as it is read-only
-        if (degree?.code != content?.code?.trim()) {
-            content.put("code", degree?.code)
+        if (degree.code != content.code?.trim()) {
+            content.code = degree.code
         }
-        if (!typeList.contains(content?.type) || degree?.degreeType != AcademicCredentialType.("${content?.type}").value) {
-            content.put("degreeType", degree?.degreeType)
-        }
-        degree = bindAcademicCredential(degree, content)
 
-        return new AcademicCredential(degree?.code,degree?.description,degreeGuid,content?.type)
+        degree = bindAcademicCredential(degree, content)
+        return new AcademicCredentialDecorator(degree.code,degree.description,degreeGuid,academicCredential.type)
     }
 
 
@@ -150,7 +142,6 @@ class AcademicCredentialCompositeService extends LdmService {
 
     private void bindData(domainModel, content) {
         super.bindData(domainModel, content, [:])
-        domainModel.degreeType = content?.degreeType
         domainModel.displayWebIndicator = Boolean.FALSE
     }
 
@@ -162,14 +153,14 @@ class AcademicCredentialCompositeService extends LdmService {
         def criteria = filterMap.criteria
         def pagingAndSortParams = filterMap.pagingAndSortParams
 
-        if (content.containsKey("type")) {
-            params.put("type", content.get("type").trim())
-            criteria.add([key: "type", binding: "type", operator: Operators.EQUALS])
+        if (content.containsKey(GeneralValidationCommonConstants.TYPE)) {
+            params.put(GeneralValidationCommonConstants.TYPE, content.get(GeneralValidationCommonConstants.TYPE)?.trim())
+            criteria.add([key: GeneralValidationCommonConstants.TYPE, binding: GeneralValidationCommonConstants.TYPE, operator: Operators.EQUALS])
         }
         if (count) {
-            result = AcademicCredentialView.countAll([params: params, criteria: criteria])
+            result = academicCredentialService.countAll([params: params, criteria: criteria])
         } else {
-            result = AcademicCredentialView.fetchSearch([params: params, criteria: criteria], pagingAndSortParams)
+            result = academicCredentialService.fetchSearch([params: params, criteria: criteria], pagingAndSortParams)
         }
 
         return result

@@ -3,23 +3,41 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
-import javax.persistence.Column
-import javax.persistence.EmbeddedId
-import javax.persistence.Entity
-import javax.persistence.Table
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+import net.hedtech.banner.query.DynamicFinder
+
+import javax.persistence.*
 
 /**
  * <p>Read only view for Academic Disciplines.</p>
  */
 @Entity
-@Table(name = "GVQ_MAJORS")
+@Table(name = "SVQ_MAJORS")
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 class AcademicDisciplineView implements Serializable {
 
     /**
-     * This field specifies the composite primary key of SVQ_MAJRS
+     * This field specifies the GUID.
      */
-    @EmbeddedId
-    AcademicDisciplinePK id
+    @Id
+    @Column(name = "STVMAJR_GUID")
+    String id
+
+    /**
+     * Surrogate ID for STVMAJR
+     */
+    @Column(name = "STVMAJR_SURROGATE_ID")
+    Long surrogateId
+
+    /**
+     * VERSION for STVMAJR
+     */
+    @Version
+    @Column(name = "STVMAJR_VERSION")
+    Long version
+
 
     /**
      * This field identifies the major code referenced in the Catalog, Class Sched., Recruit., Admissions, Gen. Student, Registr., and Acad. Hist. Modules. Reqd. value: 00 - Major Not Declared.
@@ -40,54 +58,26 @@ class AcademicDisciplineView implements Serializable {
     String dataOrigin
 
     /**
-     * This field specifies the GUID.
-     */
-    @Column(name = "STVMAJR_GUID")
-    String guid
-
-    /**
      * This field specifies the type of STVMAJR.
 
      */
     @Column(name = "STVMAJR_VALID_TYPE", length = 30)
     String type
 
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (getClass() != o.class) return false
 
-        AcademicDisciplineView that = (AcademicDisciplineView) o
 
-        if (code != that.code) return false
-        if (dataOrigin != that.dataOrigin) return false
-        if (description != that.description) return false
-        if (guid != that.guid) return false
-        if (id != that.id) return false
-        if (type != that.type) return false
-
-        return true
+    def static countAll(filterData) {
+        return finderByAll().count(filterData)
     }
 
-    int hashCode() {
-        int result
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (guid != null ? guid.hashCode() : 0)
-        result = 31 * result + (type != null ? type.hashCode() : 0)
-        return result
+
+    def static fetchSearch(filterData, pagingAndSortParams) {
+        return finderByAll().find(filterData, pagingAndSortParams)
+
     }
 
-    @Override
-    public String toString() {
-        """AcademicDisciplineView[
-					id=$id, 
-					code=$code,
-					description=$description, 
-					dataOrigin=$dataOrigin,
-                    guid=$guid,
-                    type=$type]"""
+    def private static finderByAll = {
+        def query = "from AcademicDisciplineView a where 1 = 1"
+        return new DynamicFinder(AcademicDisciplineView.class, query, "a")
     }
-
 }

@@ -1,7 +1,10 @@
 /*******************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.restfulapi
+
+import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 
 /**
  * Helper class for RESTful APIs
@@ -201,6 +204,18 @@ class RestfulApiValidationUtility {
         }
         catch (ClassNotFoundException e) {
             return null
+        }
+    }
+
+    /**
+     * check if given input string is a possible XSS attack
+     *
+     * @param inputField
+     */
+    public static void checkXSS(String inputField) {
+        String encodedInputField = inputField?.encodeAsHTML()
+        if (encodedInputField != inputField) {
+            throw new ApplicationException('RestfulApiValidationUtility', new BusinessLogicValidationException("possible.XSS.attack", null))
         }
     }
 

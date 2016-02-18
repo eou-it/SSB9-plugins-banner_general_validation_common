@@ -7,6 +7,7 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
+import javax.persistence.Version
 
 /**
  * <p> Location Type Read only View to retrieve the data from STVATYP , GORICCR and GORGUID Tables</p>
@@ -59,6 +60,13 @@ class LocationTypeView implements Serializable {
     @Column(name = "ENTITY_TYPE")
     String entityType
 
+    /**
+     * Optimistic lock token for STVATYP
+     */
+    @Version
+    @Column(name = "VERSION")
+    Long version
+
     boolean equals(o) {
         if (this.is(o)) return true
         if (!(o instanceof LocationTypeView)) return false
@@ -72,6 +80,7 @@ class LocationTypeView implements Serializable {
         if (id != that.id) return false
         if (locationType != that.locationType) return false
         if (value != that.value) return false
+        if (version != that.version) return false
 
         return true
     }
@@ -85,6 +94,7 @@ class LocationTypeView implements Serializable {
         result = 31 * result + (locationType != null ? locationType.hashCode() : 0)
         result = 31 * result + (value != null ? value.hashCode() : 0)
         result = 31 * result + (entityType != null ? entityType.hashCode() : 0)
+        result = 31 * result + (version != null ? version.hashCode() : 0)
         return result
     }
 
@@ -99,6 +109,7 @@ class LocationTypeView implements Serializable {
                 ", locationType='" + locationType + '\'' +
                 ", value='" + value + '\'' +
                 ", entityType='" + entityType + '\'' +
+                ", version=" + version +
                 '}';
     }
 }

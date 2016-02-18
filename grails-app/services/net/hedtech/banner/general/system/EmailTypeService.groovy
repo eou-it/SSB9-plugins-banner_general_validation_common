@@ -2,8 +2,8 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
-import net.hedtech.banner.service.ServiceBase
 
+import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
 // This service is injected with create, update, and delete methods that may throw runtime exceptions (listed below).
@@ -13,19 +13,7 @@ import net.hedtech.banner.service.ServiceBase
 // update and delete may throw org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException a runtime exception if an optimistic lock failure occurs
 // create, update, and delete may throw grails.validation.ValidationException a runtime exception when there is a validation failure
 
-/**
- * A transactional service supporting persistence of the Academic Year model.
- * */
-class DegreeService extends ServiceBase {
 
+class EmailTypeService extends ServiceBase {
     boolean transactional = true
-
-    /**
-     * fetching Degree details based on code
-     * @param code
-     * @return
-     */
-    Degree fetchByCode(String code){
-        return Degree.fetchByCode(code)
-    }
 }

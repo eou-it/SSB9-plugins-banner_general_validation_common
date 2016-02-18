@@ -3,11 +3,12 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.LocationTypeView
+import net.hedtech.banner.general.system.ldm.v4.LocationType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import net.hedtech.banner.exceptions.ApplicationException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -30,6 +31,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
     private String invalid_guid_errorMessage = 'NotFoundException'
     private String locationTypes = 'location-types'
+    Map i_success_input_content
 
 
     @Before
@@ -43,6 +45,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         invalid_resource_guid = GlobalUniqueIdentifier.findByLdmName(i_failure_ldmName)
         success_guid = GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList(locationTypes, LocationTypeView.findAll()?.code)
         invalid_guid = GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList(locationTypes, LocationTypeView.findAll()?.code)
+        i_success_input_content = [code: 'XY', description: 'Test Description',type:[person:[locationType:"Test"]]]
     }
 
     @After
@@ -170,8 +173,11 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
      */
     @Test
     void testGetWithValidNonExistingLocationTypeGuid() {
-        shouldFail(RestfulApiValidationException) {
-            locationTypeCompositeService.get(invalid_resource_guid?.guid)
+        assertNotNull invalid_resource_guid
+        try {
+            locationTypeCompositeService.get(invalid_resource_guid.guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
         }
     }
 
@@ -241,6 +247,110 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
                 assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
                 tempParam=code
         }
+    }
+
+    /**
+     * Test to check the create method of LocationTypeCompositeService with valid request payload
+     */
+    @Test
+    void testCreateLocationType() {
+        LocationType locationType = locationTypeCompositeService.create(i_success_input_content)
+        assertNotNull locationType
+        assertEquals i_success_input_content.code, locationType.code
+        assertEquals i_success_input_content.description, locationType.description
+    }
+
+    /**
+     * Test to check the LocationTypeCompositeService create method without mandatory code in the request payload
+     */
+    @Test
+    void testCreateLocationTypeWithoutMandatoryCode() {
+        i_success_input_content.remove('code')
+        try {
+            locationTypeCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "code.required"
+        }
+    }
+
+    /**
+     * Test to check the LocationTypeCompositeService create method with existing code in the request payload
+     */
+    @Test
+    void testCreateLocationTypeExistingCode() {
+        i_success_input_content.code=i_success_code
+        try {
+            locationTypeCompositeService.create(i_success_input_content)
+        } catch (Exception ae) {
+            assertApplicationException ae, "exists.message"
+        }
+    }
+
+    /**
+     * Test to update the Location-Type with a valid request payload
+     * */
+    @Test
+    void testUpdateLocationType() {
+        LocationType locationType = locationTypeCompositeService.create(i_success_input_content)
+        assertNotNull locationType
+        assertNotNull locationType.id
+        assertEquals i_success_input_content.code, locationType.code
+        assertEquals i_success_input_content.description, locationType.description
+        Map update_content = updateLocationTypeMap(locationType.id)
+        def o_success_LocationType_update = locationTypeCompositeService.update(update_content)
+        assertNotNull o_success_LocationType_update
+        assertEquals o_success_LocationType_update.id, update_content.id
+        assertEquals o_success_LocationType_update.code, update_content.code
+        assertEquals o_success_LocationType_update.description, update_content.description
+    }
+
+    /**
+     * Test to update the Location-Type with Invalid Guid
+     * */
+    @Test
+    void testUpdateLocationTypeWithInvalidGuid() {
+        LocationType locationType = locationTypeCompositeService.create(i_success_input_content)
+        assertNotNull locationType
+        assertNotNull locationType.id
+        assertEquals i_success_input_content.code, locationType.code
+        assertEquals i_success_input_content.description, locationType.description
+        Map update_content = updateLocationTypeMap(null)
+        shouldFail(ApplicationException) {
+            locationTypeCompositeService.update(update_content)
+        }
+    }
+
+    /**
+     * Test to update the Location-Type with non existing Guid and Code for LocationTypeCompositeService create method invocation
+     * */
+    @Test
+    void testUpdateLocationTypeWithCreateForNewCodeAndGuid() {
+        i_success_input_content.put("id","test-guid")
+        LocationType locationType = locationTypeCompositeService.update(i_success_input_content)
+        assertNotNull locationType
+        assertNotNull locationType.id
+        assertEquals i_success_input_content.id, locationType.id
+        assertEquals i_success_input_content.code, locationType.code
+        assertEquals i_success_input_content.description, locationType.description
+    }
+
+    /**
+     * Test to check the LocationTypeCompositeService update method with existing code and new Guid in the request payload
+     */
+    @Test
+    void testUpdateLocationTypeWithCreateForNewGuidAndExistingCode() {
+        i_success_input_content.put("id","test-guid")
+        i_success_input_content.code=i_success_code
+        try {
+            locationTypeCompositeService.update(i_success_input_content)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "exists.message"
+        }
+    }
+
+    private Map updateLocationTypeMap(id) {
+        Map params = [id: id,code: 'XY', description: 'Description Test',type:[person:[locationType:"Test"]]]
+        return params
     }
 
 }

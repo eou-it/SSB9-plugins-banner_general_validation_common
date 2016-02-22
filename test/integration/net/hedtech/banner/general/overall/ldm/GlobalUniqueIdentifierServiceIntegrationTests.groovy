@@ -59,6 +59,13 @@ class GlobalUniqueIdentifierServiceIntegrationTests extends BaseIntegrationTestC
         assertNull GlobalUniqueIdentifier.get(id)
     }
 
+    @Test
+    void testFetchByLdmNameAndDomainKeyLike() {
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = globalUniqueIdentifierService.fetchAllByLdmNameAndDomainKeyLike('instructional-events', '201410-^20434')
+        globalUniqueIdentifierList.each {
+            assertTrue "expected to contain 201410-^20434 but had ${it.domainKey}", it.domainKey.contains('201410-^20434')
+        }
+    }
 
     private GlobalUniqueIdentifier createNewGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = new GlobalUniqueIdentifier(

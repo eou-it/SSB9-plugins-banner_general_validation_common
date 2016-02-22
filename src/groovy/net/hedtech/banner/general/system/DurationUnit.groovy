@@ -13,9 +13,13 @@ import javax.persistence.*
 @Table(name = "GTVDUNT")
 @NamedQueries(value = [
 @NamedQuery(name = "DurationUnit.fetchByCodeOrDescriptionILike",
-query = """FROM DurationUnit a
+    query = """FROM DurationUnit a
 		    WHERE (a.code like :filter OR UPPER(a.description) like :filter)
-		    ORDER BY UPPER(a.description)""")
+		    ORDER BY UPPER(a.description)"""),
+@NamedQuery(name = "DurationUnit.fetchAllByDurationUnitCodes",
+    query = """FROM DurationUnit a
+        WHERE a.code IN (:durationUnitCodes)
+    """)
 ])
 class DurationUnit implements Serializable {
 
@@ -121,4 +125,15 @@ class DurationUnit implements Serializable {
         return durationUnits
     }
 
+
+    public static List<DurationUnit> fetchAllByDurationUnitCodes(List<String> durationUnitCodes) {
+        List<DurationUnit> durationUnits = []
+        if(durationUnitCodes && durationUnitCodes.size()>0){
+            durationUnits = DurationUnit.withSession { session ->
+                session.getNamedQuery(
+                        'DurationUnit.fetchAllByDurationUnitCodes').setParameterList('durationUnitCodes', durationUnitCodes).list()
+            }
+        }
+        return durationUnits
+    }
 }

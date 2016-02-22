@@ -30,11 +30,13 @@ class LdmService {
     private static HashMap ldmFieldToBannerDomainPropertyMap = [
             abbreviation: 'code',
             title       : 'description',
-            number      : 'roomNumber'
+            number      : 'roomNumber',
+            code        : 'code'
     ]
 
     private static List globalBindExcludes = ['id', 'version', 'dataOrigin']
-    private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
+    //TODO unused variable has to remove
+   // private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
 
 
     static String fetchBannerDomainPropertyForLdmField(String ldmField) {
@@ -82,7 +84,7 @@ class LdmService {
     }
 
     List<IntegrationConfiguration> findAllByProcessCodeAndSettingName(String processCode, String settingName) {
-        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchByProcessCodeAndSettingName(processCode, settingName)
+        List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(processCode, settingName)
         LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
         LdmService.log.debug("ldmEnumeration HitCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getHitCount())
         LdmService.log.debug("ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
@@ -237,7 +239,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Accept header
      */
-    public static String getResponseRepresentationVersion() {
+    private static String getResponseRepresentationVersion() {
         String version
         String acceptHeader = responseBodyMediaType()
         if (acceptHeader) {
@@ -270,6 +272,29 @@ class LdmService {
     }
 
     /**
+     * Utility method used to decide which version flow should be executed for given Accept header.
+     *
+     * @param apiVersions List of HEDM versions supported by API
+     * @return
+     */
+    public static String getAcceptVersion(List<String> apiVersions) {
+        List<String> sortedApiVersions = apiVersions?.sort(false)
+        String representationVersion = getResponseRepresentationVersion()
+        if (sortedApiVersions) {
+            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+                // Assume latest (current) version
+                representationVersion = sortedApiVersions.last()
+            } else {
+                int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
+                if (index != -1) {
+                    representationVersion = sortedApiVersions.get(index)
+                }
+            }
+        }
+        return representationVersion
+    }
+
+    /**
      * Returns "Content-Type" header
      *
      * @return
@@ -286,7 +311,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Content-Type header
      */
-    public static String getRequestRepresentationVersion() {
+    private static String getRequestRepresentationVersion() {
         String version
         String contentTypeHeader = requestBodyMediaType()
         if (contentTypeHeader) {
@@ -301,6 +326,29 @@ class LdmService {
             }
         }
         return version?.toLowerCase()
+    }
+
+    /**
+     * Utility method used to decide which version flow should be executed for given Content-Type header.
+     *
+     * @param apiVersions List of HEDM versions supported by API
+     * @return
+     */
+    public static String getContentTypeVersion(List<String> apiVersions) {
+        List<String> sortedApiVersions = apiVersions?.sort(false)
+        String representationVersion = getRequestRepresentationVersion()
+        if (sortedApiVersions) {
+            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+                // Assume latest (current) version
+                representationVersion = sortedApiVersions.last()
+            } else {
+                int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
+                if (index != -1) {
+                    representationVersion = sortedApiVersions.get(index)
+                }
+            }
+        }
+        return representationVersion
     }
 
 
@@ -350,7 +398,7 @@ class LdmService {
      * Used to set the GUID to a specific value when update method
      * calls create.
      */
-    private GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
+     public GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ldmName, id)
         if (!newEntity) {
@@ -365,7 +413,7 @@ class LdmService {
      *  Use the method above to use the faster indexed method.
      *  This is only used when there is no single master table for the GUID or no single record for the GUID.
      */
-    private GlobalUniqueIdentifier updateGuidValueByDomainKey(String domainKey, String guid, String ldmName) {
+    public GlobalUniqueIdentifier updateGuidValueByDomainKey(String domainKey, String guid, String ldmName) {
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ldmName, domainKey)
         if (!newEntity) {

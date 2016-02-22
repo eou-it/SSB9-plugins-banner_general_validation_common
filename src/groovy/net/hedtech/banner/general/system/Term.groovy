@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -13,15 +13,17 @@ import javax.persistence.*
 @Entity
 @Table(name = "STVTERM")
 @NamedQueries(value = [
-@NamedQuery(name = "Term.fetchPreviousTerm",
-query = """FROM Term a WHERE a.code = ( SELECT MAX(b.code) FROM Term b WHERE b.code < :term)"""),
-@NamedQuery(name = "Term.fetchMaxTermWithStartDateLessThanGivenDate",
-query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.startDate <= :givenDate)"""),
-@NamedQuery(name = "Term.fetchMaxTermWithHousingStartDateLessThanEqualDate",
-query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.housingStartDate <= :housingStartDate)"""),
-@NamedQuery(name = "Term.fetchAllByTerm",
-query = """SELECT a.code,a.description FROM Term a WHERE UPPER(a.code) LIKE UPPER(:filter) OR UPPER(a.description) LIKE UPPER(:filter)
-           ORDER BY a.code desc""")
+        @NamedQuery(name = "Term.fetchPreviousTerm",
+                query = """FROM Term a WHERE a.code = ( SELECT MAX(b.code) FROM Term b WHERE b.code < :term)"""),
+        @NamedQuery(name = "Term.fetchMaxTermWithStartDateLessThanGivenDate",
+                query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.startDate <= :givenDate)"""),
+        @NamedQuery(name = "Term.fetchMaxTermWithHousingStartDateLessThanEqualDate",
+                query = """FROM Term t WHERE t.code = ( SELECT MAX(tm.code) FROM Term tm WHERE tm.housingStartDate <= :housingStartDate)"""),
+        @NamedQuery(name = "Term.fetchAllByTerm",
+                query = """SELECT a.code,a.description FROM Term a WHERE UPPER(a.code) LIKE UPPER(:filter) OR UPPER(a.description) LIKE UPPER(:filter)
+           ORDER BY a.code desc"""),
+        @NamedQuery(name = "Term.fetchAllByTermCodes",
+                query = """FROM Term a WHERE a.code IN (:termCodes)""")
 ])
 class Term implements Serializable {
 
@@ -143,7 +145,7 @@ class Term implements Serializable {
      */
     @ManyToOne
     @JoinColumns([
-    @JoinColumn(name = "STVTERM_ACYR_CODE", referencedColumnName = "stvacyr_code")
+            @JoinColumn(name = "STVTERM_ACYR_CODE", referencedColumnName = "stvacyr_code")
     ])
     AcademicYear acyr_code
 
@@ -152,7 +154,7 @@ class Term implements Serializable {
      */
     @ManyToOne
     @JoinColumns([
-    @JoinColumn(name = "STVTERM_TRMT_CODE", referencedColumnName = "STVTRMT_CODE")
+            @JoinColumn(name = "STVTERM_TRMT_CODE", referencedColumnName = "STVTRMT_CODE")
     ])
     TermType trmt_code
 
@@ -163,48 +165,49 @@ class Term implements Serializable {
 
 
     static constraints = {
-        code(nullable: false, maxSize: 6)
-        description(nullable: false, maxSize: 30)
-        startDate(nullable: false)
-        endDate(nullable: false)
-        acyr_code(nullable: false)
-        financialAidProcessingYear(nullable: true, maxSize: 4)
-        financialAidTerm(nullable: true, maxSize: 1)
-        financialAidPeriod(nullable: true)
-        financialEndPeriod(nullable: true)
-        housingStartDate(nullable: false)
-        housingEndDate(nullable: false)
-        systemReqInd(nullable: true)
-        financeSummerIndicator(nullable: true, maxsize: 1)
-        lastModified(nullable: true)
-        lastModifiedBy(nullable: true, maxSize: 30)
-        dataOrigin(nullable: true, maxSize: 30)
+        code( nullable: false, maxSize: 6 )
+        description( nullable: false, maxSize: 30 )
+        startDate( nullable: false )
+        endDate( nullable: false )
+        acyr_code( nullable: false )
+        financialAidProcessingYear( nullable: true, maxSize: 4 )
+        financialAidTerm( nullable: true, maxSize: 1 )
+        financialAidPeriod( nullable: true )
+        financialEndPeriod( nullable: true )
+        housingStartDate( nullable: false )
+        housingEndDate( nullable: false )
+        systemReqInd( nullable: true )
+        financeSummerIndicator( nullable: true, maxsize: 1 )
+        lastModified( nullable: true )
+        lastModifiedBy( nullable: true, maxSize: 30 )
+        dataOrigin( nullable: true, maxSize: 30 )
     }
 
 
     public static Object fetchBySomeAttribute() {
-        def returnObj = [list: Term.list(sort: "code", order: "desc")]
+        def returnObj = [list: Term.list( sort: "code", order: "desc" )]
         return returnObj
     }
 
 
-    public static Object fetchBySomeAttribute(filter) {
-        def returnObj = [list: Term.findAllByCodeIlikeOrDescriptionIlike("%" + filter + "%", "%" + filter + "%", [sort: "code", order: "desc"])]
+    public static Object fetchBySomeAttribute( filter ) {
+        def returnObj = [list: Term.findAllByCodeIlikeOrDescriptionIlike( "%" + filter + "%", "%" + filter + "%", [sort: "code", order: "desc"] )]
         return returnObj
     }
 
 
-    public static Term fetchPreviousTerm(String term) {
+    public static Term fetchPreviousTerm( String term ) {
         Term termRec
         Term.withSession {session ->
-            termRec = session.getNamedQuery('Term.fetchPreviousTerm').setString('term', term).list()[0]
+            termRec = session.getNamedQuery( 'Term.fetchPreviousTerm' ).setString( 'term', term ).list()[0]
         }
         return termRec
 
     }
 
-    boolean equals(o) {
-        if (this.is(o)) return true;
+
+    boolean equals( o ) {
+        if (this.is( o )) return true;
         if (getClass() != o.class) return false;
 
         Term term = (Term) o;
@@ -258,41 +261,50 @@ class Term implements Serializable {
     }
 
 
-
-    public static Term fetchMaxTermWithHousingStartDateLessThanEqualDate(Date housingStartDate) {
-        Term.withSession { session ->
-            session.getNamedQuery('Term.fetchMaxTermWithHousingStartDateLessThanEqualDate').setDate('housingStartDate', housingStartDate).list()[0]
+    public static Term fetchMaxTermWithHousingStartDateLessThanEqualDate( Date housingStartDate ) {
+        Term.withSession {session ->
+            session.getNamedQuery( 'Term.fetchMaxTermWithHousingStartDateLessThanEqualDate' ).setDate( 'housingStartDate', housingStartDate ).list()[0]
         }
     }
 
 
-    public static Term fetchMaxTermWithStartDateLessThanGivenDate(Date beginDate) {
-        Term.withSession { session ->
-            session.getNamedQuery('Term.fetchMaxTermWithStartDateLessThanGivenDate').setDate('givenDate', beginDate).list()[0]
+    public static Term fetchMaxTermWithStartDateLessThanGivenDate( Date beginDate ) {
+        Term.withSession {session ->
+            session.getNamedQuery( 'Term.fetchMaxTermWithStartDateLessThanGivenDate' ).setDate( 'givenDate', beginDate ).list()[0]
         }
     }
 
 
-    static List fetchAllByTerm(String filter, Integer max =0, Integer offset=0) {
+    static List fetchAllByTerm( String filter, Integer max = 0, Integer offset = 0 ) {
         List terms = []
-        Term.withSession { session ->
-            org.hibernate.Query query = session.getNamedQuery('Term.fetchAllByTerm')
-                    .setString("filter", prepareParams(filter))
+        Term.withSession {session ->
+            org.hibernate.Query query = session.getNamedQuery( 'Term.fetchAllByTerm' )
+                    .setString( "filter", prepareParams( filter ) )
             if (max) {
-                query.setMaxResults(max)
+                query.setMaxResults( max )
             }
             if (offset) {
-                query.setFirstResult(offset)
+                query.setFirstResult( offset )
             }
-            terms = query.list().collect{
-                [code:it[0], description: it[1]]
+            terms = query.list().collect {
+                [code: it[0], description: it[1]]
             }
         }
         return terms
     }
 
-    private static String prepareParams(value) {
-        if (StringUtils.isBlank(value)) {
+
+    public static List<Term> fetchAllByTermCodes( List<String> termCodes ) {
+        if(termCodes && termCodes.size() > 0){
+            Term.withSession {session ->
+                session.getNamedQuery( 'Term.fetchAllByTermCodes' ).setParameterList( 'termCodes', termCodes ).list()
+            }
+        }
+    }
+
+
+    private static String prepareParams( value ) {
+        if (StringUtils.isBlank( value )) {
             value = "%"
         } else if (!(value =~ /%/)) {
             value = "%" + value + "%"

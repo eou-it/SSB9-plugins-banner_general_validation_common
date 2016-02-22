@@ -3,6 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import org.apache.commons.lang.StringUtils
 import org.hibernate.annotations.Type
 
@@ -56,7 +57,9 @@ import javax.persistence.*
 @NamedQuery(name = "MajorMinorConcentration.fetchByCodeFromExistingMajors",
         query = """FROM MajorMinorConcentration a
            WHERE   a.code  = :filter
-           AND a.code in :majors """)
+           AND a.code in :majors """),
+@NamedQuery(name = "MajorMinorConcentration.fetchByCode",
+                query = """FROM  MajorMinorConcentration a WHERE a.code = :code """)
 ])
 class MajorMinorConcentration implements Serializable {
 
@@ -476,6 +479,19 @@ class MajorMinorConcentration implements Serializable {
         }
         if (result.size() == 1) return result[0]
         else return null
+    }
+
+    /**
+     * fetch MajorMinorConcentration based on code value
+     * @param code
+     * @return majorMinorConcentration
+     */
+    public static MajorMinorConcentration fetchByCode(String code) {
+        MajorMinorConcentration majorMinorConcentration = MajorMinorConcentration.withSession { session ->
+            session.getNamedQuery('MajorMinorConcentration.fetchByCode').setString(GeneralValidationCommonConstants.CODE, code).uniqueResult()
+        }
+
+        return majorMinorConcentration
     }
 
 }

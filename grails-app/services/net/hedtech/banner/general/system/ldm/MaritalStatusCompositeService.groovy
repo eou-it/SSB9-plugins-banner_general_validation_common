@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
@@ -13,6 +14,7 @@ import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusDetail
 import net.hedtech.banner.general.system.ldm.v1.MaritalStatusParentCategory
 import net.hedtech.banner.general.system.ldm.v1.Metadata
+import net.hedtech.banner.general.system.ldm.v4.MaritalStatusMaritalCategory
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -25,10 +27,8 @@ import org.springframework.transaction.annotation.Transactional
 class MaritalStatusCompositeService extends LdmService {
 
     def maritalStatusService
-
-    private static final String PROCESS_CODE = 'HEDM'
-    private static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
-    static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1,
+                                                  GeneralValidationCommonConstants.VERSION_V4]
 
     /**
      * GET /api/marital-statuses
@@ -39,18 +39,23 @@ class MaritalStatusCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<MaritalStatusDetail> list(Map params) {
         List maritalStatusDetailList = []
-
+        def version = LdmService.getAcceptVersion(VERSIONS)
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
-        List allowedSortFields = ['abbreviation', 'title']
+        List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V4.equals(version)? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE]:[GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
-
-        List<MaritalStatus> maritalStatusList = maritalStatusService.list(params) as List
-        maritalStatusList.each { maritalStatus ->
-            maritalStatusDetailList << getDecorator(maritalStatus)
+        if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
+            maritalStatusService.fetchMartialStatusDetails(params).each {maritalStatus ->
+                maritalStatusDetailList << getDecorator(maritalStatus[0],maritalStatus[1]?.translationValue)
+            }
+        } else if(GeneralValidationCommonConstants.VERSION_V1.equals(version)){
+            maritalStatusService.list(params).each { maritalStatus ->
+                maritalStatusDetailList << getDecorator(maritalStatus,null)
+            }
         }
+
         return maritalStatusDetailList
     }
 
@@ -64,8 +69,13 @@ class MaritalStatusCompositeService extends LdmService {
      * @return
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    Long count() {
-        return MaritalStatus.count()
+    Long count(Map params) {
+        def version = LdmService.getAcceptVersion(VERSIONS)
+        if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
+            return  maritalStatusService.fetchMartialStatusDetailsCount()
+        }else  if(GeneralValidationCommonConstants.VERSION_V1.equals(version)) {
+            return maritalStatusService.count(params)
+        }
     }
 
     /**
@@ -76,17 +86,20 @@ class MaritalStatusCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     MaritalStatusDetail get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(MARITAL_STATUS_LDM_NAME, guid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
-            throw new ApplicationException("maritalStatus", new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new NotFoundException())
         }
 
-        MaritalStatus maritalStatus = MaritalStatus.get(globalUniqueIdentifier.domainId)
+        MaritalStatus maritalStatus = maritalStatusService.get(globalUniqueIdentifier.domainId)
         if (!maritalStatus) {
-            throw new ApplicationException("maritalStatus", new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new NotFoundException())
         }
-
-        return getDecorator(maritalStatus, globalUniqueIdentifier.guid)
+       def maritalCategory = getHeDMEnumeration(maritalStatus.code)
+        if(GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS)) && !maritalCategory ){
+            throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new NotFoundException())
+        }
+        return getDecorator(maritalStatus, globalUniqueIdentifier.guid,maritalCategory)
     }
 
     /**
@@ -95,26 +108,26 @@ class MaritalStatusCompositeService extends LdmService {
      * @param content Request body
      */
     def create(content) {
-        validateRequest(content)
-
-        MaritalStatus maritalStatus = MaritalStatus.findByCode(content?.code?.trim())
+        def version = LdmService.getAcceptVersion(VERSIONS)
+        validateRequest(content,version)
+        MaritalStatus maritalStatus = maritalStatusService.fetchByCode(content.code?.trim())
         if (maritalStatus) {
-            throw new ApplicationException("maritalStatus", new BusinessLogicValidationException("exists.message", null))
+            def messageCode = GeneralValidationCommonConstants.VERSION_V4.equals(version) ? GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS : GeneralValidationCommonConstants.ERROR_MSG_EXISTS_MESSAGE
+            throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new BusinessLogicValidationException(messageCode, null))
         }
 
         maritalStatus = bindMaritalStatus(new MaritalStatus(), content)
 
-        String msGuid = content?.guid?.trim()?.toLowerCase()
+        String msGuid = content.guid?.trim()?.toLowerCase()
         if (msGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-            updateGuidValue(maritalStatus.id, msGuid, MARITAL_STATUS_LDM_NAME)
+            updateGuidValue(maritalStatus.id, msGuid, GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME)
         } else {
-            GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus?.id)
-            msGuid = globalUniqueIdentifier.guid
+            msGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid
         }
         log.debug("GUID: ${msGuid}")
-
-        return getDecorator(maritalStatus, msGuid)
+        def maritalCategory = GeneralValidationCommonConstants.VERSION_V4.equals(version) ? content.maritalCategory : content.parentCategory
+        return getDecorator(maritalStatus, msGuid,maritalCategory)
     }
 
     /**
@@ -123,34 +136,32 @@ class MaritalStatusCompositeService extends LdmService {
      * @param content Request body
      */
     def update(content) {
-        String msGuid = content?.id?.trim()?.toLowerCase()
+        String msGuid = content.id?.trim()?.toLowerCase()
+        if(!msGuid){
+            throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new NotFoundException())
+        }
 
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(MARITAL_STATUS_LDM_NAME, msGuid)
-        if (msGuid) {
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME, msGuid)
             if (!globalUniqueIdentifier) {
-                if (!content.get('guid')) {
-                    content.put('guid', msGuid)
+                if (!content.guid) {
+                    content.guid = msGuid
                 }
                 //Per strategy when a GUID was provided, the create should happen.
                 return create(content)
             }
-        } else {
-            throw new ApplicationException("maritalStatus", new NotFoundException())
-        }
 
-        MaritalStatus maritalStatus = MaritalStatus.findById(globalUniqueIdentifier?.domainId)
+        MaritalStatus maritalStatus = maritalStatusService.get(globalUniqueIdentifier.domainId)
         if (!maritalStatus) {
-            throw new ApplicationException("maritalStatus", new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new NotFoundException())
         }
 
         // Should not allow to update maritalStatus.code as it is read-only
-        if (maritalStatus.code != content?.code?.trim()) {
-            content.put("code", maritalStatus.code)
+        if (maritalStatus.code != content.code?.trim()) {
+            content.code = maritalStatus.code
         }
-        validateRequest(content)
+        validateRequest(content,LdmService.getAcceptVersion(VERSIONS))
         maritalStatus = bindMaritalStatus(maritalStatus, content)
-
-        return getDecorator(maritalStatus, msGuid)
+        return getDecorator(maritalStatus, msGuid,getHeDMEnumeration(maritalStatus.code) )
     }
 
 
@@ -159,7 +170,7 @@ class MaritalStatusCompositeService extends LdmService {
             return null
         }
         MaritalStatus maritalStatus = maritalStatusService.get(maritalStatusId) as MaritalStatus
-        return getDecorator(maritalStatus)
+        return getDecorator(maritalStatus,null)
     }
 
 
@@ -170,18 +181,19 @@ class MaritalStatusCompositeService extends LdmService {
             if (!maritalStatus) {
                 return maritalStatusDetail
             }
-            maritalStatusDetail = getDecorator(maritalStatus)
+            maritalStatusDetail = getDecorator(maritalStatus,null)
         }
         return maritalStatusDetail
     }
 
 
-    private void validateRequest(content) {
-        if (!content?.code) {
-            throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('code.required.message', null))
+    private void validateRequest(content,version) {
+        if (!content.code) {
+            def parameterValue = GeneralValidationCommonConstants.VERSION_V4.equals(version) ? GeneralValidationCommonConstants.CODE.capitalize() : GeneralValidationCommonConstants.ABBREVIATION.capitalize()
+            throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED,[parameterValue]))
         }
-        if (!content?.description) {
-            throw new ApplicationException('maritalStatus', new BusinessLogicValidationException('description.required.message', null))
+        if (!content.description) {
+            throw new ApplicationException(GeneralValidationCommonConstants.MARITAL_STATUS, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_DESCRIPTION_REQUIRED, null))
         }
     }
 
@@ -197,13 +209,16 @@ class MaritalStatusCompositeService extends LdmService {
     }
 
 
-    private MaritalStatusDetail getDecorator(MaritalStatus maritalStatus, String msGuid = null) {
+    private MaritalStatusDetail getDecorator(MaritalStatus maritalStatus, String msGuid = null,String martialStatusCategory) {
         MaritalStatusDetail decorator
-        if (maritalStatus) {
-            if (!msGuid) {
-                msGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid
-            }
-            decorator = new MaritalStatusDetail(maritalStatus, msGuid, getHeDMEnumeration(maritalStatus.code), new Metadata(maritalStatus.dataOrigin))
+        if (maritalStatus && !msGuid) {
+            msGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME, maritalStatus.id)?.guid
+        }
+        if(maritalStatus && !martialStatusCategory){
+                martialStatusCategory =  getHeDMEnumeration(maritalStatus.code)
+        }
+        if(maritalStatus){
+            decorator = new MaritalStatusDetail(maritalStatus, msGuid, martialStatusCategory, new Metadata(maritalStatus.dataOrigin))
         }
         return decorator
     }
@@ -217,13 +232,18 @@ class MaritalStatusCompositeService extends LdmService {
     String getHeDMEnumeration(String maritalStatusCode) {
         String hedmEnum
         if (maritalStatusCode) {
-            IntegrationConfiguration intgConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(PROCESS_CODE, MARITAL_STATUS_PARENT_CATEGORY, maritalStatusCode)
+            def version = LdmService.getAcceptVersion(VERSIONS)
+            def maritalStatusCategory = GeneralValidationCommonConstants.VERSION_V4.equals(version) ? GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY : GeneralValidationCommonConstants.MARITAL_STATUS_PARENT_CATEGORY
+            IntegrationConfiguration intgConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, maritalStatusCategory, maritalStatusCode)
             log.debug "Value ${intgConf?.value} - TranslationValue ${intgConf?.translationValue}"
-            if (intgConf && MaritalStatusParentCategory.MARITAL_STATUS_PARENT_CATEGORY.contains(intgConf.translationValue)) {
-                hedmEnum = intgConf.translationValue
+            if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
+                hedmEnum = MaritalStatusMaritalCategory.MARITAL_STATUS_MARTIAL_CATEGORY.contains(intgConf?.translationValue) ? intgConf?.translationValue : null
+            }else  if(GeneralValidationCommonConstants.VERSION_V1.equals(version)){
+                hedmEnum = MaritalStatusParentCategory.MARITAL_STATUS_PARENT_CATEGORY.contains(intgConf?.translationValue) ? intgConf?.translationValue : null
             }
         }
         return hedmEnum
     }
+
 
 }

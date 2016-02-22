@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -280,6 +280,19 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull sdaCrosswalkConversions
         assertEquals sdaCrosswalkConversions.size(), 1
         assertEquals sdaCrosswalkConversion.description, sdaCrosswalkConversions[0].description
+    }
+
+
+    @Test
+    void testFetchAllForRegistrationSession() {
+        def internalGroups = ["WEBREG", "REGISTRATION", "STUWEB", "CENTRICPERIODS"]
+        def sdaxList = SdaCrosswalkConversion.fetchAllForRegistrationSession(internalGroups)
+
+        assertTrue sdaxList.size() >= 1
+        assertNotNull sdaxList.find { it.internalGroup == "WEBREG" }
+        assertNotNull sdaxList.find { it.internalGroup == "REGISTRATION" }
+        assertNotNull sdaxList.find { it.internalGroup == "STUWEB" }
+        assertNotNull sdaxList.find { it.internalGroup == "CENTRICPERIODS" }
     }
 
 

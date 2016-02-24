@@ -24,6 +24,7 @@ class GeneralValidationCommonConstants {
     final static String DEFAULT_SORT_FIELD_ABBREVIATION = 'abbreviation'
     final static String DEFAULT_SORT_FIELD_CODE = 'code'
     final static String VERSION_V1 = 'v1'
+    final static String VERSION_V2 = 'v2'
     final static String VERSION_V3 = 'v3'
     final static String VERSION_V4 = 'v4'
     final static String NON_HISPANIC = 'nonHispanic'
@@ -95,4 +96,13 @@ class GeneralValidationCommonConstants {
     static final String DIVISION = 'division'
     static final String FACULTY = 'faculty'
     static final String UNIVERSITY = 'university'
+
+
+
+    //Supported Versions
+     static final List<String> VERSIONS_V1 = [VERSION_V1]
+     static final List<String> VERSIONS_V1_V2 = [VERSION_V1,VERSION_V2]
+     static final List<String> VERSIONS_V1_V2_V3 = [VERSION_V1,VERSION_V2,VERSION_V3]
+     static final List<String> VERSIONS_V1_V2_V3_V4 = [VERSION_V1,VERSION_V2,VERSION_V3,VERSION_V4]
+
 }

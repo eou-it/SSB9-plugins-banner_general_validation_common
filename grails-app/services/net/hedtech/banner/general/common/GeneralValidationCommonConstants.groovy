@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 
 package net.hedtech.banner.general.common
@@ -97,11 +97,15 @@ class GeneralValidationCommonConstants {
     static final String FACULTY = 'faculty'
     static final String UNIVERSITY = 'university'
 
-
+    //common constants for restriction types
+     static final String RESTRICTION_TYPE_LDM_NAME = 'restriction-types'
+     static final String PERSONS_LDM_NAME = "persons"
+     static final String PERSONS_ENDPOINT = "persons"
 
     //Supported Versions
      static final List<String> VERSIONS_V1 = [VERSION_V1]
      static final List<String> VERSIONS_V1_V2 = [VERSION_V1,VERSION_V2]
+     static final List<String> VERSIONS_V1_V4 = [VERSION_V1,VERSION_V4]
      static final List<String> VERSIONS_V1_V2_V3 = [VERSION_V1,VERSION_V2,VERSION_V3]
      static final List<String> VERSIONS_V1_V2_V3_V4 = [VERSION_V1,VERSION_V2,VERSION_V3,VERSION_V4]
 

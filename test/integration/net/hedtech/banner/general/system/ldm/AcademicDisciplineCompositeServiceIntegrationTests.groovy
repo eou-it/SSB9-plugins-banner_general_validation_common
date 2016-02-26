@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -53,10 +53,13 @@ class AcademicDisciplineCompositeServiceIntegrationTests extends BaseIntegration
         def paginationParams = [max: '1', offset: '0']
         List academicDisciplines=AcademicDisciplineView.list(paginationParams)
         assertNotNull academicDisciplines
+        assertNotNull academicDisciplines.toString()
+        assertNotNull academicDisciplines
         assertFalse academicDisciplines.isEmpty()
         assertNotNull academicDisciplines[0].id
-        def academicDiscipline = academicDisciplineCompositeService.get(academicDisciplines[0].id)
+        AcademicDiscipline academicDiscipline = academicDisciplineCompositeService.get(academicDisciplines[0].id)
         assertNotNull academicDiscipline
+        assertNotNull academicDiscipline.toString()
         assertEquals academicDisciplines[0].id, academicDiscipline.guid
         assertEquals academicDisciplines[0].code, academicDiscipline.code
         assertFalse academicDiscipline.code.contains(i_fail_academicDiscipline?.code)

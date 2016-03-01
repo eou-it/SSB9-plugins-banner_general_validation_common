@@ -33,7 +33,7 @@ class BankRoutingInfoServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testRoutingNumberValidation() {
         try {
-            bankRoutingInfoService.validateRoutingNumber("103448999");
+            bankRoutingInfoService.validateRoutingNumber("12345679X");
             fail("I should have received an error but it passed; @@r1:invalidRoutingNum@@ ")
         }
         catch (ApplicationException ae) {
@@ -44,7 +44,7 @@ class BankRoutingInfoServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testRoutingNumberFormatValidation() {
         try {
-            bankRoutingInfoService.validateRoutingNumFormat("fail1234abc");
+            bankRoutingInfoService.validateRoutingNumFormat("123456789X12");
             fail("I should have received an error but it passed; @@r1:invalidRoutingNumFmt@@ ")
         }
         catch (ApplicationException ae) {

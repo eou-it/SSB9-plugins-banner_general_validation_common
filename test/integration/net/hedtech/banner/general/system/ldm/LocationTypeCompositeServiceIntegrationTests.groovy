@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -73,6 +73,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         def params = [order: 'ASC', sort: 'code']
         def locationTypeList = locationTypeCompositeService.list(params)
         assertNotNull locationTypeList
+        assertNotNull locationTypeList.toString()
         assertTrue locationTypeList.locationType.contains(i_success_locationType)
         assertTrue locationTypeList.description.contains(i_success_description)
         assertTrue locationTypeList.code.contains(i_success_code)
@@ -190,6 +191,8 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         def guid = success_guid?.guid
         assertNotNull guid
         def locationType = locationTypeCompositeService.get(guid)
+        assertNotNull locationType
+        assertNotNull locationType.toString()
         assertNotNull locationType
         assertNotNull locationType.code
         assertNotNull locationType.id

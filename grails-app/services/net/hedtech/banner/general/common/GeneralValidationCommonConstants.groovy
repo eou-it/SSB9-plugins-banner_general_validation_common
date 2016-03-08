@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 
 package net.hedtech.banner.general.common
@@ -24,6 +24,7 @@ class GeneralValidationCommonConstants {
     final static String DEFAULT_SORT_FIELD_ABBREVIATION = 'abbreviation'
     final static String DEFAULT_SORT_FIELD_CODE = 'code'
     final static String VERSION_V1 = 'v1'
+    final static String VERSION_V2 = 'v2'
     final static String VERSION_V3 = 'v3'
     final static String VERSION_V4 = 'v4'
     final static String NON_HISPANIC = 'nonHispanic'
@@ -95,6 +96,11 @@ class GeneralValidationCommonConstants {
     static final String DIVISION = 'division'
     static final String FACULTY = 'faculty'
     static final String UNIVERSITY = 'university'
+
+    //common constants for restriction types
+     static final String RESTRICTION_TYPE_LDM_NAME = 'restriction-types'
+     static final String PERSONS_LDM_NAME = "persons"
+     static final String PERSONS_ENDPOINT = "persons"
 
     //common constants for  citizenship statuses
     static final String CITIZENSHIP_STATUS = 'citizenshipStatus'

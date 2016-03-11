@@ -1,8 +1,10 @@
 /*********************************************************************************
- Copyright 2010-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2010-2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 
 package net.hedtech.banner.general.utility
+
+import net.hedtech.banner.general.system.SystemUtility
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -235,22 +237,22 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
         def informationText = new InformationText()
         assertFalse informationText.validate()
         assertErrorsFor informationText, 'nullable',
-                        [
-                                'pageName',
-                                'label',
-                                'sequenceNumber',
-                                'persona',
-                                'textType',
-                                'locale'
-                        ]
+                [
+                        'pageName',
+                        'label',
+                        'sequenceNumber',
+                        'persona',
+                        'textType',
+                        'locale'
+                ]
         assertNoErrorsFor informationText,
-                          [
-                                  'text',
-                                  'comment',
-                                  'sourceIndicator',
-                                  'startDate',
-                                  'endDate',
-                          ]
+                [
+                        'text',
+                        'comment',
+                        'sourceIndicator',
+                        'startDate',
+                        'endDate',
+                ]
     }
 
 
@@ -298,6 +300,45 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
         )
         assertFalse informationText.validate()
         assertErrorsFor informationText, 'min', ['sequenceNumber']
+    }
+
+
+    @Test
+    void testFetchInfoTextByRolesLargeList() {
+        def roleList = []
+        for (counter in 1..1100 ) {
+            roleList << "TEST-ROLE-${counter}".toString()
+        }
+        roleList << "STUDENT"
+
+        assertTrue roleList.size() > 1000
+        assertTrue roleList instanceof List
+        def rolePartitions = SystemUtility.splitList(roleList, 1000)
+        assertTrue rolePartitions.size() > 1
+
+        def response = InformationText.findAllWhere(pageName: "REGISTRATION", locale: 'en_US')
+        def infoTexts = InformationText.fetchInfoTextByRoles('REGISTRATION',roleList, ['en_US'])
+        assertEquals infoTexts.size(), response.size()
+    }
+
+
+    @Test
+    void testFetchInfoTextByRoleAndLabelLargeList() {
+        def roleList = []
+        for (counter in 1..1100 ) {
+            roleList << "TEST-ROLE-${counter}".toString()
+        }
+        roleList << "STUDENT"
+
+        assertTrue roleList.size() > 1000
+        assertTrue roleList instanceof List
+        def rolePartitions = SystemUtility.splitList(roleList, 1000)
+        assertTrue rolePartitions.size() > 1
+
+        def regLabel = 'registration.search.info.tooltip'
+        def response = InformationText.findAllWhere(pageName: "REGISTRATION", locale: 'en_US', label: regLabel)
+        def infoTexts = InformationText.fetchInfoTextByRolesAndLabel('REGISTRATION',roleList, ['en_US'], regLabel)
+        assertEquals infoTexts.size(), response.size()
     }
 
 

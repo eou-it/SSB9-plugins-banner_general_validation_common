@@ -323,6 +323,25 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
 
 
     @Test
+    void testFetchInfoTextByRolesSmallList() {
+        def roleList = []
+        for (counter in 1..100 ) {
+            roleList << "TEST-ROLE-${counter}".toString()
+        }
+        roleList << "STUDENT"
+
+        assertTrue roleList.size() > 100
+        assertTrue roleList instanceof List
+        def rolePartitions = SystemUtility.splitList(roleList, 100)
+        assertTrue rolePartitions.size() > 1
+
+        def response = InformationText.findAllWhere(pageName: "REGISTRATION", locale: 'en_US')
+        def infoTexts = InformationText.fetchInfoTextByRoles('REGISTRATION',roleList, ['en_US'])
+        assertEquals infoTexts.size(), response.size()
+    }
+
+
+    @Test
     void testFetchInfoTextByRoleAndLabelLargeList() {
         def roleList = []
         for (counter in 1..1100 ) {
@@ -333,6 +352,26 @@ class InformationTextIntegrationTests extends BaseIntegrationTestCase {
         assertTrue roleList.size() > 1000
         assertTrue roleList instanceof List
         def rolePartitions = SystemUtility.splitList(roleList, 1000)
+        assertTrue rolePartitions.size() > 1
+
+        def regLabel = 'registration.search.info.tooltip'
+        def response = InformationText.findAllWhere(pageName: "REGISTRATION", locale: 'en_US', label: regLabel)
+        def infoTexts = InformationText.fetchInfoTextByRolesAndLabel('REGISTRATION',roleList, ['en_US'], regLabel)
+        assertEquals infoTexts.size(), response.size()
+    }
+
+
+    @Test
+    void testFetchInfoTextByRoleAndLabelSmallList() {
+        def roleList = []
+        for (counter in 1..100 ) {
+            roleList << "TEST-ROLE-${counter}".toString()
+        }
+        roleList << "STUDENT"
+
+        assertTrue roleList.size() > 100
+        assertTrue roleList instanceof List
+        def rolePartitions = SystemUtility.splitList(roleList, 100)
         assertTrue rolePartitions.size() > 1
 
         def regLabel = 'registration.search.info.tooltip'

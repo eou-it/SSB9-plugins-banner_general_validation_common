@@ -1,15 +1,16 @@
 /*********************************************************************************
- Copyright 2010-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2010-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.restfulapi
-import org.junit.Before
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.After
 
+import grails.util.Holders
 import net.hedtech.banner.general.system.Term
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.After
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Test
 
 class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCase {
 
@@ -60,7 +61,39 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     }
 
 
-	// TODO HRU-5518
+    @Test
+    void testCorrectMaxAndOffset_OverrideMaxUpperLimit() {
+        String pluralizedResourceName = "instructional-events"
+        def params = [:]
+
+        // No pluralizedResourceName
+        RestfulApiValidationUtility.correctMaxAndOffset(params, 0, 30)
+        assertEquals "30", params.max
+
+        // No override setting in config file
+        params = [pluralizedResourceName: pluralizedResourceName]
+        RestfulApiValidationUtility.correctMaxAndOffset(params, 0, 30)
+        assertEquals "30", params.max
+
+        // Override setting available in config file
+        params = [pluralizedResourceName: pluralizedResourceName]
+        def propApi = [:]
+        propApi.put(pluralizedResourceName, ["page": ["maxUpperLimit": 234]])
+        Holders.config.setProperty("api", propApi)
+        RestfulApiValidationUtility.correctMaxAndOffset(params, 0, 30)
+        Holders.config.remove("api")
+        assertEquals "234", params.max
+
+        // Override setting with zero value will not impact
+        params = [pluralizedResourceName: pluralizedResourceName]
+        propApi.put(pluralizedResourceName, ["page": ["maxUpperLimit": 0]])
+        Holders.config.setProperty("api", propApi)
+        RestfulApiValidationUtility.correctMaxAndOffset(params, 0, 30)
+        Holders.config.remove("api")
+        assertEquals "30", params.max
+    }
+
+    // TODO HRU-5518
     @Ignore
     @Test
     void testValidateSortField() {
@@ -104,7 +137,9 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
 
         // Invalid "field" in second filter, should cause exception
         allowedSearchFields = ["firstName", "middleName"]
-        shouldFail(RestfulApiValidationException) { RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields) }
+        shouldFail(RestfulApiValidationException) {
+            RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields)
+        }
 
         // All filters have valid "operator"
         allowedSearchFields = ["firstName", "lastName"]
@@ -114,7 +149,9 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         // Invalid "operator" in second filter, should cause exception
         allowedSearchFields = ["firstName", "lastName"]
         allowedOperators = [Operators.EQUALS, Operators.STARTS_WITH]
-        shouldFail(RestfulApiValidationException) { RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields, allowedOperators) }
+        shouldFail(RestfulApiValidationException) {
+            RestfulApiValidationUtility.validateCriteria(filters, allowedSearchFields, allowedOperators)
+        }
     }
 
 
@@ -141,7 +178,9 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
 
     @Test
     void testThrowValidationExceptionForObjectNotFound() {
-        shouldFail(RestfulApiValidationException, { RestfulApiValidationUtility.throwValidationExceptionForObjectNotFound("Term", "201410") })
+        shouldFail(RestfulApiValidationException, {
+            RestfulApiValidationUtility.throwValidationExceptionForObjectNotFound("Term", "201410")
+        })
     }
 
 

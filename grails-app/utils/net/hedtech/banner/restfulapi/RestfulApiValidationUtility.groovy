@@ -1,8 +1,9 @@
 /*******************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.restfulapi
 
+import grails.util.Holders
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 
@@ -26,6 +27,14 @@ class RestfulApiValidationUtility {
      * @param maxUpperLimit Upper limit for "max".  By default it is turned off (zero).
      */
     public static void correctMaxAndOffset(Map params, Integer maxDefault = 0, Integer maxUpperLimit = 0) {
+        // Override "max" upper limit with setting api.<resource name>.page.maxUpperLimit (if available).
+        String resourceName = params?.pluralizedResourceName
+        if (resourceName) {
+            if (Holders.config.api."${resourceName}".page.maxUpperLimit) {
+                maxUpperLimit = Holders.config.api."${resourceName}".page.maxUpperLimit
+            }
+        }
+
         if (maxUpperLimit > 0) {
             if (maxDefault < 1 || maxDefault > maxUpperLimit) {
                 maxDefault = maxUpperLimit
@@ -192,6 +201,7 @@ class RestfulApiValidationUtility {
         }
         return qapiReq
     }
+
 
     public static getRequestParams() {
         try {  // Avoid restful-api plugin dependencies.

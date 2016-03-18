@@ -202,6 +202,22 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+    @Test
+    void testFetchAllByGuidInListNullList(){
+        assertEquals([], GlobalUniqueIdentifier.fetchAllByGuidInList(null))
+    }
+
+    @Test
+    void testFetchAllByGuidInListEmptyList(){
+        assertEquals([], GlobalUniqueIdentifier.fetchAllByGuidInList(null))
+    }
+
+    @Test
+    void testFetchAllByGuidInList(){
+        List<String> guids = GlobalUniqueIdentifier.findAll(max:100).guid
+        assertEquals(guids.sort(), GlobalUniqueIdentifier.fetchAllByGuidInList(guids).guid.sort())
+    }
+
     private GlobalUniqueIdentifier createNewGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = new GlobalUniqueIdentifier(
                 guid: i_success_guid,

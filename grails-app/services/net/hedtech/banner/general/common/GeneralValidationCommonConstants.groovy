@@ -13,12 +13,14 @@ class GeneralValidationCommonConstants {
 
     private GeneralValidationCommonConstants() {} // prevents instantiation
 
+    static final String NIL_GUID = "00000000-0000-0000-0000-000000000000"
+
     /** Common constants */
     final static String TYPE = 'type'
     final static String CODE = 'code'
     final static String ERROR_MSG_EXISTS_MESSAGE = 'exists.message'
     final static String ERROR_MSG_CODE_REQUIRED = 'code.required.message'
-    final static String ERROR_MSG_DESCRIPTION_REQUIRED =  'description.required.message'
+    final static String ERROR_MSG_DESCRIPTION_REQUIRED = 'description.required.message'
     final static String ERROR_MSG_CODE_EXISTS = 'code.exists.message'
     final static String DEFAULT_ORDER_TYPE = 'ASC'
     final static String DEFAULT_SORT_FIELD_ABBREVIATION = 'abbreviation'
@@ -33,7 +35,6 @@ class GeneralValidationCommonConstants {
     final static String TITLE = 'title'
     final static String RACE = 'race'
     final static String DESCRIPTION = 'description'
-
 
     /** Common constants for AcademicDiscipline*/
     final static String ACADEMIC_DISCIPLINE = 'academicDiscipline'
@@ -88,7 +89,7 @@ class GeneralValidationCommonConstants {
     static final String RACE_RACIAL_CATEGORY = "RACE.RACIALCATEGORY"
     static final String SETTING_NAME = 'settingName'
     static final String PROCESS_CODE_NAME = 'processCode'
-   static final String TRANSLATION_VALUE = 'translationValueList'
+    static final String TRANSLATION_VALUE = 'translationValueList'
 
     //common constants for Organization
     static final String COLLEGE = 'college'
@@ -98,9 +99,9 @@ class GeneralValidationCommonConstants {
     static final String UNIVERSITY = 'university'
 
     //common constants for restriction types
-     static final String RESTRICTION_TYPE_LDM_NAME = 'restriction-types'
-     static final String PERSONS_LDM_NAME = "persons"
-     static final String PERSONS_ENDPOINT = "persons"
+    static final String RESTRICTION_TYPE_LDM_NAME = 'restriction-types'
+    static final String PERSONS_LDM_NAME = "persons"
+    static final String PERSONS_ENDPOINT = "persons"
 
     //common constants for  citizenship statuses
     static final String CITIZENSHIP_STATUS = 'citizenshipStatus'
@@ -111,4 +112,5 @@ class GeneralValidationCommonConstants {
     //common constants for visa-types
     static final String IMMIGRANT = 'immigrant'
     static final String NON_IMMIGRANT = 'nonImmigrant'
+
 }

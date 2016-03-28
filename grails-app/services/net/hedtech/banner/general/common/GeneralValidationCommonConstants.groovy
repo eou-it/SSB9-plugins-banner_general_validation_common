@@ -78,6 +78,9 @@ class GeneralValidationCommonConstants {
     //common constants for academic credentials
     final static String ACADEMIC_CREDENTIAL = 'academicCredential'
     static final String ACADEMIC_CREDENTIAL_LDM_NAME = 'academic-credentials'
+    final static String HEDM_CREDENTIAL_CATEGORY = 'HEDM_CREDENTIAL_CATEGORY'
+    final static String HEDM_CREDENTIAL_DESCRIPTION = 'HEDM_CREDENTIAL_DESCRIPTION'
+    final static String ERROR_MSG_TYPE_NOT_EXISTS = 'invalid.type.message'
 
     //common constants for academic level
     static final String ACADEMIC_LEVEL_LDM_NAME = 'academic-levels'

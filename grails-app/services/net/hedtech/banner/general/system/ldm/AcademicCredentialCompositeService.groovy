@@ -1,8 +1,9 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
+import grails.util.Holders
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
@@ -30,9 +31,10 @@ class AcademicCredentialCompositeService extends LdmService {
     //Injection of transactional service
     def degreeService
     def academicCredentialService
+    def supplementalDataService
+
 
     private static final List allowedSortFields = [GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_ABBREVIATION,GeneralValidationCommonConstants.TYPE]
-    private static final typeList = ['degree', 'honorary', 'diploma', 'certificate']
 
     /**
      * GET /api/academic-credentials
@@ -49,7 +51,7 @@ class AcademicCredentialCompositeService extends LdmService {
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)?:params.sort
         fetchAcademicCredentialByCriteria(params).each { academicCredential ->
-            academicCredentialsList << new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type)
+            academicCredentialsList << new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type,null)
         }
         return academicCredentialsList
     }
@@ -73,7 +75,7 @@ class AcademicCredentialCompositeService extends LdmService {
         if(!academicCredential){
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new NotFoundException())
         }
-       return new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type)
+       return new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type,null)
     }
 
     /**
@@ -82,12 +84,10 @@ class AcademicCredentialCompositeService extends LdmService {
      * @param content Request body
      */
     AcademicCredentialDecorator create(Map content) {
+        validateRequest(content)
         Degree degree = degreeService.fetchByCode(content.code)
         if (degree) {
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS, null))
-        }
-        if (typeList.contains(content.type)) {
-            content.degreeType = AcademicCredentialType.("${content.type}")?.value
         }
         degree = bindAcademicCredential(new Degree(), content)
         String degreeGuid = content.guid?.trim()?.toLowerCase()
@@ -97,8 +97,10 @@ class AcademicCredentialCompositeService extends LdmService {
         } else {
             degreeGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL_LDM_NAME, degree.id)?.guid
         }
-        return new AcademicCredentialDecorator(degree.code, degree.description, degreeGuid, content.type)
+        insertSupplementalFieldByModel(degree,content)
+        return new AcademicCredentialDecorator(degree.code, degree.description, degreeGuid, content.type, content.supplementalDesc)
     }
+
 
     /**
      * PUT /api/academic-credentials/<guid>
@@ -131,7 +133,7 @@ class AcademicCredentialCompositeService extends LdmService {
         }
 
         degree = bindAcademicCredential(degree, content)
-        return new AcademicCredentialDecorator(degree.code,degree.description,degreeGuid,academicCredential.type)
+        return new AcademicCredentialDecorator(degree.code,degree.description,degreeGuid,academicCredential.type,content.supplementalDesc)
     }
 
 
@@ -144,6 +146,19 @@ class AcademicCredentialCompositeService extends LdmService {
         super.bindData(domainModel, content, [:])
         domainModel.displayWebIndicator = Boolean.FALSE
     }
+
+    private validateRequest(content) {
+        if (!content.code) {
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
+        }
+        if (!content.description) {
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_DESCRIPTION_REQUIRED, null))
+        }
+        if (!AcademicCredentialType.values().value.contains(content.type)) {
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_TYPE_NOT_EXISTS, null))
+        }
+    }
+
 
     private def fetchAcademicCredentialByCriteria(Map content, boolean count = false) {
 
@@ -165,4 +180,31 @@ class AcademicCredentialCompositeService extends LdmService {
 
         return result
     }
+
+    /**
+     * Checks if SDE is enabled for that UI component.
+     * Creates the Supplemental Field to AcademicCredentialDecorator
+     * @param Degree model (degree object by criteria) to load SDE.
+     * @param Map content
+     */
+
+    private void insertSupplementalFieldByModel(model, content) {
+        if (supplementalDataService.hasSdeData(model)) {
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS, null))
+        }
+
+        def sdeModel = supplementalDataService.loadSupplementalDataForModel(model)
+
+        if (sdeModel.containsKey(GeneralValidationCommonConstants.HEDM_CREDENTIAL_CATEGORY)) {
+            sdeModel.HEDM_CREDENTIAL_CATEGORY."1".value = content.type
+        }
+
+        if (sdeModel.containsKey(GeneralValidationCommonConstants.HEDM_CREDENTIAL_DESCRIPTION)) {
+            sdeModel.HEDM_CREDENTIAL_DESCRIPTION."1".value = content.supplementalDesc
+        }
+
+        supplementalDataService.persistSupplementalDataFor(model, sdeModel)
+
+    }
+
 }

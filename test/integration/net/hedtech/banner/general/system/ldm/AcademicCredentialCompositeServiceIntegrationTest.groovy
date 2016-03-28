@@ -312,11 +312,14 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
 
     @Test
     void testCreate() {
+        i_success_content.supplementalDesc = 'test supplement description'
         def academicCredential = academicCredentialCompositeService.create(i_success_content)
         assertNotNull academicCredential
         assertNotNull academicCredential.guid
         assertEquals i_success_content.code, academicCredential.code
         assertEquals i_success_content.description, academicCredential.description
+        assertEquals i_success_content.supplementalDesc , academicCredential.supplementalDesc
+        assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
     }
 
     @Test
@@ -326,6 +329,36 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
             academicCredentialCompositeService.create(i_success_content)
         }catch (ApplicationException ae){
             assertApplicationException ae, "code.exists.message"
+        }
+    }
+
+    @Test
+    void testCreateNullCode(){
+        i_success_content.code=null
+        try{
+            academicCredentialCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.required.message"
+        }
+    }
+
+    @Test
+    void testCreateNullDescription(){
+        i_success_content.description=null
+        try{
+            academicCredentialCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "description.required.message"
+        }
+    }
+
+    @Test
+    void testCreateInvalidType(){
+        i_success_content.type='test'
+        try{
+            academicCredentialCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "invalid.type.message"
         }
     }
 

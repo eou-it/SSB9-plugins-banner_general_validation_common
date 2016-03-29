@@ -3,11 +3,11 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
-import grails.util.Holders
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.AcademicCredential
 import net.hedtech.banner.general.system.Degree
@@ -97,7 +97,11 @@ class AcademicCredentialCompositeService extends LdmService {
         } else {
             degreeGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL_LDM_NAME, degree.id)?.guid
         }
-        insertSupplementalFieldByModel(degree,content)
+        if (supplementalDataService.hasSdeData(degree)) {
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS, null))
+        }else {
+            updateSupplementalFieldByModel(degree, content)
+        }
         return new AcademicCredentialDecorator(degree.code, degree.description, degreeGuid, content.type, content.supplementalDesc)
     }
 
@@ -113,8 +117,8 @@ class AcademicCredentialCompositeService extends LdmService {
         if(!degreeGuid){
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new NotFoundException())
         }
-         AcademicCredential academicCredential  = academicCredentialService.fetchByGuid(degreeGuid)
-            if (!academicCredential) {
+        GlobalUniqueIdentifier globalUniqueIdentifier  = GlobalUniqueIdentifier.fetchByGuid(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL_LDM_NAME,degreeGuid)
+            if (!globalUniqueIdentifier) {
                 if (!content.guid) {
                     content.guid = degreeGuid
                 }
@@ -122,31 +126,38 @@ class AcademicCredentialCompositeService extends LdmService {
                 return create(content)
             }
 
-        Degree degree = degreeService.get(academicCredential.id)
+        Degree degree = degreeService.get(globalUniqueIdentifier.domainId)
         if (!degree) {
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new NotFoundException())
         }
 
-        // Should not allow to update instructional-methods.code as it is read-only
+        // Should not allow to update Degree code as it is read-only
         if (degree.code != content.code?.trim()) {
             content.code = degree.code
         }
 
+        validateRequest(content)
         degree = bindAcademicCredential(degree, content)
-        return new AcademicCredentialDecorator(degree.code,degree.description,degreeGuid,academicCredential.type,content.supplementalDesc)
+        updateSupplementalFieldByModel(degree, content)
+        return new AcademicCredentialDecorator(degree.code,degree.description,degreeGuid,content.type,content.supplementalDesc)
     }
 
-
+    /**
+     * bind the Degree values
+     * @param degree
+     * @param content
+     * @return
+     */
     private def bindAcademicCredential(Degree degree, def content) {
-        bindData(degree, content)
+        super.bindData(degree, content, [:])
+        degree.displayWebIndicator = Boolean.FALSE
         degreeService.createOrUpdate(degree)
     }
 
-    private void bindData(domainModel, content) {
-        super.bindData(domainModel, content, [:])
-        domainModel.displayWebIndicator = Boolean.FALSE
-    }
-
+    /**
+     * Validate Request payload
+     * @param content
+     */
     private validateRequest(content) {
         if (!content.code) {
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
@@ -159,7 +170,12 @@ class AcademicCredentialCompositeService extends LdmService {
         }
     }
 
-
+    /**
+     * fetch Academic Credential by Criteria
+     * @param content
+     * @param count
+     * @return
+     */
     private def fetchAcademicCredentialByCriteria(Map content, boolean count = false) {
 
         def result
@@ -188,10 +204,7 @@ class AcademicCredentialCompositeService extends LdmService {
      * @param Map content
      */
 
-    private void insertSupplementalFieldByModel(model, content) {
-        if (supplementalDataService.hasSdeData(model)) {
-            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS, null))
-        }
+    private void updateSupplementalFieldByModel(model, content) {
 
         def sdeModel = supplementalDataService.loadSupplementalDataForModel(model)
 

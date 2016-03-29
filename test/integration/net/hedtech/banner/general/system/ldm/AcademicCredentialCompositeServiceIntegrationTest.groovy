@@ -365,11 +365,16 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
     @Test
     void testUpdate() {
         assertNotNull success_guid
-        i_success_content.put('id', success_guid?.guid)
+        i_success_content.id = success_guid.guid
+        i_success_content.supplementalDesc = 'test supplement description'
+        i_success_content.type = AcademicCredentialType.CERTIFICATE.value
         def academicCredential = academicCredentialCompositeService.update(i_success_content)
         assertNotNull academicCredential
         assertNotNull academicCredential.guid
         assertEquals i_success_content.description, academicCredential.description
+        assertEquals  i_success_content.type, academicCredential.type
+        assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
+        assertEquals i_success_content.supplementalDesc , academicCredential.supplementalDesc
     }
 
     @Test
@@ -393,6 +398,7 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
         assertEquals i_success_content.id?.trim()?.toLowerCase(), academicCredential.guid
         assertEquals i_success_content.code, academicCredential.code
         assertEquals i_success_content.description, academicCredential.description
+        assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
     }
 
    }

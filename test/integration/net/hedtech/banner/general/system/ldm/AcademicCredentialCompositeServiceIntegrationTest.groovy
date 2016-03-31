@@ -2,7 +2,10 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
+
+import junit.framework.Assert
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.AcademicCredential
 import net.hedtech.banner.general.system.Degree
@@ -313,6 +316,18 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
         assertEquals i_success_content.description, academicCredential.description
         assertEquals i_success_content.supplementalDesc , academicCredential.supplementalDesc
         assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
+        fetchSupplementalFieldByModel(academicCredential.code,academicCredential.type,academicCredential.supplementalDesc)
+    }
+
+    @Test
+    void testCreateWithOutDesc() {
+        def academicCredential = academicCredentialCompositeService.create(i_success_content)
+        assertNotNull academicCredential
+        assertNotNull academicCredential.guid
+        assertEquals i_success_content.code, academicCredential.code
+        assertEquals i_success_content.description, academicCredential.description
+        assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
+        fetchSupplementalFieldByModel(academicCredential.code,academicCredential.type,academicCredential.supplementalDesc)
     }
 
     @Test
@@ -368,6 +383,39 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
         assertEquals  i_success_content.type, academicCredential.type
         assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
         assertEquals i_success_content.supplementalDesc , academicCredential.supplementalDesc
+        fetchSupplementalFieldByModel(academicCredential.code,academicCredential.type,academicCredential.supplementalDesc)
+    }
+
+    @Test
+    void testUpdateWithNullDesc() {
+        i_success_content.supplementalDesc = 'test supplement description'
+        def i_academicCredential = academicCredentialCompositeService.create(i_success_content)
+        i_success_content.id = i_academicCredential.guid
+        i_success_content.type = AcademicCredentialType.CERTIFICATE.value
+        i_success_content.supplementalDesc = null
+        def u_academicCredential = academicCredentialCompositeService.update(i_success_content)
+        assertNotNull u_academicCredential
+        assertNotNull u_academicCredential.guid
+        assertEquals i_success_content.description, u_academicCredential.description
+        assertEquals  i_success_content.type, u_academicCredential.type
+        assertTrue AcademicCredentialType.values().value.contains(u_academicCredential.type)
+        fetchSupplementalFieldByModel(u_academicCredential.code,u_academicCredential.type,u_academicCredential.supplementalDesc)
+    }
+
+    @Test
+    void testUpdateWithEmptyDesc() {
+        i_success_content.supplementalDesc = 'test supplement description'
+        def i_academicCredential = academicCredentialCompositeService.create(i_success_content)
+        i_success_content.id = i_academicCredential.guid
+        i_success_content.type = AcademicCredentialType.CERTIFICATE.value
+        i_success_content.supplementalDesc = ''
+        def u_academicCredential = academicCredentialCompositeService.update(i_success_content)
+        assertNotNull u_academicCredential
+        assertNotNull u_academicCredential.guid
+        assertEquals i_success_content.description, u_academicCredential.description
+        assertEquals  i_success_content.type, u_academicCredential.type
+        assertTrue AcademicCredentialType.values().value.contains(u_academicCredential.type)
+        fetchSupplementalFieldByModel(u_academicCredential.code,u_academicCredential.type,u_academicCredential.supplementalDesc)
     }
 
     @Test
@@ -407,6 +455,23 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
                     assertNotNull academicCredential
                     assertEquals 'degree',academicCredential.type
                 }
+        }
+    }
+
+
+    private def fetchSupplementalFieldByModel(code, type, description) {
+        Degree degree = Degree.findByCode(code)
+        assertNotNull degree
+        assertTrue supplementalDataService.hasSdeData(degree)
+        def sdeModel = supplementalDataService.loadSupplementalDataForModel(degree)
+        assertNotNull sdeModel
+        assertTrue sdeModel.containsKey(GeneralValidationCommonConstants.HEDM_CREDENTIAL_CATEGORY)
+        assertEquals type,  sdeModel.HEDM_CREDENTIAL_CATEGORY."1".value
+        assertTrue sdeModel.containsKey(GeneralValidationCommonConstants.HEDM_CREDENTIAL_DESCRIPTION)
+        if(description){
+        assertEquals description,  sdeModel.HEDM_CREDENTIAL_DESCRIPTION."1".value
+        }else{
+           assertNull sdeModel.HEDM_CREDENTIAL_DESCRIPTION."1".value
         }
     }
 

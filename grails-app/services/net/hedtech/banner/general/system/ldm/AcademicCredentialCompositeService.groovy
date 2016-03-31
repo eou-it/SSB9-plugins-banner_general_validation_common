@@ -228,7 +228,7 @@ class AcademicCredentialCompositeService extends LdmService {
      * @param Degree Model (degree object by criteria) to load SDE.
      */
 
-    def fetchSupplementalFieldByModel(model) {
+   private def fetchSupplementalFieldByModel(model) {
         if (supplementalDataService.hasSdeData(model)) {
             def sdeModel = supplementalDataService.loadSupplementalDataForModel(model)
             if (sdeModel.containsKey(GeneralValidationCommonConstants.HEDM_CREDENTIAL_DESCRIPTION)) {

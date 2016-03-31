@@ -17,7 +17,6 @@ import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
-
 /**
 * <p> REST End point for Academic Credential Service. If we'll pass type is degree then , Academic Credential degree type of data will return.</p>
 * <p> If we'll pass type is honorary then, Academic Credential honorary type of data will return.</p>
@@ -51,7 +50,7 @@ class AcademicCredentialCompositeService extends LdmService {
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)?:params.sort
         fetchAcademicCredentialByCriteria(params).each { academicCredential ->
-            academicCredentialsList << new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type,null)
+            academicCredentialsList << new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type,academicCredential.suplementaryDesc)
         }
         return academicCredentialsList
     }
@@ -75,7 +74,7 @@ class AcademicCredentialCompositeService extends LdmService {
         if(!academicCredential){
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_CREDENTIAL, new NotFoundException())
         }
-       return new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type,null)
+       return new AcademicCredentialDecorator(academicCredential.code,academicCredential.description,academicCredential.guid,academicCredential.type,academicCredential.suplementaryDesc)
     }
 
     /**

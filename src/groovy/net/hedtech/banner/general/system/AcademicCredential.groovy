@@ -42,6 +42,12 @@ class AcademicCredential implements Serializable{
     String description
 
     /**
+     * supplementary description from SDE
+     */
+    @Column(name = "DESCRIPTION")
+    String suplementaryDesc
+
+    /**
      * Last Modified By column for STVDEGC
      */
     @Column(name = "STVDEGC_USER_ID", length = 30)

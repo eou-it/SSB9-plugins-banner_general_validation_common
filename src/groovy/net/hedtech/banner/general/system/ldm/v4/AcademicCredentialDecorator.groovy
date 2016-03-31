@@ -26,4 +26,11 @@ class AcademicCredentialDecorator {
         this.description = description
         this.supplementalDesc = supplementalDesc
     }
+
+    def getSupplementalDesc(){
+        if(!supplementalDesc){
+            return ''
+        }
+        return supplementalDesc
+    }
 }

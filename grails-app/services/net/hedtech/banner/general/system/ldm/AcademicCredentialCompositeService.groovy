@@ -134,6 +134,9 @@ class AcademicCredentialCompositeService extends LdmService {
         if (degree.code != content.code?.trim()) {
             content.code = degree.code
         }
+        if(content.supplementalDesc == null){
+            content.supplementalDesc = fetchSupplementalFieldByModel(degree)
+        }
 
         validateRequest(content)
         degree = bindAcademicCredential(degree, content)
@@ -216,6 +219,22 @@ class AcademicCredentialCompositeService extends LdmService {
         }
 
         supplementalDataService.persistSupplementalDataFor(model, sdeModel)
+
+    }
+
+    /**
+     * Checks if SDE is enabled for that UI component.
+     * Sets the Supplemental Field to AcademicCredentialDecorator
+     * @param Degree Model (degree object by criteria) to load SDE.
+     */
+
+    def fetchSupplementalFieldByModel(model) {
+        if (supplementalDataService.hasSdeData(model)) {
+            def sdeModel = supplementalDataService.loadSupplementalDataForModel(model)
+            if (sdeModel.containsKey(GeneralValidationCommonConstants.HEDM_CREDENTIAL_DESCRIPTION)) {
+              return  sdeModel.HEDM_CREDENTIAL_DESCRIPTION."1".value
+            }
+        }
 
     }
 

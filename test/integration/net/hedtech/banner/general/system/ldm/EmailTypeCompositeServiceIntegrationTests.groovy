@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 
 package net.hedtech.banner.general.system.ldm
@@ -179,6 +179,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     void testCreateEmailType() {
         EmailTypeDetails emailType = emailTypeCompositeService.create(i_success_input_content)
         assertNotNull emailType
+        assertNotNull emailType.toString()
         assertEquals i_success_input_content.code, emailType.code
         assertEquals i_success_input_content.description, emailType.description
     }
@@ -210,6 +211,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     void testUpdateEmailType() {
         EmailTypeDetails emailTypeDetails = emailTypeCompositeService.create(i_success_input_content)
         assertNotNull emailTypeDetails
+        assertNotNull emailTypeDetails.toString()
         assertNotNull emailTypeDetails.guid
         assertEquals i_success_input_content.code, emailTypeDetails.code
         assertEquals i_success_input_content.description, emailTypeDetails.description

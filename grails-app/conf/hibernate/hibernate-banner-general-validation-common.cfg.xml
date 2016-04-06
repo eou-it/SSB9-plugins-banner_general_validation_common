@@ -35,6 +35,7 @@
        <property name="hibernate.cache.use_structured_entries=">true</property>
 
         <mapping class="net.hedtech.banner.general.crossproduct.Bank"/>
+        <mapping class="net.hedtech.banner.general.crossproduct.BankRoutingInfo"/>
         <mapping class="net.hedtech.banner.general.overall.IntegrationConfiguration"/>
         <mapping class="net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier"/>
         <mapping class="net.hedtech.banner.general.overall.UserRole"/>

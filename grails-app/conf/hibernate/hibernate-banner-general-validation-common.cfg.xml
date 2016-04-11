@@ -153,6 +153,9 @@
         <mapping class="net.hedtech.banner.general.system.LocationTypeView"/>
         <mapping class="net.hedtech.banner.general.system.EmailTypesView"/>
         <mapping class="net.hedtech.banner.general.system.AcademicCredential"/>
+        <mapping class="net.hedtech.banner.general.system.GeographicRegionRule"/>
+        <mapping class="net.hedtech.banner.general.system.GeographicRegion"/>
+         <mapping class="net.hedtech.banner.general.system.GeographicDivision"/>
 
    </session-factory>
    </hibernate-configuration>

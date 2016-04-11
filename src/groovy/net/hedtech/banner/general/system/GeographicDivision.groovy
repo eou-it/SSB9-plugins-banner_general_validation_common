@@ -3,10 +3,10 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import grails.persistence.Entity
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import javax.persistence.Column
+import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id

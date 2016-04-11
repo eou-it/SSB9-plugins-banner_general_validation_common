@@ -116,4 +116,15 @@ class GeneralValidationCommonConstants {
     static final String IMMIGRANT = 'immigrant'
     static final String NON_IMMIGRANT = 'nonImmigrant'
 
+    //common constants for geographic-areas
+    static final String GEOGRAPHIC_REGION_LDM_NAME = 'geographic-regions'
+    static final String GEOGRAPHIC_DIVISION_LDM_NAME = 'geographic-divisions'
+    static final String GEOGRAPHIC_AREA_LDM_NAME = 'geographic-areas'
+    static final String GEOGRAPHIC_DIVISION_KEY = 'gDivisonLdmName'
+    static final String GEOGRAPHIC_REGION_KEY = 'gRegionLdmName'
+    static final String GEOGRAPHIC_AREA_KEY = 'gAreaLdmName'
+    static final String GEOGRAPHIC_AREA_GUID_KEY = 'guid'
+
+    static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
+    static final String UTC_TIME_ZONE = "UTC"
 }

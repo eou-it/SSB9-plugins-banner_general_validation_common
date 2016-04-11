@@ -1,10 +1,13 @@
+/** *******************************************************************************
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
+ ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm.v4
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 /**
- * Created by invthannee on 4/9/2016.
+ * Geographic Area Decorator
  */
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)

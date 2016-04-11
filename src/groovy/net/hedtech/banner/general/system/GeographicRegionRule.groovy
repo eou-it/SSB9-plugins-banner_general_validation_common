@@ -32,10 +32,10 @@ import javax.persistence.Version
 @ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
         @NamedQuery(name = "GeographicRegionRule.fetchAllGeographicRegionArea",
-                   query = """SELECT distinct CONCAT(s2.code,'-',s1.code) AS CODE,CONCAT(s2.description,'-',s1.description) AS TITLE, g.guid AS GAGUID,
+                   query = """SELECT distinct CONCAT(s2.code,'-',s1.code) AS gaCODE,CONCAT(s2.description,'-',s1.description) AS TITLE, g.guid AS GAGUID,
                              (SELECT g1.guid from GlobalUniqueIdentifier g1 where g1.ldmName= :gDivisonLdmName AND s1.code = g1.domainKey) AS GDGUID,
                              (SELECT g2.guid from GlobalUniqueIdentifier g2 where g2.ldmName= :gRegionLdmName AND s2.code = g2.domainKey) AS GRGUID FROM GeographicRegionRule s ,GeographicDivision s1,GeographicRegion s2,GlobalUniqueIdentifier g
-                              where s.divisionCode = s1.code and s.regionCode = s2.code and g.ldmName = :gAreaLdmName and g.domainKey = concat(s.regionCode, '-^' , s.divisionCode)
+                              where s.divisionCode = s1.code and s.regionCode = s2.code and g.ldmName = :gAreaLdmName and g.domainKey = concat(s.regionCode, '-^' , s.divisionCode) order by gaCODE
                                """),
         @NamedQuery(name = "GeographicRegionRule.countAllGeographicRegionArea",
                 query = """select  COUNT(s) FROM GeographicRegionRule s
@@ -165,5 +165,5 @@ class GeographicRegionRule implements Serializable{
     /**
      * Protect the field against the updates
      */
-    public static readonlyProperties = ['regionCode','divisionCode']
+   // public static readonlyProperties = ['regionCode','divisionCode']
 }

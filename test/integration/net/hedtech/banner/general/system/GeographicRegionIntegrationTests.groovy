@@ -107,7 +107,7 @@ class GeographicRegionIntegrationTests extends BaseIntegrationTestCase{
 
         //update the Geographic Region
         geographicRegion.description = u_failure_description
-        shouldfail {
+        shouldFail {
             geographicRegion.save(failOnError: true, flush: true)
         }
     }
@@ -156,14 +156,7 @@ class GeographicRegionIntegrationTests extends BaseIntegrationTestCase{
        void testNullValidationFailure() {
            def geographicRegion = new GeographicRegion()
            assertFalse "GeographicRegion should have failed validation", geographicRegion.validate()
-           assertErrorsFor geographicRegion, 'nullable',
-                   [
-                           'code'
-                   ]
-           assertNoErrorsFor geographicRegion,
-                   [
-                           'description'
-                   ]
+           assertErrorsFor geographicRegion, 'nullable', ['code', 'description']
        }
 
 

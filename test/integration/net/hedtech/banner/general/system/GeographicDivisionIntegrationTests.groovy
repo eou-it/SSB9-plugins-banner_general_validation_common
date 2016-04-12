@@ -23,7 +23,7 @@ class GeographicDivisionIntegrationTests extends BaseIntegrationTestCase{
 
     //Failure Data for Insert
     def i_failure_code = "INVALID CODE EXCEEDS TEN CHARACTERS"
-    def i_failure_description = "INVALID DESC"
+    def i_failure_description = "INVALID DESC EXCEEDS THIRTY CHARACTERS AND STILL FAILING OVER"
 
     //Success Data for Update
     def u_success_code = "NORTHHEM"
@@ -106,7 +106,7 @@ class GeographicDivisionIntegrationTests extends BaseIntegrationTestCase{
 
         //update the Geographic Division
         geographicDivision.description = u_failure_description
-        shouldfail {
+        shouldFail {
             geographicDivision.save(failOnError: true, flush: true)
         }
     }
@@ -155,14 +155,7 @@ class GeographicDivisionIntegrationTests extends BaseIntegrationTestCase{
        void testNullValidationFailure() {
            def geographicDivision = new GeographicDivision()
            assertFalse "GeographicDivision should have failed validation", geographicDivision.validate()
-           assertErrorsFor geographicDivision, 'nullable',
-                   [
-                           'code'
-                   ]
-           assertNoErrorsFor geographicDivision,
-                   [
-                           'description'
-                   ]
+           assertErrorsFor geographicDivision, 'nullable', ['code', 'description']
        }
 
 

@@ -43,20 +43,15 @@ class DateConvertHelperService {
      * @return
      */
 
-    def static convertDateIntoUTCFormat(Date date,String time,def timeZone = null) {
+    def static convertDateIntoUTCFormat(Date date,String time) {
         if(!date){
             return date
         }
-        def dbtimezone
-        time = time ? time?.substring( 0, 2 ) + ':' + time?.substring( 2, 4 ) + ':' + '00' : null
-        timeZone = timeZone ?: getDBTimeZone()
-        if (timeZone && timeZone.size() == 1) {
-            dbtimezone = timeZone[0][0]
-        }
         if(!time){
-            return date?.format("yyyy-MM-dd'T'HH:mm:ss") + dbtimezone
+            return convertDateIntoUTCFormat(date);
         }
-        return date?.format("yyyy-MM-dd'T'")+time+ dbtimezone
+        time = time ? time.substring( 0, 2 ) + ':' + time.substring( 2, 4 ) + ':' + '00' : null
+        return convertDateIntoUTCFormat(Date.parse("yyyy-MM-dd HH:mm:ss",date.format("yyyy-MM-dd")+" "+time))
     }
 
     /**

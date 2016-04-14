@@ -3,12 +3,16 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm.v4
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 import net.hedtech.banner.general.system.CitizenType
 
 /**
  * Decorator for citizenship-statuses HEDM API JSON v4 schema
  *
  */
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 class CitizenshipStatus {
 
     @Delegate
@@ -21,25 +25,6 @@ class CitizenshipStatus {
         this.citizenType = citizenType
         this.guid = guid
         this.category = category
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (getClass() != o.class) return false
-        CitizenshipStatus that = (CitizenshipStatus) o
-        if (citizenType != that.citizenType) return false
-        if (guid != that.guid) return false
-        if (category != that.category) return false
-        return true
-    }
-
-
-    public String toString() {
-        """CitizenshipStatus[
-                    citizenType=$citizenType,
-                    guid=$guid,
-                    category=$category]"""
     }
 
 }

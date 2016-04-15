@@ -7,7 +7,7 @@ package net.hedtech.banner.general.system.ldm.v4
  * Enumerations for  academic credential type.
  */
 public enum AcademicCredentialType {
-    degree("1"), honorary("2"), diploma("3"),certificate("4")
+    DEGREE("degree"), HONORARY("honorary"), DIPLOMA("diploma"),CERTIFICATE("certificate")
     private final String value
     AcademicCredentialType(String value) { this.value = value }
     public String getValue() { return value }

@@ -3,12 +3,17 @@
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
 import javax.persistence.*
 
 /**
  * GlobalUniqueIdentifier Table.
  */
 @Entity
+@ToString
+@EqualsAndHashCode
 @Table(name = "GORGUID")
 @NamedQueries(value = [
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNamesAndGuid",
@@ -44,7 +49,9 @@ import javax.persistence.*
                                 WHERE a.ldmName = :ldmName"""),
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmName",
                 query = """FROM GlobalUniqueIdentifier a
-                                WHERE a.ldmName = :ldmName""")
+                                WHERE a.ldmName = :ldmName"""),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchAllByGuidInList",
+                query = """FROM GlobalUniqueIdentifier where guid in (:guids))""")
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**
@@ -115,53 +122,6 @@ class GlobalUniqueIdentifier implements Serializable {
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
     }
-
-
-    public String toString() {
-        """GlobalUniqueIdentifier[
-		            id=$id,
-		            version=$version,
-					guid=$guid,
-                    domainName=$ldmName,
-                    domainId=$domainId,
-                    domainKey=$domainKey,
-					lastModified=$lastModified,
-					lastModifiedBy=$lastModifiedBy,
-					dataOrigin=$dataOrigin]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (!(o instanceof GlobalUniqueIdentifier)) return false
-        GlobalUniqueIdentifier that = (GlobalUniqueIdentifier) o
-        if (id != that.id) return false
-        if (version != that.version) return false
-        if (guid != that.guid) return false
-        if (ldmName != that.ldmName) return false
-        if (domainId != that.domainId) return false
-        if (domainKey != that.domainKey) return false
-        if (lastModified != that.lastModified) return false
-        if (lastModifiedBy != that.lastModifiedBy) return false
-        if (dataOrigin != that.dataOrigin) return false
-        return true
-    }
-
-
-    int hashCode() {
-        int result
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (version != null ? version.hashCode() : 0)
-        result = 31 * result + (guid != null ? guid.hashCode() : 0)
-        result = 31 * result + (ldmName != null ? ldmName.hashCode() : 0)
-        result = 31 * result + (domainId != null ? domainId.hashCode() : 0)
-        result = 31 * result + (domainKey != null ? domainKey.hashCode() : 0)
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        return result
-    }
-
 
     static GlobalUniqueIdentifier fetchByGuid(ldmName, guid) {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findByGuid(guid)
@@ -253,6 +213,16 @@ class GlobalUniqueIdentifier implements Serializable {
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
             session.getNamedQuery('GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyLike').setString('ldmName', ldmName)
                     .setString('domainKey', '%'+domainKey+'%').list();
+        }
+        return globalUniqueIdentifierList
+    }
+
+    public static List<GlobalUniqueIdentifier> fetchAllByGuidInList(List<String> guids){
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = []
+        if(guids){
+            GlobalUniqueIdentifier.withSession{session ->
+                globalUniqueIdentifierList = session.getNamedQuery("GlobalUniqueIdentifier.fetchAllByGuidInList").setParameterList('guids', guids).list()
+            }
         }
         return globalUniqueIdentifierList
     }

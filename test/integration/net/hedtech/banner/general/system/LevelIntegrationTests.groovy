@@ -2,6 +2,7 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -153,6 +154,70 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor level, 'maxSize', ['description', 'ediEquiv']
     }
 
+    @Test
+    void testFetchByCodeInListNullList() {
+        assertEquals([], Level.fetchAllByCodeInList(null))
+    }
+
+    @Test
+    void testFetchByCodeInListEmptyList() {
+        assertEquals([], Level.fetchAllByCodeInList([]))
+    }
+
+    @Test
+    void testFetchByCodeInList() {
+        newValidForCreateLevel().save()
+        List<Level> levelList = Level.fetchAllByCodeInList([i_success_code])
+        assertEquals(1, levelList.size())
+        assertEquals([i_success_code], levelList.code)
+    }
+
+    @Test
+    void testFetchByCodeInvalidCode() {
+        assertNull(Level.fetchByCode(i_success_code + i_success_code))
+    }
+
+    @Test
+    void testFetchByCode() {
+        newValidForCreateLevel().save()
+        Level level = Level.fetchByCode(i_success_code)
+        assertNotNull(level)
+        assertEquals(i_success_code, level.code)
+    }
+
+    @Test
+    void testFetchLevelForCEUNoParams() {
+        newValidForCreateLevel().save()
+        Level level = Level.fetchLevelForCEU(i_success_code)
+        assertNotNull(level)
+        assertEquals(i_success_code, level.code)
+    }
+
+    @Test
+    void testFetchLevelForCEUWithParamCEUTrue() {
+        newValidForCreateLevel().save()
+        Level level = Level.fetchLevelForCEU(i_success_code, [ceu: i_success_continuingEducationIndicator])
+        assertNotNull(level)
+        assertEquals(i_success_code, level.code)
+        assertTrue(level.ceuInd)
+    }
+
+    @Test
+    void testFetchAllByCeuIndAndCodeLike() {
+        Map result = Level.fetchAllByCeuIndAndCodeLike([ceu: true])
+        if (result.list) {
+            result.list.each {
+                assertTrue(it.ceuInd)
+            }
+        }
+
+        result = Level.fetchAllByCeuIndAndCodeLike([ceu: false])
+        if (result.list) {
+            result.list.each {
+                assertFalse(it.ceuInd)
+            }
+        }
+    }
 
     private def newValidForCreateLevel() {
         def level = new Level(

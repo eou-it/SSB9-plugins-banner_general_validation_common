@@ -3,23 +3,25 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
+import junit.framework.Assert
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.system.AcademicCredential
 import net.hedtech.banner.general.system.Degree
 import net.hedtech.banner.general.system.ldm.v4.AcademicCredentialType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
-
 /**
  * <p>Integration test cases for academic credential composite service.</p>
  */
 class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegrationTestCase  {
     
     def academicCredentialCompositeService
+    def supplementalDataService
     
     def success_guid
     def invalid_resource_guid
@@ -58,12 +60,11 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
     /**
      * This test case is checking for AcademicCredentialCompositeService count method with degree type
      */
-    @Ignore
     @Test
     void testCountByDegreeType(){
-        def expectedCount= academicCredentialCompositeService.count([type:AcademicCredentialType.degree.name().toLowerCase()])
+        def expectedCount= academicCredentialCompositeService.count([type:AcademicCredentialType.DEGREE.value])
         assertNotNull expectedCount
-        def actualCount= Degree.countByDegreeTypeOrDegreeTypeIsNull(AcademicCredentialType.degree.value)
+        def actualCount= AcademicCredential.countByType(AcademicCredentialType.DEGREE.value)
         assertNotNull actualCount
         assertEquals expectedCount,actualCount
     }
@@ -71,12 +72,11 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
     /**
      * This test case is checking for AcademicCredentialCompositeService count method with honorary type
      */
-    @Ignore
     @Test
     void testCountByHonoraryType(){
-        def expectedCount= academicCredentialCompositeService.count([type:AcademicCredentialType.honorary.name().toLowerCase()])
+        def expectedCount= academicCredentialCompositeService.count([type:AcademicCredentialType.HONORARY.value])
         assertNotNull expectedCount
-        def actualCount= Degree.countByDegreeType(AcademicCredentialType.honorary.value)
+        def actualCount= AcademicCredential.countByType(AcademicCredentialType.HONORARY.value)
         assertNotNull actualCount
         assertEquals expectedCount,actualCount
     }
@@ -84,12 +84,11 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
     /**
      * This test case is checking for AcademicCredentialCompositeService count method with diploma type
      */
-    @Ignore
     @Test
     void testCountByDiplomaType(){
-        def expectedCount= academicCredentialCompositeService.count([type:AcademicCredentialType.diploma.name().toLowerCase()])
+        def expectedCount= academicCredentialCompositeService.count([type:AcademicCredentialType.DIPLOMA.value])
         assertNotNull expectedCount
-        def actualCount= Degree.countByDegreeType(AcademicCredentialType.diploma.value)
+        def actualCount= AcademicCredential.countByType(AcademicCredentialType.DIPLOMA.value)
         assertNotNull actualCount
         assertEquals expectedCount,actualCount
     }
@@ -97,12 +96,11 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
     /**
      * This test case is checking for AcademicCredentialCompositeService count method with certificate type
      */
-    @Ignore
     @Test
     void testCountByCertificateType(){
-        def expectedCount= academicCredentialCompositeService.count([type:AcademicCredentialType.certificate.name().toLowerCase()])
+        def expectedCount= academicCredentialCompositeService.count([type:AcademicCredentialType.CERTIFICATE.value])
         assertNotNull expectedCount
-        def actualCount= Degree.countByDegreeType(AcademicCredentialType.certificate.value)
+        def actualCount= AcademicCredential.countByType(AcademicCredentialType.CERTIFICATE.value)
         assertNotNull actualCount
         assertEquals expectedCount,actualCount
     }
@@ -155,52 +153,51 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
     /**
      * This test case is checking for AcademicCredentialCompositeService list method with type of degree
      */
-    @Ignore
     @Test
     void testListWithoutPaginationParamsByDegreeType() {
-        List academicCredentials = academicCredentialCompositeService.list([type: AcademicCredentialType.degree.name().toLowerCase()])
+        List academicCredentials = academicCredentialCompositeService.list([type: AcademicCredentialType.DEGREE.value])
         assertNotNull academicCredentials
         assertFalse academicCredentials.isEmpty()
-        assertEquals academicCredentials.size() , Degree.findAllByDegreeTypeOrDegreeTypeIsNull(AcademicCredentialType.degree.value,[max:'500'])?.size()
+        assertTrue academicCredentials.type.containsAll(AcademicCredentialType.DEGREE.value)
+        assertEquals academicCredentials.size() , AcademicCredential.findAllByType(AcademicCredentialType.DEGREE.value,[max: '500'])?.size()
     }
 
     /**
      * This test case is checking for AcademicCredentialCompositeService list method with type of honorary
      */
-    @Ignore
     @Test
     void testListWithoutPaginationParamsByHonoraryType() {
-        List academicCredentials = academicCredentialCompositeService.list([type: AcademicCredentialType.honorary.name().toLowerCase()])
+        List academicCredentials = academicCredentialCompositeService.list([type: AcademicCredentialType.HONORARY.value])
         assertNotNull academicCredentials
-        assertEquals academicCredentials.size() , Degree.findAllByDegreeType(AcademicCredentialType.honorary.value,[max:'500'])?.size()
+      //  assertTrue academicCredentials.type.containsAll(AcademicCredentialType.HONORARY.value)
+        assertEquals academicCredentials.size() , AcademicCredential.findAllByType(AcademicCredentialType.HONORARY.value,[max: '500'])?.size()
     }
 
     /**
      * This test case is checking for AcademicCredentialCompositeService list method with type of diploma
      */
-    @Ignore
     @Test
     void testListWithoutPaginationParamsByDiplomaType() {
-        List academicCredentials = academicCredentialCompositeService.list([type: AcademicCredentialType.diploma.name().toLowerCase()])
+        List academicCredentials = academicCredentialCompositeService.list([type: AcademicCredentialType.DIPLOMA.value])
         assertNotNull academicCredentials
-        assertEquals academicCredentials.size() , Degree.findAllByDegreeType(AcademicCredentialType.diploma.value,[max: '500'])?.size()
+      //  assertTrue academicCredentials.type.containsAll(AcademicCredentialType.DIPLOMA.value)
+        assertEquals academicCredentials.size() , AcademicCredential.findAllByType(AcademicCredentialType.DIPLOMA.value,[max: '500'])?.size()
     }
 
     /**
      * This test case is checking for AcademicCredentialCompositeService list method with type of certificate
      */
-    @Ignore
     @Test
     void testListWithoutPaginationParamsByCertificateType() {
-        List academicCredentials = academicCredentialCompositeService.list([type: AcademicCredentialType.certificate.name().toLowerCase()])
+        List academicCredentials = academicCredentialCompositeService.list([type: AcademicCredentialType.CERTIFICATE.value])
         assertNotNull academicCredentials
-        assertEquals academicCredentials.size() , Degree.findAllByDegreeType(AcademicCredentialType.certificate.value,[max: '500'])?.size()
+      //  assertTrue academicCredentials.type.containsAll(AcademicCredentialType.CERTIFICATE.value)
+        assertEquals academicCredentials.size() , AcademicCredential.findAllByType(AcademicCredentialType.CERTIFICATE.value,[max: '500'])?.size()
     }
 
     /**
      * This test case is checking for AcademicCredentialCompositeService list method with Invalid type
      */
-    @Ignore
     @Test
     void testListWithInvalidType() {
         List academicCredentials = academicCredentialCompositeService.list([type: "INVALID_TYPE"])
@@ -277,7 +274,6 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
     /**
      * <p> Test to check the sort order  and sorting field  by type on AcademicCredentialCompositeService</p>
      * */
-    @Ignore
     @Test
     public void testSortOrderByType(){
         params.order='DESC'
@@ -312,11 +308,26 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
 
     @Test
     void testCreate() {
+        i_success_content.supplementalDesc = 'test supplement description'
         def academicCredential = academicCredentialCompositeService.create(i_success_content)
         assertNotNull academicCredential
         assertNotNull academicCredential.guid
         assertEquals i_success_content.code, academicCredential.code
         assertEquals i_success_content.description, academicCredential.description
+        assertEquals i_success_content.supplementalDesc , academicCredential.supplementalDesc
+        assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
+        fetchSupplementalFieldByModel(academicCredential.code,academicCredential.type,academicCredential.supplementalDesc)
+    }
+
+    @Test
+    void testCreateWithOutDesc() {
+        def academicCredential = academicCredentialCompositeService.create(i_success_content)
+        assertNotNull academicCredential
+        assertNotNull academicCredential.guid
+        assertEquals i_success_content.code, academicCredential.code
+        assertEquals i_success_content.description, academicCredential.description
+        assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
+        fetchSupplementalFieldByModel(academicCredential.code,academicCredential.type,academicCredential.supplementalDesc)
     }
 
     @Test
@@ -330,13 +341,81 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
     }
 
     @Test
+    void testCreateNullCode(){
+        i_success_content.code=null
+        try{
+            academicCredentialCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "code.required.message"
+        }
+    }
+
+    @Test
+    void testCreateNullDescription(){
+        i_success_content.description=null
+        try{
+            academicCredentialCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "description.required.message"
+        }
+    }
+
+    @Test
+    void testCreateInvalidType(){
+        i_success_content.type='test'
+        try{
+            academicCredentialCompositeService.create(i_success_content)
+        }catch (ApplicationException ae){
+            assertApplicationException ae, "invalid.type.message"
+        }
+    }
+
+    @Test
     void testUpdate() {
         assertNotNull success_guid
-        i_success_content.put('id', success_guid?.guid)
+        i_success_content.id = success_guid.guid
+        i_success_content.supplementalDesc = 'test supplement description'
+        i_success_content.type = AcademicCredentialType.CERTIFICATE.value
         def academicCredential = academicCredentialCompositeService.update(i_success_content)
         assertNotNull academicCredential
         assertNotNull academicCredential.guid
         assertEquals i_success_content.description, academicCredential.description
+        assertEquals  i_success_content.type, academicCredential.type
+        assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
+        assertEquals i_success_content.supplementalDesc , academicCredential.supplementalDesc
+        fetchSupplementalFieldByModel(academicCredential.code,academicCredential.type,academicCredential.supplementalDesc)
+    }
+
+    @Test
+    void testUpdateWithNullDesc() {
+        i_success_content.supplementalDesc = 'test supplement description'
+        def i_academicCredential = academicCredentialCompositeService.create(i_success_content)
+        i_success_content.id = i_academicCredential.guid
+        i_success_content.type = AcademicCredentialType.CERTIFICATE.value
+        i_success_content.supplementalDesc = null
+        def u_academicCredential = academicCredentialCompositeService.update(i_success_content)
+        assertNotNull u_academicCredential
+        assertNotNull u_academicCredential.guid
+        assertEquals i_success_content.description, u_academicCredential.description
+        assertEquals  i_success_content.type, u_academicCredential.type
+        assertTrue AcademicCredentialType.values().value.contains(u_academicCredential.type)
+        fetchSupplementalFieldByModel(u_academicCredential.code,u_academicCredential.type,u_academicCredential.supplementalDesc)
+    }
+
+    @Test
+    void testUpdateWithEmptyDesc() {
+        i_success_content.supplementalDesc = 'test supplement description'
+        def i_academicCredential = academicCredentialCompositeService.create(i_success_content)
+        i_success_content.id = i_academicCredential.guid
+        i_success_content.type = AcademicCredentialType.CERTIFICATE.value
+        i_success_content.supplementalDesc = ''
+        def u_academicCredential = academicCredentialCompositeService.update(i_success_content)
+        assertNotNull u_academicCredential
+        assertNotNull u_academicCredential.guid
+        assertEquals i_success_content.description, u_academicCredential.description
+        assertEquals  i_success_content.type, u_academicCredential.type
+        assertTrue AcademicCredentialType.values().value.contains(u_academicCredential.type)
+        fetchSupplementalFieldByModel(u_academicCredential.code,u_academicCredential.type,u_academicCredential.supplementalDesc)
     }
 
     @Test
@@ -360,6 +439,40 @@ class AcademicCredentialCompositeServiceIntegrationTest extends  BaseIntegration
         assertEquals i_success_content.id?.trim()?.toLowerCase(), academicCredential.guid
         assertEquals i_success_content.code, academicCredential.code
         assertEquals i_success_content.description, academicCredential.description
+        assertTrue AcademicCredentialType.values().value.contains(academicCredential.type)
+    }
+
+    @Test
+    void testMandatoryTypeField(){
+        List<AcademicCredential> academicCredentialList = academicCredentialCompositeService.list(params)
+        academicCredentialList.each{
+            academicCredential->
+                Degree degree = Degree.findByCode(academicCredential.code)
+                if(supplementalDataService.hasSdeData(degree)){
+                    def sdeModel = supplementalDataService.loadSupplementalDataForModel(degree)
+                    assertEquals academicCredential.type,sdeModel.HEDM_CREDENTIAL_CATEGORY."1".value
+                }else{
+                    assertNotNull academicCredential
+                    assertEquals 'degree',academicCredential.type
+                }
+        }
+    }
+
+
+    private def fetchSupplementalFieldByModel(code, type, description) {
+        Degree degree = Degree.findByCode(code)
+        assertNotNull degree
+        assertTrue supplementalDataService.hasSdeData(degree)
+        def sdeModel = supplementalDataService.loadSupplementalDataForModel(degree)
+        assertNotNull sdeModel
+        assertTrue sdeModel.containsKey(GeneralValidationCommonConstants.HEDM_CREDENTIAL_CATEGORY)
+        assertEquals type,  sdeModel.HEDM_CREDENTIAL_CATEGORY."1".value
+        assertTrue sdeModel.containsKey(GeneralValidationCommonConstants.HEDM_CREDENTIAL_DESCRIPTION)
+        if(description){
+        assertEquals description,  sdeModel.HEDM_CREDENTIAL_DESCRIPTION."1".value
+        }else{
+           assertNull sdeModel.HEDM_CREDENTIAL_DESCRIPTION."1".value
+        }
     }
 
    }

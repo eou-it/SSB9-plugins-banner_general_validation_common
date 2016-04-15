@@ -41,4 +41,8 @@ class AcademicLevel {
                     guid=$guid,
                     metadata=$metadata]"""
     }
+
+    public def getDetail(){
+        return ['id': guid]
+    }
 }

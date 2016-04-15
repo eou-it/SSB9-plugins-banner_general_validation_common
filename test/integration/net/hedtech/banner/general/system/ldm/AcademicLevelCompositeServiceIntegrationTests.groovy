@@ -4,8 +4,10 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.Level
+import net.hedtech.banner.general.system.ldm.v1.AcademicLevel
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
@@ -292,6 +294,22 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         assertEquals i_success_content.description, academicLevel.description
     }
 
+    @Test
+    void testFetchAllByLevelIdInListNullList(){
+        assertEquals([],academicLevelCompositeService.fetchAllByLevelIdInList(null))
+    }
+
+    @Test
+    void testFetchAllByLevelIdInListEmptyList(){
+        assertEquals([],academicLevelCompositeService.fetchAllByLevelIdInList([]))
+    }
+
+    @Test
+    void testFetchAllByLevelIdInList(){
+        List<String> ids = GlobalUniqueIdentifier.findAllByLdmName([max:10],GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME)?.guid
+        List<AcademicLevel> academicLevelList = academicLevelCompositeService.fetchAllByLevelIdInList(ids)
+        assertEquals(ids.sort(), academicLevelList.guid.sort())
+    }
 
     private def newValidForCreateLevel() {
         def level = new Level(

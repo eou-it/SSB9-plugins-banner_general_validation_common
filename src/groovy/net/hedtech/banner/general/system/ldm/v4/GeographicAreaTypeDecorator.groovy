@@ -7,38 +7,40 @@ import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 /**
- * Geographic Area Decorator
+ * Geographic Area type Decorator
  */
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)
-class GeographicArea {
+class GeographicAreaTypeDecorator {
 
-    def id
-    def code
-    def title
-    def divisionId
-    def regionId
+    String id
+    String code
+    String title
+    String description
 
-    GeographicArea(code, title, id, divisionId, regionId) {
-        this.code = code
+
+    GeographicAreaTypeDecorator(String id,String code=null,String title=null,String description=null) {
         this.id = id
-        this.divisionId = divisionId
-        this.regionId = regionId
+        this.code = code
         this.title = title
+        this.description = description
     }
 
-    def getType() {
-      return  new GeographicAreaTypeDecorator(regionId)
+    String getCategory() {
+      return  GeographicAreaTypeCategory.INSTITUTIONAL.value
     }
 
-    def getIncludedAreas() {
-      return  [new IncludedArea(divisionId)]
+    Detail getDetail() {
+        return new Detail(id)
     }
 
-    class IncludedArea{
-        def id
-        IncludedArea(def id){
+    class Detail {
+        String id
+
+        Detail(String id) {
             this.id = id
         }
     }
+
+
 }

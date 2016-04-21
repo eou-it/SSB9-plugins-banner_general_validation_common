@@ -3,6 +3,7 @@
  **********************************************************************************/
 package net.hedtech.banner.general.utility
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -27,11 +28,20 @@ class DateConvertHelperServiceIntegrationTests extends BaseIntegrationTestCase{
 
     @Test
     void testConvertDateIntoUTCFormat(){
-        def expectedDate = DateConvertHelperService.convertDateIntoUTCFormat(new Date())
+        String expectedDate = DateConvertHelperService.convertDateIntoUTCFormat(new Date())
         assertNotNull expectedDate
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(expectedDate.getDate());
+        calendar.setTime(Date.parse(GeneralValidationCommonConstants.UTC_DATE_FORMAT, expectedDate));
         assertEquals TimeZone.getTimeZone("UTC").getID(), calendar.getTimeZone().getID()
+    }
+
+    @Test
+    void testConvertUTCStringToServerDate(){
+        Date sampleDate = new Date()
+        String expectedDate = DateConvertHelperService.convertDateIntoUTCFormat(sampleDate)
+        assertNotNull expectedDate
+        Date serverDate = DateConvertHelperService.convertUTCStringToServerDate(expectedDate)
+        assertEquals serverDate, sampleDate
     }
 
    /* @Test
@@ -59,5 +69,4 @@ class DateConvertHelperServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals actualDate , expectedDate
 
     }*/
-
 }

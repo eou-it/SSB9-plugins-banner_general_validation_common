@@ -127,6 +127,8 @@ class GeneralValidationCommonConstants {
 
     static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
     static final String UTC_TIME_ZONE = "UTC"
+    static final String DATETIME_WITHOUT_TIMEZONE = "yyyy-MM-dd HH:mm:ss"
+    static final String DATE_WITHOUT_TIMEZONE = "yyyy-MM-dd"
 
     static final String GEOGRAPHIC_REGION_TYPE = 'Geographic Region'
     static final String GEOGRAPHIC_DIVISION_TYPE = 'Geographic Division'

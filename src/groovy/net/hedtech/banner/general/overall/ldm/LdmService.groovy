@@ -36,7 +36,7 @@ class LdmService {
 
     private static List globalBindExcludes = ['id', 'version', 'dataOrigin']
     //TODO unused variable has to remove
-   // private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
+    // private static final String SETTING_INTEGRATION_PARTNER = "INTEGRATION.PARTNER"
 
 
     static String fetchBannerDomainPropertyForLdmField(String ldmField) {
@@ -121,8 +121,8 @@ class LdmService {
     }
 
 
-    static Date convertString2Date(String strDate) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd")
+    static Date convertString2Date(String strDate, String format = "yyyy-MM-dd") {
+        DateFormat dateFormat = new SimpleDateFormat(format)
         dateFormat.lenient = false
 
         Date date
@@ -398,7 +398,7 @@ class LdmService {
      * Used to set the GUID to a specific value when update method
      * calls create.
      */
-     public GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
+    public GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ldmName, id)
         if (!newEntity) {

@@ -155,7 +155,8 @@
         <mapping class="net.hedtech.banner.general.system.AcademicCredential"/>
         <mapping class="net.hedtech.banner.general.system.GeographicRegionRule"/>
         <mapping class="net.hedtech.banner.general.system.GeographicRegion"/>
-         <mapping class="net.hedtech.banner.general.system.GeographicDivision"/>
+        <mapping class="net.hedtech.banner.general.system.GeographicDivision"/>
+        <mapping class="net.hedtech.banner.general.system.GeographicAreaType"/>
 
    </session-factory>
    </hibernate-configuration>

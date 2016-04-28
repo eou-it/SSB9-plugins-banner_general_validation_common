@@ -26,7 +26,7 @@ class DateConvertHelperService {
      */
     def static convertDateIntoUTCFormat(Date date) {
         if(!date){
-            return date
+            return null
         }
         DateFormat dateFormat = new SimpleDateFormat(GeneralValidationCommonConstants.UTC_DATE_FORMAT);
         dateFormat.setTimeZone(TimeZone.getTimeZone(GeneralValidationCommonConstants.UTC_TIME_ZONE));
@@ -43,15 +43,15 @@ class DateConvertHelperService {
      * @return
      */
 
-    def static convertDateIntoUTCFormat(Date date,String time) {
+    static String convertDateIntoUTCFormat(Date date,String time) {
         if(!date){
-            return date
+            return null
         }
         if(!time){
             return convertDateIntoUTCFormat(date);
         }
         time = time ? time.substring( 0, 2 ) + ':' + time.substring( 2, 4 ) + ':' + '00' : null
-        return convertDateIntoUTCFormat(Date.parse("yyyy-MM-dd HH:mm:ss",date.format("yyyy-MM-dd")+" "+time))
+        return convertDateIntoUTCFormat(Date.parse(GeneralValidationCommonConstants.DATETIME_WITHOUT_TIMEZONE,date.format(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE)+" "+time))
     }
 
     /**
@@ -72,5 +72,16 @@ class DateConvertHelperService {
             conn?.close()
         }
         return rows
+    }
+
+    /**
+     * converting UTC date in String to the date of server running it.
+     * @return date object of server running it
+     */
+      static Date convertUTCStringToServerDate(String utc) {
+        if(!utc){
+            return null
+        }
+        return new SimpleDateFormat(GeneralValidationCommonConstants.UTC_DATE_FORMAT).parse(utc)
     }
 }

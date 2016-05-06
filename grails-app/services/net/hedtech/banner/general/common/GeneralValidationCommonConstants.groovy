@@ -29,6 +29,7 @@ class GeneralValidationCommonConstants {
     final static String VERSION_V2 = 'v2'
     final static String VERSION_V3 = 'v3'
     final static String VERSION_V4 = 'v4'
+    final static String VERSION_V6 = 'v6'
     final static String NON_HISPANIC = 'nonHispanic'
     final static String HISPANIC = 'hispanic'
     final static String ABBREVIATION = 'abbreviation'

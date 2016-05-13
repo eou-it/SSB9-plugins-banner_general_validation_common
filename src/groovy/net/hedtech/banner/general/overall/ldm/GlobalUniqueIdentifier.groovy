@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
@@ -44,6 +44,10 @@ import javax.persistence.*
                 query = """FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName
                                 AND a.domainId =   :id  """),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainIds",
+                query = """FROM GlobalUniqueIdentifier a
+                                WHERE a.ldmName = :ldmName
+                                AND a.domainId in (:ids)  """),
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchCountByLdmName",
                 query = """SELECT count(a) FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName"""),
@@ -163,6 +167,15 @@ class GlobalUniqueIdentifier implements Serializable {
         }
 
         return globalUniqueIdentifier
+    }
+
+
+    static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainIds(String ldmName, List<Long> ids) {
+        List<GlobalUniqueIdentifier> globalUniqueIdentifiers = GlobalUniqueIdentifier.withSession { session ->
+            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainIds').setString("ldmName", ldmName).setParameterList('ids', ids).list()
+        }
+
+        return globalUniqueIdentifiers
     }
 
 

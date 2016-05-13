@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 import net.hedtech.banner.service.ServiceBase
@@ -29,6 +29,16 @@ class GlobalUniqueIdentifierService extends ServiceBase {
      */
     GlobalUniqueIdentifier  fetchByLdmNameAndDomainId(String ldmName, Long domainId){
         return  GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(ldmName, domainId)
+    }
+
+    /**
+     * fetch GlobalUniqueIdentifier info based on ldmName and domainIds
+     * @param ldmName
+     * @param domainId
+     * @return GlobalUniqueIdentifier
+     */
+    List<GlobalUniqueIdentifier>  fetchByLdmNameAndDomainIds(String ldmName, List<Long> domainIds){
+        return  GlobalUniqueIdentifier.fetchByLdmNameAndDomainIds(ldmName, domainIds)
     }
 
 

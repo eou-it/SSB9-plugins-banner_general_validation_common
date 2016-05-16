@@ -128,9 +128,30 @@ class GeneralValidationCommonConstants {
 
     static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
     static final String UTC_TIME_ZONE = "UTC"
+    //Religions constants
     static final String DATETIME_WITHOUT_TIMEZONE = "yyyy-MM-dd HH:mm:ss"
     static final String DATE_WITHOUT_TIMEZONE = "yyyy-MM-dd"
 
     static final String GEOGRAPHIC_REGION_TYPE = 'Geographic Region'
     static final String GEOGRAPHIC_DIVISION_TYPE = 'Geographic Division'
+
+    static final String PERSON_NAME_TYPES_LDM_NAME = 'person-name-types'
+    static final String PERSON_NAME_TYPE_SETTING = 'PERSON.NAMES.NAMETYPE'
+
+    //common constants for academic-honors
+    public static final def ACADEMIC_HONOR_SEARCH_FIELD = 'type'
+    public static final String LDM_NAME_INSTITUTIONAL = 'institutional-honors'
+    public static final String LDM_NAME_DEPARTMENTAL = 'departmental-honors'
+    public static final Integer MAX_UPPER_LIMIT = 500
+    final static String ACADEMIC_HONOR = 'academicHonor'
+    //Religions constants
+    static final String RELIGION_LDM_NAME = 'religions'
+    static final String RELIGION = 'religion'
+    final static String ERROR_MSG_TITLE_REQUIRED = 'title.required.message'
+
+    //Person Hold Types Constants
+    static final String PERSON_HOLD_TYPES = 'personHoldTypes'
+    static final String PERSON_HOLD_TYPES_ACADEMIC = "academic"
+    static final String PERSON_HOLD_TYPES_FINANCE = "finance"
+
 }

@@ -1,7 +1,11 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.system.ldm.v6.NameTypeCategory
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -11,9 +15,6 @@ import groovy.sql.Sql
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class NameTypeIntegrationTests extends BaseIntegrationTestCase {
-
-    def nameTypeService
-
 
     @Before
     public void setUp() {
@@ -116,6 +117,25 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
+    @Test
+    void testFetchAll(){
+       def nameList = NameType.fetchAll([max:'500',offset: '0'])
+       assertFalse nameList.isEmpty()
+       assertEquals NameType.list([:]).size(), nameList.size()
+    }
+
+    @Test
+    void testFetchByGuid(){
+        NameType nameType = newNameType()
+        save nameType
+        assertNotNull nameType.id
+        def guid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME,nameType.id)?.guid
+        assertNotNull guid
+        def list = NameType.fetchByGuid(guid)
+            assertEquals guid, list.getAt(0)
+            assertEquals nameType.code, list.getAt(1)
+            assertEquals nameType.description, list.getAt(2)
+    }
 
     private def newNameType() {
         def nameType = new NameType(

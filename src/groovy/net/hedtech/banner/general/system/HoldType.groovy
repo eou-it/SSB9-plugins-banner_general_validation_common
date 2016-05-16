@@ -3,6 +3,9 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -18,7 +21,8 @@ import javax.persistence.GenerationType
 /**
  * Person Hold Type Validation Table
  */
-
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 @Entity
 @Table(name = "STVHLDD")
 class HoldType implements Serializable {
@@ -140,29 +144,6 @@ class HoldType implements Serializable {
     String dataOrigin
 
 
-    public String toString() {
-        """HoldType[
-		            id=$id,
-		            version=$version,
-					code=$code, 
-					registrationHoldIndicator=$registrationHoldIndicator, 
-					transcriptHoldIndicator=$transcriptHoldIndicator, 
-					graduationHoldIndicator=$graduationHoldIndicator, 
-					gradeHoldIndicator=$gradeHoldIndicator, 
-					description=$description, 
-					accountsReceivableHoldIndicator=$accountsReceivableHoldIndicator,
-					enrollmentVerificationHoldIndicator=$enrollmentVerificationHoldIndicator,
-					voiceResponseMessageNumber=$voiceResponseMessageNumber,
-					displayWebIndicator=$displayWebIndicator, 
-					applicationHoldIndicator=$applicationHoldIndicator, 
-					complianceHoldIndicator=$complianceHoldIndicator,
-					lastModified=$lastModified, 
-					lastModifiedBy=$lastModifiedBy,
-					dataOrigin=$dataOrigin
-					]"""
-    }
-
-
     static constraints = {
         code(nullable: false, maxSize: 2)
         registrationHoldIndicator(nullable: true )
@@ -179,54 +160,6 @@ class HoldType implements Serializable {
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (!(o instanceof HoldType)) return false
-        HoldType that = (HoldType) o
-        if (id != that.id) return false
-        if (version != that.version) return false
-        if (code != that.code) return false
-        if (registrationHoldIndicator != that.registrationHoldIndicator) return false
-        if (transcriptHoldIndicator != that.transcriptHoldIndicator) return false
-        if (graduationHoldIndicator != that.graduationHoldIndicator) return false
-        if (gradeHoldIndicator != that.gradeHoldIndicator) return false
-        if (description != that.description) return false
-        if (accountsReceivableHoldIndicator != that.accountsReceivableHoldIndicator) return false
-        if (enrollmentVerificationHoldIndicator != that.enrollmentVerificationHoldIndicator) return false
-        if (voiceResponseMessageNumber != that.voiceResponseMessageNumber) return false
-        if (displayWebIndicator != that.displayWebIndicator) return false
-        if (applicationHoldIndicator != that.applicationHoldIndicator) return false
-        if (complianceHoldIndicator != that.complianceHoldIndicator) return false
-        if (lastModified != that.lastModified) return false
-        if (lastModifiedBy != that.lastModifiedBy) return false
-        if (dataOrigin != that.dataOrigin) return false
-        return true
-    }
-
-
-    int hashCode() {
-        int result
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (version != null ? version.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (registrationHoldIndicator != null ? registrationHoldIndicator.hashCode() : 0)
-        result = 31 * result + (transcriptHoldIndicator != null ? transcriptHoldIndicator.hashCode() : 0)
-        result = 31 * result + (graduationHoldIndicator != null ? graduationHoldIndicator.hashCode() : 0)
-        result = 31 * result + (gradeHoldIndicator != null ? gradeHoldIndicator.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (accountsReceivableHoldIndicator != null ? accountsReceivableHoldIndicator.hashCode() : 0)
-        result = 31 * result + (enrollmentVerificationHoldIndicator != null ? enrollmentVerificationHoldIndicator.hashCode() : 0)
-        result = 31 * result + (voiceResponseMessageNumber != null ? voiceResponseMessageNumber.hashCode() : 0)
-        result = 31 * result + (displayWebIndicator != null ? displayWebIndicator.hashCode() : 0)
-        result = 31 * result + (applicationHoldIndicator != null ? applicationHoldIndicator.hashCode() : 0)
-        result = 31 * result + (complianceHoldIndicator != null ? complianceHoldIndicator.hashCode() : 0)
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        return result
     }
 
 

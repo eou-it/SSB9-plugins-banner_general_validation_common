@@ -1,9 +1,12 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import org.hibernate.annotations.Type
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+
 import javax.persistence.*
 
 /**
@@ -12,6 +15,16 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "GTVNTYP")
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
+@NamedQueries(value = [
+   @NamedQuery(name = "NameType.fetchByGuid", query = """select g.guid as guid, n.code as code, n.description as title,
+                   (select translationValue from IntegrationConfiguration  where processCode = :processCode AND settingName = :settingName AND value =  n.code) as cateogry
+                   FROM NameType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code and g.guid = :guid"""),
+   @NamedQuery(name = "NameType.fetchAll", query = """select g.guid as guid, n.code as code, n.description as title,
+                   (select translationValue from IntegrationConfiguration  where processCode = :processCode AND settingName = :settingName AND value =  n.code) as cateogry
+                   FROM NameType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code"""),
+])
 class NameType implements Serializable {
 
     /**
@@ -61,55 +74,45 @@ class NameType implements Serializable {
     @Column(name = "GTVNTYP_DATA_ORIGIN", length = 30)
     String dataOrigin
 
-
-
-    public String toString() {
-        """NameType[
-					id=$id, 
-					code=$code, 
-					description=$description, 
-					lastModified=$lastModified, 
-					version=$version, 
-					lastModifiedBy=$lastModifiedBy, 
-					dataOrigin=$dataOrigin, ]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true;
-        if (!(o instanceof NameType)) return false;
-        NameType that = (NameType) o;
-        if (id != that.id) return false;
-        if (code != that.code) return false;
-        if (description != that.description) return false;
-        if (lastModified != that.lastModified) return false;
-        if (version != that.version) return false;
-        if (lastModifiedBy != that.lastModifiedBy) return false;
-        if (dataOrigin != that.dataOrigin) return false;
-        return true;
-    }
-
-
-    int hashCode() {
-        int result;
-        result = (id != null ? id.hashCode() : 0);
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0);
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
-        return result;
-    }
-
-
     static constraints = {
         code(nullable: false, maxSize: 4)
         description(nullable: false, maxSize: 30)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
+    }
+
+    /**
+     * fetch list of Name types
+     * @param params
+     * @return
+     */
+    static List fetchAll(Map params) {
+        return NameType.withSession { session ->
+            session.getNamedQuery('NameType.fetchAll')
+                      .setString('settingName',GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING)
+                      .setString('processCode',GeneralValidationCommonConstants.PROCESS_CODE)
+                      .setString('ldmName',GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME)
+                     .setMaxResults(params?.max as Integer)
+                     .setFirstResult((params?.offset ?: '0') as Integer)
+                     .list()
+        }
+    }
+
+    /**
+     * fetch Namme type data bases on guid
+     * @param guid
+     * @return
+     */
+    static def fetchByGuid(String guid) {
+        return NameType.withSession { session ->
+            session.getNamedQuery('NameType.fetchByGuid')
+                    .setString('settingName',GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING)
+                    .setString('processCode',GeneralValidationCommonConstants.PROCESS_CODE)
+                    .setString('ldmName',GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME)
+                    .setString('guid',guid)
+                    .uniqueResult();
+        }
     }
 
 }

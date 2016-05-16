@@ -157,6 +157,8 @@
         <mapping class="net.hedtech.banner.general.system.GeographicRegion"/>
         <mapping class="net.hedtech.banner.general.system.GeographicDivision"/>
         <mapping class="net.hedtech.banner.general.system.GeographicAreaType"/>
+        <mapping class="net.hedtech.banner.general.system.AcademicHonorView"/>
+        <mapping class="net.hedtech.banner.general.system.DepartmentalHonor"/>
 
    </session-factory>
    </hibernate-configuration>

@@ -6,7 +6,7 @@ package net.hedtech.banner.general.system
 import javax.persistence.*
 
 /**
- * Religion Code Validation Table
+ * ReligionDecorator Code Validation Table
  */
 @Entity
 @Table(name = "STVRELG")
@@ -62,7 +62,7 @@ class Religion implements Serializable {
 
 
     public String toString() {
-        """Religion[
+        """ReligionDecorator[
 					id=$id, 
 					version=$version, 
 					code=$code, 

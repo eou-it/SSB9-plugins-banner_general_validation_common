@@ -170,15 +170,6 @@ class GlobalUniqueIdentifier implements Serializable {
     }
 
 
-    static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainIds(String ldmName, List<Long> ids) {
-        List<GlobalUniqueIdentifier> globalUniqueIdentifiers = GlobalUniqueIdentifier.withSession { session ->
-            session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainIds').setString("ldmName", ldmName).setParameterList('ids', ids).list()
-        }
-
-        return globalUniqueIdentifiers
-    }
-
-
     static List<GlobalUniqueIdentifier> fetchByLdmNameAndDomainSurrogateIds(ldmName, surrogateIds) {
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.withSession { session ->
             session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmNameAndDomainSurrogateId').setString('ldmName', ldmName).setParameterList('domainSurrogateIds', surrogateIds).list();

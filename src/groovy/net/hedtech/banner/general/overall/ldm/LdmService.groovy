@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
@@ -239,7 +239,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Accept header
      */
-    private static String getResponseRepresentationVersion() {
+    protected static String getResponseRepresentationVersion() {
         String version
         String acceptHeader = responseBodyMediaType()
         if (acceptHeader) {
@@ -311,7 +311,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Content-Type header
      */
-    private static String getRequestRepresentationVersion() {
+    protected static String getRequestRepresentationVersion() {
         String version
         String contentTypeHeader = requestBodyMediaType()
         if (contentTypeHeader) {

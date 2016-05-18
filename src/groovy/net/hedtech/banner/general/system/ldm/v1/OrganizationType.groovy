@@ -19,4 +19,15 @@ enum OrganizationType {
 
     public String getValue() { return value }
 
+
+    public static OrganizationType getByValue(String value){
+        Iterator itr = OrganizationType.values().iterator()
+        while(itr.hasNext()){
+            OrganizationType type = itr.next()
+            if(type.value == value){
+                return type
+            }
+        }
+        return null
+    }
 }

@@ -105,7 +105,7 @@ class VisaTypeCompositeService extends LdmService {
         return new VisaTypeDetail(visaType, category, visaTypeGuid)
     }
 
-    public Map fetchVisaTypes(List<String> visaCodes){
+    public Map fetchGUIDs(List<String> visaCodes){
         Map content=[:]
         def result
         String hql='''select a.code, b.guid from VisaType a, GlobalUniqueIdentifier b WHERE a.code in :visaCodes and b.ldmName = :ldmName and a.code = b.domainKey'''

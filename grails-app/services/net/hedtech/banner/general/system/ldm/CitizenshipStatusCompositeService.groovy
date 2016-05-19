@@ -92,7 +92,7 @@ class CitizenshipStatusCompositeService extends LdmService {
         return new CitizenshipStatus(citizenType, guid, getHeDMEnumeration(citizenType.citizenIndicator ?: null))
     }
 
-    public Map fetchCitizenTypes(List<String> citizenCodes){
+    public Map fetchGUIDs(List<String> citizenCodes){
         Map content=[:]
         def result
         String hql='''select a.code, b.guid from CitizenType a, GlobalUniqueIdentifier b WHERE a.code in :citizenCodes and b.ldmName = :ldmName and a.code = b.domainKey'''

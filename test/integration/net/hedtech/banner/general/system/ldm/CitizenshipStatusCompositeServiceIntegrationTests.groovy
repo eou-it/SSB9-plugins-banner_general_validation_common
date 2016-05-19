@@ -77,9 +77,9 @@ class CitizenshipStatusCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     @Test
-    void testfetchCitizenTypes(){
+    void testfetchGUIDs(){
         List<String> citizenCodes= CitizenType.findAll(max: 2).code
-        Map content=citizenshipStatusCompositeService.fetchCitizenTypes((citizenCodes))
+        Map content=citizenshipStatusCompositeService.fetchGUIDs((citizenCodes))
         content.each{ citizenStatus ->
             assertTrue citizenCodes.contains(citizenStatus.key)
         }

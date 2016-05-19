@@ -89,7 +89,7 @@ class CitizenshipStatusCompositeService extends LdmService {
             guid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_LDM_NAME, citizenType.id)?.guid
         }
 
-        return new CitizenshipStatus(citizenType, guid, getHeDMEnumeration(citizenType.citizenIndicator ?: null))
+        return new CitizenshipStatus(citizenType, guid, getCitizenshipStatusCategory(citizenType.citizenIndicator ?: null))
     }
 
     public Map fetchGUIDs(List<String> citizenCodes){
@@ -108,7 +108,7 @@ class CitizenshipStatusCompositeService extends LdmService {
     }
 
 
-    private String getHeDMEnumeration(Boolean citizenIndicator) {
+    public String getCitizenshipStatusCategory(Boolean citizenIndicator) {
         String category
         if (citizenIndicator) {
             category = GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_CATEGORY_CITIZEN

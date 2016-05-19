@@ -105,6 +105,20 @@ class VisaTypeCompositeService extends LdmService {
         return new VisaTypeDetail(visaType, category, visaTypeGuid)
     }
 
+    public Map fetchVisaTypes(List<String> visaCodes){
+        Map content=[:]
+        def result
+        String hql='''select a.code, b.guid from VisaType a, GlobalUniqueIdentifier b WHERE a.code in :visaCodes and b.ldmName = :ldmName and a.code = b.domainKey'''
+        VisaType.withSession { session ->
+            def query = session.createQuery(hql).setString('ldmName', VISATYPE_LDM_NAME)
+            query.setParameterList('visaCodes', visaCodes)
+            result = query.list()
+        }
+            result.each { visaType ->
+                content.put(visaType[0], visaType[1])
+            }
+        return content
+    }
 
     private String getHeDMEnumeration(String nonResIndicator) {
         return nonResIndicator == "Y" ? GeneralValidationCommonConstants.NON_IMMIGRANT : GeneralValidationCommonConstants.IMMIGRANT

@@ -35,7 +35,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         invalid_resource_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
         success_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList('phone-types',net.hedtech.banner.general.system.PhoneType.findAll()?.code)
         invalid_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList('phone-types',net.hedtech.banner.general.system.PhoneType.findAll()?.code)
-        i_success_input_content = [code: 'KKR', description: 'Test Description',type:[organization:[phoneType:"billing"]]]
+        i_success_input_content = [code: 'KKR', description: 'Test Description', phoneType:"billing"]
     }
 
     @After
@@ -48,34 +48,13 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
      */
     @Test
     void testCount(){
-        def expectedCount= phoneTypeCompositeService.count([:])
+        def expectedCount= phoneTypeCompositeService.count()
         assertNotNull expectedCount
         def actualCount= net.hedtech.banner.general.system.PhoneType.count()
         assertNotNull actualCount
         assertEquals expectedCount,actualCount
     }
 
-    /**
-     * This test case is checking for PhoneTypeCompositeService list method passing with invalid sort order
-     */
-    @Test
-    void testListWithInvalidSortOrder(){
-        shouldFail(RestfulApiValidationException) {
-            def map = [order:'test']
-            phoneTypeCompositeService.list(map)
-        }
-    }
-
-    /**
-     * This test case is checking for PhoneTypeCompositeService list method passing with invalid sort field
-     */
-    @Test
-    void testListWithInvalidSortField(){
-        shouldFail(RestfulApiValidationException) {
-            def map = [sort:'test']
-            phoneTypeCompositeService.list(map)
-        }
-    }
 
     /**
      * This test case is checking for PhoneTypeCompositeService list method without pagination
@@ -139,7 +118,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         assertNotNull phoneType
         assertNotNull phoneType.code
         assertNotNull phoneType.id
-        assertNotNull phoneType.type
+        assertNotNull phoneType.phoneType
     }
 
    /**
@@ -168,40 +147,6 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         }
     }
 
-    /**
-     * <p> Test to check the sort order and sorting field on PhoneTypeCompositeService</p>
-     * */
-    @Test
-    public void testSortOrder(){
-        params.order='DESC'
-        params.sort='code'
-        List list = phoneTypeCompositeService.list(params)
-        String tempParam
-        list.each{
-            phoneType->
-                String code=phoneType.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-
-        params.clear()
-        params.order='ASC'
-        params.sort='code'
-        list = phoneTypeCompositeService.list(params)
-        tempParam=null
-        list.each{
-            phoneType->
-                String code=phoneType.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-    }
 
     @Test
     void testCreate() {

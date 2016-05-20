@@ -3,34 +3,34 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 /**
- * service layer for phone types
+ * service layer for location types
  * */
-class PhoneTypeService {
+class LocationTypeReadOnlyService {
 
     /**
-     * fetching PhoneType data based on guid
+     * fetching Address Type data based on guid
      * @param guid
      * @return
      */
-    PhoneType fetchByGuid(String guid){
-        return PhoneType.fetchByGuid(guid)
+    LocationTypeReadOnly fetchByGuid(String guid){
+        return LocationTypeReadOnly.get(guid)
     }
 
     /**
-     * fetching PhoneType data
+     * fetching Address Type data
      * @param Map params
      * @return
      */
-    List<PhoneType> fetchAll(Map params){
-        return PhoneType.createCriteria().list(max: params.max, offset: params.offset){}
+    List<LocationTypeReadOnly> fetchAll(Map params){
+        return LocationTypeReadOnly.createCriteria().list(max: params.max, offset: params.offset){}
     }
 
     /**
-     * fetching total count of phone-types
+     * fetching total count of address-types
      * @return
      */
     Long fetchCountAll() {
-        return PhoneType.createCriteria().get {
+        return LocationTypeReadOnly.createCriteria().get {
             projections  {
                 count()
             }

@@ -1,33 +1,24 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 
 package net.hedtech.banner.general.system.ldm.v4
 
-import net.hedtech.banner.general.system.EmailTypesView
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+import net.hedtech.banner.general.system.EmailTypeReadOnly
 
 /**
  * <p> Decorator for EmailTypeCompositeSevice</p>
  */
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 class EmailTypeDetails {
 
-    def types = [:]
-
     @Delegate
-    EmailTypesView emailTypesView
+    EmailTypeReadOnly emailTypesView
 
-    EmailTypeDetails(types ,EmailTypesView emailTypesView) {
-        this.types = types
-        this.emailTypesView=emailTypesView
+    EmailTypeDetails(EmailTypeReadOnly emailTypesView) {
+        this.emailTypesView = emailTypesView
     }
-
-
-    @Override
-    public String toString() {
-        return "EmailTypeDetails{" +
-                ", types=" + types +
-                '}';
-    }
-
-
 }

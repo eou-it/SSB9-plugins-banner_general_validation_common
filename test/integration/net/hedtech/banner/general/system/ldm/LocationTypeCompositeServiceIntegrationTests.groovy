@@ -5,7 +5,7 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.LocationTypeView
+import net.hedtech.banner.general.system.LocationTypeReadOnly
 import net.hedtech.banner.general.system.ldm.v4.LocationType
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -30,7 +30,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     private String i_failure_ldmName = 'subjects'
     private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
     private String invalid_guid_errorMessage = 'NotFoundException'
-    private String locationTypes = 'location-types'
+    private String locationTypes = 'address-types'
     Map i_success_input_content
 
 
@@ -43,8 +43,8 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
 
     private void initializeDataReferences() {
         invalid_resource_guid = GlobalUniqueIdentifier.findByLdmName(i_failure_ldmName)
-        success_guid = GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList(locationTypes, LocationTypeView.findAll()?.code)
-        invalid_guid = GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList(locationTypes, LocationTypeView.findAll()?.code)
+        success_guid = GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList(locationTypes, LocationTypeReadOnly.findAll()?.code)
+        invalid_guid = GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList(locationTypes, LocationTypeReadOnly.findAll()?.code)
         i_success_input_content = [code: 'XY', description: 'Test Description',type:[person:[locationType:"Test"]]]
     }
 
@@ -58,76 +58,25 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
      */
     @Test
     void testViewCount() {
-        def expectedLocationTypesCount = locationTypeCompositeService.count([:])
+        def expectedLocationTypesCount = locationTypeCompositeService.count()
         assertNotNull expectedLocationTypesCount
-        def actualLocationTypesCount = LocationTypeView.count()
+        def actualLocationTypesCount = LocationTypeReadOnly.count()
         assertNotNull actualLocationTypesCount
         assertEquals expectedLocationTypesCount, actualLocationTypesCount
     }
 
-    /**
-     * Test to check the LocationTypeCompositeService list method with valid sort and order field
-     */
-    @Test
-    void testListWithValidSortAndOrderField() {
-        def params = [order: 'ASC', sort: 'code']
-        def locationTypeList = locationTypeCompositeService.list(params)
-        assertNotNull locationTypeList
-        assertNotNull locationTypeList.toString()
-        assertTrue locationTypeList.locationType.contains(i_success_locationType)
-        assertTrue locationTypeList.description.contains(i_success_description)
-        assertTrue locationTypeList.code.contains(i_success_code)
-        assertFalse locationTypeList.locationType.contains(i_failure_locationType)
-    }
-
-    /**
-     * Test to check the LocationTypeCompositeService list method with invalid order field
-     */
-    @Test
-    void testListWithInvalidSortOrder() {
-        shouldFail(RestfulApiValidationException) {
-            def map = [order: 'test']
-            locationTypeCompositeService.list(map)
-        }
-    }
-
-    /**
-     * Test to check the LocationTypeCompositeService list method with invalid sort field
-     */
-    @Test
-    void testListWithInvalidSortField() {
-        shouldFail(RestfulApiValidationException) {
-            def map = [sort: 'test']
-            locationTypeCompositeService.list(map)
-        }
-    }
-
-    /**
-     * Test to check the LocationTypeCompositeService list method with invalid sort field and message
-     */
-    @Test
-    void testListWithInvalidSortFieldWithException() {
-        try {
-            def map = [sort: 'test']
-            locationTypeCompositeService.list(map)
-            fail()
-        } catch (RestfulApiValidationException e) {
-            assertEquals 400, e.getHttpStatusCode()
-            assertEquals invalid_sort_orderErrorMessage , e.messageCode.toString()
-        }
-    }
 
     /**
      * Test to check the LocationTypeCompositeService list method with pagination (max 4 and offset 0)
      */
     @Test
     void testListWithPagination() {
-        def paginationParams = [max: '5', offset: '0']
+        def paginationParams = [max: '3', offset: '0']
         List locationTypes = locationTypeCompositeService.list(paginationParams)
         assertTrue locationTypes.locationType.contains(i_success_locationType)
         assertNotNull locationTypes
         assertFalse locationTypes.isEmpty()
-        assertTrue locationTypes.size() == 5
+        assertTrue locationTypes.size() == 3
     }
 
     /**
@@ -138,7 +87,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         List locationTypes = locationTypeCompositeService.list([:])
         assertNotNull locationTypes
         assertFalse locationTypes.isEmpty()
-        List actualTypes = LocationTypeView.list(max: '500')
+        List actualTypes = LocationTypeReadOnly.list(max: '500')
         assertNotNull actualTypes
         assertFalse actualTypes.isEmpty()
         assertTrue locationTypes.code.containsAll(actualTypes.code)
@@ -196,7 +145,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         assertNotNull locationType
         assertNotNull locationType.code
         assertNotNull locationType.id
-        assertNotNull locationType.type
+        assertNotNull locationType.locationType
         assertNotNull locationType.value
     }
 
@@ -215,42 +164,6 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
         }
     }
 
-    /**
-     * Test to check the sort by code on LocationTypeCompositeService
-     * */
-    @Test
-    public void testSortByCode(){
-        params.order='ASC'
-        params.sort='code'
-        List list = locationTypeCompositeService.list(params)
-        assertNotNull list
-        def tempParam=null
-        list.each{
-            location->
-                String code=location.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-
-        params.clear()
-        params.order='DESC'
-        params.sort='code'
-        list = locationTypeCompositeService.list(params)
-        assertNotNull list
-        tempParam=null
-        list.each{
-            location->
-                String code=location.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-    }
 
     /**
      * Test to check the create method of LocationTypeCompositeService with valid request payload
@@ -352,7 +265,7 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     }
 
     private Map updateLocationTypeMap(id) {
-        Map params = [id: id,code: 'XY', description: 'Description Test',type:[person:[locationType:"Test"]]]
+        Map params = [id: id,code: 'XY', description: 'Description Test',locationType:"Test"]
         return params
     }
 

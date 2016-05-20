@@ -154,4 +154,12 @@ class GeneralValidationCommonConstants {
     static final String PERSON_HOLD_TYPES_ACADEMIC = "academic"
     static final String PERSON_HOLD_TYPES_FINANCE = "financial"
 
+    static final String ADDRESS_TYPE_LDM_NAME = 'address-types'
+
+     static final String PHONE_LDM_NAME ='phone-types'
+     static final String PHONE_ENTITY_TYPE = 'phoneType'
+     static final String LDM_NAME_EMAIL_TYPES = 'email-types'
+
+
+
 }

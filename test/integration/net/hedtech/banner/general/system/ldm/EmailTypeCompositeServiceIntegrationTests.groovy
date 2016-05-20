@@ -5,7 +5,7 @@
 package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.EmailTypesView
+import net.hedtech.banner.general.system.EmailTypeReadOnly
 import net.hedtech.banner.general.system.ldm.v4.EmailTypeDetails
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
@@ -24,7 +24,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        i_success_input_content = [code: 'AB', description: 'Test Description',type:[person:[emailType:"Home"]]]
+        i_success_input_content = [code: 'AB', description: 'Test Description',emailType:"Home"]
     }
 
     @After
@@ -40,7 +40,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         List emailTypes = emailTypeCompositeService.list(params)
         assertNotNull emailTypes
         assertFalse emailTypes.isEmpty()
-        def totalCount = EmailTypesView.count()
+        def totalCount = EmailTypeReadOnly.count()
         assertNotNull totalCount
         assertEquals totalCount, emailTypes.size()
     }
@@ -50,45 +50,11 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testCount(){
-        assertNotNull emailTypeCompositeService.count(params)
-        assertNotNull EmailTypesView.count()
-        assertEquals EmailTypesView.count(),emailTypeCompositeService.count(params)
+        assertNotNull emailTypeCompositeService.count()
+        assertNotNull EmailTypeReadOnly.count()
+        assertEquals EmailTypeReadOnly.count(),emailTypeCompositeService.count()
     }
 
-    /**
-     * <p> Test to check the sort order and sorting field on EmailTypeCompositeService</p>
-     * */
-    @Test
-    public void testSortOrder(){
-        params.order='DESC'
-        params.sort='code'
-        List<EmailTypeDetails> list = emailTypeCompositeService.list(params)
-        String tempParam
-        list.each{
-            emailType->
-                String code=emailType?.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-
-        params.clear()
-        params.order='ASC'
-        params.sort='code'
-        list = emailTypeCompositeService.list(params)
-        tempParam=null
-        list.each{
-            emailType->
-                String code=emailType?.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-    }
 
     /**
      * <p> Tests to check the offset criteria on EmailTypeCompositeService</p>
@@ -106,9 +72,9 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         EmailTypeDetails emailTypeDetailsWithOffset = emailTypeCompositeServiceNew.get(0)
         assertNotNull emailTypeDetails
 
-        assertEquals emailTypeDetails?.guid,emailTypeDetailsWithOffset?.guid
-        assertEquals emailTypeDetails?.code,emailTypeDetailsWithOffset?.code
-        assertEquals emailTypeDetails?.description,emailTypeDetailsWithOffset?.description
+        assertEquals emailTypeDetails.id,emailTypeDetailsWithOffset.id
+        assertEquals emailTypeDetails.code,emailTypeDetailsWithOffset.code
+        assertEquals emailTypeDetails.description,emailTypeDetailsWithOffset.description
 
     }
 
@@ -124,11 +90,11 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         EmailTypeDetails emailTypeDetails = list.get(0)
         assertNotNull emailTypeDetails
 
-        EmailTypeDetails newEmailTypeDetails = emailTypeCompositeService.get(emailTypeDetails.guid)
+        EmailTypeDetails newEmailTypeDetails = emailTypeCompositeService.get(emailTypeDetails.id)
         assertNotNull newEmailTypeDetails
         assertEquals emailTypeDetails.code,newEmailTypeDetails.code
         assertEquals emailTypeDetails.description,newEmailTypeDetails.description
-        assertEquals emailTypeDetails.guid,newEmailTypeDetails.guid
+        assertEquals emailTypeDetails.id,newEmailTypeDetails.id
     }
 
     /**
@@ -143,7 +109,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertNotNull emailTypeDetails
 
         try {
-            emailTypeCompositeService.get(emailTypeDetails.guid.substring(0,emailTypeDetails.guid.length()-2))
+            emailTypeCompositeService.get(emailTypeDetails.id.substring(0,emailTypeDetails.id.length()-2))
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
@@ -212,13 +178,13 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         EmailTypeDetails emailTypeDetails = emailTypeCompositeService.create(i_success_input_content)
         assertNotNull emailTypeDetails
         assertNotNull emailTypeDetails.toString()
-        assertNotNull emailTypeDetails.guid
+        assertNotNull emailTypeDetails.id
         assertEquals i_success_input_content.code, emailTypeDetails.code
         assertEquals i_success_input_content.description, emailTypeDetails.description
-        Map update_content = updateEmailTypeMap(emailTypeDetails.guid, 'UEMAIL')
+        Map update_content = updateEmailTypeMap(emailTypeDetails.id, 'UEMAIL')
         def o_success_EmailType_update = emailTypeCompositeService.update(update_content)
         assertNotNull o_success_EmailType_update
-        assertEquals o_success_EmailType_update.guid, update_content.id
+        assertEquals o_success_EmailType_update.id, update_content.id
         assertEquals o_success_EmailType_update.code, emailTypeDetails.code
         assertEquals o_success_EmailType_update.description, update_content.description
     }
@@ -230,7 +196,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     void testUpdateEmailTypeWithInvalidGuid() {
         EmailTypeDetails emailType = emailTypeCompositeService.create(i_success_input_content)
         assertNotNull emailType
-        assertNotNull emailType.guid
+        assertNotNull emailType.id
         assertEquals i_success_input_content.code, emailType.code
         assertEquals i_success_input_content.description, emailType.description
         Map update_content = updateEmailTypeMap(null,emailType.code)
@@ -247,8 +213,8 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         i_success_input_content.put("id","test-guid")
         EmailTypeDetails emailType = emailTypeCompositeService.update(i_success_input_content)
         assertNotNull emailType
-        assertNotNull emailType.guid
-        assertEquals i_success_input_content.id, emailType.guid
+        assertNotNull emailType.id
+        assertEquals i_success_input_content.id, emailType.id
         assertEquals i_success_input_content.code, emailType.code
         assertEquals i_success_input_content.description, emailType.description
     }
@@ -268,7 +234,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     }
 
     private Map updateEmailTypeMap(id, code) {
-        Map params = [id: id,code: code, description: 'Description Test',type:[person:[emailType:"Home"]]]
+        Map params = [id: id,code: code, description: 'Description Test',emailType:"Home"]
         return params
     }
 

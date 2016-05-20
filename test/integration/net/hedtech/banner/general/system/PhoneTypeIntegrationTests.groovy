@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -110,7 +110,7 @@ class PhoneTypeIntegrationTests extends BaseIntegrationTestCase {
         assertEquals  globalUniqueIdentifier.domainKey,phoneTypeView.value
         assertEquals  globalUniqueIdentifier.domainKey,phoneTypeView.code
 
-        IntegrationConfiguration integrationConfiguration=   IntegrationConfiguration.findBySettingNameAndTranslationValue('PERSON.PHONETYPES',i_success_phoneType)
+        IntegrationConfiguration integrationConfiguration=   IntegrationConfiguration.findBySettingNameAndTranslationValue('PHONES.PHONETYPE',i_success_phoneType)
         assertNotNull integrationConfiguration
         assertEquals integrationConfiguration.value, phoneTypeView.value
         assertEquals integrationConfiguration.value, telephoneType.code

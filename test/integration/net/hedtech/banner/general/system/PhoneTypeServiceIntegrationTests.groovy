@@ -1,10 +1,9 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -16,7 +15,10 @@ import org.junit.Test
 class PhoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def phoneTypeService
-    private String i_success_phoneType = 'pager'
+
+  private String query = """select count(*) as cnt from goriccr g , STVTELE s  where GORICCR_SQPR_CODE = 'HEDM'  AND GORICCR_ICSN_CODE = 'PHONES.PHONETYPE' AND s.STVTELE_CODE = g.GORICCR_VALUE AND
+    g.GORICCR_TRANSLATION_VALUE in ('mobile','home','school','vacation','business','fax','pager','tdd','parent','family','main','branch','region','support','billing','matchingGifts','other')"""
+
 
     @Before
     public void setUp() {
@@ -30,56 +32,45 @@ class PhoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         super.tearDown()
     }
 
-
-    /**
-     * This test case is checking for creating one of record on read only view
-     */
     @Test
-    void testCreate() {
-        PhoneType phoneType = newPhoneType()
-        try{
-            phoneTypeService.create(phoneType)
-        }catch (ApplicationException ae){
-            assertApplicationException ae, GeneralValidationCommonConstants.ERROR_MSG_OPERATION_NOT_SUPPORTED
+    void testGet() {
+        def params = [max: '1', offset: '0']
+        List<PhoneType> phoneTypeList= phoneTypeService.fetchAll(params)
+        assertFalse phoneTypeList.isEmpty()
+
+        phoneTypeList.each{
+            PhoneType phoneType =  phoneTypeService.fetchByGuid(it.id)
+            assertNotNull phoneType
+            assertEquals it.phoneType, phoneType.phoneType
+            assertEquals it.code, phoneType.code
+            assertEquals it.id, phoneType.id
+            assertEquals it.value,phoneType.value
+            assertEquals it.description,phoneType.description
         }
     }
 
-
-    /**
-     * This test case is checking for updating one of record on read only view
-     */
     @Test
-    void testUpdate() {
-        PhoneType phoneType = PhoneType.findByPhoneType(i_success_phoneType)
-        phoneType.description = 'test'
-        shouldFail(ApplicationException){
-            phoneTypeService.update(phoneType)
-        }
+    void testList(){
+        List<PhoneType> phoneTypeList= phoneTypeService.fetchAll([max:'500',offset: '0'])
+        assertFalse phoneTypeList.isEmpty()
+        List actualTypes= net.hedtech.banner.general.system.PhoneType.list(max:'500')
+        assertFalse actualTypes.isEmpty()
+        assertTrue phoneTypeList.code.containsAll(actualTypes.code)
+        assertEquals phoneTypeList.size() , actualTypes.size()
+
     }
 
-    /**
-     * This test case is checking for deletion one of record on read only view
-     */
     @Test
-    void testDelete() {
-        PhoneType phoneType = PhoneType.findByPhoneType(i_success_phoneType)
-        try{
-            phoneTypeService.delete(phoneType)
-        }catch (ApplicationException ae){
-            assertApplicationException ae, GeneralValidationCommonConstants.ERROR_MSG_OPERATION_NOT_SUPPORTED
-        }
+    void testCount(){
+        def count = phoneTypeService.fetchCountAll()
+        assertNotNull count
+        Sql sql = new Sql(sessionFactory.getCurrentSession().connection())
+        def result = sql.firstRow(query)
+        Long expectCount = result.cnt
+        assertNotNull expectCount
+        assertEquals expectCount,count
     }
 
-    private def newPhoneType(){
-        new PhoneType(
-                code:'test',
-                description:'test data',
-                dataOrigin:'test',
-                id:'test_guid',
-                phoneType:'test',
-                entityType:'person'
-        )
 
-    }
 }
 

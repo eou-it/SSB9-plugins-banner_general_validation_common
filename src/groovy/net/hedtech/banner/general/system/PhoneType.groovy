@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -70,11 +70,6 @@ class PhoneType implements Serializable {
     @Column(name = "CODE")
     String code
 
-    /**
-     * Telephone Type .
-     */
-    @Column(name = "ENTITY_TYPE")
-    String entityType
 
     /**
      * fetching PhoneType data based on guid

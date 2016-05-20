@@ -10,7 +10,7 @@ import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.EmailType
-import net.hedtech.banner.general.system.EmailTypesView
+import net.hedtech.banner.general.system.EmailTypeReadOnly
 import net.hedtech.banner.general.system.ldm.v4.ContactEntityType
 import net.hedtech.banner.general.system.ldm.v4.EmailTypeDetails
 import net.hedtech.banner.general.system.ldm.v4.OrganizationEmailType
@@ -24,97 +24,43 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class EmailTypeCompositeService extends LdmService {
 
-    public static final def allowedSortFields = [GeneralValidationCommonConstants.CODE]
-    public static final String LDM_NAME_EMAIL_TYPES = 'email-types'
-    public static final Integer MAX_UPPER_LIMIT = 500
-
     def emailTypeService
+    def emailTypeReadOnlyService
 
     /**
-     * GET /api/academic-honors
+     * GET /api/eamil-types
      * @return List
      */
     @Transactional(readOnly = true)
     List<EmailTypeDetails> list(Map params) {
-        List emailTypes = []
-        List<EmailTypesView> results = fetchEmailTypes(params)
-
-        results.each {
-            result ->
-                Map<String, String> types = [:]
-                verifyAndSetEntityType(ContactEntityType.ORGANIZATION, result, types)
-                verifyAndSetEntityType(ContactEntityType.PERSON, result, types)
-                if (types) {
-                    emailTypes << new EmailTypeDetails(types, result)
-                }
-        }
+        List<EmailTypeDetails> emailTypes = []
+        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+          emailTypeReadOnlyService.fetchAll(params).each {result ->
+                    emailTypes << new EmailTypeDetails(result)
+             }
         emailTypes
-    }
-
-    private verifyAndSetEntityType(ContactEntityType entityType, def result, Map types) {
-        if (result?.entityType == entityType?.value?.toUpperCase()) {
-            if (checkEmailType(result?.emailType, entityType?.value)) {
-                types << ([(entityType?.value) : ["emailType": result?.emailType]])
-            }
-        }
-    }
-
-
-    private def checkEmailType(def value, String type) {
-        if (type.equalsIgnoreCase(ContactEntityType.PERSON?.value)) {
-            for (PersonEmailType emailType : PersonEmailType.values()) {
-                if (emailType?.value == value) {
-                    return true
-                }
-            }
-        } else if (type.equalsIgnoreCase(ContactEntityType.ORGANIZATION?.value)) {
-            for (OrganizationEmailType emailType : OrganizationEmailType.values()) {
-                if (emailType?.value == value) {
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-
-    private def fetchEmailTypes(params) {
-        def results
-        RestfulApiValidationUtility.validateSortField(params?.sort, allowedSortFields)
-        RestfulApiValidationUtility.correctMaxAndOffset(params, 0, MAX_UPPER_LIMIT)
-        params.sort = params?.sort ?: GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_CODE
-        params?.order = params?.order ?: GeneralValidationCommonConstants.DEFAULT_ORDER_TYPE
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        results = EmailTypesView.list(params)
-
-        results
     }
 
     /**
      *
      * @return Long value as total count
      */
-    Long count(params) {
-        return EmailTypesView.count();
+    Long count() {
+        return emailTypeReadOnlyService.fetchCountAll()
     }
 
     /**
-     * GET /api/email-types/{guid}* @param guid
+     * GET /api/email-types/{guid}
+     * @param guid
      * @return
      */
     @Transactional(readOnly = true)
     EmailTypeDetails get(String guid) {
-        EmailTypesView emailTypesView = null
-        Map<String, String> types = [:]
-        if (guid) {
-            emailTypesView = EmailTypesView.findByGuid(guid)
+        EmailTypeReadOnly emailTypesView = emailTypeReadOnlyService.fetchByGuid(guid)
             if(!emailTypesView){
                 throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
             }
-            verifyAndSetEntityType(ContactEntityType.ORGANIZATION, emailTypesView, types)
-            verifyAndSetEntityType(ContactEntityType.PERSON, emailTypesView, types)
-            new EmailTypeDetails(types, emailTypesView)
-        }
+         return   new EmailTypeDetails(emailTypesView)
     }
 
     /**
@@ -134,9 +80,9 @@ class EmailTypeCompositeService extends LdmService {
         String emailGuid = content?.id?.trim()?.toLowerCase()
         if (emailGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-            emailGuid = updateGuidValue(emailType.id, emailGuid, LDM_NAME_EMAIL_TYPES)?.guid
+            emailGuid = updateGuidValue(emailType.id, emailGuid, GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES)?.guid
         } else {
-            emailGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(LDM_NAME_EMAIL_TYPES, emailType?.id)?.guid
+            emailGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailType?.id)?.guid
         }
         return getDecorator(emailType, content, emailGuid)
     }
@@ -153,13 +99,13 @@ class EmailTypeCompositeService extends LdmService {
         if (!emailGuid) {
             throw new ApplicationException("emailType", new NotFoundException())
         }
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME_EMAIL_TYPES, emailGuid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailGuid)
 
         if (!globalUniqueIdentifier) {
             //Per strategy when a GUID was provided, the create should happen.
             return create(content)
         }
-        EmailType emailType = EmailType.findById(globalUniqueIdentifier?.domainId)
+        EmailType emailType = emailTypeService.get(globalUniqueIdentifier?.domainId)
         if (!emailType) {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
         }
@@ -188,14 +134,11 @@ class EmailTypeCompositeService extends LdmService {
      * Populating the decorator class with the response as per schema.
      */
     private def getDecorator(EmailType emailType, Map content, String emailGuid = null) {
-        EmailTypesView view = new EmailTypesView()
-        Map<String, String> types = [:]
+        EmailTypeReadOnly view = new EmailTypeReadOnly()
         view.setCode(emailType.code)
         view.setDescription(emailType.description)
-        view.setGuid(emailGuid)
-        for (Map.Entry<String, String> entry : content?.get(GeneralValidationCommonConstants.TYPE)?.entrySet() ){
-            types << ([(entry.getKey()) : ["emailType": entry.getValue()?.get("emailType")]])
-        }
-        return new EmailTypeDetails(types, view)
+        view.setId(emailGuid)
+        view.setEmailType(content.emailType)
+        return new EmailTypeDetails(view)
     }
 }

@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -10,9 +10,8 @@ import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.AddressType
-import net.hedtech.banner.general.system.LocationTypeView
+import net.hedtech.banner.general.system.LocationTypeReadOnly
 import net.hedtech.banner.general.system.ldm.v4.LocationType
-import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class LocationTypeCompositeService extends LdmService{
 
-    private static final String DEFAULT_SORT_FIELD = GeneralValidationCommonConstants.CODE
-    private static final String DEFAULT_ORDER_TYPE = GeneralValidationCommonConstants.DEFAULT_ORDER_TYPE
-    private static final String LDM_NAME ='location-types'
-    private static final List<String> allowedSortFields = [GeneralValidationCommonConstants.CODE]
 
     def addressTypeService
+    def locationTypeReadOnlyService
 
     /**
-     * GET /api/location-types
+     * GET /api/address-types
      * @param params
      * @return List
      */
@@ -40,53 +36,36 @@ class LocationTypeCompositeService extends LdmService{
     def  list(Map params) {
         List<LocationType> locationTypeArrayList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        params?.sort = params?.sort ?: DEFAULT_SORT_FIELD
-        params?.order = params?.order ?: DEFAULT_ORDER_TYPE
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        getLocationTypes(false,params).each {locationTypeView ->
-            locationTypeArrayList <<  new LocationType(locationTypeView, locationTypeView.entityType,locationTypeView.locationType)
+        locationTypeReadOnlyService.fetchAll(params).each {locationTypeView ->
+            locationTypeArrayList <<  new LocationType(locationTypeView)
         }
-        locationTypeArrayList
+      return  locationTypeArrayList
     }
 
     /**
      * @return Long value as total count
      */
     @Transactional(readOnly = true)
-    Long count(Map params) {
-        getLocationTypes(true,[:])
+    Long count() {
+      return  locationTypeReadOnlyService.fetchCountAll()
     }
 
     /**
-     * Fetches the data based on location type.
-     * If the same code is mapped to both person and organization types, then API will return this code only once as 'Person' entity type.
-     */
-    private def getLocationTypes(Boolean count, Map params) {
-        if (count) {
-            LocationTypeView.count()
-        } else {
-            LocationTypeView.list(params)
-        }
-    }
-
-
-    /**
-     * GET /api/location-types/{guid}
+     * GET /api/address-types/{guid}
      * @param guid
      * @return
      */
     @Transactional(readOnly = true)
     LocationType get(String guid) {
-        LocationTypeView locationTypeViewRecord = LocationTypeView.findById(guid)
+        LocationTypeReadOnly locationTypeViewRecord = locationTypeReadOnlyService.fetchByGuid(guid)
         if (!locationTypeViewRecord) {
             throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new NotFoundException())
         }
-        return new LocationType(locationTypeViewRecord, locationTypeViewRecord.entityType,locationTypeViewRecord.locationType)
+        return new LocationType(locationTypeViewRecord)
     }
 
     /**
-     * POST /api/location-types
+     * POST /api/address-types
      *
      * @param content Request body
      */
@@ -102,16 +81,16 @@ class LocationTypeCompositeService extends LdmService{
         String addressTypeGuid = content?.id?.trim()?.toLowerCase()
         if (addressTypeGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-            updateGuidValue(addressType.id, addressTypeGuid, LDM_NAME)
+            updateGuidValue(addressType.id, addressTypeGuid, GeneralValidationCommonConstants.ADDRESS_TYPE_LDM_NAME)
         } else {
-            addressTypeGuid = (globalUniqueIdentifierService.fetchByLdmNameAndDomainId(LDM_NAME, addressType?.id)).guid
+            addressTypeGuid = (globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.ADDRESS_TYPE_LDM_NAME, addressType?.id)).guid
         }
         log.debug("GUID: ${addressTypeGuid}")
         return getDecorator(addressType,addressTypeGuid,content)
     }
 
     /**
-     * PUT /api/location-types/<id>
+     * PUT /api/address-types/<id>
      *
      * @param content Request body
      * @return
@@ -121,7 +100,7 @@ class LocationTypeCompositeService extends LdmService{
         if (!addressTypeGuid) {
             throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new NotFoundException())
         }
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(LDM_NAME, addressTypeGuid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ADDRESS_TYPE_LDM_NAME, addressTypeGuid)
         if (!globalUniqueIdentifier) {
             //Per strategy when a ID was provided, the create should happen.
             return create(content)
@@ -129,7 +108,7 @@ class LocationTypeCompositeService extends LdmService{
         if (!content?.code) {
             throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
         }
-        AddressType addressType = AddressType.findById(globalUniqueIdentifier?.domainId)
+        AddressType addressType = addressTypeService.get(globalUniqueIdentifier?.domainId)
         if (!addressType) {
             throw new ApplicationException(GeneralValidationCommonConstants.LOCATION_TYPE, new NotFoundException())
         }
@@ -154,20 +133,17 @@ class LocationTypeCompositeService extends LdmService{
      * Populating the decorator class with the response as per schema.
      */
     private def getDecorator(AddressType addressType, String addressTypeGuid = null,Map request) {
-        LocationTypeView locationTypeRecord = setLocationTypesRecord(addressType,addressTypeGuid,request)
-        return  new LocationType(locationTypeRecord, locationTypeRecord.entityType,locationTypeRecord.locationType)
+        LocationTypeReadOnly locationTypeRecord = setLocationTypesRecord(addressType,addressTypeGuid,request)
+        return  new LocationType(locationTypeRecord)
     }
 
 
-    LocationTypeView setLocationTypesRecord(AddressType addressType,String addressTypeGuid,Map request){
-        LocationTypeView  locationTypeView = new LocationTypeView()
+   private  LocationTypeReadOnly setLocationTypesRecord(AddressType addressType, String addressTypeGuid, Map request){
+        LocationTypeReadOnly locationTypeView = new LocationTypeReadOnly()
         locationTypeView.setId(addressTypeGuid)
         locationTypeView.setCode(addressType?.code)
         locationTypeView.setDescription(addressType?.description)
-        for (Map.Entry<String, String> entry : request.get(GeneralValidationCommonConstants.TYPE).entrySet()){
-            locationTypeView.setEntityType(entry.getKey())
-            locationTypeView.setLocationType(entry.getValue().get(GeneralValidationCommonConstants.LOCATION_TYPE))
-        }
+        locationTypeView.setLocationType(request.addressType)
         return locationTypeView
     }
 }

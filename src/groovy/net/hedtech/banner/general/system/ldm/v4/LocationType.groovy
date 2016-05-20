@@ -1,35 +1,23 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
 
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
-import net.hedtech.banner.general.system.LocationTypeView
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+import net.hedtech.banner.general.system.LocationTypeReadOnly
 
 /**
  * Decorator for "location-types" API
  */
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 class LocationType {
     @Delegate
-    private final LocationTypeView locationTypeView
+    private final LocationTypeReadOnly locationTypeView
     Map<String, String> type
 
-    LocationType(LocationTypeView locationTypeView, String entityType, String locationType) {
+    LocationType(LocationTypeReadOnly locationTypeView) {
         this.locationTypeView = locationTypeView
-        if (entityType == GeneralValidationCommonConstants.ORGANIZATION){
-            this.type = ["organization" : ["locationType": locationType]]
-        }
-        if (entityType ==GeneralValidationCommonConstants.PERSON){
-            this.type = ["person" : ["locationType": locationType]]
-        }
-    }
-
-
-    @Override
-    public String toString() {
-        return "LocationType{" +
-                "locationTypeView=" + locationTypeView +
-                ", type=" + type +
-                '}';
     }
 }

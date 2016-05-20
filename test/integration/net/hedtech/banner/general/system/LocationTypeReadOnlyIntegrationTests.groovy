@@ -10,16 +10,14 @@ import org.junit.Test
 import org.springframework.dao.InvalidDataAccessResourceUsageException
 
 /**
- * Integration Test cases for LocationTypeView, which is Read Only view.
+ * Integration Test cases for LocationTypeReadOnly, which is Read Only view.
  */
-class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
+class LocationTypeReadOnlyIntegrationTests extends BaseIntegrationTestCase {
     private String i_success_locationType = 'billing'
     private String i_failure_locationType = 'testFailure'
     private String i_success_description = 'Business'
     private String i_success_code = 'BU'
     private String i_failure_description = 'Test data Update'
-    private String typePerson = 'person'
-    private String typeOrganization = 'organization'
 
     @Before
     public void setUp() {
@@ -33,26 +31,12 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * Test Case to match the total view count with the personLocation type count and the organizationLocation type count
-     */
-    @Test
-    void testViewCount() {
-        def locationTypeCount= LocationTypeView.count()
-        assertNotNull locationTypeCount
-        def personLocationTypeCount = LocationTypeView.findAllByEntityType(typePerson).size()
-        assertNotNull personLocationTypeCount
-        def orgLocationTypeCount = LocationTypeView.findAllByEntityType(typeOrganization).size()
-        assertNotNull orgLocationTypeCount
-        assertEquals locationTypeCount,personLocationTypeCount+orgLocationTypeCount
-    }
-
-    /**
      * TestCase to check fetch list  on view
      */
     @Test
     void testFetchListOnView() {
         def params = [max: '500', offset: '0',order: 'ASC']
-        def locationTypeList= LocationTypeView.list(params)
+        def locationTypeList= LocationTypeReadOnly.list(params)
         assertNotNull locationTypeList
         assertTrue locationTypeList.locationType.contains(i_success_locationType)
         assertTrue locationTypeList.description.contains(i_success_description)
@@ -79,7 +63,7 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForUpdateLocationType(){
-        LocationTypeView locationType = LocationTypeView.findByLocationType(i_success_locationType)
+        LocationTypeReadOnly locationType = LocationTypeReadOnly.findByLocationType(i_success_locationType)
         assertNotNull locationType
         locationType.description=i_failure_description
         shouldFail(InvalidDataAccessResourceUsageException) {
@@ -92,7 +76,7 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testReadOnlyForDeleteLocationType(){
-        LocationTypeView locationType = LocationTypeView.findByLocationType(i_success_locationType)
+        LocationTypeReadOnly locationType = LocationTypeReadOnly.findByLocationType(i_success_locationType)
         assertNotNull locationType
         shouldFail(InvalidDataAccessResourceUsageException) {
             locationType.delete(flush: true, onError: true)
@@ -101,13 +85,12 @@ class LocationTypeViewIntegrationTests extends BaseIntegrationTestCase {
 
 
     private def newLocationType(){
-        new LocationTypeView(
+        new LocationTypeReadOnly(
                 code:'tt',
                 description:'test data',
                 dataOrigin:'test',
                 id:'test',
                 locationType:'test',
-                entityType: 'person'
         )
 
     }

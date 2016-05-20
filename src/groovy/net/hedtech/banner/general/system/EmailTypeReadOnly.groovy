@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -9,6 +9,7 @@ import groovy.transform.ToString
 import javax.persistence.Column
 import javax.persistence.EmbeddedId
 import javax.persistence.Entity
+import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
 
@@ -19,16 +20,14 @@ import javax.persistence.Version
 @Table(name = "GVQ_EMAIL_TYPES")
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)
-class EmailTypesView implements Serializable{
-
-    @EmbeddedId
-    EmailTypePrimary id
+class EmailTypeReadOnly implements Serializable{
 
     /**
-     * GUID  for email types
+     * GUID: Unique identifier across all database LDM objects.
      */
-    @Column(name = 'GUID')
-    String guid
+    @Id
+    @Column(name = "GUID")
+    String id
 
     /**
      * Code for Email Type
@@ -62,9 +61,10 @@ class EmailTypesView implements Serializable{
     Long version
 
     /**
-     * Type of email either from Person or Organization
-     * */
-    @Column(name = 'ENTITY_TYPE')
-    String entityType
+     * VALUE: Value of configuration setting.
+     */
+    @Column(name = "GORICCR_VALUE")
+    String value
+
 
 }

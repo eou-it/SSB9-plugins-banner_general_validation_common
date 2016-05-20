@@ -152,6 +152,6 @@ class GeneralValidationCommonConstants {
     //Person Hold Types Constants
     static final String PERSON_HOLD_TYPES = 'personHoldTypes'
     static final String PERSON_HOLD_TYPES_ACADEMIC = "academic"
-    static final String PERSON_HOLD_TYPES_FINANCE = "finance"
+    static final String PERSON_HOLD_TYPES_FINANCE = "financial"
 
 }

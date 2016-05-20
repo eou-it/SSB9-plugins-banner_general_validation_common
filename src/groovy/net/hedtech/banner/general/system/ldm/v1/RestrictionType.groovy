@@ -31,7 +31,9 @@ class RestrictionType {
 
     //get the category for the PERSON-HOLD-TYPES
      String getCategory() {
-        if (holdType.accountsReceivableHoldIndicator) {
+        if (holdType.accountsReceivableHoldIndicator&&!holdType.registrationHoldIndicator&&!holdType.applicationHoldIndicator
+                &&!holdType.complianceHoldIndicator&&!holdType.enrollmentVerificationHoldIndicator&&
+                !holdType.gradeHoldIndicator&&!holdType.transcriptHoldIndicator&&!holdType.graduationHoldIndicator) {
             category = GeneralValidationCommonConstants.PERSON_HOLD_TYPES_FINANCE
         } else {
             category = GeneralValidationCommonConstants.PERSON_HOLD_TYPES_ACADEMIC

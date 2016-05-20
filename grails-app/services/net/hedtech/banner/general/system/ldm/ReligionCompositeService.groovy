@@ -74,6 +74,22 @@ class ReligionCompositeService extends LdmService {
         }
         return getDecorator(religionObj,globalUniqueIdentifier.guid)
     }
-
+    /**
+     * @return  religion guids for the provided religion codes
+     */
+    public Map fetchGUIDs(List<String> religionCodes){
+        Map content=[:]
+        def result
+        String hql='''select a.code, b.guid from Religion a, GlobalUniqueIdentifier b WHERE a.code in :religionCodes and b.ldmName = :ldmName and a.code = b.domainKey'''
+        Religion.withSession { session ->
+            def query = session.createQuery(hql).setString('ldmName', 'religions')
+            query.setParameterList('religionCodes', religionCodes)
+            result = query.list()
+        }
+        result.each { religionType ->
+            content.put(religionType[0], religionType[1])
+        }
+        return content
+    }
 
 }

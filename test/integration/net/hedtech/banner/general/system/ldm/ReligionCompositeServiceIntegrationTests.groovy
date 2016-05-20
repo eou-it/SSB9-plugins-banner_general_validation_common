@@ -5,6 +5,8 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.system.CitizenType
+import net.hedtech.banner.general.system.Religion
 import net.hedtech.banner.general.system.ldm.v4.PhoneTypeDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -127,6 +129,16 @@ class ReligionCompositeServiceIntegrationTests extends  BaseIntegrationTestCase 
             religionCompositeService.get(success_guid?.guid + '2')
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testfetchGUIDs(){
+        List<String> religionCodes= Religion.findAll(max: 2).code
+        Map content=religionCompositeService.fetchGUIDs((religionCodes))
+        content.each{ religionStatus ->
+            assertTrue religionCodes.contains(religionStatus.key)
         }
     }
 

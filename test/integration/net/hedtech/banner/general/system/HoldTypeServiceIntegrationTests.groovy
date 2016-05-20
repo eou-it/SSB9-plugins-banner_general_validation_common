@@ -205,8 +205,10 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         RestrictionType restrictionType_oldversion = new RestrictionType(list[0],"adasdd",i_success_metadata)
         list.each { holdType ->
             RestrictionType restrictionType = new RestrictionType(holdType,"adasdd",i_success_metadata)
-           if( holdType.accountsReceivableHoldIndicator){
-               assertEquals(restrictionType.category,"finance")
+            if (holdType.accountsReceivableHoldIndicator&&!holdType.registrationHoldIndicator&&!holdType.applicationHoldIndicator
+                    &&!holdType.complianceHoldIndicator&&!holdType.enrollmentVerificationHoldIndicator&&
+                    !holdType.gradeHoldIndicator&&!holdType.transcriptHoldIndicator&&!holdType.graduationHoldIndicator) {
+               assertEquals(restrictionType.category,"financial")
            }
         }
         assertTrue list.size() > 0

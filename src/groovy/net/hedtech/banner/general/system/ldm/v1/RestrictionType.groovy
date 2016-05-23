@@ -30,7 +30,7 @@ class RestrictionType {
           }
 
     //get the category for the PERSON-HOLD-TYPES
-     String getCategory() {
+    String getCategory() {
         if (holdType.accountsReceivableHoldIndicator&&!holdType.registrationHoldIndicator&&!holdType.applicationHoldIndicator
                 &&!holdType.complianceHoldIndicator&&!holdType.enrollmentVerificationHoldIndicator&&
                 !holdType.gradeHoldIndicator&&!holdType.transcriptHoldIndicator&&!holdType.graduationHoldIndicator) {
@@ -39,5 +39,10 @@ class RestrictionType {
             category = GeneralValidationCommonConstants.PERSON_HOLD_TYPES_ACADEMIC
         }
         return category
+    }
+
+    // persons-holds API
+    Map getDetail(){
+        return [id:guid]
     }
 }

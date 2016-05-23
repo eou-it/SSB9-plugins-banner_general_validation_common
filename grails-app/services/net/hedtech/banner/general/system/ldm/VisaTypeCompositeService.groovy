@@ -100,7 +100,7 @@ class VisaTypeCompositeService extends LdmService {
         if (!visaTypeGuid) {
             visaTypeGuid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(VISATYPE_LDM_NAME, visaType.id)?.guid
         }
-        def category = getHeDMEnumeration(visaType.nonResIndicator)
+        def category = getVisaTypeCategory(visaType.nonResIndicator)
 
         return new VisaTypeDetail(visaType, category, visaTypeGuid)
     }
@@ -120,7 +120,7 @@ class VisaTypeCompositeService extends LdmService {
         return content
     }
 
-    private String getHeDMEnumeration(String nonResIndicator) {
+    public String getVisaTypeCategory(String nonResIndicator) {
         return nonResIndicator == "Y" ? GeneralValidationCommonConstants.NON_IMMIGRANT : GeneralValidationCommonConstants.IMMIGRANT
     }
 

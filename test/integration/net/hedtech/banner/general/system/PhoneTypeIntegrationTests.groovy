@@ -117,6 +117,24 @@ class PhoneTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
+    void testFetchByGuid(){
+        def params = [max: '1', offset: '0']
+        List<PhoneType> phoneTypeList= PhoneType.list(params)
+        assertFalse phoneTypeList.isEmpty()
+
+        phoneTypeList.each{
+            PhoneType phoneType =  PhoneType.fetchByGuid(it.id)
+            assertNotNull phoneType
+            assertEquals it.phoneType, phoneType.phoneType
+            assertEquals it.code, phoneType.code
+            assertEquals it.id, phoneType.id
+            assertEquals it.value,phoneType.value
+            assertEquals it.description,phoneType.description
+        }
+
+    }
+
     private def newPhoneType(){
         new PhoneType(
                 code:'test',

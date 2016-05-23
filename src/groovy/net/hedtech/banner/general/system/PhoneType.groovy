@@ -77,11 +77,9 @@ class PhoneType implements Serializable {
      * @return PhoneType
      */
    public static PhoneType fetchByGuid(String guid){
-        PhoneType phoneType = PhoneType.withSession{ session ->
+        return PhoneType.withSession{ session ->
             session.getNamedQuery('PhoneType.fetchByGuid').setString('guid',guid).uniqueResult()
         }
-        return phoneType
     }
-
 
 }

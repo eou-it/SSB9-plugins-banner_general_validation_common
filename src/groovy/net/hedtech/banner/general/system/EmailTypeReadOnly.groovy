@@ -6,12 +6,7 @@ package net.hedtech.banner.general.system
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
-import javax.persistence.Column
-import javax.persistence.EmbeddedId
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
+import javax.persistence.*
 
 /**
  * <p> Email Types data from Person as well as from Organization</p>
@@ -20,6 +15,9 @@ import javax.persistence.Version
 @Table(name = "GVQ_EMAIL_TYPES")
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)
+@NamedQueries(value = [
+        @NamedQuery(name = "EmailTypeReadOnly.fetchByGuid", query = """FROM EmailTypeReadOnly p WHERE p.id = :guid""")
+])
 class EmailTypeReadOnly implements Serializable{
 
     /**
@@ -66,5 +64,14 @@ class EmailTypeReadOnly implements Serializable{
     @Column(name = "GORICCR_VALUE")
     String value
 
-
+    /**
+     * fetching AddressType data based on guid
+     * @param guid
+     * @return PhoneType
+     */
+    public static EmailTypeReadOnly fetchByGuid(String guid){
+        return  EmailTypeReadOnly.withSession{ session ->
+            session.getNamedQuery('EmailTypeReadOnly.fetchByGuid').setString('guid',guid).uniqueResult()
+        }
+    }
 }

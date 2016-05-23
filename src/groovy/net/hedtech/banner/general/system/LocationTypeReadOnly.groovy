@@ -6,6 +6,8 @@ package net.hedtech.banner.general.system
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.Table
 import javax.persistence.Version
 
@@ -15,6 +17,9 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "GVQ_LOCATION_TYPES")
+@NamedQueries(value = [
+        @NamedQuery(name = "LocationTypeReadOnly.fetchByGuid", query = """FROM LocationTypeReadOnly p WHERE p.id = :guid""")
+])
 class LocationTypeReadOnly implements Serializable {
 
     /**
@@ -62,4 +67,15 @@ class LocationTypeReadOnly implements Serializable {
     @Column(name = "VERSION")
     Long version
 
+
+    /**
+     * fetching AddressType data based on guid
+     * @param guid
+     * @return Address Type
+     */
+    public static LocationTypeReadOnly fetchByGuid(String guid){
+        return  LocationTypeReadOnly.withSession{ session ->
+            session.getNamedQuery('LocationTypeReadOnly.fetchByGuid').setString('guid',guid).uniqueResult()
+        }
+    }
 }

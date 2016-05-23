@@ -84,6 +84,23 @@ class LocationTypeReadOnlyIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
+    void testFetchByGuid() {
+        def params = [max: '1', offset: '0']
+        List<LocationTypeReadOnly> addressTypeList= LocationTypeReadOnly.list(params)
+        assertFalse addressTypeList.isEmpty()
+
+        addressTypeList.each{
+            LocationTypeReadOnly lcoationType =  LocationTypeReadOnly.fetchByGuid(it.id)
+            assertNotNull lcoationType
+            assertEquals it.locationType, lcoationType.locationType
+            assertEquals it.code, lcoationType.code
+            assertEquals it.id, lcoationType.id
+            assertEquals it.value,lcoationType.value
+            assertEquals it.description,lcoationType.description
+        }
+    }
+
     private def newLocationType(){
         new LocationTypeReadOnly(
                 code:'tt',

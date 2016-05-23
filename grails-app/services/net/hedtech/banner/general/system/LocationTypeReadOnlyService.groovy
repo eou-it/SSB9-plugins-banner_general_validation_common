@@ -13,7 +13,7 @@ class LocationTypeReadOnlyService {
      * @return
      */
     LocationTypeReadOnly fetchByGuid(String guid){
-        return LocationTypeReadOnly.get(guid)
+        return LocationTypeReadOnly.fetchByGuid(guid)
     }
 
     /**

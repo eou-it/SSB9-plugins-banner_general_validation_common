@@ -98,6 +98,23 @@ class EmailTypeReadOnlyIntegrationTests extends BaseIntegrationTestCase{
         }
     }
 
+    @Test
+    void testFetchByGuid() {
+        def params = [max: '1', offset: '0']
+        List<EmailTypeReadOnly> emailTypeList= EmailTypeReadOnly.list(params)
+        assertFalse emailTypeList.isEmpty()
+
+        emailTypeList.each{
+            EmailTypeReadOnly emailType =  EmailTypeReadOnly.fetchByGuid(it.id)
+            assertNotNull emailType
+            assertEquals it.emailType, emailType.emailType
+            assertEquals it.code, emailType.code
+            assertEquals it.id, emailType.id
+            assertEquals it.value,emailType.value
+            assertEquals it.description,emailType.description
+        }
+    }
+
     private def newEmailType(){
      return   new EmailTypeReadOnly(
                 id: 'test_guid',code: 'SS',description: 'Dummy Description',entityType: EMAIL_TYPE_HEDM_NAME

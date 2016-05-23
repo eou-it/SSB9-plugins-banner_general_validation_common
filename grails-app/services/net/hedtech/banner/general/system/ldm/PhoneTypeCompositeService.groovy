@@ -60,7 +60,7 @@ class PhoneTypeCompositeService extends LdmService {
         if (phoneTypeViewRecord) {
            return new PhoneTypeDecorator(phoneTypeViewRecord)
            } else {
-                throw new ApplicationException(GeneralValidationCommonConstants.PHONE_LDM_NAME, new NotFoundException())
+                throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
             }
     }
 
@@ -72,11 +72,11 @@ class PhoneTypeCompositeService extends LdmService {
      */
     def create(Map content) {
         if (!content.code) {
-            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_LDM_NAME, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
+            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
         }
         TelephoneType telephoneType = telephoneTypeService.fetchByCode(content.code?.trim())
         if (telephoneType) {
-            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_LDM_NAME, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_EXISTS_MESSAGE, null))
+            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_EXISTS_MESSAGE, null))
         }
         telephoneType = bindTelephoneType(new TelephoneType(), content)
         String telephoneTypeGuid = content.id?.trim()?.toLowerCase()
@@ -99,7 +99,7 @@ class PhoneTypeCompositeService extends LdmService {
     def update(Map content){
         String telephoneTypeGuid = content.id?.trim().toLowerCase()
         if (!telephoneTypeGuid) {
-            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_LDM_NAME, new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
         }
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.PHONE_LDM_NAME, telephoneTypeGuid)
         if (!globalUniqueIdentifier) {
@@ -107,7 +107,7 @@ class PhoneTypeCompositeService extends LdmService {
         }
         TelephoneType telephoneType = telephoneTypeService.get(globalUniqueIdentifier.domainId)
         if (!telephoneType) {
-            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_LDM_NAME, new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
         }
         // Should not allow to update TelephoneType.code as it is read-only
         if (telephoneType.code != content.code?.trim()) {

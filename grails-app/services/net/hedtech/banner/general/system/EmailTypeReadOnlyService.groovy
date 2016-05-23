@@ -13,7 +13,7 @@ class EmailTypeReadOnlyService {
      * @return
      */
     EmailTypeReadOnly fetchByGuid(String guid){
-        return EmailTypeReadOnly.get(guid)
+        return EmailTypeReadOnly.fetchByGuid(guid)
     }
 
     /**

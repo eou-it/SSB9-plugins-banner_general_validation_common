@@ -161,7 +161,8 @@ class GeneralValidationCommonConstants {
     static final String LDM_NAME_EMAIL_TYPES = 'email-types'
     //Person Hold Constants
     public static final def PERSON_HOLD_SEARCH_FIELD = 'person'
-    final static String PERSON_HOLDS = 'personHolds'
-
-
+    static final String PERSON_HOLS_LDM_NAME = 'person-holds'
+    static final String PERSON_HOLDS_KEY = 'gPersonHolds'
+    static final String PERSONS_KEY = 'gPerson'
+    static final String PERSON_HOLDS_TYPE_KEY = 'gPersonHoldsType'
 }

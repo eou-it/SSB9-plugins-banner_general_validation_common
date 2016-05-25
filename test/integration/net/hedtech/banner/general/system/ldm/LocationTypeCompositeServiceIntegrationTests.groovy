@@ -24,11 +24,8 @@ class LocationTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestC
     def success_guid
     def invalid_guid
     private String i_success_locationType = 'billing'
-    private String i_failure_locationType = 'testFailure'
-    private String i_success_description = 'Business'
     private String i_success_code = 'BU'
     private String i_failure_ldmName = 'subjects'
-    private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
     private String invalid_guid_errorMessage = 'NotFoundException'
     private String locationTypes = 'address-types'
     Map i_success_input_content

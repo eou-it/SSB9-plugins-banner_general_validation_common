@@ -15,7 +15,6 @@ import net.hedtech.banner.general.system.LocationTypeReadOnly
 class LocationType {
     @Delegate
     private final LocationTypeReadOnly locationTypeView
-    Map<String, String> type
 
     LocationType(LocationTypeReadOnly locationTypeView) {
         this.locationTypeView = locationTypeView

@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -15,6 +15,8 @@ import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v1.RaceDetail
 import net.hedtech.banner.general.system.ldm.v1.RaceParentCategory
 import net.hedtech.banner.general.system.ldm.v4.RaceRacialCategory
+import net.hedtech.banner.general.system.ldm.v6.RaceDetailV6
+import net.hedtech.banner.general.system.ldm.v6.RaceRacialCategoryV6
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
@@ -26,7 +28,7 @@ class RaceCompositeService extends LdmService {
 
     def raceService
 
-    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1,GeneralValidationCommonConstants.VERSION_V4]
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1,GeneralValidationCommonConstants.VERSION_V4,GeneralValidationCommonConstants.VERSION_V6]
 
     /**
      * GET /api/races
@@ -38,19 +40,28 @@ class RaceCompositeService extends LdmService {
     List<RaceDetail> list(Map params) {
         List raceDetailList = []
         def version = LdmService.getAcceptVersion(VERSIONS)
-        List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V4.equals(version)? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE]:[GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
-
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
+
+        if(!GeneralValidationCommonConstants.VERSION_V6.equals(version)){
+            List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V4.equals(version)? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE]:[GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
+            RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
+            RestfulApiValidationUtility.validateSortOrder(params.order)
+        }
 
         Map ldmPropertyToDomainPropertyMap = [abbreviation: GeneralValidationCommonConstants.RACE, title: GeneralValidationCommonConstants.DESCRIPTION,code: GeneralValidationCommonConstants.RACE]
         params.sort = ldmPropertyToDomainPropertyMap[params.sort]
-        if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
+        if(GeneralValidationCommonConstants.VERSION_V6.equals(version)){
+            params.order = null
+            params.sort = null
+            raceService.list(params).each {race ->
+                raceDetailList << new RaceDetailV6(race, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race),null)
+            }
+        }else if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
             raceService.fetchRaceDetails(params).each {race ->
-                  raceDetailList << new RaceDetail(race[0], globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race[0]?.id)?.guid, race[1]?.translationValue, null)
-              }
-        }else {
+                raceDetailList << new RaceDetail(race[0], globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race[0]?.id)?.guid, race[1]?.translationValue, null)
+            }
+        }
+        else {
            raceService.list(params).each { race ->
                 raceDetailList << new RaceDetail(race, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race), new Metadata(race.dataOrigin))
             }
@@ -97,7 +108,9 @@ class RaceCompositeService extends LdmService {
         if(GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS)) && !raceCategory ){
             throw new ApplicationException(GeneralValidationCommonConstants.RACE, new NotFoundException())
         }
-
+        if(GeneralValidationCommonConstants.VERSION_V6.equals(LdmService.getAcceptVersion(VERSIONS))){
+            return new RaceDetailV6(race, globalUniqueIdentifier.guid, raceCategory,null);
+        }
         return new RaceDetail(race, globalUniqueIdentifier.guid, raceCategory, new Metadata(race.dataOrigin));
     }
 
@@ -129,13 +142,15 @@ class RaceCompositeService extends LdmService {
     def getLdmRace(def race) {
         if (race != null) {
             def version = LdmService.getAcceptVersion(VERSIONS)
-            def category = GeneralValidationCommonConstants.VERSION_V4.equals(version) ? GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY : GeneralValidationCommonConstants.RACE_PARENT_CATEGORY
+            def category = GeneralValidationCommonConstants.VERSION_V4.equals(version) ? GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY : GeneralValidationCommonConstants.VERSION_V6.equals(version) ? GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY_V6 : GeneralValidationCommonConstants.RACE_PARENT_CATEGORY
             IntegrationConfiguration rule = findAllByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, category, race)
-             if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
+            if(GeneralValidationCommonConstants.VERSION_V6.equals(version)){
+                return  RaceRacialCategoryV6.RACE_RACIAL_CATEGORY.contains(rule?.translationValue) ? rule?.translationValue : null
+            } else if(GeneralValidationCommonConstants.VERSION_V4.equals(version)){
                  return  RaceRacialCategory.RACE_RACIAL_CATEGORY.contains(rule?.translationValue) ? rule?.translationValue : null
-             }else {
+            }else {
                return  RaceParentCategory.RACE_PARENT_CATEGORY.contains(rule?.translationValue) ? rule?.translationValue : null
-             }
+            }
         }
         return null
     }

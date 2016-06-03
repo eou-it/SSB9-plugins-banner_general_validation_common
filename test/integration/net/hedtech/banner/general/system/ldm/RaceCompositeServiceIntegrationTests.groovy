@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -14,6 +14,8 @@ import net.hedtech.banner.general.system.RegulatoryRace
 import net.hedtech.banner.general.system.ldm.v1.RaceDetail
 import net.hedtech.banner.general.system.ldm.v4.MaritalStatusMaritalCategory
 import net.hedtech.banner.general.system.ldm.v4.RaceRacialCategory
+import net.hedtech.banner.general.system.ldm.v6.RaceDetailV6
+import net.hedtech.banner.general.system.ldm.v6.ReportingDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
@@ -74,6 +76,8 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull i_success_race
         assertEquals Race.count(), raceCompositeService.count([max:500,offset:0])
     }
+
+
 
     @Test
     void testGetInvalidGuid() {
@@ -171,6 +175,8 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     public void testSortByCode(){
         params.order='ASC'
         params.sort='code'
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         List list = raceCompositeService.list(params)
         assertNotNull list
         def tempParam=null
@@ -208,6 +214,8 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     void testListWithInvalidSortField() {
         try {
             def map = [sort: 'test']
+            GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+            request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
             raceCompositeService.list(map)
             fail()
         } catch (RestfulApiValidationException e) {
@@ -221,8 +229,11 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testListWithInvalidOrderField() {
+
         shouldFail(RestfulApiValidationException) {
             def map = [order: 'test']
+            GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+            request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
             raceCompositeService.list(map)
         }
     }
@@ -382,6 +393,8 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals races.size() , 2
     }
 
+
+
     @Test
     void testCountV4Header() {
         //we will forcefully set the accept header so that the tests go through all possible code flows
@@ -415,6 +428,9 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetail.parentCategory, raceDetails[0].parentCategory
     }
 
+
+
+
     @Test
     void testGetInvalidGuidV4Header() {
         try {
@@ -423,6 +439,8 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
             assertApplicationException ae, "NotFoundException"
         }
     }
+
+
 
     @Test
     void testGetNonExistGuidV4Header() {
@@ -434,5 +452,66 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
+    }
+
+    @Test
+    void testCountV6() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v6+json")
+        assertNotNull i_success_race
+        assertEquals Race.count(), raceCompositeService.count()
+    }
+
+    @Test
+    void testGetInvalidGuidV6Header() {
+        try {
+            GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+            request.addHeader("Accept", "application/vnd.hedtech.integration.v6+json")
+            raceCompositeService.get('Invalid-guid')
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testGetV6Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v6+json")
+        def paginationParams = [max: '1', offset: '0']
+        def raceDetails = raceCompositeService.list(paginationParams)
+        assertNotNull raceDetails
+        assertFalse raceDetails.isEmpty()
+        assertNotNull raceDetails[0].guid
+        RaceDetailV6 raceDetail = raceCompositeService.get(raceDetails[0].guid)
+        assertNotNull raceDetail.toString()
+        assertNotNull raceDetail.race
+        assertEquals raceDetail.race, raceDetails[0].race
+        assertNotNull raceDetail.guid
+        assertEquals raceDetail.guid, raceDetails[0].guid
+        assertNotNull raceDetail.reporting
+        assertEquals raceDetail.reporting.country.racialCategory, raceDetails[0].parentCategory
+    }
+
+
+    @Test
+    void testListWithPaginationV6Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v6+json")
+        def paginationParams = [max: '2', offset: '0']
+        List races = raceCompositeService.list(paginationParams)
+        assertNotNull races
+        assertFalse races.isEmpty()
+        assertEquals races.size() , 2
+    }
+
+    @Test
+    void testRaceDecorator() {
+        ReportingDecorator report = new ReportingDecorator(null, "abc")
+        def country =  report.getCountry()
+        assertNotNull country
     }
 }

@@ -1,6 +1,6 @@
-/*********************************************************************************
- Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
- **********************************************************************************/
+/** *******************************************************************************
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
+ ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException

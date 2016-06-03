@@ -73,8 +73,13 @@ class GenericBasicValidationDomainService {
 
     def list(Map params) {
         log.info("Begin list with params:${params} with setup:${this.toString()}")
+        List decoratedListResponse = decorateListResponse(fetchForListOrCount(params))
+        log.info("End list with params:${params}")
+        return decoratedListResponse
+    }
+
+    private List decorateListResponse(def listResponse) {
         def decoratedResponse;
-        def listResponse = fetchForListOrCount(params)
         if (baseDomain == guidDomain) {
             List decoratedListResponse = []
             listResponse.each { response ->
@@ -105,7 +110,6 @@ class GenericBasicValidationDomainService {
             }
             return decoratedListResponse
         }
-        log.info("End list with params:${params}")
     }
 
     def count(params) {
@@ -121,42 +125,31 @@ class GenericBasicValidationDomainService {
                 ethosToDomainFieldNameMap.get(pagingAndSortParams.sort) : pagingAndSortParams.sort
         pagingAndSortParams.sort = pagingAndSortParams.sort ?: defaultSortField
         pagingAndSortParams.order = pagingAndSortParams.order ?: 'ASC'
+        String query
+        DynamicFinder df
         if (baseDomain == guidDomain) {
             //base table has guid field in it we will not join
-            String query = """FROM ${guidDomain.getName()} a"""
-            DynamicFinder df = new DynamicFinder(guidDomain, query, "a")
-            Map queryParams = [:]
-            List criteria = []
-            supportedSearchFields.each { field ->
-                if (params.containsKey(field)) {
-                    queryParams.put(field, params.get(field))
-                    criteria.add([key: field, binding: ethosToDomainFieldNameMap?.get(field) ?: field, operator: Operators.EQUALS])
-                }
-            }
-            if (count) {
-                return df.count([params: queryParams, criteria: criteria])
-            } else {
-                return df.find([params: queryParams, criteria: criteria], QueryBuilder.getFilterData(pagingAndSortParams).pagingAndSortParams)
-            }
+            query = """FROM ${guidDomain.getName()} a"""
+            df = new DynamicFinder(guidDomain, query, "a")
         } else {
             //we will have to perform join
-            String query = """  FROM ${baseDomain.getName()} a, ${guidDomain.getName()} b
+            query = """  FROM ${baseDomain.getName()} a, ${guidDomain.getName()} b
                                 WHERE a.${baseDomainKeyField} = b.${guidDomainKeyField}
                                 AND b.${ldmNameField} = '${ldmNameValue}'"""
-            DynamicFinder df = new DynamicFinder(baseDomain, query, "a")
-            Map queryParams = [:]
-            List criteria = []
-            supportedSearchFields.each { field ->
-                if (params.containsKey(field)) {
-                    queryParams.put(field, params.get(field))
-                    criteria.add([key: field, binding: ethosToDomainFieldNameMap?.get(field) ?: field, operator: Operators.EQUALS])
-                }
+            df = new DynamicFinder(baseDomain, query, "a")
+        }
+        Map queryParams = [:]
+        List criteria = []
+        supportedSearchFields.each { field ->
+            if (params.containsKey(field)) {
+                queryParams.put(field, params.get(field))
+                criteria.add([key: field, binding: ethosToDomainFieldNameMap?.get(field) ?: field, operator: Operators.EQUALS])
             }
-            if (count) {
-                return df.count([params: queryParams, criteria: criteria])
-            } else {
-                return df.find([params: queryParams, criteria: criteria], QueryBuilder.getFilterData(pagingAndSortParams).pagingAndSortParams)
-            }
+        }
+        if (count) {
+            return df.count([params: queryParams, criteria: criteria])
+        } else {
+            return df.find([params: queryParams, criteria: criteria], QueryBuilder.getFilterData(pagingAndSortParams).pagingAndSortParams)
         }
     }
 
@@ -196,5 +189,35 @@ class GenericBasicValidationDomainService {
         grailsDynamicPropeties.each {
             properties.remove(it)
         }
+    }
+
+    public def fetchByFieldValueInList(String fieldName, List fieldValueList) {
+        List listResponse
+        fieldValueList = fieldValueList.unique()
+        List fieldParamObject = []
+        fieldValueList.each {
+            fieldParamObject << [data: it]
+        }
+        String query
+        DynamicFinder df
+        if (baseDomain == guidDomain) {
+            //base table has guid field in it we will not join
+            query = """FROM ${guidDomain.getName()} a"""
+            df = new DynamicFinder(guidDomain, query, "a")
+        } else {
+            //we will have to perform join
+            query = """  FROM ${baseDomain.getName()} a, ${guidDomain.getName()} b
+                                WHERE a.${baseDomainKeyField} = b.${guidDomainKeyField}
+                                AND b.${ldmNameField} = '${ldmNameValue}'"""
+            df = new DynamicFinder(baseDomain, query, "a")
+        }
+
+        Map queryParams = [:]
+        List criteria = []
+        queryParams.put(fieldName, fieldParamObject)
+        criteria.add([key: fieldName, binding: fieldName, operator: Operators.IN])
+        listResponse = df.find([params: queryParams, criteria: criteria], [:])
+
+        return decorateListResponse(listResponse)
     }
 }

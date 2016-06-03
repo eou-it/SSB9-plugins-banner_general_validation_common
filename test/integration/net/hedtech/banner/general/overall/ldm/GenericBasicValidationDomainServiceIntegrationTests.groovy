@@ -234,4 +234,33 @@ class GenericBasicValidationDomainServiceIntegrationTests extends BaseIntegratio
             assertEquals(true, it.ceuInd)
         }
     }
+
+    @Test
+    void testFetchByFieldValueInListSameDomain(){
+        genericBasicValidationDomainService.baseDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.decorator = GlobalUniqueIdentifier.class
+        List<GlobalUniqueIdentifier> response = genericBasicValidationDomainService.fetchByFieldValueInList('ldmName',['acdemic-levels','section-grade-types'])
+        assertNotNull(response)
+        response.each {
+            assertTrue(it.ldmName == 'acdemic-levels' || it.ldmName == 'section-grade-types')
+        }
+    }
+
+    @Test
+    void testFetchByFieldValueInListDifferentDomain(){
+        genericBasicValidationDomainService.baseDomain = Level.class
+        genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.decorator = AcademicLevel.class
+        genericBasicValidationDomainService.guidDomainKeyField = 'domainKey'
+        genericBasicValidationDomainService.ldmNameField = 'ldmName'
+        genericBasicValidationDomainService.ldmNameValue = 'academic-levels'
+        genericBasicValidationDomainService.baseDomainKeyField = 'code'
+        genericBasicValidationDomainService.defaultSortField = 'code'
+        List<AcademicLevel> response = genericBasicValidationDomainService.fetchByFieldValueInList('code',['UG','CE'])
+        assertNotNull(response)
+        response.each {
+            assertTrue(it.code == 'UG' || it.code == 'CE')
+        }
+    }
 }

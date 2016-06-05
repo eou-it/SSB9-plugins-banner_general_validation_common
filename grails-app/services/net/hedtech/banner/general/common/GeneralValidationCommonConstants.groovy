@@ -167,4 +167,6 @@ class GeneralValidationCommonConstants {
     static final String PERSON_HOLDS_KEY = 'gPersonHolds'
     static final String PERSONS_KEY = 'gPerson'
     static final String PERSON_HOLDS_TYPE_KEY = 'gPersonHoldsType'
+    //Ethnicities V6
+    static final String ETHNICITIES = 'ethnicities'
 }

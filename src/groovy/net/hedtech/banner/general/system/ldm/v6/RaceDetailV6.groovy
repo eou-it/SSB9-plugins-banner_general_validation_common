@@ -13,9 +13,9 @@ import net.hedtech.banner.general.system.ldm.v1.RaceDetail
 @InheritConstructors
 class RaceDetailV6 extends RaceDetail {
 
-    ReportingDecorator getReporting(){
+    List<ReportingDecorator> getReporting(){
         if(parentCategory) {
-            return new ReportingDecorator(GeneralValidationCommonConstants.RACE_LDM_NAME, parentCategory)
+            return  [new ReportingDecorator(GeneralValidationCommonConstants.RACE_LDM_NAME, parentCategory)]
         }
     }
 }

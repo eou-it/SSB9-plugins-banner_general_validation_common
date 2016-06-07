@@ -24,8 +24,9 @@ class EthnicityDecorator {
         this.category = category
 }
 
-    ReportingDecorator getReporting(){
-        return new ReportingDecorator(GeneralValidationCommonConstants.ETHNICITIES,category)
+    List<ReportingDecorator> getReporting(){
+        return  [new ReportingDecorator(GeneralValidationCommonConstants.ETHNICITIES, category)]
+
     }
 
 

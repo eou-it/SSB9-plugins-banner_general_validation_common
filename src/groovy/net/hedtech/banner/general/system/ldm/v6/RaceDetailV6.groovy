@@ -5,6 +5,8 @@ package net.hedtech.banner.general.system.ldm.v6
 
 import groovy.transform.InheritConstructors
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.system.Race
+import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v1.RaceDetail
 
 /**
@@ -13,9 +15,15 @@ import net.hedtech.banner.general.system.ldm.v1.RaceDetail
 @InheritConstructors
 class RaceDetailV6 extends RaceDetail {
 
-    List<ReportingDecorator> getReporting(){
+
+      List<ReportingDecorator> getReporting(){
         if(parentCategory) {
             return  [new ReportingDecorator(GeneralValidationCommonConstants.RACE_LDM_NAME, parentCategory)]
         }
+    }
+
+
+    Map getRaces(){
+        return [id:guid]
     }
 }

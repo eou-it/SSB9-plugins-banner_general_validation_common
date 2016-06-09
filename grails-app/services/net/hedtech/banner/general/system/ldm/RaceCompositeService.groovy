@@ -232,4 +232,22 @@ class RaceCompositeService extends LdmService {
         return new RaceDetail(race, guid, racialCategory, new Metadata(race.dataOrigin));
     }
 
+
+
+    public Map fetchGuids(Set<String> raceCodes){
+        Map content=[:]
+        def result
+        String hql='''select r.race, b.guid from Race r, GlobalUniqueIdentifier b WHERE r.race in :raceCodes and b.ldmName = :ldmName and r.race = b.domainKey'''
+        Race.withSession { session ->
+            def query = session.createQuery(hql).setString('ldmName', GeneralValidationCommonConstants.RACE_LDM_NAME)
+            query.setParameterList('raceCodes', raceCodes)
+            result = query.list()
+        }
+        result.each { race ->
+            content.put(race[0],race[1])
+        }
+        return content
+    }
+
+
 }

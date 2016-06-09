@@ -491,8 +491,6 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetail.race, raceDetails[0].race
         assertNotNull raceDetail.guid
         assertEquals raceDetail.guid, raceDetails[0].guid
-        assertNotNull raceDetail.reporting
-        assertEquals raceDetail.reporting.country.racialCategory.get(0), raceDetails[0].parentCategory
     }
 
 
@@ -513,5 +511,15 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         ReportingDecorator report = new ReportingDecorator(null, "abc")
         def country =  report.getCountry()
         assertNotNull country
+    }
+
+
+    @Test
+    void testfetchGUIDs(){
+        List<String> raceCodes= Race.findAll(max: 2).race
+        Map content = raceCompositeService.fetchGuids(raceCodes as Set)
+        content.each{ raceStatus ->
+            assertTrue raceCodes.contains(raceStatus.key)
+        }
     }
 }

@@ -79,7 +79,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
         List ethnicities = ethnicityCompositeService.list([:])
         assertTrue ethnicities?.size() > 0
-        def actualGuids = ethnicities.collect { it.guid }
+        def actualGuids = ethnicities.collect { it.id }
         assertEquals expectedGuids.size(), actualGuids.size()
         assertTrue expectedGuids.containsAll(actualGuids)
         assertEquals expectedGuids.size(), ethnicityCompositeService.count()
@@ -186,7 +186,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
         def result = ethnicityCompositeService.get(globUniqIds[0].guid)
         assertNotNull result
-        assertEquals globUniqIds[0].guid, result.guid
+        assertEquals globUniqIds[0].guid, result.id
         assertEquals globUniqIds[0].domainKey, result.title
     }
 
@@ -200,7 +200,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertNotNull result
         assertEquals globUniqIds.guid, result.id
         assertEquals globUniqIds.domainKey, result.title
-        assertEquals 'nonHispanic', result.ethnicCategory
+        assertEquals 'nonHispanic', result.category
     }
 
     @Test
@@ -213,7 +213,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertNotNull result
         assertEquals globUniqIds.guid, result.id
         assertEquals globUniqIds.domainKey, result.title
-        assertEquals 'hispanic', result.ethnicCategory
+        assertEquals 'hispanic', result.category
     }
 
     @Test
@@ -482,5 +482,15 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertNotNull(reportingDecorator1.country)
 
     }
-
+    @Test
+    void testfetchGUIDs(){
+        List<GlobalUniqueIdentifier> globUniqIds = GlobalUniqueIdentifier.findAllByLdmNameAndDomainIdGreaterThan('ethnicities-us',0L)
+        assertTrue globUniqIds?.size() > 0
+        List<String> expectedGuids = globUniqIds.collect { it.domainId.toString() }
+        assertTrue expectedGuids?.size() > 0
+        Map content=ethnicityCompositeService.fetchGUIDs()
+        content.each{ ethnicityStatus ->
+            assertTrue expectedGuids.contains(ethnicityStatus.key)
+        }
+    }
 }

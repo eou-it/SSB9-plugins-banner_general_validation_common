@@ -91,9 +91,11 @@ class GeneralValidationCommonConstants {
     static final String RACE_LDM_NAME = 'races'
     static final String RACE_PARENT_CATEGORY = "RACE.PARENTCATEGORY"
     static final String RACE_RACIAL_CATEGORY = "RACE.RACIALCATEGORY"
+    static final String RACE_RACIAL_CATEGORY_V6 = "RACE.RACIALCATEGORY.V6"
     static final String SETTING_NAME = 'settingName'
     static final String PROCESS_CODE_NAME = 'processCode'
     static final String TRANSLATION_VALUE = 'translationValueList'
+    static final String COUNTRY_CODE = 'USA'
 
     //common constants for Organization
     static final String COLLEGE = 'college'
@@ -165,4 +167,6 @@ class GeneralValidationCommonConstants {
     static final String PERSON_HOLDS_KEY = 'gPersonHolds'
     static final String PERSONS_KEY = 'gPerson'
     static final String PERSON_HOLDS_TYPE_KEY = 'gPersonHoldsType'
+    //Ethnicities V6
+    static final String ETHNICITIES = 'ethnicities'
 }

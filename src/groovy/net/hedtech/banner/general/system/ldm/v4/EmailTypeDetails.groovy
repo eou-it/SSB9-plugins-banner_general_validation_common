@@ -21,4 +21,8 @@ class EmailTypeDetails {
     EmailTypeDetails(EmailTypeReadOnly emailTypesView) {
         this.emailTypesView = emailTypesView
     }
+
+   Map getDetail(){
+        return [id:emailTypesView.id]
+    }
 }

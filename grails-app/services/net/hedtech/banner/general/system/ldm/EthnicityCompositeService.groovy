@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -13,9 +13,11 @@ import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
 import net.hedtech.banner.general.system.ldm.v1.EthnicityParentCategory
 import net.hedtech.banner.general.system.ldm.v1.Metadata
+import net.hedtech.banner.general.system.ldm.v6.ReportingDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import  net.hedtech.banner.general.system.ldm.v6.EthnicityDecorator
 
 /**
  * Service used to support "ethnicities" resource for CDM
@@ -26,7 +28,8 @@ class EthnicityCompositeService extends LdmService {
     def ethnicityService
     private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1,
                                                   GeneralValidationCommonConstants.VERSION_V3,
-                                                  GeneralValidationCommonConstants.VERSION_V4 ]
+                                                  GeneralValidationCommonConstants.VERSION_V4,
+                                                  GeneralValidationCommonConstants.VERSION_V6]
 
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -42,20 +45,13 @@ class EthnicityCompositeService extends LdmService {
             RestfulApiValidationUtility.validateSortOrder(params.order)
             params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
 
-            List<Ethnicity> ethnicityList = ethnicityService.list(params) as List
-            ethnicityList.each { ethnicity ->
+            ethnicityService.list(params).each { ethnicity ->
                 ethnicityDetailList << getDecorator(ethnicity)
             }
-        } else if (GeneralValidationCommonConstants.VERSION_V3.equals(getAcceptVersion(VERSIONS))) {
-            def results = getUnitedStatesEthnicCodes()
-            results?.each {
-                ethnicityDetailList << [guid: it.guid, title: it.domainKey]
-            }
-        }else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS))) {
-             getUnitedStatesEthnicCodes().each { ethnicity ->
-                 if(ethnicity.domainId != 0){
-                ethnicityDetailList << fetchV4Data(ethnicity)
-                 }
+        } else {
+            getUnitedStatesEthnicCodes().each { ethnicity ->
+                EthnicityDecorator ethnicityDecorator = getEthnicityUSDecorator(ethnicity)
+                if(ethnicityDecorator) ethnicityDetailList << ethnicityDecorator
             }
         }
 
@@ -74,7 +70,7 @@ class EthnicityCompositeService extends LdmService {
             total = ethnicityService.count()
         } else if (GeneralValidationCommonConstants.VERSION_V3.equals(getAcceptVersion(VERSIONS))) {
             total = GlobalUniqueIdentifier.countByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
-        } else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS))) {
+        } else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS)) || GeneralValidationCommonConstants.VERSION_V6.equals(getAcceptVersion(VERSIONS))) {
             total = GlobalUniqueIdentifier.countByLdmNameAndDomainIdGreaterThan(GeneralValidationCommonConstants.ETHNICITIES_US,0L)
         }
 
@@ -100,20 +96,12 @@ class EthnicityCompositeService extends LdmService {
             }
 
             result = getDecorator(ethnicity, globalUniqueIdentifier.guid)
-        } else if (GeneralValidationCommonConstants.VERSION_V3.equals(getAcceptVersion(VERSIONS))) {
-            GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, guid?.trim()?.toLowerCase())
-            if (!globalUniqueIdentifier) {
+        } else { GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, guid?.trim()?.toLowerCase())
+            if (!globalUniqueIdentifier || ( globalUniqueIdentifier.domainId == 0 && getAcceptVersion(VERSIONS) > GeneralValidationCommonConstants.VERSION_V3 )) {
                 throw new ApplicationException(GeneralValidationCommonConstants.ETHNICITY, new NotFoundException())
             }
-            result = [guid: globalUniqueIdentifier.guid, title: globalUniqueIdentifier.domainKey]
-        } else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS))) {
-            GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, guid?.trim()?.toLowerCase())
-            if (!globalUniqueIdentifier || globalUniqueIdentifier.domainId<=0) {
-                throw new ApplicationException(GeneralValidationCommonConstants.ETHNICITY, new NotFoundException())
-            }
-            result = fetchV4Data(globalUniqueIdentifier)
+            result = getEthnicityUSDecorator(globalUniqueIdentifier)
         }
-
         log.debug "get:End:$result"
         return result;
     }
@@ -209,6 +197,16 @@ class EthnicityCompositeService extends LdmService {
         return ethnicityDetail
     }
 
+    Map<String,GlobalUniqueIdentifier> fetchGUIDs (){
+        Map<String,GlobalUniqueIdentifier> data = [:]
+        getUnitedStatesEthnicCodes().each {
+            if(it.domainId>0){
+                data.put(String.valueOf(it.domainId),it)
+            }
+        }
+        return data
+    }
+
     /**
      * STVETHN_ETHN_CDE -> HeDM enumeration (Mapping)(in LIST/GET operations)
      *
@@ -228,6 +226,7 @@ class EthnicityCompositeService extends LdmService {
         }
         return hedmEnum
     }
+
 
     /**
      * HeDM enumeration -> STVETHN_ETHN_CDE (Default)(in POST/PUT operations)
@@ -284,7 +283,6 @@ class EthnicityCompositeService extends LdmService {
         }
     }
 
-
     private void validateRequest(Map content) {
         if (!content?.code) {
             throw new ApplicationException('ethnicity', new BusinessLogicValidationException('code.required.message', null))
@@ -300,20 +298,26 @@ class EthnicityCompositeService extends LdmService {
      * @return
      */
     List<GlobalUniqueIdentifier> getUnitedStatesEthnicCodes() {
-        return GlobalUniqueIdentifier.findAllByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
+        return globalUniqueIdentifierService.fetchByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
     }
 
     /**
-     * fetching version 4 ethnicity data based on domain id
+     * fetching Ethnicity-US
      * @param ethnicity
      * @return
      */
-   def fetchV4Data(def ethnicity){
-       if(ethnicity?.domainId == 1L){
-           return [id: ethnicity.guid, title: ethnicity.domainKey, ethnicCategory:GeneralValidationCommonConstants.NON_HISPANIC]
-       } else if(ethnicity?.domainId == 2L){
-           return [id: ethnicity.guid, title: ethnicity.domainKey, ethnicCategory:GeneralValidationCommonConstants.HISPANIC]
-       }
-   }
-
+    EthnicityDecorator getEthnicityUSDecorator(GlobalUniqueIdentifier ethnicity){
+        String version = getAcceptVersion(VERSIONS)
+        if(GeneralValidationCommonConstants.VERSION_V3.equals(version)){
+           return new EthnicityDecorator(ethnicity.guid,ethnicity.domainKey,null)
+        }else if(version > GeneralValidationCommonConstants.VERSION_V3 && ethnicity.domainId>0){
+            String category = null
+            if (ethnicity.domainId == 1L) {
+                category = GeneralValidationCommonConstants.NON_HISPANIC
+            } else if (ethnicity.domainId == 2L) {
+                category = GeneralValidationCommonConstants.HISPANIC
+            }
+            return new EthnicityDecorator(ethnicity.guid, ethnicity.domainKey, category)
+        }
+    }
 }

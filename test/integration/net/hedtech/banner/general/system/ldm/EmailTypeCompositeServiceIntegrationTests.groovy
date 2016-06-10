@@ -233,6 +233,18 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         }
     }
 
+    @Test
+    void testFetchAllMappedEmailTypes() {
+        Map emailTypeData = emailTypeCompositeService.fetchAllMappedEmailTypes()
+        assertNotNull emailTypeData
+        assertFalse emailTypeData.isEmpty()
+        List<EmailTypeDetails> emailTypeDetails = emailTypeCompositeService.list(params)
+        assertNotNull emailTypeDetails
+        assertTrue emailTypeDetails.code.containsAll(emailTypeData.keySet())
+        assertTrue emailTypeDetails.emailTypesView.containsAll(emailTypeData.values())
+
+    }
+
     private Map updateEmailTypeMap(id, code) {
         Map params = [id: id,code: code, description: 'Description Test',emailType:"Home"]
         return params

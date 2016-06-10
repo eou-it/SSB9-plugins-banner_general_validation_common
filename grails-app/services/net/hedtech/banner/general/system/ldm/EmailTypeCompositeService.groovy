@@ -78,7 +78,7 @@ class EmailTypeCompositeService extends LdmService {
         }
         EmailType emailType = bindEmailType(new EmailType(), content)
         String emailGuid = content?.id?.trim()?.toLowerCase()
-        if (emailGuid) {
+        if (emailGuid && emailGuid!=GeneralValidationCommonConstants.NIL_GUID) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
             emailGuid = updateGuidValue(emailType.id, emailGuid, GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES)?.guid
         } else {
@@ -97,7 +97,7 @@ class EmailTypeCompositeService extends LdmService {
     def update(Map content) {
         String emailGuid = content?.id?.trim()?.toLowerCase()
         if (!emailGuid) {
-            throw new ApplicationException("emailType", new NotFoundException())
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
         }
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailGuid)
 
@@ -141,4 +141,16 @@ class EmailTypeCompositeService extends LdmService {
         view.setEmailType(content.emailType)
         return new EmailTypeDetails(view)
     }
+    /**
+     * Fetch All Email Type details and put into Map for person v6
+     * @param codes
+     * @return Map
+     */
+    public Map<String,EmailTypeReadOnly> fetchAllMappedEmailTypes(){
+        Map emailTypeMap = [:]
+         emailTypeReadOnlyService.fetchAll([:]).each{
+             emailTypeMap.put(it.code,it)
+        }
+        return emailTypeMap
+        }
 }

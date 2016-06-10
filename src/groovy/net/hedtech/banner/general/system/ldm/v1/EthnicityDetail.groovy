@@ -1,15 +1,20 @@
 /** *******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm.v1
 
-
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 import net.hedtech.banner.general.system.Ethnicity
+import net.hedtech.banner.general.system.ldm.v6.ReportingDecorator
 
 
 /**
  * CDM decorator for ethnicities resource (/base/domain/ethnicities/ethnicities.json-schema)
  */
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
+
 class EthnicityDetail {
 
     @Delegate
@@ -24,26 +29,4 @@ class EthnicityDetail {
         this.parentCategory = parentCategory
         this.metadata = metadata
     }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (getClass() != o.class) return false
-        EthnicityDetail that = (EthnicityDetail) o
-        if (ethnicity != that.ethnicity) return false
-        if (guid != that.guid) return false
-        if (parentCategory != that.parentCategory) return false
-        if (metadata != that.metadata) return false
-        return true
     }
-
-
-    public String toString() {
-        """EthnicityDetail[
-                    ethnicity=$ethnicity,
-                    guid=$guid,
-                    metadata=$metadata,
-                    parentCategory=$parentCategory]"""
-    }
-
-}

@@ -45,6 +45,20 @@ class GenericBasicValidationDomainServiceIntegrationTests extends BaseIntegratio
     }
 
     @Test
+    void testGetGuidInSameDomainDefaultDecorator() {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findAllByLdmName('section-grade-types')[0]
+        genericBasicValidationDomainService.baseDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.decorator = GenericBasicValidationDecorator.class
+        genericBasicValidationDomainService.guidIdField = 'guid'
+        genericBasicValidationDomainService.ldmNameField = 'ldmName'
+        genericBasicValidationDomainService.ldmNameValue = 'section-grade-types'
+        GenericBasicValidationDecorator response = genericBasicValidationDomainService.get(globalUniqueIdentifier.guid)
+        assertNotNull(response)
+        assertEquals(globalUniqueIdentifier.guid, response.guid)
+    }
+
+    @Test
     void testGetGuidInDifferentDomain() {
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findAllByLdmName('academic-levels')[0]
         genericBasicValidationDomainService.baseDomain = Level.class
@@ -56,6 +70,23 @@ class GenericBasicValidationDomainServiceIntegrationTests extends BaseIntegratio
         genericBasicValidationDomainService.ldmNameValue = 'academic-levels'
         genericBasicValidationDomainService.baseDomainKeyField = 'code'
         AcademicLevel response = genericBasicValidationDomainService.get(globalUniqueIdentifier.guid)
+        assertNotNull(response)
+        assertEquals(globalUniqueIdentifier.domainKey, response.code)
+        assertEquals(globalUniqueIdentifier.guid, response.guid)
+    }
+
+    @Test
+    void testGetGuidInDifferentDomainDefaultDecorator() {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findAllByLdmName('academic-levels')[0]
+        genericBasicValidationDomainService.baseDomain = Level.class
+        genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.decorator = GenericBasicValidationDecorator.class
+        genericBasicValidationDomainService.guidIdField = 'guid'
+        genericBasicValidationDomainService.guidDomainKeyField = 'domainKey'
+        genericBasicValidationDomainService.ldmNameField = 'ldmName'
+        genericBasicValidationDomainService.ldmNameValue = 'academic-levels'
+        genericBasicValidationDomainService.baseDomainKeyField = 'code'
+        GenericBasicValidationDecorator response = genericBasicValidationDomainService.get(globalUniqueIdentifier.guid)
         assertNotNull(response)
         assertEquals(globalUniqueIdentifier.domainKey, response.code)
         assertEquals(globalUniqueIdentifier.guid, response.guid)
@@ -217,6 +248,23 @@ class GenericBasicValidationDomainServiceIntegrationTests extends BaseIntegratio
     }
 
     @Test
+    void testListDifferentDomainNoFiltersDefaultDecorator() {
+        genericBasicValidationDomainService.baseDomain = Level.class
+        genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.decorator = GenericBasicValidationDecorator.class
+        genericBasicValidationDomainService.guidDomainKeyField = 'domainKey'
+        genericBasicValidationDomainService.ldmNameField = 'ldmName'
+        genericBasicValidationDomainService.ldmNameValue = 'academic-levels'
+        genericBasicValidationDomainService.baseDomainKeyField = 'code'
+        genericBasicValidationDomainService.defaultSortField = 'code'
+        List<GenericBasicValidationDecorator> response = genericBasicValidationDomainService.list([:])
+        assertNotNull(response)
+        response.each {
+            assertTrue(it instanceof GenericBasicValidationDecorator)
+        }
+    }
+
+    @Test
     void testListDifferentDomainFiltered() {
         genericBasicValidationDomainService.baseDomain = Level.class
         genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
@@ -232,6 +280,25 @@ class GenericBasicValidationDomainServiceIntegrationTests extends BaseIntegratio
         levels.each {
             assertTrue(it instanceof AcademicLevel)
             assertEquals(true, it.ceuInd)
+        }
+    }
+
+    @Test
+    void testListDifferentDomainFilteredDefaultDecorator() {
+        genericBasicValidationDomainService.baseDomain = Level.class
+        genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.decorator = GenericBasicValidationDecorator.class
+        genericBasicValidationDomainService.guidDomainKeyField = 'domainKey'
+        genericBasicValidationDomainService.ldmNameField = 'ldmName'
+        genericBasicValidationDomainService.ldmNameValue = 'academic-levels'
+        genericBasicValidationDomainService.baseDomainKeyField = 'code'
+        genericBasicValidationDomainService.defaultSortField = 'code'
+        genericBasicValidationDomainService.supportedSearchFields = ['ceuInd']
+        List<GenericBasicValidationDecorator> response = genericBasicValidationDomainService.list(['ceuInd':true])
+        assertNotNull(response)
+        response.each {
+            assertTrue(it instanceof GenericBasicValidationDecorator)
+            assertEquals(true, Level.findByCode(it.code).ceuInd)
         }
     }
 

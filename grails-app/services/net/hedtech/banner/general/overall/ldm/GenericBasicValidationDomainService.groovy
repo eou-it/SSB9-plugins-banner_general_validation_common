@@ -10,6 +10,8 @@ import net.hedtech.banner.query.QueryBuilder
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 
+import javax.annotation.PostConstruct
+
 /**
  * Generic service method for basic validation tables used by HEDM
  */
@@ -219,5 +221,12 @@ class GenericBasicValidationDomainService {
         listResponse = df.find([params: queryParams, criteria: criteria], [:])
 
         return decorateListResponse(listResponse)
+    }
+
+    @PostConstruct
+    public void setDecorator(){
+        if(!this.decorator){
+            this.decorator = GenericBasicValidationDecorator.class
+        }
     }
 }

@@ -6,7 +6,6 @@ package net.hedtech.banner.general.system.ldm.v4
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import net.hedtech.banner.general.system.EmailTypeReadOnly
 
 /**
  * <p> Decorator for EmailTypeCompositeSevice</p>
@@ -15,14 +14,19 @@ import net.hedtech.banner.general.system.EmailTypeReadOnly
 @ToString(includeNames = true, includeFields = true)
 class EmailTypeDetails {
 
-    @Delegate
-    EmailTypeReadOnly emailTypesView
+    String code
+    String description
+    String id
+    String emailType
 
-    EmailTypeDetails(EmailTypeReadOnly emailTypesView) {
-        this.emailTypesView = emailTypesView
+    EmailTypeDetails(String code, String description, String guid, String emailType) {
+        this.code = code
+        this.description = description
+        this.id = guid
+        this.emailType = emailType
     }
 
    Map getDetail(){
-        return [id:emailTypesView.id]
+        return [id:this.id]
     }
 }

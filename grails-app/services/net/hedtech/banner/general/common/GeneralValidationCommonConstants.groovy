@@ -169,4 +169,8 @@ class GeneralValidationCommonConstants {
     static final String PERSON_HOLDS_TYPE_KEY = 'gPersonHoldsType'
     //Ethnicities V6
     static final String ETHNICITIES = 'ethnicities'
+
+    //Email Type V6 constants
+    public static final String EMAIL_TYPE_SETTING_NAME = 'EMAILS.EMAILTYPE'
+    public static final String EAMIL_TYPE_LDM_NAME = 'email-types'
 }

@@ -151,7 +151,6 @@
         <mapping class="net.hedtech.banner.general.system.AcademicDisciplineView"/>
         <mapping class="net.hedtech.banner.general.system.PhoneType"/>
         <mapping class="net.hedtech.banner.general.system.LocationTypeReadOnly"/>
-        <mapping class="net.hedtech.banner.general.system.EmailTypeReadOnly"/>
         <mapping class="net.hedtech.banner.general.system.AcademicCredential"/>
         <mapping class="net.hedtech.banner.general.system.GeographicRegionRule"/>
         <mapping class="net.hedtech.banner.general.system.GeographicRegion"/>

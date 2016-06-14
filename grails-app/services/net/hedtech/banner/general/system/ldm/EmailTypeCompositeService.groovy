@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -8,13 +8,10 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.EmailType
-import net.hedtech.banner.general.system.EmailTypeReadOnly
-import net.hedtech.banner.general.system.ldm.v4.ContactEntityType
 import net.hedtech.banner.general.system.ldm.v4.EmailTypeDetails
-import net.hedtech.banner.general.system.ldm.v4.OrganizationEmailType
-import net.hedtech.banner.general.system.ldm.v4.PersonEmailType
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional
 class EmailTypeCompositeService extends LdmService {
 
     def emailTypeService
-    def emailTypeReadOnlyService
 
     /**
      * GET /api/eamil-types
@@ -35,8 +31,8 @@ class EmailTypeCompositeService extends LdmService {
     List<EmailTypeDetails> list(Map params) {
         List<EmailTypeDetails> emailTypes = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-          emailTypeReadOnlyService.fetchAll(params).each {result ->
-                    emailTypes << new EmailTypeDetails(result)
+        emailTypeService.fetchAll(params).each {result ->
+                    emailTypes << new EmailTypeDetails(result[0].code,result[0].description,result[1].guid,result[2].translationValue)
              }
         emailTypes
     }
@@ -46,7 +42,7 @@ class EmailTypeCompositeService extends LdmService {
      * @return Long value as total count
      */
     Long count() {
-        return emailTypeReadOnlyService.fetchCountAll()
+        return emailTypeService.countAll()
     }
 
     /**
@@ -56,11 +52,13 @@ class EmailTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     EmailTypeDetails get(String guid) {
-        EmailTypeReadOnly emailTypesView = emailTypeReadOnlyService.fetchByGuid(guid)
-            if(!emailTypesView){
-                throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
-            }
-         return   new EmailTypeDetails(emailTypesView)
+        List emailType = emailTypeService.fetchByGuid(guid)
+        if (emailType) {
+                return new EmailTypeDetails(emailType[0].code, emailType[0].description, emailType[1].guid, emailType[2].translationValue)
+        } else {
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
+        }
+
     }
 
     /**
@@ -82,9 +80,9 @@ class EmailTypeCompositeService extends LdmService {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
             emailGuid = updateGuidValue(emailType.id, emailGuid, GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES)?.guid
         } else {
-            emailGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailType?.id)?.guid
+            emailGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailType?.id)?.guid
         }
-        return getDecorator(emailType, content, emailGuid)
+        return new EmailTypeDetails(emailType.code, emailType.description, emailGuid, content.emailType)
     }
 
 
@@ -99,7 +97,7 @@ class EmailTypeCompositeService extends LdmService {
         if (!emailGuid) {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
         }
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailGuid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailGuid)
 
         if (!globalUniqueIdentifier) {
             //Per strategy when a GUID was provided, the create should happen.
@@ -115,7 +113,7 @@ class EmailTypeCompositeService extends LdmService {
         }
         emailType = bindEmailType(emailType, content)
 
-        return getDecorator(emailType, content, emailGuid)
+      return  new EmailTypeDetails(emailType.code, emailType.description, emailGuid, content.emailType)
     }
 
     /**
@@ -129,27 +127,15 @@ class EmailTypeCompositeService extends LdmService {
         emailTypeService.createOrUpdate(emailType)
     }
 
-
-    /**
-     * Populating the decorator class with the response as per schema.
-     */
-    private def getDecorator(EmailType emailType, Map content, String emailGuid = null) {
-        EmailTypeReadOnly view = new EmailTypeReadOnly()
-        view.setCode(emailType.code)
-        view.setDescription(emailType.description)
-        view.setId(emailGuid)
-        view.setEmailType(content.emailType)
-        return new EmailTypeDetails(view)
-    }
     /**
      * Fetch All Email Type details and put into Map for person v6
      * @param codes
      * @return Map
      */
-    public Map<String,EmailTypeReadOnly> fetchAllMappedEmailTypes(){
+    public Map<String,List> fetchAllMappedEmailTypes(){
         Map emailTypeMap = [:]
-         emailTypeReadOnlyService.fetchAll([:]).each{
-             emailTypeMap.put(it.code,it)
+        emailTypeService.fetchAll().each{
+             emailTypeMap.put(it[0].code,it)
         }
         return emailTypeMap
         }

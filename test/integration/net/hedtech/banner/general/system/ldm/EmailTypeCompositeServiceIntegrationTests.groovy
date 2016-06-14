@@ -5,8 +5,9 @@
 package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.EmailTypeReadOnly
+import net.hedtech.banner.general.system.EmailTypeService
 import net.hedtech.banner.general.system.ldm.v4.EmailTypeDetails
+import net.hedtech.banner.general.system.ldm.v6.EmailTypeEnum
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -17,6 +18,8 @@ import org.junit.Test
 class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
 
     def emailTypeCompositeService
+    EmailTypeService emailTypeService
+
     Map i_success_input_content
     private String i_success_code = 'AOL'
 
@@ -40,7 +43,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         List emailTypes = emailTypeCompositeService.list(params)
         assertNotNull emailTypes
         assertFalse emailTypes.isEmpty()
-        def totalCount = EmailTypeReadOnly.count()
+        def totalCount = emailTypeService.countAll()
         assertNotNull totalCount
         assertEquals totalCount, emailTypes.size()
     }
@@ -50,9 +53,11 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testCount(){
-        assertNotNull emailTypeCompositeService.count()
-        assertNotNull EmailTypeReadOnly.count()
-        assertEquals EmailTypeReadOnly.count(),emailTypeCompositeService.count()
+        Long expectedCount = emailTypeCompositeService.count()
+        assertNotNull(expectedCount)
+        Long actualCount = emailTypeService.countAll()
+        assertNotNull(actualCount)
+        assertEquals expectedCount,actualCount
     }
 
 
@@ -84,7 +89,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testShow(){
-        List list = emailTypeCompositeService.list(params)
+        List list = emailTypeCompositeService.list([max:'1'])
         assertNotNull list
         assertTrue list.size()>0
         EmailTypeDetails emailTypeDetails = list.get(0)
@@ -95,6 +100,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals emailTypeDetails.code,newEmailTypeDetails.code
         assertEquals emailTypeDetails.description,newEmailTypeDetails.description
         assertEquals emailTypeDetails.id,newEmailTypeDetails.id
+        assertTrue EmailTypeEnum.EMAIL_TYPE.containsAll(emailTypeDetails.emailType)
     }
 
     /**
@@ -241,7 +247,6 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         List<EmailTypeDetails> emailTypeDetails = emailTypeCompositeService.list(params)
         assertNotNull emailTypeDetails
         assertTrue emailTypeDetails.code.containsAll(emailTypeData.keySet())
-        assertTrue emailTypeDetails.emailTypesView.containsAll(emailTypeData.values())
 
     }
 

@@ -1,8 +1,11 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -16,4 +19,47 @@ import net.hedtech.banner.service.ServiceBase
 
 class EmailTypeService extends ServiceBase {
     boolean transactional = true
+
+    /**
+     * Return Count value of Email Type which are mapped to goriccr
+     * @return Long
+     */
+    public Long countAll() {
+        return EmailType.countAll()
+    }
+
+    /**
+     * fetching EmailType data
+     * @param Map
+     * @return List
+     */
+    public List fetchAll(Map params) {
+        if (params) {
+            return EmailType.fetchAll(params)
+        } else {
+            return EmailType.fetchAll()
+        }
+
+    }
+
+    /**
+     * fetching EmailType data
+     * @param Map
+     * @return List
+     */
+    public List fetchAll() {
+        return EmailType.fetchAll()
+    }
+
+    /**
+     * Return Email Type which are mapped to goriccr
+     * @return Long
+     */
+    public  List fetchByGuid(String guid) {
+        if(!guid){
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
+        }
+        return EmailType.fetchByGuid(guid)
+    }
+
 }

@@ -13,11 +13,10 @@ import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
 import net.hedtech.banner.general.system.ldm.v1.EthnicityParentCategory
 import net.hedtech.banner.general.system.ldm.v1.Metadata
-import net.hedtech.banner.general.system.ldm.v6.ReportingDecorator
+import net.hedtech.banner.general.system.ldm.v6.EthnicityDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import  net.hedtech.banner.general.system.ldm.v6.EthnicityDecorator
 
 /**
  * Service used to support "ethnicities" resource for CDM
@@ -197,14 +196,15 @@ class EthnicityCompositeService extends LdmService {
         return ethnicityDetail
     }
 
-    Map<String,GlobalUniqueIdentifier> fetchGUIDs (){
-        Map<String,GlobalUniqueIdentifier> data = [:]
+
+    Map<String, String> fetchGUIDsForUnitedStatesEthnicCodes() {
+        Map<String, String> usEthnicCodeToGuidMap = [:]
         getUnitedStatesEthnicCodes().each {
-            if(it.domainId>0){
-                data.put(String.valueOf(it.domainId),it)
+            if (it.domainId > 0) {
+                usEthnicCodeToGuidMap.put(String.valueOf(it.domainId), it.guid)
             }
         }
-        return data
+        return usEthnicCodeToGuidMap
     }
 
     /**
@@ -301,23 +301,29 @@ class EthnicityCompositeService extends LdmService {
         return globalUniqueIdentifierService.fetchByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
     }
 
-    /**
-     * fetching Ethnicity-US
-     * @param ethnicity
-     * @return
-     */
-    EthnicityDecorator getEthnicityUSDecorator(GlobalUniqueIdentifier ethnicity){
+
+    EthnicityDecorator getEthnicityUSDecorator(GlobalUniqueIdentifier globalUniqIdentifier) {
         String version = getAcceptVersion(VERSIONS)
-        if(GeneralValidationCommonConstants.VERSION_V3.equals(version)){
-           return new EthnicityDecorator(ethnicity.guid,ethnicity.domainKey,null)
-        }else if(version > GeneralValidationCommonConstants.VERSION_V3 && ethnicity.domainId>0){
-            String category = null
-            if (ethnicity.domainId == 1L) {
-                category = GeneralValidationCommonConstants.NON_HISPANIC
-            } else if (ethnicity.domainId == 2L) {
-                category = GeneralValidationCommonConstants.HISPANIC
-            }
-            return new EthnicityDecorator(ethnicity.guid, ethnicity.domainKey, category)
+        if (GeneralValidationCommonConstants.VERSION_V3.equals(version)) {
+            return new EthnicityDecorator(globalUniqIdentifier.guid, globalUniqIdentifier.domainKey, null)
+        } else if (version > GeneralValidationCommonConstants.VERSION_V3 && globalUniqIdentifier.domainId > 0) {
+            return createEthnicityV6(globalUniqIdentifier.guid, globalUniqIdentifier.domainKey, String.valueOf(globalUniqIdentifier.domainId))
         }
     }
+
+
+    private EthnicityDecorator createEthnicityV6(String guid, String title, String usEthnicCode) {
+        EthnicityDecorator decorator
+        if (guid) {
+            String ethnicCategory
+            if (usEthnicCode == "1") {
+                ethnicCategory = GeneralValidationCommonConstants.NON_HISPANIC
+            } else if (usEthnicCode == "2") {
+                ethnicCategory = GeneralValidationCommonConstants.HISPANIC
+            }
+            decorator = new EthnicityDecorator(guid, title, ethnicCategory)
+        }
+        return decorator
+    }
+
 }

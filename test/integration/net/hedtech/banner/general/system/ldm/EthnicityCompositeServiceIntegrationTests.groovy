@@ -488,7 +488,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertTrue globUniqIds?.size() > 0
         List<String> expectedGuids = globUniqIds.collect { it.domainId.toString() }
         assertTrue expectedGuids?.size() > 0
-        Map content=ethnicityCompositeService.fetchGUIDs()
+        Map content=ethnicityCompositeService.fetchGUIDsForUnitedStatesEthnicCodes()
         content.each{ ethnicityStatus ->
             assertTrue expectedGuids.contains(ethnicityStatus.key)
         }

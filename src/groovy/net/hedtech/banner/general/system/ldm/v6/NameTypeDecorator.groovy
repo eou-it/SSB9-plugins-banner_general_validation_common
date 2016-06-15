@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system.ldm.v6
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import net.hedtech.banner.general.system.ldm.NameTypeCategory
 
 /**
  * Decorator for "person-name-types" API
@@ -18,6 +19,7 @@ class NameTypeDecorator {
     String code
     String category
 
+
     NameTypeDecorator(String id, String code, String title, String category) {
         this.id = id
         this.title = title
@@ -25,13 +27,14 @@ class NameTypeDecorator {
         this.category = category
     }
 
+
     String getCategory() {
-        if (!category || !NameTypeCategory.values().value*.capitalize().contains(category)) {
-            return NameTypeCategory.PERSONAL.value
-        } else if (category == NameTypeCategory.BIRTH.value.capitalize()) {
-            return NameTypeCategory.BIRTH.value
-        } else if (category == NameTypeCategory.LEGRAL.value.capitalize()) {
-            return NameTypeCategory.LEGRAL.value
+        NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(category)
+        if (nameTypeCategory) {
+            return nameTypeCategory.v6
+        } else {
+            return NameTypeCategory.PERSONAL.v6
         }
     }
+
 }

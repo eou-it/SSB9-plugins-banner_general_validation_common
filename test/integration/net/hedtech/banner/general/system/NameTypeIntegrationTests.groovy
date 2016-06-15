@@ -3,15 +3,13 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import groovy.sql.Sql
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.ldm.v6.NameTypeCategory
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.After
-
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import groovy.sql.Sql
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class NameTypeIntegrationTests extends BaseIntegrationTestCase {
@@ -117,25 +115,28 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
-    @Test
-    void testFetchAll(){
-       def nameList = NameType.fetchAll([max:'500',offset: '0'])
-       assertFalse nameList.isEmpty()
-       assertEquals NameType.list([:]).size(), nameList.size()
-    }
 
     @Test
-    void testFetchByGuid(){
+    void testFetchAll() {
+        def nameList = NameType.fetchAll([max: '500', offset: '0'])
+        assertFalse nameList.isEmpty()
+        assertEquals NameType.list([:]).size(), nameList.size()
+    }
+
+
+    @Test
+    void testFetchByGuid() {
         NameType nameType = newNameType()
         save nameType
         assertNotNull nameType.id
-        def guid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME,nameType.id)?.guid
+        def guid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, nameType.id)?.guid
         assertNotNull guid
         def list = NameType.fetchByGuid(guid)
-            assertEquals guid, list.getAt(0)
-            assertEquals nameType.code, list.getAt(1)
-            assertEquals nameType.description, list.getAt(2)
+        assertEquals guid, list.getAt(0)
+        assertEquals nameType.code, list.getAt(1)
+        assertEquals nameType.description, list.getAt(2)
     }
+
 
     private def newNameType() {
         def nameType = new NameType(
@@ -147,6 +148,5 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
         )
         return nameType
     }
-
 
 }

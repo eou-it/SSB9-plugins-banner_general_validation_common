@@ -8,7 +8,6 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.NameType
-import net.hedtech.banner.general.system.ldm.v6.NameTypeCategory
 import net.hedtech.banner.general.system.ldm.v6.NameTypeDecorator
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
@@ -21,6 +20,7 @@ import org.junit.Test
 class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def personNameTypeCompositeService
+
 
     @Before
     public void setUp() {
@@ -44,9 +44,10 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         assertEquals list.size(), personNameTypeList.size()
         assertTrue list.code.containsAll(personNameTypeList.code)
         assertTrue list.description.containsAll(personNameTypeList.title)
-        assertTrue NameTypeCategory.values().value.containsAll(personNameTypeList.category)
+        assertTrue NameTypeCategory.values().v6.containsAll(personNameTypeList.category)
         assertTrue GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME).guid.containsAll(personNameTypeList.id)
     }
+
 
     @Test
     void testListWithPagination() {
@@ -59,9 +60,10 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         assertEquals list.size(), personNameTypeList.size()
         assertTrue list.code.containsAll(personNameTypeList.code)
         assertTrue list.description.containsAll(personNameTypeList.title)
-        assertTrue NameTypeCategory.values().value.containsAll(personNameTypeList.category)
+        assertTrue NameTypeCategory.values().v6.containsAll(personNameTypeList.category)
         assertTrue GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME).guid.containsAll(personNameTypeList.id)
     }
+
 
     @Test
     void testCount() {
@@ -76,6 +78,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         def actualCount = personNameTypeCompositeService.count().toInteger()
         assertEquals expectedCount, actualCount
     }
+
 
     @Test
     void testGetValidGuid() {

@@ -6,6 +6,7 @@ package net.hedtech.banner.general.system.ldm
 import groovy.sql.Sql
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.NameType
 import net.hedtech.banner.general.system.ldm.v6.NameTypeDecorator
@@ -105,6 +106,19 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
+    }
+
+
+    @Test
+    void testGetBannerNameTypeToHEDMNameTypeMap() {
+        NameType nameType = NameType.findByCode("BRTH")
+        assertNotNull nameType
+        IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, nameType.code)
+        assertNotNull intConf
+        def map = personNameTypeCompositeService.getBannerNameTypeToHEDMNameTypeMap()
+        assertNotNull map
+        assertTrue map.containsKey(nameType.code)
+        assertTrue map.get(nameType.code) instanceof NameTypeCategory
     }
 
 }

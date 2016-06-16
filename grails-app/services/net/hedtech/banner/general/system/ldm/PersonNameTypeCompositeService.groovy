@@ -5,15 +5,18 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.LdmService
+import net.hedtech.banner.general.system.NameType
 import net.hedtech.banner.general.system.ldm.v6.NameTypeDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
 /**
-* <p> REST End point for PersonNameTypeComposite Service.</p>
+ * <p> REST End point for PersonNameTypeComposite Service.</p>
  * <p> It will return person name category types of birth , legal and personal </p>
-*/
+ */
 @Transactional
 class PersonNameTypeCompositeService extends LdmService {
 
@@ -43,8 +46,7 @@ class PersonNameTypeCompositeService extends LdmService {
     }
 
     /**
-     * GET /api/person-name-types/{guid}
-     * @param guid
+     * GET /api/person-name-types/{guid}* @param guid
      * @return
      */
     @Transactional(readOnly = true)
@@ -56,4 +58,21 @@ class PersonNameTypeCompositeService extends LdmService {
             throw new ApplicationException(PersonNameTypeCompositeService.class, new NotFoundException())
         }
     }
+
+
+    def getBannerNameTypeToHEDMNameTypeMap() {
+        def bannerNameTypeToHedmNameTypeMap = [:]
+        List<IntegrationConfiguration> intConfs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING)
+        if (intConfs) {
+            intConfs.each {
+                NameType nameType = NameType.findByCode(it.value)
+                NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(it.translationValue)
+                if (nameType && nameTypeCategory) {
+                    bannerNameTypeToHedmNameTypeMap.put(nameType.code, nameTypeCategory)
+                }
+            }
+        }
+        return bannerNameTypeToHedmNameTypeMap
+    }
+
 }

@@ -4,9 +4,7 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
-import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.ldm.NameTypeCategory
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -52,19 +50,6 @@ class NameTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals guid, list.getAt(0)
         assertEquals nameType.code, list.getAt(1)
         assertEquals nameType.description, list.getAt(2)
-    }
-
-
-    @Test
-    void testGetBannerNameTypeToHEDMNameTypeMap() {
-        NameType nameType = NameType.findByCode("BRTH")
-        assertNotNull nameType
-        IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, nameType.code)
-        assertNotNull intConf
-        def map = nameTypeService.getBannerNameTypeToHEDMNameTypeMap()
-        assertNotNull map
-        assertTrue map.containsKey(nameType.code)
-        assertTrue map.get(nameType.code) instanceof NameTypeCategory
     }
 
 

@@ -7,6 +7,8 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
@@ -21,6 +23,10 @@ import org.hibernate.annotations.Type
 
 @Entity
 @Table(name = "STVSTAT")
+@NamedQueries(value = [
+        @NamedQuery(name = "State.fetchByCode",
+                query = """ FROM State a WHERE a.code = :code """)
+])
 class State implements Serializable {
 
     /**
@@ -150,5 +156,15 @@ class State implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
+    public static fetchByCode(String code) {
+        def state
+
+        State.withSession { session ->
+            state = session.getNamedQuery(
+                    'State.fetchByCode')
+                    .setString('code', code).list()[0]
+        }
+        return state
+    }
 
 }

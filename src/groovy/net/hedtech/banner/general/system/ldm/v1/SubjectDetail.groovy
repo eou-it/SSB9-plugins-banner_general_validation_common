@@ -25,6 +25,10 @@ class SubjectDetail {
         this.guid = guid
     }
 
+    Subject getSubject(){
+        return subject
+    }
+
     /**
      * Equals method to compare the two SubjectDetail
      * Objects

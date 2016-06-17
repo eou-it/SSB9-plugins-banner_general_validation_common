@@ -3,13 +3,13 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import groovy.sql.Sql
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.dao.InvalidDataAccessResourceUsageException
-import org.springframework.jdbc.UncategorizedSQLException
-
 /**
  * Integration Test cases for AcademicCredential which is Read Only view
  */
@@ -63,7 +63,7 @@ class AcademicCredentialIntegrationTests extends BaseIntegrationTestCase {
     void testReadOnlyForDeleteAcademicCredential() {
         AcademicCredential academicCredential = AcademicCredential.findByCode('MA')
         assertNotNull academicCredential
-        shouldFail(UncategorizedSQLException) {
+        shouldFail(InvalidDataAccessResourceUsageException) {
             academicCredential.delete(flush: true, onError: true)
         }
     }
@@ -102,6 +102,62 @@ class AcademicCredentialIntegrationTests extends BaseIntegrationTestCase {
       //  assertTrue typeList.contains(academicCredential.type)
         assertEquals academicCredential.description, degree.description
         assertEquals academicCredential.code, degree.code
+    }
+
+    @Test
+    void testCount(){
+        params.put('type','degree')
+        def criteria = []
+        criteria.add([key: 'type', binding: 'type', operator: Operators.EQUALS_IGNORE_CASE])
+        def filterData = [:]
+        filterData.params = params
+        filterData.criteria = criteria
+        def count = AcademicCredential.countAll(filterData)
+        def sqlCount
+        def sql
+        try {
+            sql = new Sql(sessionFactory.getCurrentSession().connection())
+            sqlCount = sql.firstRow("select count(*) as cnt from gvq_academic_credentials where TYPE= ?", ['degree'])
+        } finally {
+            sql?.close() // note that the test will close the connection, since it's our current session's connection
+        }
+        assertEquals count.toInteger(),sqlCount.cnt.toInteger()
+    }
+
+    @Test
+    void testSearch(){
+        params.put('type','degree')
+        def criteria = []
+        criteria.add([key: 'type', binding: 'type', operator: Operators.EQUALS_IGNORE_CASE])
+        def filterData = [:]
+        filterData.params = params
+        filterData.criteria = criteria
+        List<AcademicCredential> academicCredentialList = AcademicCredential.fetchSearch(filterData,[max:20,offset: 0])
+        academicCredentialList.each{
+            academicCredential->
+                assertNotNull academicCredential
+                assertNotNull academicCredential.id
+                assertNotNull academicCredential.type
+                assertEquals 'degree',academicCredential.type
+        }
+    }
+    @Test
+    void testSuplementaryDesc(){
+        List<AcademicCredential> academicCredentialList = AcademicCredential.list()
+        academicCredentialList.each {
+            academicCredential->
+                assertNotNull academicCredential
+                if(academicCredential.suplementaryDesc){
+                    AcademicCredential academicCred = AcademicCredential.fetchByGuid(academicCredential.guid)
+                    assertEquals academicCredential.guid,academicCred.guid
+                    assertEquals academicCredential.suplementaryDesc,academicCred.suplementaryDesc
+                    assertEquals academicCredential.type,academicCred.type
+                    assertEquals academicCredential.code,academicCred.code
+                    assertEquals academicCredential.description,academicCred.description
+                    assertEquals academicCredential.id,academicCred.id
+                }
+
+        }
     }
 
     private def newAcademicCredentialView() {

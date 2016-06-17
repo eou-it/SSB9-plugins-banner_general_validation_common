@@ -29,4 +29,8 @@ class LevelService extends ServiceBase{
     Level fetchByCode(String code){
         return Level.fetchByCode(code)
     }
+
+    List<Level> fetchAllByCodeInList(List<String> codes){
+        return Level.fetchAllByCodeInList(codes)
+    }
 }

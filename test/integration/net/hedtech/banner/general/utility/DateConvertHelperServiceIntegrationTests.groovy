@@ -3,19 +3,19 @@
  **********************************************************************************/
 package net.hedtech.banner.general.utility
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import net.hedtech.banner.general.utility.DateConvertHelperService
 
 /**
  * <p>Integration test cases for Date convert helper service.</p>
  */
 class DateConvertHelperServiceIntegrationTests extends BaseIntegrationTestCase{
 
- def dateConvertHelperService
-
-    @Before
+   @Before
     public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
@@ -28,48 +28,32 @@ class DateConvertHelperServiceIntegrationTests extends BaseIntegrationTestCase{
 
     @Test
     void testConvertDateIntoUTCFormat(){
-        def date = new Date()
-        assertNotNull date
-
-        def expectedDate = dateConvertHelperService.convertDateIntoUTCFormat(date)
+        String expectedDate = DateConvertHelperService.convertDateIntoUTCFormat(new Date())
         assertNotNull expectedDate
-
-        def dbTimeZone = dateConvertHelperService.getDBTimeZone()
-        assertNotNull dbTimeZone
-
-        def actualDate = date?.format("yyyy-MM-dd'T'HH:mm:ss") + dbTimeZone[0][0]
-        assertEquals actualDate , expectedDate
-
-        expectedDate = dateConvertHelperService.convertDateIntoUTCFormat(date,dbTimeZone)
-        assertNotNull expectedDate
-        assertEquals actualDate , expectedDate
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"))
+        calendar.setTime(Date.parse(GeneralValidationCommonConstants.UTC_DATE_FORMAT, expectedDate));
+        assertEquals TimeZone.getTimeZone("UTC").getID(), calendar.getTimeZone().getID()
+        assertEquals calendar.getTimeInMillis(), DateConvertHelperService.convertUTCStringToServerDate(expectedDate).getTime()
     }
 
     @Test
-    void testConvertDateIntoUTCFormatWithTime(){
-        def date = new Date()
-        assertNotNull date
-        def time = '1300'
-        def dateTime = time ? time?.substring( 0, 2 ) + ':' + time?.substring( 2, 4 ) + ':' + '00' : null
-
-        def expectedDate = dateConvertHelperService.convertDateIntoUTCFormat(date, null)
+    void testConvertUTCStringToServerDate(){
+        Date sampleDate = new Date()
+        String expectedDate = DateConvertHelperService.convertDateIntoUTCFormat(sampleDate)
         assertNotNull expectedDate
-
-        def dbTimeZone = dateConvertHelperService.getDBTimeZone()
-        assertNotNull dbTimeZone
-
-        def actualDate = date?.format("yyyy-MM-dd'T'HH:mm:ss") + dbTimeZone[0][0]
-        assertEquals actualDate , expectedDate
-
-        expectedDate = dateConvertHelperService.convertDateIntoUTCFormat(date, time)
-        assertNotNull expectedDate
-
-        actualDate = date?.format("yyyy-MM-dd'T'")+dateTime+ dbTimeZone[0][0]
-        assertEquals actualDate , expectedDate
-
-        expectedDate = dateConvertHelperService.convertDateIntoUTCFormat(date, time, dbTimeZone)
-        assertEquals actualDate , expectedDate
-
+        Date serverDate = DateConvertHelperService.convertUTCStringToServerDate(expectedDate)
+        String actualDate = DateConvertHelperService.convertDateIntoUTCFormat(serverDate)
+        assertEquals expectedDate,actualDate
     }
 
+    @Test
+    void testConvertUTCStringToServerDateWithTime(){
+        Date sampleDate = new Date()
+        String expectedDate = DateConvertHelperService.convertDateIntoUTCFormat(sampleDate,'103925')
+        assertNotNull expectedDate
+        Date serverDate = DateConvertHelperService.convertUTCStringToServerDate(expectedDate)
+        String actualDate = DateConvertHelperService.convertDateIntoUTCFormat(serverDate,'103925')
+        assertEquals expectedDate,actualDate
+    }
 }

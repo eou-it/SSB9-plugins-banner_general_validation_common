@@ -13,12 +13,14 @@ class GeneralValidationCommonConstants {
 
     private GeneralValidationCommonConstants() {} // prevents instantiation
 
+    static final String NIL_GUID = "00000000-0000-0000-0000-000000000000"
+
     /** Common constants */
     final static String TYPE = 'type'
     final static String CODE = 'code'
     final static String ERROR_MSG_EXISTS_MESSAGE = 'exists.message'
     final static String ERROR_MSG_CODE_REQUIRED = 'code.required.message'
-    final static String ERROR_MSG_DESCRIPTION_REQUIRED =  'description.required.message'
+    final static String ERROR_MSG_DESCRIPTION_REQUIRED = 'description.required.message'
     final static String ERROR_MSG_CODE_EXISTS = 'code.exists.message'
     final static String DEFAULT_ORDER_TYPE = 'ASC'
     final static String DEFAULT_SORT_FIELD_ABBREVIATION = 'abbreviation'
@@ -33,7 +35,6 @@ class GeneralValidationCommonConstants {
     final static String TITLE = 'title'
     final static String RACE = 'race'
     final static String DESCRIPTION = 'description'
-
 
     /** Common constants for AcademicDiscipline*/
     final static String ACADEMIC_DISCIPLINE = 'academicDiscipline'
@@ -77,6 +78,9 @@ class GeneralValidationCommonConstants {
     //common constants for academic credentials
     final static String ACADEMIC_CREDENTIAL = 'academicCredential'
     static final String ACADEMIC_CREDENTIAL_LDM_NAME = 'academic-credentials'
+    final static String HEDM_CREDENTIAL_CATEGORY = 'HEDM_CREDENTIAL_CATEGORY'
+    final static String HEDM_CREDENTIAL_DESCRIPTION = 'HEDM_CREDENTIAL_DESCRIPTION'
+    final static String ERROR_MSG_TYPE_NOT_EXISTS = 'invalid.type.message'
 
     //common constants for academic level
     static final String ACADEMIC_LEVEL_LDM_NAME = 'academic-levels'
@@ -88,7 +92,7 @@ class GeneralValidationCommonConstants {
     static final String RACE_RACIAL_CATEGORY = "RACE.RACIALCATEGORY"
     static final String SETTING_NAME = 'settingName'
     static final String PROCESS_CODE_NAME = 'processCode'
-   static final String TRANSLATION_VALUE = 'translationValueList'
+    static final String TRANSLATION_VALUE = 'translationValueList'
 
     //common constants for Organization
     static final String COLLEGE = 'college'
@@ -98,15 +102,34 @@ class GeneralValidationCommonConstants {
     static final String UNIVERSITY = 'university'
 
     //common constants for restriction types
-     static final String RESTRICTION_TYPE_LDM_NAME = 'restriction-types'
-     static final String PERSONS_LDM_NAME = "persons"
-     static final String PERSONS_ENDPOINT = "persons"
+    static final String RESTRICTION_TYPE_LDM_NAME = 'restriction-types'
+    static final String PERSONS_LDM_NAME = "persons"
+    static final String PERSONS_ENDPOINT = "persons"
 
-    //Supported Versions
-     static final List<String> VERSIONS_V1 = [VERSION_V1]
-     static final List<String> VERSIONS_V1_V2 = [VERSION_V1,VERSION_V2]
-     static final List<String> VERSIONS_V1_V4 = [VERSION_V1,VERSION_V4]
-     static final List<String> VERSIONS_V1_V2_V3 = [VERSION_V1,VERSION_V2,VERSION_V3]
-     static final List<String> VERSIONS_V1_V2_V3_V4 = [VERSION_V1,VERSION_V2,VERSION_V3,VERSION_V4]
+    //common constants for  citizenship statuses
+    static final String CITIZENSHIP_STATUS = 'citizenshipStatus'
+    static final String CITIZENSHIP_STATUSES_LDM_NAME = 'citizenship-statuses'
+    static final String CITIZENSHIP_STATUSES_CATEGORY_CITIZEN = 'citizen'
+    static final String CITIZENSHIP_STATUSES_CATEGORY_NON_CITIZEN = 'nonCitizen'
 
+    //common constants for visa-types
+    static final String IMMIGRANT = 'immigrant'
+    static final String NON_IMMIGRANT = 'nonImmigrant'
+
+    //common constants for geographic-areas
+    static final String GEOGRAPHIC_REGION_LDM_NAME = 'geographic-regions'
+    static final String GEOGRAPHIC_DIVISION_LDM_NAME = 'geographic-divisions'
+    static final String GEOGRAPHIC_AREA_LDM_NAME = 'geographic-areas'
+    static final String GEOGRAPHIC_DIVISION_KEY = 'gDivisonLdmName'
+    static final String GEOGRAPHIC_REGION_KEY = 'gRegionLdmName'
+    static final String GEOGRAPHIC_AREA_KEY = 'gAreaLdmName'
+    static final String GEOGRAPHIC_AREA_GUID_KEY = 'guid'
+
+    static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
+    static final String UTC_TIME_ZONE = "UTC"
+    static final String DATETIME_WITHOUT_TIMEZONE = "yyyy-MM-dd HH:mm:ss"
+    static final String DATE_WITHOUT_TIMEZONE = "yyyy-MM-dd"
+
+    static final String GEOGRAPHIC_REGION_TYPE = 'Geographic Region'
+    static final String GEOGRAPHIC_DIVISION_TYPE = 'Geographic Division'
 }

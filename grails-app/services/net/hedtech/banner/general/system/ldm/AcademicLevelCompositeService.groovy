@@ -180,4 +180,22 @@ class AcademicLevelCompositeService extends  LdmService {
         return new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME, level.id)?.guid, new Metadata(level.dataOrigin))
     }
 
+    List<AcademicLevel> fetchAllByLevelIdInList(List<String> ids){
+        List<AcademicLevel> academicLevelList = []
+        if(ids){
+            List<GlobalUniqueIdentifier> levelGuidList = GlobalUniqueIdentifier.fetchAllByGuidInList(ids.unique())
+            if(levelGuidList){
+                List<Level> levelList = levelService.fetchAllByCodeInList(levelGuidList.domainKey)
+                Map levelCodeMap = [:]
+                levelList.each {
+                    levelCodeMap.put(it.code, it)
+                }
+
+                levelGuidList.each {
+                    academicLevelList << new AcademicLevel(levelCodeMap.get(it.domainKey), it.guid, new Metadata(levelCodeMap.get(it.domainKey).dataOrigin))
+                }
+            }
+        }
+        return academicLevelList
+    }
 }

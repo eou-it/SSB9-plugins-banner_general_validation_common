@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 import org.hibernate.annotations.Type
 
 import javax.persistence.*
@@ -12,8 +14,11 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVLEVL")
+@ToString
+@EqualsAndHashCode
 @NamedQueries(value = [
-        @NamedQuery(name = "Level.fetchByCode",query = """FROM Level a WHERE a.code = :code""")
+        @NamedQuery(name = "Level.fetchByCode",query = """FROM Level a WHERE a.code = :code"""),
+        @NamedQuery(name = "Level.fetchAllByCodeInList",query = """FROM Level a WHERE a.code in (:codes)"""),
 ])
 class Level implements Serializable {
 
@@ -94,12 +99,6 @@ class Level implements Serializable {
     @Column(name = "STVLEVL_DATA_ORIGIN", length = 30)
     String dataOrigin
 
-
-    public String toString() {
-        "Level[id=$id, code=$code, description=$description, lastModified=$lastModified, acadInd=$acadInd, ceuInd=$ceuInd, systemReqInd=$systemReqInd, vrMsgNo=$vrMsgNo, ediEquiv=$ediEquiv, lastModifiedBy=$lastModifiedBy, version=$version, dataOrigin=$dataOrigin]"
-    }
-
-
     static constraints = {
         code(nullable: false, maxSize: 2)
         description(nullable: false, maxSize: 30)
@@ -142,49 +141,6 @@ class Level implements Serializable {
         return [list: Level.findAllByCeuIndAndCodeIlike(ceu, filter + "%")]
     }
 
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-
-        if (!(o instanceof Level)) return false
-
-        Level level = (Level) o
-
-        if (acadInd != level.acadInd) return false
-        if (ceuInd != level.ceuInd) return false
-        if (code != level.code) return false
-        if (dataOrigin != level.dataOrigin) return false
-        if (description != level.description) return false
-        if (ediEquiv != level.ediEquiv) return false
-        if (id != level.id) return false
-        if (lastModified != level.lastModified) return false
-        if (lastModifiedBy != level.lastModifiedBy) return false
-        if (systemReqInd != level.systemReqInd) return false
-        if (version != level.version) return false
-        if (vrMsgNo != level.vrMsgNo) return false
-
-        return true
-    }
-
-
-    int hashCode() {
-        int result
-
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
-        result = 31 * result + (acadInd != null ? acadInd.hashCode() : 0)
-        result = 31 * result + (ceuInd != null ? ceuInd.hashCode() : 0)
-        result = 31 * result + (systemReqInd != null ? systemReqInd.hashCode() : 0)
-        result = 31 * result + (vrMsgNo != null ? vrMsgNo.hashCode() : 0)
-        result = 31 * result + (ediEquiv != null ? ediEquiv.hashCode() : 0)
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
-        result = 31 * result + (version != null ? version.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        return result
-    }
-
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
@@ -199,5 +155,21 @@ class Level implements Serializable {
         }
         return level
 
+    }
+
+    /**
+     * fetching List of Level details based on codes
+     * returns empty list if no matching records are found else a list of matching Level details
+     * @param codes
+     * @return
+     */
+    public static List<Level> fetchAllByCodeInList(List<String> codes){
+        List<Level> levelList = []
+        if(codes){
+            Level.withSession{ session ->
+                levelList = session.getNamedQuery('Level.fetchAllByCodeInList').setParameterList('codes',codes).list()
+            }
+        }
+        return levelList
     }
 }

@@ -35,19 +35,22 @@ class NameTypeService extends ServiceBase {
 
     Map fetchGUIDs(List<String> nameTypeCodes) {
         def codeToGuidMap = [:]
-        def result
-        String hql = ''' select a.code, b.guid
-                         from NameType a, GlobalUniqueIdentifier b
-                         where a.code in :nameTypeCodes
-                         and b.ldmName = :ldmName
-                         and a.code = b.domainKey '''
-        NameType.withSession { session ->
-            def query = session.createQuery(hql).setString('ldmName', GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME)
-            query.setParameterList('nameTypeCodes', nameTypeCodes)
-            result = query.list()
-        }
-        result.each {
-            codeToGuidMap.put(it[0], it[1])
+        if (nameTypeCodes) {
+            def result
+            String hql = ''' select a.code, b.guid
+                             from NameType a, GlobalUniqueIdentifier b
+                             where a.code in :nameTypeCodes
+                             and b.ldmName = :ldmName
+                             and a.code = b.domainKey '''
+            NameType.withSession { session ->
+                def query = session.createQuery(hql)
+                query.setString('ldmName', GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME)
+                query.setParameterList('nameTypeCodes', nameTypeCodes)
+                result = query.list()
+            }
+            result.each {
+                codeToGuidMap.put(it[0], it[1])
+            }
         }
         return codeToGuidMap
     }

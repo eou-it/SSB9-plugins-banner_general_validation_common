@@ -20,7 +20,7 @@ class StateService extends ServiceBase {
         def state = State.fetchByCode(code)
 
         if(!state){
-            throw new ApplicationException(this, "@@r1:invalidState@@")
+            throw new ApplicationException(State, "@@r1:invalidState@@")
         }
 
         state

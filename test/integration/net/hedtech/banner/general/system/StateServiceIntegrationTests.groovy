@@ -6,9 +6,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-/**
- * Created by ddunn on 6/13/2016.
- */
 class StateServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def stateService

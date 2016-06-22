@@ -3,10 +3,15 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
@@ -21,6 +26,13 @@ import org.hibernate.annotations.Type
 
 @Entity
 @Table(name = "STVNATN")
+@NamedQueries(value = [
+        @NamedQuery(name = "Nation.fetchByCode",
+                query = """ FROM Nation a WHERE a.code = :code """)
+])
+
+@ToString(includeNames = true, ignoreNulls = false)
+@EqualsAndHashCode(includeFields = true)
 class Nation implements Serializable {
 
     /**
@@ -138,80 +150,6 @@ class Nation implements Serializable {
 
 
 
-    public String toString() {
-        """Nation[
-					id=$id, 
-					code=$code, 
-					nation=$nation, 
-					capital=$capital, 
-					area=$area, 
-					population=$population, 
-					lastModified=$lastModified, 
-					ediEquiv=$ediEquiv, 
-					lmsEquiv=$lmsEquiv, 
-					postalMask=$postalMask, 
-					telephoneMask=$telephoneMask, 
-					statscan=$statscan, 
-					scodIso=$scodIso, 
-					ssaReportingEquiv=$ssaReportingEquiv, 
-					sevisEquiv=$sevisEquiv, 
-					version=$version, 
-					lastModifiedBy=$lastModifiedBy, 
-					dataOrigin=$dataOrigin, ]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true;
-        if (!(o instanceof Nation)) return false;
-        Nation that = (Nation) o;
-        if (id != that.id) return false;
-        if (code != that.code) return false;
-        if (nation != that.nation) return false;
-        if (capital != that.capital) return false;
-        if (area != that.area) return false;
-        if (population != that.population) return false;
-        if (lastModified != that.lastModified) return false;
-        if (ediEquiv != that.ediEquiv) return false;
-        if (lmsEquiv != that.lmsEquiv) return false;
-        if (postalMask != that.postalMask) return false;
-        if (telephoneMask != that.telephoneMask) return false;
-        if (statscan != that.statscan) return false;
-        if (scodIso != that.scodIso) return false;
-        if (ssaReportingEquiv != that.ssaReportingEquiv) return false;
-        if (sevisEquiv != that.sevisEquiv) return false;
-        if (version != that.version) return false;
-        if (lastModifiedBy != that.lastModifiedBy) return false;
-        if (dataOrigin != that.dataOrigin) return false;
-        return true;
-    }
-
-
-    int hashCode() {
-        int result;
-        result = (id != null ? id.hashCode() : 0);
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (nation != null ? nation.hashCode() : 0);
-        result = 31 * result + (capital != null ? capital.hashCode() : 0);
-        result = 31 * result + (area != null ? area.hashCode() : 0);
-        result = 31 * result + (population != null ? population.hashCode() : 0);
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
-        result = 31 * result + (ediEquiv != null ? ediEquiv.hashCode() : 0);
-        result = 31 * result + (lmsEquiv != null ? lmsEquiv.hashCode() : 0);
-        result = 31 * result + (postalMask != null ? postalMask.hashCode() : 0);
-        result = 31 * result + (telephoneMask != null ? telephoneMask.hashCode() : 0);
-        result = 31 * result + (statscan != null ? statscan.hashCode() : 0);
-        result = 31 * result + (scodIso != null ? scodIso.hashCode() : 0);
-        result = 31 * result + (ssaReportingEquiv != null ? ssaReportingEquiv.hashCode() : 0);
-        result = 31 * result + (sevisEquiv != null ? sevisEquiv.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0);
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
-        return result;
-    }
-
-
     static constraints = {
         code(nullable: false, maxSize: 5)
         nation(nullable: false, maxSize: 30)
@@ -241,6 +179,17 @@ class Nation implements Serializable {
     public static Object fetchBySomeNation(filter) {
         def returnObj = [list: Nation.findAllByCodeIlikeOrNationIlike("%" + filter + "%", "%" + filter + "%").sort { it.nation }]
         return returnObj
+    }
+
+    public static fetchByCode(String code) {
+        def nation
+
+        Nation.withSession { session ->
+            nation = session.getNamedQuery(
+                    'Nation.fetchByCode')
+                    .setString('code', code).list()[0]
+        }
+        return nation
     }
 
 }

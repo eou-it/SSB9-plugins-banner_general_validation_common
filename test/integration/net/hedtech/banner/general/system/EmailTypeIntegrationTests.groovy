@@ -4,6 +4,9 @@
 package net.hedtech.banner.general.system
 
 import groovy.sql.Sql
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.IntegrationConfiguration
+import net.hedtech.banner.general.system.ldm.v6.EmailTypeEnum
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -165,21 +168,12 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor emailType, 'maxSize', ['description']
     }
 
-    @Test
-    void testCountAll(){
-       Long count = EmailType.countAll()
-        assertNotNull count
-        Sql sql = new Sql(sessionFactory.getCurrentSession().connection())
-        def result = sql.firstRow(query)
-        Long expectCount = result.cnt
-        assertNotNull expectCount
-        assertEquals expectCount,count
-
-    }
 
     @Test
-    void testFetchAll(){
-        List emailTypeList= EmailType.fetchAll()
+    void testFetchByEmailTypeCodes(){
+       List<IntegrationConfiguration> configurationList = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValues(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME, EmailTypeEnum.EMAIL_TYPE)
+
+        List emailTypeList= EmailType.fetchByEmailTypeCodes(configurationList.value as Set<String>,0,-1)
         assertFalse emailTypeList.isEmpty()
         List<EmailType> actualTypes= EmailType.list()
         assertFalse actualTypes.isEmpty()
@@ -191,23 +185,33 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         Long expectCount = result.cnt
         assertNotNull expectCount
         assertEquals expectCount,emailTypeList.size()
+    }
+
+    @Test
+    void testFetchByEmailTypeCodesWithPaginiation(){
+        List<IntegrationConfiguration> configurationList = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValues(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME, EmailTypeEnum.EMAIL_TYPE)
+
+        List emailTypeList= EmailType.fetchByEmailTypeCodes(configurationList.value as Set<String>,2,0)
+        assertFalse emailTypeList.isEmpty()
+        List<EmailType> actualTypes= EmailType.list()
+        assertFalse actualTypes.isEmpty()
+        emailTypeList.each {
+            assertTrue(actualTypes.contains(it[0]))
+        }
+        assertEquals 2,emailTypeList.size()
 
     }
 
     @Test
-    void testFetchAllWithPagination(){
-        List emailTypeList= EmailType.fetchAll([max:'500',offset: '0'])
-        assertFalse emailTypeList.isEmpty()
-        List<EmailType> actualTypes= EmailType.list([max:'500',offset: '0'])
-        assertFalse actualTypes.isEmpty()
-        emailTypeList.each {
-         assertTrue(actualTypes.contains(it[0]))
-        }
+    void testCountByEmailTypeCodes(){
+        List<IntegrationConfiguration> configurationList = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValues(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME, EmailTypeEnum.EMAIL_TYPE)
+
+        Long actualCount = EmailType.countByEmailTypeCodes(configurationList.value as Set<String>)
         Sql sql = new Sql(sessionFactory.getCurrentSession().connection())
         def result = sql.firstRow(query)
         Long expectCount = result.cnt
         assertNotNull expectCount
-        assertEquals expectCount,emailTypeList.size()
+        assertEquals expectCount,actualCount
 
     }
 

@@ -24,8 +24,8 @@ class EmailTypeService extends ServiceBase {
      * Return Count value of Email Type which are mapped to goriccr
      * @return Long
      */
-    public Long countAll() {
-        return EmailType.countAll()
+    Long countByEmailTypeCodes(Set<String> emailTypeCodes) {
+        return EmailType.countByEmailTypeCodes(emailTypeCodes)
     }
 
     /**
@@ -33,33 +33,8 @@ class EmailTypeService extends ServiceBase {
      * @param Map
      * @return List
      */
-    public List fetchAll(Map params) {
-        if (params) {
-            return EmailType.fetchAll(params)
-        } else {
-            return EmailType.fetchAll()
-        }
-
-    }
-
-    /**
-     * fetching EmailType data
-     * @param Map
-     * @return List
-     */
-    public List fetchAll() {
-        return EmailType.fetchAll()
-    }
-
-    /**
-     * Return Email Type which are mapped to goriccr
-     * @return Long
-     */
-    public  List fetchByGuid(String guid) {
-        if(!guid){
-            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
-        }
-        return EmailType.fetchByGuid(guid)
+    List fetchByEmailTypeCodes(Set<String> emailTypeCodes, Integer max, Integer offset) {
+      return EmailType.fetchByEmailTypeCodes(emailTypeCodes, max, offset)
     }
 
 }

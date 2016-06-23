@@ -43,7 +43,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         List emailTypes = emailTypeCompositeService.list(params)
         assertNotNull emailTypes
         assertFalse emailTypes.isEmpty()
-        def totalCount = emailTypeService.countAll()
+        def totalCount = emailTypeService.countByEmailTypeCodes(emailTypes.code as Set<String>)
         assertNotNull totalCount
         assertEquals totalCount, emailTypes.size()
     }
@@ -55,7 +55,9 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     public void testCount(){
         Long expectedCount = emailTypeCompositeService.count()
         assertNotNull(expectedCount)
-        Long actualCount = emailTypeService.countAll()
+        Map mappedEmailTypes =  emailTypeCompositeService.getBannerEmailTypeToHEDMEmailTypeMap(EmailTypeEnum.EMAIL_TYPE)
+        assertFalse mappedEmailTypes.isEmpty()
+        Long actualCount = emailTypeService.countByEmailTypeCodes(mappedEmailTypes.keySet())
         assertNotNull(actualCount)
         assertEquals expectedCount,actualCount
     }

@@ -21,14 +21,9 @@ import javax.persistence.*
 @ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
         @NamedQuery(name = "EmailType.fetchAll",
-                query = """from EmailType a , GlobalUniqueIdentifier b, IntegrationConfiguration c where a.code = b.domainKey and b.ldmName = :ldmName
-                            and c.processCode = :processCode and c.settingName = :settingName and c.value = a.code and c.translationValue in (:translationValue)"""),
-        @NamedQuery(name = "EmailType.fetchByGuid",
-                query = """from EmailType a , GlobalUniqueIdentifier b, IntegrationConfiguration c where a.code = b.domainKey and b.ldmName = :ldmName and b.guid = :guid
-                            and c.processCode = :processCode and c.settingName = :settingName and c.value = a.code and c.translationValue in (:translationValue)"""),
+                query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in (:codes)"""),
         @NamedQuery(name = "EmailType.countAll",
-                query = """select count(*) from EmailType a , GlobalUniqueIdentifier b, IntegrationConfiguration c where a.code = b.domainKey and b.ldmName = :ldmName
-                            and c.processCode = :processCode and c.settingName = :settingName and c.value = a.code and c.translationValue in (:translationValue)""")
+                query = """select count(*) from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in (:codes)""")
 
 ])
 class EmailType implements Serializable {
@@ -112,13 +107,11 @@ class EmailType implements Serializable {
      * Return Count value of Email Type which are mapped to goriccr
      * @return Long
      */
-    public static Long countAll() {
+     static Long countByEmailTypeCodes(Set<String> emailTypeCodes) {
         return EmailType.withSession { session ->
             session.getNamedQuery('EmailType.countAll')
-                    .setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('settingName', GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME)
-                    .setParameterList('translationValue', EmailTypeEnum.EMAIL_TYPE)
                     .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
+                    .setParameterList('codes',emailTypeCodes)
                     .uniqueResult()
         }
     }
@@ -128,49 +121,22 @@ class EmailType implements Serializable {
      * @param Map
      * @return List
      */
-    public static List fetchAll(Map params) {
-        return EmailType.withSession { session ->
-            session.getNamedQuery('EmailType.fetchAll')
-                    .setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('settingName', GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME)
-                    .setParameterList('translationValue', EmailTypeEnum.EMAIL_TYPE)
-                    .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                    .setMaxResults(params.max as Integer).setFirstResult((params?.offset ?: '0') as Integer)
-                    .list()
-        }
-    }
+     static List fetchByEmailTypeCodes(Set<String> emailTypeCodes, Integer max, Integer offset) {
+         return EmailType.withSession { session ->
+             def namedQuery = session.getNamedQuery('EmailType.fetchAll')
+                     .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
+                     .setParameterList('codes', emailTypeCodes)
 
-    /**
-     * fetching EmailType data
-     * @param Map
-     * @return List
-     */
-    public static List fetchAll() {
-        return EmailType.withSession { session ->
-            session.getNamedQuery('EmailType.fetchAll')
-                    .setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('settingName', GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME)
-                    .setParameterList('translationValue', EmailTypeEnum.EMAIL_TYPE)
-                    .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                    .list()
-        }
-    }
-
-    /**
-     * Return Email Type which are mapped to goriccr
-     * @return Long
-     */
-    public static List fetchByGuid(String guid) {
-        return EmailType.withSession { session ->
-            session.getNamedQuery('EmailType.fetchByGuid')
-                    .setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('settingName', GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME)
-                    .setParameterList('translationValue', EmailTypeEnum.EMAIL_TYPE)
-                    .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                    .setString('guid',guid)
-                    .uniqueResult()
-        }
-    }
-
+             namedQuery.with {
+                 if (max > 0) {
+                     setMaxResults(max)
+                 }
+                 if (offset > -1) {
+                     setFirstResult(offset)
+                 }
+                 list()
+             }
+         }
+     }
 
 }

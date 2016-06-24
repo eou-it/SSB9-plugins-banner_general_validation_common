@@ -140,7 +140,7 @@ class RaceCompositeService extends LdmService {
     def getLdmRace(String raceCode) {
         String hedmRaceCategory
         if (raceCode != null) {
-            def version = LdmService.getAcceptVersion(VERSIONS)
+            String version = LdmService.getAcceptVersion(VERSIONS)
 
             String settingName
             if (GeneralValidationCommonConstants.VERSION_V1.equals(version)) {
@@ -153,15 +153,9 @@ class RaceCompositeService extends LdmService {
 
             IntegrationConfiguration rule = findAllByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, settingName, raceCode)
 
-            UsRacialCategory usRacialCategory = UsRacialCategory.getByString(rule?.translationValue)
+            UsRacialCategory usRacialCategory = UsRacialCategory.getByString(rule?.translationValue, version)
             if (usRacialCategory) {
-                if (GeneralValidationCommonConstants.VERSION_V1.equals(version)) {
-                    hedmRaceCategory = usRacialCategory.v1
-                } else if (GeneralValidationCommonConstants.VERSION_V4.equals(version)) {
-                    hedmRaceCategory = usRacialCategory.v4
-                } else {
-                    hedmRaceCategory = usRacialCategory.v6
-                }
+                hedmRaceCategory = usRacialCategory.versionToEnumMap[version]
             }
         }
         return hedmRaceCategory

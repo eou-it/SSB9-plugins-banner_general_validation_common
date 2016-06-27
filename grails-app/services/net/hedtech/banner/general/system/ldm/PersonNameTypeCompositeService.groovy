@@ -60,15 +60,25 @@ class PersonNameTypeCompositeService extends LdmService {
     }
 
 
-    def getBannerNameTypeToHEDMNameTypeMap() {
-        def bannerNameTypeToHedmNameTypeMap = [:]
-        List<IntegrationConfiguration> intConfs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING)
+    def getBannerNameTypeToHedmV3NameTypeMap() {
+        return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, "v3")
+    }
+
+
+    def getBannerNameTypeToHedmV6NameTypeMap() {
+        return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, "v6")
+    }
+
+
+    private def getBannerNameTypeToHedmNameTypeMap(String settingName, String version) {
+        Map<String, String> bannerNameTypeToHedmNameTypeMap = [:]
+        List<IntegrationConfiguration> intConfs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
         if (intConfs) {
             intConfs.each {
                 NameType nameType = NameType.findByCode(it.value)
-                NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(it.translationValue)
+                NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(it.translationValue, version)
                 if (nameType && nameTypeCategory) {
-                    bannerNameTypeToHedmNameTypeMap.put(nameType.code, nameTypeCategory)
+                    bannerNameTypeToHedmNameTypeMap.put(nameType.code, nameTypeCategory.versionToEnumMap[version])
                 }
             }
         }

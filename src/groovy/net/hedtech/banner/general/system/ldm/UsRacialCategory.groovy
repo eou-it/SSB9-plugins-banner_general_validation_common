@@ -38,6 +38,7 @@ enum UsRacialCategory {
      * This is useful in "create" and "update" operations to validate the input string.
      *
      * @param value
+     * @param version
      * @return
      */
     public static UsRacialCategory getByString(String value, String version) {

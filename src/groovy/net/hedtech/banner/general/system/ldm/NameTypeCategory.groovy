@@ -5,49 +5,36 @@ package net.hedtech.banner.general.system.ldm
 
 enum NameTypeCategory {
 
-    PERSONAL("Primary", "personal"),
-    BIRTH("Birth", "birth"),
-    LEGAL(null, "legal"),
+    PERSONAL([v3: "Primary", v6: "personal"]),
+    BIRTH([v3: "Birth", v6: "birth"]),
+    LEGAL([v6: "legal"]),
 
-    private final String v3Enum
-    private final String v6Enum
+    private final Map<String, String> versionToEnumMap
 
 
-    NameTypeCategory(String v3Enum, String v6Enum) {
-        this.v3Enum = v3Enum
-        this.v6Enum = v6Enum
+    NameTypeCategory(Map<String, String> versionToEnumMap) {
+        this.versionToEnumMap = versionToEnumMap
     }
 
 
-    public String getV3() {
-        return v3Enum
-    }
-
-
-    public String getV6() {
-        return v6Enum
+    public Map<String, String> getVersionToEnumMap() {
+        return versionToEnumMap
     }
 
     /**
-     * Given a string like "Primary" returns corresponding enum PERSONAL.
+     * Given "Primary" and "v3" returns corresponding enum PERSONAL.
      * This is useful in "create" and "update" operations to validate the input string.
      *
      * @param value
+     * @param version
      * @return
      */
-    public static NameTypeCategory getByString(String value) {
+    public static NameTypeCategory getByString(String value, String version) {
         if (value) {
             Iterator itr = NameTypeCategory.values().iterator()
             while (itr.hasNext()) {
                 NameTypeCategory nameTypeCategory = itr.next()
-                def vals = []
-                if (nameTypeCategory.v3Enum) {
-                    vals << nameTypeCategory.v3Enum
-                }
-                if (nameTypeCategory.v6Enum) {
-                    vals << nameTypeCategory.v6Enum
-                }
-                if (vals.contains(value)) {
+                if (nameTypeCategory.versionToEnumMap.containsKey(version) && nameTypeCategory.versionToEnumMap[version].equalsIgnoreCase(value)) {
                     return nameTypeCategory
                 }
             }

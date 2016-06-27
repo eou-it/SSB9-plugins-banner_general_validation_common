@@ -45,7 +45,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         assertEquals list.size(), personNameTypeList.size()
         assertTrue list.code.containsAll(personNameTypeList.code)
         assertTrue list.description.containsAll(personNameTypeList.title)
-        assertTrue NameTypeCategory.values().v6.containsAll(personNameTypeList.category)
+        assertTrue NameTypeCategory.values().versionToEnumMap["v6"].containsAll(personNameTypeList.category)
         assertTrue GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME).guid.containsAll(personNameTypeList.id)
     }
 
@@ -61,7 +61,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         assertEquals list.size(), personNameTypeList.size()
         assertTrue list.code.containsAll(personNameTypeList.code)
         assertTrue list.description.containsAll(personNameTypeList.title)
-        assertTrue NameTypeCategory.values().v6.containsAll(personNameTypeList.category)
+        assertTrue NameTypeCategory.values().versionToEnumMap["v6"].containsAll(personNameTypeList.category)
         assertTrue GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME).guid.containsAll(personNameTypeList.id)
     }
 
@@ -110,15 +110,14 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
 
 
     @Test
-    void testGetBannerNameTypeToHEDMNameTypeMap() {
+    void testGetBannerNameTypeToHedmV6NameTypeMap() {
         NameType nameType = NameType.findByCode("BRTH")
         assertNotNull nameType
         IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, nameType.code)
         assertNotNull intConf
-        def map = personNameTypeCompositeService.getBannerNameTypeToHEDMNameTypeMap()
+        def map = personNameTypeCompositeService.getBannerNameTypeToHedmV6NameTypeMap()
         assertNotNull map
         assertTrue map.containsKey(nameType.code)
-        assertTrue map.get(nameType.code) instanceof NameTypeCategory
     }
 
 }

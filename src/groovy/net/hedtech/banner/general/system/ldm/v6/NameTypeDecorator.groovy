@@ -29,11 +29,11 @@ class NameTypeDecorator {
 
 
     String getCategory() {
-        NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(category)
+        NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(category, "v6")
         if (nameTypeCategory) {
-            return nameTypeCategory.v6
+            return nameTypeCategory.versionToEnumMap["v6"]
         } else {
-            return NameTypeCategory.PERSONAL.v6
+            return NameTypeCategory.PERSONAL.versionToEnumMap["v6"]
         }
     }
 

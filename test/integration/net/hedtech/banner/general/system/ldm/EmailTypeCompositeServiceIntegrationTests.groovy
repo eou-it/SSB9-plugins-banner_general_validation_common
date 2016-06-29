@@ -4,10 +4,12 @@
 
 package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.system.EmailType
 import net.hedtech.banner.general.system.EmailTypeService
 import net.hedtech.banner.general.system.ldm.v4.EmailTypeDetails
-import net.hedtech.banner.general.system.ldm.v6.EmailTypeEnum
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -39,13 +41,30 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
      * <p> Test to lists the EmailTypes Records from EmailTypeCompositeService</p>
      * */
     @Test
-    public void testListEmailTypes(){
+    public void testListEmailTypes() {
         List emailTypes = emailTypeCompositeService.list(params)
-        assertNotNull emailTypes
         assertFalse emailTypes.isEmpty()
-        def totalCount = emailTypeService.countByEmailTypeCodes(emailTypes.code as Set<String>)
-        assertNotNull totalCount
-        assertEquals totalCount, emailTypes.size()
+
+        Map<String, String> bannerEmailypeToHedmEmailTypeMap = emailTypeCompositeService.getBannerEmailTypeToHedmV6EmailTypeMap()
+        assertFalse bannerEmailypeToHedmEmailTypeMap.isEmpty()
+
+        List entities = emailTypeService.fetchAllWithGuidByCodeInList(bannerEmailypeToHedmEmailTypeMap.keySet(), 500, 0)
+        assertFalse entities.isEmpty()
+
+        assertEquals emailTypes.size(), entities.size()
+        Iterator it1 = emailTypes.iterator()
+        Iterator it2 = entities.iterator()
+
+        while (it1.hasNext() && it2.hasNext()) {
+            EmailTypeDetails emailTypeDetail = it1.next()
+            List actualEntities = it2.next()
+            EmailType emailType = actualEntities.getAt(0)
+            assertEquals emailType.code, emailTypeDetail.code
+            assertEquals emailType.description, emailTypeDetail.description
+            GlobalUniqueIdentifier globalUniqueIdentifier = actualEntities.getAt(1)
+            assertEquals globalUniqueIdentifier.guid, emailTypeDetail.id
+            assertEquals emailTypeDetail.emailType, bannerEmailypeToHedmEmailTypeMap.get(emailType.code)
+        }
     }
 
     /**
@@ -53,13 +72,15 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
      * */
     @Test
     public void testCount(){
-        Long expectedCount = emailTypeCompositeService.count()
-        assertNotNull(expectedCount)
-        Map mappedEmailTypes =  emailTypeCompositeService.getBannerEmailTypeToHEDMEmailTypeMap(EmailTypeEnum.EMAIL_TYPE)
-        assertFalse mappedEmailTypes.isEmpty()
-        Long actualCount = emailTypeService.countByEmailTypeCodes(mappedEmailTypes.keySet())
-        assertNotNull(actualCount)
-        assertEquals expectedCount,actualCount
+        def actualCount = emailTypeCompositeService.count().toInteger()
+        assertNotNull actualCount
+
+        Map<String, String> bannerEmailTypeToHedmEmailTypeMap = emailTypeCompositeService.getBannerEmailTypeToHedmV6EmailTypeMap()
+        assertFalse bannerEmailTypeToHedmEmailTypeMap.isEmpty()
+
+        List<EmailType> emailTypeList = emailTypeService.fetchAllByCodeInList(bannerEmailTypeToHedmEmailTypeMap.keySet())
+        assertFalse emailTypeList.isEmpty()
+        assertEquals emailTypeList.size(), actualCount
     }
 
 
@@ -92,8 +113,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     @Test
     public void testShow(){
         List list = emailTypeCompositeService.list([max:'1'])
-        assertNotNull list
-        assertTrue list.size()>0
+        assertFalse list.isEmpty()
         EmailTypeDetails emailTypeDetails = list.get(0)
         assertNotNull emailTypeDetails
 
@@ -102,7 +122,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         assertEquals emailTypeDetails.code,newEmailTypeDetails.code
         assertEquals emailTypeDetails.description,newEmailTypeDetails.description
         assertEquals emailTypeDetails.id,newEmailTypeDetails.id
-        assertTrue EmailTypeEnum.EMAIL_TYPE.containsAll(emailTypeDetails.emailType)
+        assertEquals newEmailTypeDetails.emailType, emailTypeDetails.emailType
     }
 
     /**
@@ -144,6 +164,17 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     void testGetNullGuid() {
         try {
             emailTypeCompositeService.get( null )
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+    @Test
+    void testGetInvalidMappedGuid(){
+        EmailTypeDetails emailType = emailTypeCompositeService.create(i_success_input_content)
+        assertNotNull emailType
+        try {
+            emailTypeCompositeService.get( emailType.id )
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
@@ -242,15 +273,41 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
     }
 
     @Test
-    void testFetchAllMappedEmailTypes() {
-        Map emailTypeData = emailTypeCompositeService.fetchAllMappedEmailTypes()
-        assertNotNull emailTypeData
-        assertFalse emailTypeData.isEmpty()
-        List<EmailTypeDetails> emailTypeDetails = emailTypeCompositeService.list(params)
-        assertNotNull emailTypeDetails
-        assertTrue emailTypeDetails.code.containsAll(emailTypeData.keySet())
+    void testGetEmailTypeCodeToGuidMap() {
+        EmailTypeDetails emailType = emailTypeCompositeService.create(i_success_input_content)
+        assertNotNull emailType
+        assertNotNull emailType.id
+        Map<String,String> emailTypeCodeToGuidMap = emailTypeCompositeService.getEmailTypeCodeToGuidMap([emailType.code])
+        assertFalse emailTypeCodeToGuidMap.isEmpty()
+        assertTrue emailTypeCodeToGuidMap.containsKey(emailType.code)
+        assertEquals emailType.id, emailTypeCodeToGuidMap.get(emailType.code)
+    }
+
+    @Test
+    void testGetBannerEmailTypeToHedmV6EmailTypeMap() {
+        EmailType emailType = EmailType.findByCode("HOME")
+        assertNotNull emailType
+        IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME_V6, emailType.code)
+        assertNotNull intConf
+        def map = emailTypeCompositeService.getBannerEmailTypeToHedmV6EmailTypeMap()
+        assertNotNull map
+        assertTrue map.containsKey(emailType.code)
+        assertEquals map.get(emailType.code), HedmEmailType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
+    }
+
+    @Test
+    void testGetBannerEmailTypeToHedmV3EmailTypeMap() {
+        EmailType emailType = EmailType.findByCode("HOME")
+        assertNotNull emailType
+        IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME_V3, emailType.code)
+        assertNotNull intConf
+        def map = emailTypeCompositeService.getBannerEmailTypeToHedmV3EmailTypeMap()
+        assertNotNull map
+        assertTrue map.containsKey(emailType.code)
+        assertEquals map.get(emailType.code), HedmEmailType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
 
     }
+
 
     private Map updateEmailTypeMap(id, code) {
         Map params = [id: id,code: code, description: 'Description Test',emailType:"Home"]

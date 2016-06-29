@@ -158,19 +158,24 @@ class GeneralValidationCommonConstants {
 
     static final String ADDRESS_TYPE_LDM_NAME = 'address-types'
 
-    static final String PHONE_LDM_NAME ='phone-types'
-    static final String PHONE_ENTITY_TYPE = 'phoneType'
-    static final String LDM_NAME_EMAIL_TYPES = 'email-types'
     //Person Hold Constants
     public static final def PERSON_HOLD_SEARCH_FIELD = 'person'
     static final String PERSON_HOLS_LDM_NAME = 'person-holds'
     static final String PERSON_HOLDS_KEY = 'gPersonHolds'
     static final String PERSONS_KEY = 'gPerson'
     static final String PERSON_HOLDS_TYPE_KEY = 'gPersonHoldsType'
+
     //Ethnicities V6
     static final String ETHNICITIES = 'ethnicities'
 
     //Email Type V6 constants
-    public static final String EMAIL_TYPE_SETTING_NAME = 'EMAILS.EMAILTYPE'
+    public static final String EMAIL_TYPE_SETTING_NAME_V6 = 'EMAILS.EMAILTYPE'
     public static final String EAMIL_TYPE_LDM_NAME = 'email-types'
+    public static final String EMAIL_TYPE_SETTING_NAME_V3 = 'PERSON.EMAILS.EMAILTYPE'
+
+    //Phone Type V6 constants
+    public static final String PHONE_TYPE_SETTING_NAME_V6 = 'PHONES.PHONETYPE'
+    public static final String PHONE_TYPE_SETTING_NAME_V3 = 'PERSON.PHONES.PHONETYPE'
+    public static final String PHONE_TYPE_LDM_NAME ='phone-types'
+    public static final String PHONE_ENTITY_TYPE = 'phoneType'
 }

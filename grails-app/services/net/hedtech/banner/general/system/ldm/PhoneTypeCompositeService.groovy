@@ -7,9 +7,9 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
-import net.hedtech.banner.general.system.PhoneType
 import net.hedtech.banner.general.system.TelephoneType
 import net.hedtech.banner.general.system.ldm.v4.PhoneTypeDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -23,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional
 class PhoneTypeCompositeService extends LdmService {
 
     def telephoneTypeService
-    def phoneTypeService
-
 
     /**
      * GET /api/phone-types
@@ -32,11 +30,17 @@ class PhoneTypeCompositeService extends LdmService {
      * @return
      */
     @Transactional(readOnly = true)
-    def  list(Map params) {
-        List<PhoneTypeDecorator> phoneTypeList=[]
+    def list(Map params) {
+        List<PhoneTypeDecorator> phoneTypeList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        phoneTypeService.fetchAll(params).each { phoneTypeViewRecord ->
-            phoneTypeList << new PhoneTypeDecorator(phoneTypeViewRecord)
+        Map<String, String> bannerPhoneTypeToHedmPhoneTypeMap = getBannerPhoneTypeToHedmV6PhoneTypeMap()
+        if (bannerPhoneTypeToHedmPhoneTypeMap) {
+            params.offset = params.offset ?: 0
+            telephoneTypeService.fetchAllWithGuidInList(bannerPhoneTypeToHedmPhoneTypeMap.keySet(), params.max as Integer, params.offset as Integer).each { result ->
+                TelephoneType telephoneType = result.getAt(0)
+                GlobalUniqueIdentifier globalUniqueIdentifier = result.getAt(1)
+                phoneTypeList << new PhoneTypeDecorator(telephoneType.code, telephoneType.description, globalUniqueIdentifier.guid, bannerPhoneTypeToHedmPhoneTypeMap.get(telephoneType.code))
+            }
         }
         return phoneTypeList
     }
@@ -46,22 +50,34 @@ class PhoneTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     Long count() {
-       return phoneTypeService.fetchCountAll()
+        return getBannerPhoneTypeToHedmV6PhoneTypeMap().size()
     }
 
     /**
-     * GET /api/phone-types/{guid}
-     * @param guid
+     * GET /api/phone-types/{guid}* @param guid
      * @return
      */
     @Transactional(readOnly = true)
     PhoneTypeDecorator get(String guid) {
-        PhoneType  phoneTypeViewRecord = phoneTypeService.fetchByGuid(guid?.trim())
-        if (phoneTypeViewRecord) {
-           return new PhoneTypeDecorator(phoneTypeViewRecord)
-           } else {
-                throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
-            }
+        if (!guid) {
+            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
+        }
+
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.PHONE_TYPE_LDM_NAME, guid)
+        if (!globalUniqueIdentifier) {
+            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
+        }
+
+        TelephoneType telephoneType = telephoneTypeService.get(globalUniqueIdentifier.domainId)
+        if (!telephoneType) {
+            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
+        }
+
+        Map<String, String> bannerPhoneTypeToHedmV6PhoneTypeMap = getBannerPhoneTypeToHedmV6PhoneTypeMap()
+        if (!bannerPhoneTypeToHedmV6PhoneTypeMap.containsKey(telephoneType.code)) {
+            throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
+        }
+        return new PhoneTypeDecorator(telephoneType.code, telephoneType.description, globalUniqueIdentifier.guid, bannerPhoneTypeToHedmV6PhoneTypeMap.get(telephoneType.code))
     }
 
     /**
@@ -82,26 +98,25 @@ class PhoneTypeCompositeService extends LdmService {
         String telephoneTypeGuid = content.id?.trim()?.toLowerCase()
         if (telephoneTypeGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-            updateGuidValue(telephoneType.id, telephoneTypeGuid, GeneralValidationCommonConstants.PHONE_LDM_NAME)
+            updateGuidValue(telephoneType.id, telephoneTypeGuid, GeneralValidationCommonConstants.PHONE_TYPE_LDM_NAME)
         } else {
-            telephoneTypeGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PHONE_LDM_NAME, telephoneType?.id)?.guid
+            telephoneTypeGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PHONE_TYPE_LDM_NAME, telephoneType.id).guid
         }
         log.debug("GUID: ${telephoneTypeGuid}")
-      return getDecorator(telephoneType,content,telephoneTypeGuid)
+        return new PhoneTypeDecorator(telephoneType.code, telephoneType.description, telephoneTypeGuid, content.phoneType)
     }
 
     /**
-     * PUT /api/phone-types/{id}
-     *
+     * PUT /api/phone-types/{id}*
      * @param content Request body
      * @return PhoneType detail object put updating the record
      */
-    def update(Map content){
+    def update(Map content) {
         String telephoneTypeGuid = content.id?.trim().toLowerCase()
         if (!telephoneTypeGuid) {
             throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
         }
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.PHONE_LDM_NAME, telephoneTypeGuid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.PHONE_TYPE_LDM_NAME, telephoneTypeGuid)
         if (!globalUniqueIdentifier) {
             return create(content)
         }
@@ -114,7 +129,28 @@ class PhoneTypeCompositeService extends LdmService {
             content.code = telephoneType?.code
         }
         telephoneType = bindTelephoneType(telephoneType, content)
-        return getDecorator(telephoneType, content, telephoneTypeGuid)
+        return new PhoneTypeDecorator(telephoneType.code, telephoneType.description, telephoneTypeGuid, content.phoneType)
+    }
+
+    def getPhoneTypeCodeToGuidMap(Collection<String> codes) {
+        Map<String, String> codeToGuidMap = [:]
+        if (codes) {
+            List entities = telephoneTypeService.fetchAllWithGuidInList(codes)
+            entities.each {
+                TelephoneType phoneType = it.getAt(0)
+                GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
+                codeToGuidMap.put(phoneType.code, globalUniqueIdentifier.guid)
+            }
+        }
+        return codeToGuidMap
+    }
+
+    def getBannerPhoneTypeToHedmV3PhoneTypeMap() {
+        return getBannerPhoneTypeToHEDMEPhoneTypeMap(GeneralValidationCommonConstants.PHONE_TYPE_SETTING_NAME_V3, GeneralValidationCommonConstants.VERSION_V3)
+    }
+
+    def getBannerPhoneTypeToHedmV6PhoneTypeMap() {
+        return getBannerPhoneTypeToHEDMEPhoneTypeMap(GeneralValidationCommonConstants.PHONE_TYPE_SETTING_NAME_V6, GeneralValidationCommonConstants.VERSION_V6)
     }
 
     /**
@@ -123,21 +159,24 @@ class PhoneTypeCompositeService extends LdmService {
      * @param content
      * @return
      */
-    private bindTelephoneType(TelephoneType telephoneType,Map content){
+    private bindTelephoneType(TelephoneType telephoneType, Map content) {
         super.bindData(telephoneType, content, [:])
         telephoneTypeService.createOrUpdate(telephoneType)
     }
 
-    /**
-     * Populating the decorator class with the response as per schema.
-     */
-    private def getDecorator(TelephoneType telephoneType, Map content, String telephoneTypeGuid) {
-        PhoneType phoneType = new PhoneType()
-        phoneType.setCode(telephoneType.code)
-        phoneType.setDescription(telephoneType.description)
-        phoneType.setId(telephoneTypeGuid)
-        phoneType.setPhoneType(content.phoneType )
-        return new PhoneTypeDecorator(phoneType)
+    private def getBannerPhoneTypeToHEDMEPhoneTypeMap(String settingName, String version) {
+        Map<String, String> bannerPhoneTypeToHedmPhoneTypeMap = [:]
+        List<IntegrationConfiguration> integrationConfigurationList = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
+        if (integrationConfigurationList) {
+            List<TelephoneType> telephoneTypeList = telephoneTypeService.fetchAllByCodeInList(integrationConfigurationList.value)
+            integrationConfigurationList.each {
+                HedmPhoneType hedmPhoneType = HedmPhoneType.getByString(it.translationValue, version)
+                if (telephoneTypeList.code.contains(it.value) && hedmPhoneType) {
+                    bannerPhoneTypeToHedmPhoneTypeMap.put(it.value, hedmPhoneType.versionToEnumMap[version])
+                }
+            }
+        }
+        return bannerPhoneTypeToHedmPhoneTypeMap
     }
 
 }

@@ -5,8 +5,6 @@ package net.hedtech.banner.general.system
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
-import net.hedtech.banner.general.system.ldm.v6.EmailTypeEnum
 import org.hibernate.annotations.Type
 
 import javax.persistence.*
@@ -20,11 +18,12 @@ import javax.persistence.*
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
-        @NamedQuery(name = "EmailType.fetchAll",
-                query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in (:codes)"""),
-        @NamedQuery(name = "EmailType.countAll",
-                query = """select count(*) from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in (:codes)""")
-
+        @NamedQuery(name = "EmailType.fetchAllWithGuid",
+                query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName"""),
+        @NamedQuery(name = "EmailType.fetchAllWithGuidByCodeInList",
+                query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in :codes """),
+        @NamedQuery(name = "EmailType.fetchAllByCodeInList",
+                query = """from EmailType a where a.code in :codes""")
 ])
 class EmailType implements Serializable {
 
@@ -102,41 +101,5 @@ class EmailType implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
-
-    /**
-     * Return Count value of Email Type which are mapped to goriccr
-     * @return Long
-     */
-     static Long countByEmailTypeCodes(Set<String> emailTypeCodes) {
-        return EmailType.withSession { session ->
-            session.getNamedQuery('EmailType.countAll')
-                    .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                    .setParameterList('codes',emailTypeCodes)
-                    .uniqueResult()
-        }
-    }
-
-    /**
-     * fetching EmailType data
-     * @param Map
-     * @return List
-     */
-     static List fetchByEmailTypeCodes(Set<String> emailTypeCodes, Integer max, Integer offset) {
-         return EmailType.withSession { session ->
-             def namedQuery = session.getNamedQuery('EmailType.fetchAll')
-                     .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                     .setParameterList('codes', emailTypeCodes)
-
-             namedQuery.with {
-                 if (max > 0) {
-                     setMaxResults(max)
-                 }
-                 if (offset > -1) {
-                     setFirstResult(offset)
-                 }
-                 list()
-             }
-         }
-     }
 
 }

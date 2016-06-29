@@ -27,14 +27,4 @@ class NameTypeDecorator {
         this.category = category
     }
 
-
-    String getCategory() {
-        NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(category, "v6")
-        if (nameTypeCategory) {
-            return nameTypeCategory.versionToEnumMap["v6"]
-        } else {
-            return NameTypeCategory.PERSONAL.versionToEnumMap["v6"]
-        }
-    }
-
 }

@@ -43,12 +43,7 @@ import javax.persistence.*
         @NamedQuery(name = "IntegrationConfiguration.fetchAllByProcessCodeAndSettingName",
                 query = """FROM IntegrationConfiguration a
                                      WHERE a.processCode = :processCode
-                                     and a.settingName = :settingName"""),
-        @NamedQuery(name = "IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValues",
-                query = """FROM IntegrationConfiguration a
-                                              WHERE a.processCode = :processCode
-                                              and a.settingName = :settingName
-                                              and a.translationValue in (:translationValues)""")
+                                     and a.settingName = :settingName""")
 ])
 class IntegrationConfiguration implements Serializable {
     static final String LDM_CACHE_REGION_NAME = "ldmEnumeration"
@@ -279,14 +274,6 @@ class IntegrationConfiguration implements Serializable {
                     .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
         }
         return integrationList
-    }
-
-    static List<IntegrationConfiguration> fetchAllByProcessCodeAndSettingNameAndTranslationValues(String processCode, String settingName, List<String> translationValues) {
-       return IntegrationConfiguration.withSession { session ->
-             session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValues')
-                    .setString('processCode', processCode).setString('settingName', settingName).setParameterList('translationValues', translationValues).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
-
-        }
     }
 
 }

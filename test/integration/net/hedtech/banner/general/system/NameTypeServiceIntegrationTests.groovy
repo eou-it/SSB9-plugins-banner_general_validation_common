@@ -32,39 +32,52 @@ class NameTypeServiceIntegrationTests extends BaseIntegrationTestCase {
 
 
     @Test
-    void testFetchAll() {
-        def nameList = nameTypeService.fetchAll([max: '500', offset: '0'])
-        assertFalse nameList.isEmpty()
-        assertEquals NameType.list([:]).size(), nameList.size()
-    }
-
-
-    @Test
-    void testFetchByGuid() {
-        NameType nameType = newNameType()
-        save nameType
-        assertNotNull nameType.id
-        def guid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, nameType.id)?.guid
-        assertNotNull guid
-        def list = nameTypeService.fetchByGuid(guid)
-        assertEquals guid, list.getAt(0)
-        assertEquals nameType.code, list.getAt(1)
-        assertEquals nameType.description, list.getAt(2)
-    }
-
-
-    @Test
-    void testFetchGUIDs() {
+    void testFetchAllWithGuidByCodeInList() {
         NameType nameType = NameType.findByCode("BRTH")
         assertNotNull nameType
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, nameType.id)
-        assertNotNull globalUniqueIdentifier
-        def map = nameTypeService.fetchGUIDs([nameType.code])
-        assertNotNull map
-        assertTrue map.containsKey(nameType.code)
-        assertEquals globalUniqueIdentifier.guid, map.get(nameType.code)
+        List nameTypeWithGuidList=  nameTypeService.fetchAllWithGuidByCodeInList([nameType.code],1,0)
+        assertFalse nameTypeWithGuidList.isEmpty()
+        assertEquals 1, nameTypeWithGuidList.size()
+        nameTypeWithGuidList.each {
+            NameType actualNameType = it.getAt(0)
+            assertNotNull actualNameType
+            def guid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, actualNameType.id)?.guid
+            assertNotNull guid
+            GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
+            assertNotNull globalUniqueIdentifier
+            assertEquals guid, globalUniqueIdentifier.guid
+            assertEquals actualNameType, nameType
+        }
     }
 
+
+    @Test
+    void testFetchAllByCodeInList() {
+        NameType nameType = NameType.findByCode("BRTH")
+        assertNotNull nameType
+        List<NameType> nameTypeList =  nameTypeService.fetchAllByCodeInList([nameType.code])
+        assertFalse nameTypeList.isEmpty()
+        assertEquals 1, nameTypeList.size()
+        nameTypeList.each {
+            assertEquals it, nameType
+        }
+    }
+
+    @Test
+    void testFetchAllWithGuid(){
+        List nameTypeWithGuidList=  nameTypeService.fetchAllWithGuid(1,0)
+        assertFalse nameTypeWithGuidList.isEmpty()
+        assertEquals 1, nameTypeWithGuidList.size()
+        nameTypeWithGuidList.each {
+            NameType actualNameType = it.getAt(0)
+            assertNotNull actualNameType
+            def guid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, actualNameType.id)?.guid
+            assertNotNull guid
+            GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
+            assertNotNull globalUniqueIdentifier
+            assertEquals guid, globalUniqueIdentifier.guid
+        }
+    }
 
     private def newNameType() {
         def nameType = new NameType(

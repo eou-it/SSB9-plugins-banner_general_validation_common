@@ -3,8 +3,6 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
 
@@ -20,21 +18,55 @@ import net.hedtech.banner.service.ServiceBase
 class EmailTypeService extends ServiceBase {
     boolean transactional = true
 
-    /**
-     * Return Count value of Email Type which are mapped to goriccr
-     * @return Long
-     */
-    Long countByEmailTypeCodes(Set<String> emailTypeCodes) {
-        return EmailType.countByEmailTypeCodes(emailTypeCodes)
+
+    List fetchAllWithGuidByCodeInList(Collection<String> emailTypeCodes, int max = 0, int offset = -1) {
+        List entities = []
+        if (emailTypeCodes) {
+            entities = EmailType.withSession { session ->
+                def namedQuery = session.getNamedQuery('EmailType.fetchAllWithGuidByCodeInList')
+                namedQuery.with {
+                    setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
+                    setParameterList('codes', emailTypeCodes)
+                    if (max > 0) {
+                        setMaxResults(max)
+                    }
+                    if (offset > -1) {
+                        setFirstResult(offset)
+                    }
+                    list()
+                }
+            }
+        }
+        return entities
     }
 
-    /**
-     * fetching EmailType data
-     * @param Map
-     * @return List
-     */
-    List fetchByEmailTypeCodes(Set<String> emailTypeCodes, Integer max, Integer offset) {
-      return EmailType.fetchByEmailTypeCodes(emailTypeCodes, max, offset)
+    List<EmailType> fetchAllByCodeInList(Collection<String> emailTypeCodes) {
+        List entities = []
+        if (emailTypeCodes) {
+            entities = EmailType.withSession { session ->
+                session.getNamedQuery('EmailType.fetchAllByCodeInList')
+                        .setParameterList('codes', emailTypeCodes)
+                        .list()
+            }
+        }
+        return entities
     }
+
+    List fetchAllWithGuid(int max=0, int offset=-1) {
+        return EmailType.withSession { session ->
+            def namedQuery = session.getNamedQuery('EmailType.fetchAllWithGuid')
+            namedQuery.with {
+                setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
+                if (max > 0) {
+                    setMaxResults(max)
+                }
+                if (offset > -1) {
+                    setFirstResult(offset)
+                }
+                list()
+            }
+        }
+    }
+
 
 }

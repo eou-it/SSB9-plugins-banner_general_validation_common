@@ -1,12 +1,7 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
-
-import groovy.sql.Sql
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
-import net.hedtech.banner.general.overall.IntegrationConfiguration
-import net.hedtech.banner.general.system.ldm.v6.EmailTypeEnum
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -43,9 +38,6 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
     def u_failure_displayWebIndicator = null
     def u_failure_urlIndicator = null
-
-    private String query = """select count(*) as cnt from goriccr g , GTVEMAL s  where GORICCR_SQPR_CODE = 'HEDM'  AND GORICCR_ICSN_CODE = 'EMAILS.EMAILTYPE' AND s.GTVEMAL_CODE = g.GORICCR_VALUE AND
-    g.GORICCR_TRANSLATION_VALUE in ('personal','business','school','parent','family','sales','support','general','billing','legal','hr','media','matchingGifts','other')"""
 
 
     @Before
@@ -169,51 +161,7 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
-    @Test
-    void testFetchByEmailTypeCodes(){
-       List<IntegrationConfiguration> configurationList = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValues(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME, EmailTypeEnum.EMAIL_TYPE)
 
-        List emailTypeList= EmailType.fetchByEmailTypeCodes(configurationList.value as Set<String>,0,-1)
-        assertFalse emailTypeList.isEmpty()
-        List<EmailType> actualTypes= EmailType.list()
-        assertFalse actualTypes.isEmpty()
-        emailTypeList.each {
-            assertTrue(actualTypes.contains(it[0]))
-        }
-        Sql sql = new Sql(sessionFactory.getCurrentSession().connection())
-        def result = sql.firstRow(query)
-        Long expectCount = result.cnt
-        assertNotNull expectCount
-        assertEquals expectCount,emailTypeList.size()
-    }
-
-    @Test
-    void testFetchByEmailTypeCodesWithPaginiation(){
-        List<IntegrationConfiguration> configurationList = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValues(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME, EmailTypeEnum.EMAIL_TYPE)
-
-        List emailTypeList= EmailType.fetchByEmailTypeCodes(configurationList.value as Set<String>,2,0)
-        assertFalse emailTypeList.isEmpty()
-        List<EmailType> actualTypes= EmailType.list()
-        assertFalse actualTypes.isEmpty()
-        emailTypeList.each {
-            assertTrue(actualTypes.contains(it[0]))
-        }
-        assertEquals 2,emailTypeList.size()
-
-    }
-
-    @Test
-    void testCountByEmailTypeCodes(){
-        List<IntegrationConfiguration> configurationList = IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValues(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME, EmailTypeEnum.EMAIL_TYPE)
-
-        Long actualCount = EmailType.countByEmailTypeCodes(configurationList.value as Set<String>)
-        Sql sql = new Sql(sessionFactory.getCurrentSession().connection())
-        def result = sql.firstRow(query)
-        Long expectCount = result.cnt
-        assertNotNull expectCount
-        assertEquals expectCount,actualCount
-
-    }
 
     private def newValidForCreateEmailType() {
         def emailType = new EmailType(

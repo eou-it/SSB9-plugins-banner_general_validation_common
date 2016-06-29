@@ -3,7 +3,6 @@
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
-import net.hedtech.banner.general.overall.BankService
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before

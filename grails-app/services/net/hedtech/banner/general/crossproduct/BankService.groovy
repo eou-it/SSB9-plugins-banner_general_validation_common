@@ -1,9 +1,8 @@
 /*******************************************************************************
  Copyright 2016-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
-package net.hedtech.banner.general.overall
+package net.hedtech.banner.general.crossproduct
 
-import net.hedtech.banner.general.crossproduct.Bank
 import net.hedtech.banner.service.ServiceBase
 
 

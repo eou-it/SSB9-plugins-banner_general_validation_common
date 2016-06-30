@@ -20,7 +20,7 @@ import javax.persistence.*
         @NamedQuery(name = "TelephoneType.fetchByCode",query = """FROM TelephoneType a WHERE a.code = :code"""),
         @NamedQuery(name = "TelephoneType.fetchAllWithGuid",
                 query = """from TelephoneType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName"""),
-        @NamedQuery(name = "TelephoneType.fetchAllWithGuidInList",
+        @NamedQuery(name = "TelephoneType.fetchAllWithGuidByCodeInList",
                 query = """from TelephoneType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in :codes"""),
         @NamedQuery(name = "TelephoneType.fetchAllByCodeInList",
                 query = """from TelephoneType a where a.code in :codes""")

@@ -71,7 +71,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         Map<String, String> bannerPhoneTypeToHedmPhoneTypeMap = phoneTypeCompositeService.getBannerPhoneTypeToHedmV6PhoneTypeMap()
         assertFalse bannerPhoneTypeToHedmPhoneTypeMap.isEmpty()
 
-        List entities = telephoneTypeService.fetchAllWithGuidInList(bannerPhoneTypeToHedmPhoneTypeMap.keySet(), 500, 0)
+        List entities = telephoneTypeService.fetchAllWithGuidByCodeInList(bannerPhoneTypeToHedmPhoneTypeMap.keySet(), 500, 0)
         assertFalse entities.isEmpty()
 
         assertEquals phoneTypes.size(), entities.size()

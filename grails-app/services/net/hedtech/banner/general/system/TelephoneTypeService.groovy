@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -18,11 +18,11 @@ class TelephoneTypeService extends ServiceBase {
         }
     }
 
-    List fetchAllWithGuidInList(Collection<String> phoneTypeCodes, int max = 0, int offset = -1) {
+    List fetchAllWithGuidByCodeInList(Collection<String> phoneTypeCodes, int max = 0, int offset = -1) {
         List entities = []
         if (phoneTypeCodes) {
             entities = TelephoneType.withSession { session ->
-                def namedQuery = session.getNamedQuery('TelephoneType.fetchAllWithGuidInList')
+                def namedQuery = session.getNamedQuery('TelephoneType.fetchAllWithGuidByCodeInList')
                 namedQuery.with {
                     setString('ldmName', GeneralValidationCommonConstants.PHONE_TYPE_LDM_NAME)
                     setParameterList('codes', phoneTypeCodes)

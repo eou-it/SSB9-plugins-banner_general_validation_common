@@ -36,7 +36,7 @@ class PhoneTypeCompositeService extends LdmService {
         Map<String, String> bannerPhoneTypeToHedmPhoneTypeMap = getBannerPhoneTypeToHedmV6PhoneTypeMap()
         if (bannerPhoneTypeToHedmPhoneTypeMap) {
             params.offset = params.offset ?: 0
-            telephoneTypeService.fetchAllWithGuidInList(bannerPhoneTypeToHedmPhoneTypeMap.keySet(), params.max as Integer, params.offset as Integer).each { result ->
+            telephoneTypeService.fetchAllWithGuidByCodeInList(bannerPhoneTypeToHedmPhoneTypeMap.keySet(), params.max as Integer, params.offset as Integer).each { result ->
                 TelephoneType telephoneType = result.getAt(0)
                 GlobalUniqueIdentifier globalUniqueIdentifier = result.getAt(1)
                 phoneTypeList << new PhoneTypeDecorator(telephoneType.code, telephoneType.description, globalUniqueIdentifier.guid, bannerPhoneTypeToHedmPhoneTypeMap.get(telephoneType.code))
@@ -135,7 +135,7 @@ class PhoneTypeCompositeService extends LdmService {
     def getPhoneTypeCodeToGuidMap(Collection<String> codes) {
         Map<String, String> codeToGuidMap = [:]
         if (codes) {
-            List entities = telephoneTypeService.fetchAllWithGuidInList(codes)
+            List entities = telephoneTypeService.fetchAllWithGuidByCodeInList(codes)
             entities.each {
                 TelephoneType phoneType = it.getAt(0)
                 GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
@@ -146,11 +146,11 @@ class PhoneTypeCompositeService extends LdmService {
     }
 
     def getBannerPhoneTypeToHedmV3PhoneTypeMap() {
-        return getBannerPhoneTypeToHEDMEPhoneTypeMap(GeneralValidationCommonConstants.PHONE_TYPE_SETTING_NAME_V3, GeneralValidationCommonConstants.VERSION_V3)
+        return getBannerPhoneTypeToHedmPhoneTypeMap(GeneralValidationCommonConstants.PHONE_TYPE_SETTING_NAME_V3, GeneralValidationCommonConstants.VERSION_V3)
     }
 
     def getBannerPhoneTypeToHedmV6PhoneTypeMap() {
-        return getBannerPhoneTypeToHEDMEPhoneTypeMap(GeneralValidationCommonConstants.PHONE_TYPE_SETTING_NAME_V6, GeneralValidationCommonConstants.VERSION_V6)
+        return getBannerPhoneTypeToHedmPhoneTypeMap(GeneralValidationCommonConstants.PHONE_TYPE_SETTING_NAME_V6, GeneralValidationCommonConstants.VERSION_V6)
     }
 
     /**
@@ -164,14 +164,14 @@ class PhoneTypeCompositeService extends LdmService {
         telephoneTypeService.createOrUpdate(telephoneType)
     }
 
-    private def getBannerPhoneTypeToHEDMEPhoneTypeMap(String settingName, String version) {
+    private def getBannerPhoneTypeToHedmPhoneTypeMap(String settingName, String version) {
         Map<String, String> bannerPhoneTypeToHedmPhoneTypeMap = [:]
-        List<IntegrationConfiguration> integrationConfigurationList = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
-        if (integrationConfigurationList) {
-            List<TelephoneType> telephoneTypeList = telephoneTypeService.fetchAllByCodeInList(integrationConfigurationList.value)
-            integrationConfigurationList.each {
+        List<IntegrationConfiguration> intConfs = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
+        if (intConfs) {
+            List<TelephoneType> entities = telephoneTypeService.fetchAllByCodeInList(intConfs.value)
+            intConfs.each {
                 HedmPhoneType hedmPhoneType = HedmPhoneType.getByString(it.translationValue, version)
-                if (telephoneTypeList.code.contains(it.value) && hedmPhoneType) {
+                if (entities.code.contains(it.value) && hedmPhoneType) {
                     bannerPhoneTypeToHedmPhoneTypeMap.put(it.value, hedmPhoneType.versionToEnumMap[version])
                 }
             }

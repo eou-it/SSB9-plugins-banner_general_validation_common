@@ -377,11 +377,14 @@ class LdmService {
      * Used to bind map properties onto grails domains.
      * Can provide an exclusion and inclusion list in the third param.
      */
-    public void bindData(def domain, Map properties, Map includeExcludeMap) {
-        if (includeExcludeMap?.exclude instanceof List) {
-            includeExcludeMap.exclude.addAll(globalBindExcludes)
-        } else {
-            includeExcludeMap.put('exclude', globalBindExcludes)
+    public void bindData(
+            def domain, Map properties, Map includeExcludeMap, boolean checkForErrors = true, boolean globalBinds = true) {
+        if (globalBinds) {
+            if (includeExcludeMap?.exclude instanceof List) {
+                includeExcludeMap.exclude.addAll(globalBindExcludes)
+            } else {
+                includeExcludeMap.put('exclude', globalBindExcludes)
+            }
         }
         grailsWebDataBinder.bind(domain,
                 properties as SimpleMapDataBindingSource,
@@ -389,7 +392,7 @@ class LdmService {
                 includeExcludeMap?.include,
                 includeExcludeMap?.exclude,
                 null)
-        if (domain.hasErrors()) {
+        if (checkForErrors && domain.hasErrors()) {
             throw new ApplicationException("${domain.class.simpleName}", new ValidationException("${domain.class.simpleName}", domain.errors))
         }
     }
@@ -423,4 +426,7 @@ class LdmService {
         globalUniqueIdentifierService.update(newEntity)
     }
 
+    public static String generateGUID() {
+        return GlobalUniqueIdentifier.generateGUID()
+    }
 }

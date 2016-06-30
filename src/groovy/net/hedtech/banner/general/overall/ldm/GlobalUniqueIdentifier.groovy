@@ -55,7 +55,15 @@ import javax.persistence.*
                 query = """FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName"""),
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchAllByGuidInList",
-                query = """FROM GlobalUniqueIdentifier where guid in (:guids))""")
+                query = """FROM GlobalUniqueIdentifier where guid in (:guids)""")
+])
+@NamedNativeQueries([
+        @NamedNativeQuery(name = "GlobalUniqueIdentifier.generateGUID",
+        query = """SELECT GOKGUID.get_uuid FROM DUAL""",
+        resultSetMapping = "GlobalUniqueIdentifier.guid")
+])
+@SqlResultSetMappings([
+        @SqlResultSetMapping(name = "GlobalUniqueIdentifier.guid")
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**
@@ -229,5 +237,11 @@ class GlobalUniqueIdentifier implements Serializable {
             }
         }
         return globalUniqueIdentifierList
+    }
+
+    public static String generateGUID(){
+        return GlobalUniqueIdentifier.withSession{ session ->
+            session.getNamedQuery("GlobalUniqueIdentifier.generateGUID").uniqueResult()
+        }
     }
 }

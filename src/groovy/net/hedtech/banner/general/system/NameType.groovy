@@ -5,7 +5,6 @@ package net.hedtech.banner.general.system
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 
 import javax.persistence.*
 
@@ -18,12 +17,9 @@ import javax.persistence.*
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
-   @NamedQuery(name = "NameType.fetchByGuid", query = """select g.guid as guid, n.code as code, n.description as title,
-                   (select translationValue from IntegrationConfiguration  where processCode = :processCode AND settingName = :settingName AND value =  n.code) as cateogry
-                   FROM NameType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code and g.guid = :guid"""),
-   @NamedQuery(name = "NameType.fetchAll", query = """select g.guid as guid, n.code as code, n.description as title,
-                   (select translationValue from IntegrationConfiguration  where processCode = :processCode AND settingName = :settingName AND value =  n.code) as cateogry
-                   FROM NameType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code"""),
+        @NamedQuery(name = "NameType.fetchAllWithGuid", query = """ FROM NameType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code """),
+        @NamedQuery(name = "NameType.fetchAllWithGuidByCodeInList", query = """ FROM NameType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code and n.code in :codes """),
+        @NamedQuery(name = "NameType.fetchAllByCodeInList", query = """ FROM NameType n where n.code in :codes """)
 ])
 class NameType implements Serializable {
 
@@ -80,39 +76,6 @@ class NameType implements Serializable {
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
-    }
-
-    /**
-     * fetch list of Name types
-     * @param params
-     * @return
-     */
-    static List fetchAll(Map params) {
-        return NameType.withSession { session ->
-            session.getNamedQuery('NameType.fetchAll')
-                      .setString('settingName',GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING)
-                      .setString('processCode',GeneralValidationCommonConstants.PROCESS_CODE)
-                      .setString('ldmName',GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME)
-                     .setMaxResults(params?.max as Integer)
-                     .setFirstResult((params?.offset ?: '0') as Integer)
-                     .list()
-        }
-    }
-
-    /**
-     * fetch Namme type data bases on guid
-     * @param guid
-     * @return
-     */
-    static def fetchByGuid(String guid) {
-        return NameType.withSession { session ->
-            session.getNamedQuery('NameType.fetchByGuid')
-                    .setString('settingName',GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING)
-                    .setString('processCode',GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('ldmName',GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME)
-                    .setString('guid',guid)
-                    .uniqueResult();
-        }
     }
 
 }

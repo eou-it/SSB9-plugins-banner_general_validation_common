@@ -7,8 +7,8 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.EmailType
 import net.hedtech.banner.general.system.ldm.v4.EmailTypeDetails
@@ -24,40 +24,55 @@ class EmailTypeCompositeService extends LdmService {
     def emailTypeService
 
     /**
-     * GET /api/eamil-types
+     * GET /api/email-types
      * @return List
      */
     @Transactional(readOnly = true)
     List<EmailTypeDetails> list(Map params) {
         List<EmailTypeDetails> emailTypes = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        emailTypeService.fetchAll(params).each {result ->
-                    emailTypes << new EmailTypeDetails(result[0].code,result[0].description,result[1].guid,result[2].translationValue)
-             }
-        emailTypes
+        Map<String, String> bannerEmailTypeToHedmEmailTypeMap = getBannerEmailTypeToHedmV6EmailTypeMap()
+        if (bannerEmailTypeToHedmEmailTypeMap) {
+            params.offset = params.offset ?: 0
+            emailTypeService.fetchAllWithGuidByCodeInList(bannerEmailTypeToHedmEmailTypeMap.keySet(), params.max as int, params.offset as int).each { result ->
+                EmailType emailType = result.getAt(0)
+                GlobalUniqueIdentifier globalUniqueIdentifier = result.getAt(1)
+                emailTypes << new EmailTypeDetails(emailType.code, emailType.description, globalUniqueIdentifier.guid, bannerEmailTypeToHedmEmailTypeMap.get(emailType.code))
+            }
+        }
+        return emailTypes
     }
 
-    /**
-     *
-     * @return Long value as total count
-     */
     Long count() {
-        return emailTypeService.countAll()
+        return getBannerEmailTypeToHedmV6EmailTypeMap().size()
     }
 
     /**
-     * GET /api/email-types/{guid}
-     * @param guid
+     * GET /api/email-types/{guid}* @param guid
      * @return
      */
     @Transactional(readOnly = true)
     EmailTypeDetails get(String guid) {
-        List emailType = emailTypeService.fetchByGuid(guid)
-        if (emailType) {
-                return new EmailTypeDetails(emailType[0].code, emailType[0].description, emailType[1].guid, emailType[2].translationValue)
-        } else {
+        if (!guid) {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
         }
+
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME, guid)
+        if (!globalUniqueIdentifier) {
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
+        }
+
+        EmailType emailType = emailTypeService.get(globalUniqueIdentifier.domainId)
+        if (!emailType) {
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
+        }
+
+        Map<String, String> bannerEmailTypeToHedmEmailTypeMap = getBannerEmailTypeToHedmV6EmailTypeMap()
+        if (!bannerEmailTypeToHedmEmailTypeMap.containsKey(emailType.code)) {
+            throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
+        }
+
+        return new EmailTypeDetails(emailType.code, emailType.description, globalUniqueIdentifier.guid, bannerEmailTypeToHedmEmailTypeMap.get(emailType.code))
 
     }
 
@@ -68,7 +83,7 @@ class EmailTypeCompositeService extends LdmService {
      * @return EmailTypeDetails object post creating the record
      */
     def create(Map content) {
-        if (!(content?.code)) {
+        if (!(content.code)) {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
         }
         if (EmailType.findByCode(content.code) != null) {
@@ -76,15 +91,14 @@ class EmailTypeCompositeService extends LdmService {
         }
         EmailType emailType = bindEmailType(new EmailType(), content)
         String emailGuid = content?.id?.trim()?.toLowerCase()
-        if (emailGuid && emailGuid!=GeneralValidationCommonConstants.NIL_GUID) {
+        if (emailGuid && emailGuid != GeneralValidationCommonConstants.NIL_GUID) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-            emailGuid = updateGuidValue(emailType.id, emailGuid, GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES)?.guid
+            emailGuid = updateGuidValue(emailType.id, emailGuid, GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)?.guid
         } else {
-            emailGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailType?.id)?.guid
+            emailGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME, emailType?.id)?.guid
         }
         return new EmailTypeDetails(emailType.code, emailType.description, emailGuid, content.emailType)
     }
-
 
     /**
      * PUT /api/email-types/<guid>
@@ -93,11 +107,11 @@ class EmailTypeCompositeService extends LdmService {
      * @return
      */
     def update(Map content) {
-        String emailGuid = content?.id?.trim()?.toLowerCase()
+        String emailGuid = content.id?.trim()?.toLowerCase()
         if (!emailGuid) {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
         }
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.LDM_NAME_EMAIL_TYPES, emailGuid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME, emailGuid)
 
         if (!globalUniqueIdentifier) {
             //Per strategy when a GUID was provided, the create should happen.
@@ -108,12 +122,34 @@ class EmailTypeCompositeService extends LdmService {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
         }
         // Should not allow to update EmailType.code as it is read-only
-        if (emailType?.code != content?.code?.trim()) {
+        if (emailType.code != content.code?.trim()) {
             content.put(GeneralValidationCommonConstants.CODE, emailType.code)
         }
         emailType = bindEmailType(emailType, content)
 
-      return  new EmailTypeDetails(emailType.code, emailType.description, emailGuid, content.emailType)
+        return new EmailTypeDetails(emailType.code, emailType.description, emailGuid, content.emailType)
+    }
+
+    def getEmailTypeCodeToGuidMap(Collection<String> codes) {
+        Map<String, String> codeToGuidMap = [:]
+        if (codes) {
+            List entities = emailTypeService.fetchAllWithGuidByCodeInList(codes)
+            entities.each {
+                EmailType emailType = it.getAt(0)
+                GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
+                codeToGuidMap.put(emailType.code, globalUniqueIdentifier.guid)
+            }
+        }
+        return codeToGuidMap
+    }
+
+    def getBannerEmailTypeToHedmV3EmailTypeMap() {
+        return getBannerEmailTypeToHEDMEmailTypeMap(GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME_V3, GeneralValidationCommonConstants.VERSION_V3)
+    }
+
+
+    def getBannerEmailTypeToHedmV6EmailTypeMap() {
+        return getBannerEmailTypeToHEDMEmailTypeMap(GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME_V6, GeneralValidationCommonConstants.VERSION_V6)
     }
 
     /**
@@ -127,16 +163,19 @@ class EmailTypeCompositeService extends LdmService {
         emailTypeService.createOrUpdate(emailType)
     }
 
-    /**
-     * Fetch All Email Type details and put into Map for person v6
-     * @param codes
-     * @return Map
-     */
-    public Map<String,List> fetchAllMappedEmailTypes(){
-        Map emailTypeMap = [:]
-        emailTypeService.fetchAll().each{
-             emailTypeMap.put(it[0].code,it)
+    private def getBannerEmailTypeToHEDMEmailTypeMap(String settingName, String version) {
+        Map<String, String> bannerEmailTypeToHedmEmailTypeMap = [:]
+        List<IntegrationConfiguration> integrationConfigurationList = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
+        if (integrationConfigurationList) {
+            List<EmailType> emailTypeList = emailTypeService.fetchAllByCodeInList(integrationConfigurationList.value)
+            integrationConfigurationList.each {
+                HedmEmailType hedmEmailType = HedmEmailType.getByString(it.translationValue, version)
+                if (emailTypeList.code.contains(it.value) && hedmEmailType) {
+                    bannerEmailTypeToHedmEmailTypeMap.put(it.value, hedmEmailType.versionToEnumMap[version])
+                }
+            }
         }
-        return emailTypeMap
-        }
+        return bannerEmailTypeToHedmEmailTypeMap
+    }
+
 }

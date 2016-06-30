@@ -27,14 +27,4 @@ class NameTypeDecorator {
         this.category = category
     }
 
-
-    String getCategory() {
-        NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(category)
-        if (nameTypeCategory) {
-            return nameTypeCategory.v6
-        } else {
-            return NameTypeCategory.PERSONAL.v6
-        }
-    }
-
 }

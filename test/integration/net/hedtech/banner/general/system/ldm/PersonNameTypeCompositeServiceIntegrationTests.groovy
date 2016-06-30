@@ -9,6 +9,8 @@ import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.NameType
+import net.hedtech.banner.general.system.NameTypeService
+import net.hedtech.banner.general.system.PersonType
 import net.hedtech.banner.general.system.ldm.v6.NameTypeDecorator
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
@@ -21,7 +23,7 @@ import org.junit.Test
 class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def personNameTypeCompositeService
-
+    NameTypeService nameTypeService
 
     @Before
     public void setUp() {
@@ -40,44 +42,71 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
     void testListWithOutPagination() {
         List<NameTypeDecorator> personNameTypeList = personNameTypeCompositeService.list(params)
         assertFalse personNameTypeList.isEmpty()
-        List<NameType> list = NameType.list(params)
-        assertFalse list.isEmpty()
-        assertEquals list.size(), personNameTypeList.size()
-        assertTrue list.code.containsAll(personNameTypeList.code)
-        assertTrue list.description.containsAll(personNameTypeList.title)
-        assertTrue NameTypeCategory.values().v6.containsAll(personNameTypeList.category)
-        assertTrue GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME).guid.containsAll(personNameTypeList.id)
+
+        Map<String, String> bannerNameTypeToHedmNameTypeMap = personNameTypeCompositeService.getBannerNameTypeToHedmV6NameTypeMap()
+        assertFalse bannerNameTypeToHedmNameTypeMap.isEmpty()
+
+        List entities = nameTypeService.fetchAllWithGuidByCodeInList(bannerNameTypeToHedmNameTypeMap.keySet(), 500, 0)
+        assertFalse entities.isEmpty()
+
+        assertEquals personNameTypeList.size(), entities.size()
+        Iterator it1 = personNameTypeList.iterator()
+        Iterator it2 = entities.iterator()
+
+        while (it1.hasNext() && it2.hasNext()) {
+            NameTypeDecorator nameTypeDecorator = it1.next()
+            List actualEntities =  it2.next()
+                NameType nameType = actualEntities.getAt(0)
+                assertEquals nameType.code, nameTypeDecorator.code
+                assertEquals nameType.description, nameTypeDecorator.title
+                GlobalUniqueIdentifier globalUniqueIdentifier = actualEntities.getAt(1)
+                assertEquals globalUniqueIdentifier.guid, nameTypeDecorator.id
+                assertEquals nameTypeDecorator.category, bannerNameTypeToHedmNameTypeMap.get(nameType.code)
+        }
     }
 
 
     @Test
     void testListWithPagination() {
-        params.max = '4'
-        params.offset = '2'
+        params.max = '2'
+        params.offset = '1'
         List<NameTypeDecorator> personNameTypeList = personNameTypeCompositeService.list(params)
         assertFalse personNameTypeList.isEmpty()
-        List<NameType> list = NameType.list(params)
-        assertFalse list.isEmpty()
-        assertEquals list.size(), personNameTypeList.size()
-        assertTrue list.code.containsAll(personNameTypeList.code)
-        assertTrue list.description.containsAll(personNameTypeList.title)
-        assertTrue NameTypeCategory.values().v6.containsAll(personNameTypeList.category)
-        assertTrue GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME).guid.containsAll(personNameTypeList.id)
+
+        Map<String, String> bannerNameTypeToHedmNameTypeMap = personNameTypeCompositeService.getBannerNameTypeToHedmV6NameTypeMap()
+        assertFalse bannerNameTypeToHedmNameTypeMap.isEmpty()
+
+        List entities = nameTypeService.fetchAllWithGuidByCodeInList(bannerNameTypeToHedmNameTypeMap.keySet(), 2, 1)
+        assertFalse entities.isEmpty()
+
+        assertEquals personNameTypeList.size(), entities.size()
+        Iterator it1 = personNameTypeList.iterator()
+        Iterator it2 = entities.iterator()
+
+        while (it1.hasNext() && it2.hasNext()) {
+            NameTypeDecorator nameTypeDecorator = it1.next()
+            List actualEntities =  it2.next()
+            NameType nameType = actualEntities.getAt(0)
+            assertEquals nameType.code, nameTypeDecorator.code
+            assertEquals nameType.description, nameTypeDecorator.title
+            GlobalUniqueIdentifier globalUniqueIdentifier = actualEntities.getAt(1)
+            assertEquals globalUniqueIdentifier.guid, nameTypeDecorator.id
+            assertEquals nameTypeDecorator.category, bannerNameTypeToHedmNameTypeMap.get(nameType.code)
+        }
     }
 
 
     @Test
     void testCount() {
-        def expectedCount
-        def sql
-        try {
-            sql = new Sql(sessionFactory.getCurrentSession().connection())
-            expectedCount = sql.firstRow("SELECT count(*) as gatCount from GTVNTYP").gatCount.toInteger()
-        } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
-        }
         def actualCount = personNameTypeCompositeService.count().toInteger()
-        assertEquals expectedCount, actualCount
+        assertNotNull actualCount
+
+        Map<String, String> bannerNameTypeToHedmNameTypeMap = personNameTypeCompositeService.getBannerNameTypeToHedmV6NameTypeMap()
+        assertFalse bannerNameTypeToHedmNameTypeMap.isEmpty()
+
+        List<NameType> nameTypeList = nameTypeService.fetchAllByCodeInList(bannerNameTypeToHedmNameTypeMap.keySet())
+        assertFalse nameTypeList.isEmpty()
+        assertEquals nameTypeList.size(), actualCount
     }
 
 
@@ -108,17 +137,75 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         }
     }
 
+    @Test
+    void testGetWithNullGuid() {
+        try {
+            personNameTypeCompositeService.get(null)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
 
     @Test
-    void testGetBannerNameTypeToHEDMNameTypeMap() {
+    void testGetInValidMappedGuid() {
+        NameType nameType = save newNameType()
+        assertNotNull nameType
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, nameType.id)
+        assertNotNull globalUniqueIdentifier
+        try {
+            personNameTypeCompositeService.get(globalUniqueIdentifier.guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testGetBannerNameTypeToHedmV6NameTypeMap() {
         NameType nameType = NameType.findByCode("BRTH")
         assertNotNull nameType
         IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, nameType.code)
         assertNotNull intConf
-        def map = personNameTypeCompositeService.getBannerNameTypeToHEDMNameTypeMap()
+        def map = personNameTypeCompositeService.getBannerNameTypeToHedmV6NameTypeMap()
         assertNotNull map
         assertTrue map.containsKey(nameType.code)
-        assertTrue map.get(nameType.code) instanceof NameTypeCategory
+        assertEquals map.get(nameType.code), NameTypeCategory.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
+
     }
 
+    @Test
+    void testGetBannerNameTypeToHedmV3NameTypeMap() {
+        NameType nameType = NameType.findByCode("BRTH")
+        assertNotNull nameType
+        IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, nameType.code)
+        assertNotNull intConf
+        def map = personNameTypeCompositeService.getBannerNameTypeToHedmV3NameTypeMap()
+        assertNotNull map
+        assertTrue map.containsKey(nameType.code)
+        assertEquals map.get(nameType.code), NameTypeCategory.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
+
+    }
+
+    @Test
+    void testGetNameTypeCodeToGuidMap() {
+        NameType nameType = save newNameType()
+        assertNotNull nameType
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, nameType.id)
+        assertNotNull globalUniqueIdentifier
+        Map<String,String> nameTypeCodeToGuidMap = personNameTypeCompositeService.getNameTypeCodeToGuidMap([nameType.code])
+        assertFalse nameTypeCodeToGuidMap.isEmpty()
+        assertTrue nameTypeCodeToGuidMap.containsKey(nameType.code)
+        assertEquals globalUniqueIdentifier.guid, nameTypeCodeToGuidMap.get(nameType.code)
+    }
+
+    private def newNameType() {
+        def nameType = new NameType(
+                code: "TTTT",
+                description: "TTTTT",
+                lastModified: new Date(),
+                lastModifiedBy: "test",
+                dataOrigin: "Banner"
+        )
+        return nameType
+    }
 }

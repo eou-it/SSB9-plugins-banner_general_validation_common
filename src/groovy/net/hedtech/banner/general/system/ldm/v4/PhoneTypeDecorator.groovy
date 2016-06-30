@@ -5,7 +5,6 @@ package net.hedtech.banner.general.system.ldm.v4
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import net.hedtech.banner.general.system.PhoneType
 
 /**
  * Decorator for "phone-types" API
@@ -13,11 +12,20 @@ import net.hedtech.banner.general.system.PhoneType
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)
 class PhoneTypeDecorator {
-    @Delegate
-    private final PhoneType phoneType
 
-    PhoneTypeDecorator(PhoneType phoneType){
+    String code
+    String description
+    String id
+    String phoneType
+
+    PhoneTypeDecorator(String code, String description, String guid, String phoneType) {
+        this.code = code
+        this.description = description
+        this.id = guid
         this.phoneType = phoneType
     }
 
+    Map getDetail(){
+        return [id:this.id]
+    }
 }

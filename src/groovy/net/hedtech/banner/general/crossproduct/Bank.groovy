@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.crossproduct
 
@@ -8,7 +8,14 @@ import javax.persistence.*
 /**
  * Bank Validation Table
  */
-
+@NamedQueries(value = [
+        @NamedQuery(name = "fetchByBankCode",
+                query = """FROM Bank a
+            WHERE a.bank = :bankCode
+            AND a.effectiveDate <= :effectiveDate
+            AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
+            AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate) """)
+])
 @Entity
 @Table(name = "GXVBANK")
 class Bank implements Serializable {
@@ -34,7 +41,7 @@ class Bank implements Serializable {
      * All bank codes and other attributes are displayed on form GXVBANK.
      */
     @Column(name = "GXVBANK_BANK_CODE")
-    String bank 
+    String bank
 
     /**
      * EFFECTIVE DATE:  The effective date of this particular record.
@@ -327,5 +334,17 @@ class Bank implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['bank', 'effectiveDate', 'nextChangeDate']
 
+    /**
+     * Provide Bank object for specified bank code
+     * @param bankCode
+     * @return Bank
+     */
+    public static Bank fetchByBankCode(String bankCode, Date effectiveDate) {
+        Bank bank = Bank.withSession { session ->
+            session.getNamedQuery('fetchByBankCode').setString("bankCode", bankCode).setDate("effectiveDate", effectiveDate).list()[0]
+        }
+
+        return bank
+    }
 
 }

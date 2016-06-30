@@ -1,9 +1,7 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
-
-import groovy.sql.Sql
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -40,9 +38,6 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_description = null
     def u_failure_displayWebIndicator = null
     def u_failure_urlIndicator = null
-
-    private String query = """select count(*) as cnt from goriccr g , GTVEMAL s  where GORICCR_SQPR_CODE = 'HEDM'  AND GORICCR_ICSN_CODE = 'EMAILS.EMAILTYPE' AND s.GTVEMAL_CODE = g.GORICCR_VALUE AND
-    g.GORICCR_TRANSLATION_VALUE in ('personal','business','school','parent','family','sales','support','general','billing','legal','hr','media','matchingGifts','other')"""
 
 
     @Before
@@ -165,51 +160,8 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor emailType, 'maxSize', ['description']
     }
 
-    @Test
-    void testCountAll(){
-       Long count = EmailType.countAll()
-        assertNotNull count
-        Sql sql = new Sql(sessionFactory.getCurrentSession().connection())
-        def result = sql.firstRow(query)
-        Long expectCount = result.cnt
-        assertNotNull expectCount
-        assertEquals expectCount,count
 
-    }
 
-    @Test
-    void testFetchAll(){
-        List emailTypeList= EmailType.fetchAll()
-        assertFalse emailTypeList.isEmpty()
-        List<EmailType> actualTypes= EmailType.list()
-        assertFalse actualTypes.isEmpty()
-        emailTypeList.each {
-            assertTrue(actualTypes.contains(it[0]))
-        }
-        Sql sql = new Sql(sessionFactory.getCurrentSession().connection())
-        def result = sql.firstRow(query)
-        Long expectCount = result.cnt
-        assertNotNull expectCount
-        assertEquals expectCount,emailTypeList.size()
-
-    }
-
-    @Test
-    void testFetchAllWithPagination(){
-        List emailTypeList= EmailType.fetchAll([max:'500',offset: '0'])
-        assertFalse emailTypeList.isEmpty()
-        List<EmailType> actualTypes= EmailType.list([max:'500',offset: '0'])
-        assertFalse actualTypes.isEmpty()
-        emailTypeList.each {
-         assertTrue(actualTypes.contains(it[0]))
-        }
-        Sql sql = new Sql(sessionFactory.getCurrentSession().connection())
-        def result = sql.firstRow(query)
-        Long expectCount = result.cnt
-        assertNotNull expectCount
-        assertEquals expectCount,emailTypeList.size()
-
-    }
 
     private def newValidForCreateEmailType() {
         def emailType = new EmailType(

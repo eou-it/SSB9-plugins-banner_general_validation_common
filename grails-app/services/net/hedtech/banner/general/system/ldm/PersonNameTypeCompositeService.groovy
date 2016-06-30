@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.IntegrationConfiguration
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.NameType
 import net.hedtech.banner.general.system.ldm.v6.NameTypeDecorator
@@ -28,21 +29,24 @@ class PersonNameTypeCompositeService extends LdmService {
      * @return
      */
     @Transactional(readOnly = true)
-    def list(Map params) {
+    List<NameTypeDecorator> list(Map params) {
         List<NameTypeDecorator> nameTypeList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        nameTypeService.fetchAll(params).each {
-            nameTypeList << new NameTypeDecorator(it.getAt(0), it.getAt(1), it.getAt(2), it.getAt(3))
+        Map<String, String> bannerNameTypeToHedmV6NameTypeMap = getBannerNameTypeToHedmV6NameTypeMap()
+        if (bannerNameTypeToHedmV6NameTypeMap) {
+            params.offset = params.offset ?: 0
+            nameTypeService.fetchAllWithGuidByCodeInList(bannerNameTypeToHedmV6NameTypeMap.keySet(), params.max as int, params.offset as int).each {
+                NameType nameType = it.getAt(0)
+                GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
+                nameTypeList << new NameTypeDecorator(globalUniqueIdentifier.guid, nameType.code, nameType.description, bannerNameTypeToHedmV6NameTypeMap.get(nameType.code))
+            }
         }
         return nameTypeList
     }
 
-    /**
-     * @return Count
-     */
     @Transactional(readOnly = true)
-    Long count(Map params) {
-        return nameTypeService.count(params)
+    Long count() {
+        return getBannerNameTypeToHedmV6NameTypeMap().size()
     }
 
     /**
@@ -51,24 +55,61 @@ class PersonNameTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     NameTypeDecorator get(String guid) {
-        List nameType = nameTypeService.fetchByGuid(guid)
-        if (nameType) {
-            return new NameTypeDecorator(nameType.getAt(0), nameType.getAt(1), nameType.getAt(2), nameType.getAt(3))
-        } else {
+        if (!guid) {
             throw new ApplicationException(PersonNameTypeCompositeService.class, new NotFoundException())
         }
+
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, guid)
+        if (!globalUniqueIdentifier) {
+            throw new ApplicationException(PersonNameTypeCompositeService.class, new NotFoundException())
+        }
+
+        NameType nameType = nameTypeService.get(globalUniqueIdentifier.domainId)
+        if (!nameType) {
+            throw new ApplicationException(PersonNameTypeCompositeService.class, new NotFoundException())
+        }
+
+        Map<String, String> bannerNameTypeToHedmV6NameTypeMap = getBannerNameTypeToHedmV6NameTypeMap()
+
+        if (!bannerNameTypeToHedmV6NameTypeMap.containsKey(nameType.code)) {
+            throw new ApplicationException(PersonNameTypeCompositeService.class, new NotFoundException())
+        }
+
+        return new NameTypeDecorator(globalUniqueIdentifier.guid, nameType.code, nameType.description, bannerNameTypeToHedmV6NameTypeMap.get(nameType.code))
     }
 
 
-    def getBannerNameTypeToHEDMNameTypeMap() {
-        def bannerNameTypeToHedmNameTypeMap = [:]
-        List<IntegrationConfiguration> intConfs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING)
+    def getBannerNameTypeToHedmV3NameTypeMap() {
+        return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V3)
+    }
+
+
+    def getBannerNameTypeToHedmV6NameTypeMap() {
+        return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V6)
+    }
+
+    def getNameTypeCodeToGuidMap(Collection<String> codes) {
+        Map<String, String> codeToGuidMap = [:]
+        if (codes) {
+            List entities = nameTypeService.fetchAllWithGuidByCodeInList(codes)
+            entities.each {
+                NameType nameType = it.getAt(0)
+                GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
+                codeToGuidMap.put(nameType.code, globalUniqueIdentifier.guid)
+            }
+        }
+        return codeToGuidMap
+    }
+
+    private def getBannerNameTypeToHedmNameTypeMap(String settingName, String version) {
+        Map<String, String> bannerNameTypeToHedmNameTypeMap = [:]
+        List<IntegrationConfiguration> intConfs = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
         if (intConfs) {
+            List<NameType> entities = nameTypeService.fetchAllByCodeInList(intConfs.value)
             intConfs.each {
-                NameType nameType = NameType.findByCode(it.value)
-                NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(it.translationValue)
-                if (nameType && nameTypeCategory) {
-                    bannerNameTypeToHedmNameTypeMap.put(nameType.code, nameTypeCategory)
+                NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(it.translationValue, version)
+                if (entities.code.contains(it.value) && nameTypeCategory) {
+                    bannerNameTypeToHedmNameTypeMap.put(it.value, nameTypeCategory.versionToEnumMap[version])
                 }
             }
         }

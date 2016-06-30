@@ -149,7 +149,6 @@
         <mapping class="net.hedtech.banner.general.system.Zip"/>
         <mapping class="net.hedtech.banner.general.utility.InformationText"/>
         <mapping class="net.hedtech.banner.general.system.AcademicDisciplineView"/>
-        <mapping class="net.hedtech.banner.general.system.PhoneType"/>
         <mapping class="net.hedtech.banner.general.system.LocationTypeReadOnly"/>
         <mapping class="net.hedtech.banner.general.system.AcademicCredential"/>
         <mapping class="net.hedtech.banner.general.system.GeographicRegionRule"/>

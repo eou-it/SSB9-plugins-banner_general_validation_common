@@ -5,8 +5,6 @@ package net.hedtech.banner.general.system
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
-import net.hedtech.banner.general.system.ldm.v6.EmailTypeEnum
 import org.hibernate.annotations.Type
 
 import javax.persistence.*
@@ -20,16 +18,12 @@ import javax.persistence.*
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
-        @NamedQuery(name = "EmailType.fetchAll",
-                query = """from EmailType a , GlobalUniqueIdentifier b, IntegrationConfiguration c where a.code = b.domainKey and b.ldmName = :ldmName
-                            and c.processCode = :processCode and c.settingName = :settingName and c.value = a.code and c.translationValue in (:translationValue)"""),
-        @NamedQuery(name = "EmailType.fetchByGuid",
-                query = """from EmailType a , GlobalUniqueIdentifier b, IntegrationConfiguration c where a.code = b.domainKey and b.ldmName = :ldmName and b.guid = :guid
-                            and c.processCode = :processCode and c.settingName = :settingName and c.value = a.code and c.translationValue in (:translationValue)"""),
-        @NamedQuery(name = "EmailType.countAll",
-                query = """select count(*) from EmailType a , GlobalUniqueIdentifier b, IntegrationConfiguration c where a.code = b.domainKey and b.ldmName = :ldmName
-                            and c.processCode = :processCode and c.settingName = :settingName and c.value = a.code and c.translationValue in (:translationValue)""")
-
+        @NamedQuery(name = "EmailType.fetchAllWithGuid",
+                query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName"""),
+        @NamedQuery(name = "EmailType.fetchAllWithGuidByCodeInList",
+                query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in :codes """),
+        @NamedQuery(name = "EmailType.fetchAllByCodeInList",
+                query = """from EmailType a where a.code in :codes""")
 ])
 class EmailType implements Serializable {
 
@@ -107,70 +101,5 @@ class EmailType implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
-
-    /**
-     * Return Count value of Email Type which are mapped to goriccr
-     * @return Long
-     */
-    public static Long countAll() {
-        return EmailType.withSession { session ->
-            session.getNamedQuery('EmailType.countAll')
-                    .setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('settingName', GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME)
-                    .setParameterList('translationValue', EmailTypeEnum.EMAIL_TYPE)
-                    .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                    .uniqueResult()
-        }
-    }
-
-    /**
-     * fetching EmailType data
-     * @param Map
-     * @return List
-     */
-    public static List fetchAll(Map params) {
-        return EmailType.withSession { session ->
-            session.getNamedQuery('EmailType.fetchAll')
-                    .setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('settingName', GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME)
-                    .setParameterList('translationValue', EmailTypeEnum.EMAIL_TYPE)
-                    .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                    .setMaxResults(params.max as Integer).setFirstResult((params?.offset ?: '0') as Integer)
-                    .list()
-        }
-    }
-
-    /**
-     * fetching EmailType data
-     * @param Map
-     * @return List
-     */
-    public static List fetchAll() {
-        return EmailType.withSession { session ->
-            session.getNamedQuery('EmailType.fetchAll')
-                    .setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('settingName', GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME)
-                    .setParameterList('translationValue', EmailTypeEnum.EMAIL_TYPE)
-                    .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                    .list()
-        }
-    }
-
-    /**
-     * Return Email Type which are mapped to goriccr
-     * @return Long
-     */
-    public static List fetchByGuid(String guid) {
-        return EmailType.withSession { session ->
-            session.getNamedQuery('EmailType.fetchByGuid')
-                    .setString('processCode', GeneralValidationCommonConstants.PROCESS_CODE)
-                    .setString('settingName', GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME)
-                    .setParameterList('translationValue', EmailTypeEnum.EMAIL_TYPE)
-                    .setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
-                    .setString('guid',guid)
-                    .uniqueResult()
-        }
-    }
-
 
 }

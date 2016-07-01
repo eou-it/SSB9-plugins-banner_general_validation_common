@@ -79,4 +79,11 @@ class GlobalUniqueIdentifierService extends ServiceBase {
         return globalUniqueIdentifierList
     }
 
+    public List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyInList(String ldmName, List<String> domainKeys){
+        return GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyInList(ldmName, domainKeys)
+    }
+
+    public List<GlobalUniqueIdentifier> fetchAllByGuidInList(List<String> guidList){
+        return GlobalUniqueIdentifier.fetchAllByGuidInList(guidList)
+    }
 }

@@ -428,9 +428,6 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetail.parentCategory, raceDetails[0].parentCategory
     }
 
-
-
-
     @Test
     void testGetInvalidGuidV4Header() {
         try {
@@ -439,8 +436,6 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
             assertApplicationException ae, "NotFoundException"
         }
     }
-
-
 
     @Test
     void testGetNonExistGuidV4Header() {
@@ -513,13 +508,15 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull country
     }
 
-
     @Test
-    void testfetchGUIDs(){
-        List<String> raceCodes= Race.findAll(max: 2).race
-        Map content = raceCompositeService.fetchGuids(raceCodes as Set)
-        content.each{ raceStatus ->
-            assertTrue raceCodes.contains(raceStatus.key)
-        }
+    void testGetRaceCodeToGuidMap() {
+        RaceDetail raceDetail = raceCompositeService.create(i_success_input_content)
+        assertNotNull raceDetail
+        assertNotNull raceDetail.guid
+        Map<String,String> raceCodeToGuidMap = raceCompositeService.getRaceCodeToGuidMap([raceDetail.race])
+        assertFalse raceCodeToGuidMap.isEmpty()
+        assertTrue raceCodeToGuidMap.containsKey(raceDetail.race)
+        assertEquals raceDetail.guid, raceCodeToGuidMap.get(raceDetail.race)
     }
+
 }

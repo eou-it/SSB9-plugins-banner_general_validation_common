@@ -35,35 +35,41 @@ class RaceCompositeService extends LdmService {
      * @return
      */
     @Transactional(readOnly = true)
-    List<RaceDetail> list(Map params) {
-        List raceDetailList = []
-        def version = LdmService.getAcceptVersion(VERSIONS)
+    def list(Map params) {
+        String version = LdmService.getAcceptVersion(VERSIONS)
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-
-        if (!GeneralValidationCommonConstants.VERSION_V6.equals(version)) {
-            List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V4.equals(version) ? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE] : [GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
+        if (version < GeneralValidationCommonConstants.VERSION_V6) {
+            List<String> allowedSortFields = [GeneralValidationCommonConstants.TITLE]
+            if (GeneralValidationCommonConstants.VERSION_V4.equals(version)) {
+                allowedSortFields << GeneralValidationCommonConstants.CODE
+            } else {
+                allowedSortFields << GeneralValidationCommonConstants.ABBREVIATION
+            }
             RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
             RestfulApiValidationUtility.validateSortOrder(params.order)
-        }
 
-        Map ldmPropertyToDomainPropertyMap = [abbreviation: GeneralValidationCommonConstants.RACE, title: GeneralValidationCommonConstants.DESCRIPTION, code: GeneralValidationCommonConstants.RACE]
-        params.sort = ldmPropertyToDomainPropertyMap[params.sort]
-        if (GeneralValidationCommonConstants.VERSION_V6.equals(version)) {
-            params.order = null
-            params.sort = null
-            raceService.list(params).each { race ->
-                raceDetailList << new RaceDetailV6(race, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race), null)
-            }
-        } else if (GeneralValidationCommonConstants.VERSION_V4.equals(version)) {
-            raceService.fetchRaceDetails(params).each { race ->
-                raceDetailList << new RaceDetail(race[0], globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race[0]?.id)?.guid, race[1]?.translationValue, null)
-            }
-        } else {
-            raceService.list(params).each { race ->
-                raceDetailList << new RaceDetail(race, globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RACE_LDM_NAME, race.id)?.guid, getLdmRace(race.race), new Metadata(race.dataOrigin))
-            }
+            Map ldmPropertyToDomainPropertyMap = [abbreviation: GeneralValidationCommonConstants.RACE,
+                                                  title       : GeneralValidationCommonConstants.DESCRIPTION,
+                                                  code        : GeneralValidationCommonConstants.RACE]
+            params.sort = ldmPropertyToDomainPropertyMap[params.sort]
         }
-        return raceDetailList
+        Map<String, String> bannerRaceCodeHedmRacialCategoryMap
+        def entities
+        params.offset = params.offset ?: '0'
+        if (version.equals(GeneralValidationCommonConstants.VERSION_V4)) {
+            bannerRaceCodeHedmRacialCategoryMap = getBannerRaceCodHedmV4RacialCategoryMap()
+            entities = raceService.fetchAllWithGuidByRaceInList(bannerRaceCodeHedmRacialCategoryMap.keySet(), params.sort, params.order, params.max as int, params.offset as int)
+        } else {
+            if (version.equals(GeneralValidationCommonConstants.VERSION_V1)) {
+                bannerRaceCodeHedmRacialCategoryMap = getBannerRaceCodHedmV1RacialCategoryMap()
+            } else {
+                params.sort = null
+                params.order = null
+                bannerRaceCodeHedmRacialCategoryMap = getBannerRaceCodHedmV6RacialCategoryMap()
+            }
+            entities = raceService.fetchAllWithGuid(params.sort, params.order, params.max as int, params.offset as int)
+        }
+        return createDecorators(bannerRaceCodeHedmRacialCategoryMap, entities)
     }
 
     /**
@@ -77,11 +83,10 @@ class RaceCompositeService extends LdmService {
      */
     Long count(Map params) {
         if (GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS))) {
-            return raceService.fetchRaceDetailsCount()
+            return getBannerRaceCodHedmV4RacialCategoryMap().size()
         } else {
             return raceService.count(params)
         }
-
     }
 
     /**
@@ -96,19 +101,25 @@ class RaceCompositeService extends LdmService {
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GeneralValidationCommonConstants.RACE, new NotFoundException())
         }
-
         Race race = raceService.get(globalUniqueIdentifier.domainId)
         if (!race) {
             throw new ApplicationException(GeneralValidationCommonConstants.RACE, new NotFoundException())
         }
-        def raceCategory = getLdmRace(race.race)
-        if (GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS)) && !raceCategory) {
+        String version = LdmService.getAcceptVersion(VERSIONS)
+        Map<String, String> bannerRaceCodeHedmRacialCategoryMap
+        if (version.equals(GeneralValidationCommonConstants.VERSION_V4)) {
+            bannerRaceCodeHedmRacialCategoryMap = getBannerRaceCodHedmV4RacialCategoryMap()
+        } else {
+            if (version.equals(GeneralValidationCommonConstants.VERSION_V1)) {
+                bannerRaceCodeHedmRacialCategoryMap = getBannerRaceCodHedmV1RacialCategoryMap()
+            } else {
+                bannerRaceCodeHedmRacialCategoryMap = getBannerRaceCodHedmV6RacialCategoryMap()
+            }
+        }
+        if (GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS)) && !bannerRaceCodeHedmRacialCategoryMap.containsKey(race.race)) {
             throw new ApplicationException(GeneralValidationCommonConstants.RACE, new NotFoundException())
         }
-        if (GeneralValidationCommonConstants.VERSION_V6.equals(LdmService.getAcceptVersion(VERSIONS))) {
-            return new RaceDetailV6(race, globalUniqueIdentifier.guid, raceCategory, null);
-        }
-        return new RaceDetail(race, globalUniqueIdentifier.guid, raceCategory, new Metadata(race.dataOrigin));
+        return createDecorators(bannerRaceCodeHedmRacialCategoryMap, [[race, globalUniqueIdentifier]])[0]
     }
 
 
@@ -237,20 +248,66 @@ class RaceCompositeService extends LdmService {
         return new RaceDetail(race, guid, racialCategory, new Metadata(race.dataOrigin));
     }
 
-
-    public Map fetchGuids(Set<String> raceCodes) {
-        Map content = [:]
-        def result
-        String hql = '''select r.race, b.guid from Race r, GlobalUniqueIdentifier b WHERE r.race in :raceCodes and b.ldmName = :ldmName and r.race = b.domainKey'''
-        Race.withSession { session ->
-            def query = session.createQuery(hql).setString('ldmName', GeneralValidationCommonConstants.RACE_LDM_NAME)
-            query.setParameterList('raceCodes', raceCodes)
-            result = query.list()
+    def getRaceCodeToGuidMap(Collection<String> codes) {
+        Map<String, String> codeToGuidMap = [:]
+        if (codes) {
+            List entities = raceService.fetchAllWithGuidByRaceInList(codes)
+            entities.each {
+                Race race = it.getAt(0)
+                GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
+                codeToGuidMap.put(race.race, globalUniqueIdentifier.guid)
+            }
         }
-        result.each { race ->
-            content.put(race[0], race[1])
-        }
-        return content
+        return codeToGuidMap
     }
 
+
+    def getBannerRaceCodHedmV1RacialCategoryMap() {
+        return getBannerRaceCodHedmRacialCategoryMap(GeneralValidationCommonConstants.RACE_PARENT_CATEGORY, GeneralValidationCommonConstants.VERSION_V1)
+    }
+
+
+    def getBannerRaceCodHedmV4RacialCategoryMap() {
+        return getBannerRaceCodHedmRacialCategoryMap(GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY, GeneralValidationCommonConstants.VERSION_V4)
+    }
+
+    def getBannerRaceCodHedmV6RacialCategoryMap() {
+        return getBannerRaceCodHedmRacialCategoryMap(GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY_V6, GeneralValidationCommonConstants.VERSION_V6)
+    }
+
+    private def getBannerRaceCodHedmRacialCategoryMap(String settingName, String version) {
+        Map<String, String> bannerRaceCodHedmRacialCategoryMap = [:]
+        List<IntegrationConfiguration> integrationConfigurationList = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
+        if (integrationConfigurationList) {
+            List<Race> entities = raceService.fetchAllByRaceInList(integrationConfigurationList.value)
+            integrationConfigurationList.each {
+                UsRacialCategory hedmRacialCategory = UsRacialCategory.getByString(it.translationValue, version)
+                if (entities.race.contains(it.value) && hedmRacialCategory) {
+                    bannerRaceCodHedmRacialCategoryMap.put(it.value, hedmRacialCategory.versionToEnumMap[version])
+                }
+            }
+        }
+        return bannerRaceCodHedmRacialCategoryMap
+    }
+
+    private def createDecorators(Map<String, String> bannerRaceCodeHedmRacialCategoryMap, def entities) {
+        def decorators = []
+        entities.each {
+            Race race = it.getAt(0)
+            GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
+
+            if (LdmService.getAcceptVersion(VERSIONS) < GeneralValidationCommonConstants.VERSION_V6) {
+                Metadata metadata
+                if (LdmService.getAcceptVersion(VERSIONS).equals(GeneralValidationCommonConstants.VERSION_V1)) {
+                    metadata = new Metadata(race.dataOrigin)
+                }
+                decorators << new RaceDetail(race, globalUniqueIdentifier?.guid, bannerRaceCodeHedmRacialCategoryMap.get(race.race), metadata)
+
+            } else {
+                decorators << new RaceDetailV6(race, globalUniqueIdentifier?.guid, bannerRaceCodeHedmRacialCategoryMap.get(race.race), null)
+
+            }
+        }
+        return decorators
+    }
 }

@@ -285,7 +285,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
 
     @Test
     void testGetBannerEmailTypeToHedmV6EmailTypeMap() {
-        EmailType emailType = EmailType.findByCode("HOME")
+        EmailType emailType = EmailType.findByCode("BI")
         assertNotNull emailType
         IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.EMAIL_TYPE_SETTING_NAME_V6, emailType.code)
         assertNotNull intConf

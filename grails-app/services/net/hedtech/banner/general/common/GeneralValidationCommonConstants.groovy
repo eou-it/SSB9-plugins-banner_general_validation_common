@@ -176,6 +176,8 @@ class GeneralValidationCommonConstants {
     public static final String PHONE_TYPE_SETTING_NAME_V3 = 'PERSON.PHONES.PHONETYPE'
     public static final String PHONE_TYPE_LDM_NAME ='phone-types'
     public static final String PHONE_ENTITY_TYPE = 'phoneType'
+   // Interest constants
+    public static final String INTEREST_LDM_NAME = 'interest-codes'
 
     //Address Type V6 constants
     public static final String ADDRESS_TYPE_SETTING_NAME_V6 = 'ADDRESSES.ADDRESSTYPE'

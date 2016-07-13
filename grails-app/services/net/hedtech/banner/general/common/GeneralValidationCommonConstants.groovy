@@ -47,8 +47,6 @@ class GeneralValidationCommonConstants {
 
     final static String ERROR_MSG_OPERATION_NOT_SUPPORTED = 'operation not supported'
 
-    /** Common constants for Location Type*/
-    final static String LOCATION_TYPE = 'locationType'
     final static String ORGANIZATION = 'organization'
     final static String PERSON = 'person'
 
@@ -156,7 +154,7 @@ class GeneralValidationCommonConstants {
     static final String PERSON_HOLD_TYPES_ACADEMIC = "academic"
     static final String PERSON_HOLD_TYPES_FINANCE = "financial"
 
-    static final String ADDRESS_TYPE_LDM_NAME = 'address-types'
+
 
     //Person Hold Constants
     public static final def PERSON_HOLD_SEARCH_FIELD = 'person'
@@ -178,4 +176,11 @@ class GeneralValidationCommonConstants {
     public static final String PHONE_TYPE_SETTING_NAME_V3 = 'PERSON.PHONES.PHONETYPE'
     public static final String PHONE_TYPE_LDM_NAME ='phone-types'
     public static final String PHONE_ENTITY_TYPE = 'phoneType'
+
+    //Address Type V6 constants
+    public static final String ADDRESS_TYPE_SETTING_NAME_V6 = 'ADDRESSES.ADDRESSTYPE'
+    public static final String ADDRESS_TYPE_SETTING_NAME_V3 = 'PERSON.ADDRESSES.ADDRESSTYPE'
+    public static final String ADDRESS_TYPE_LDM_NAME = 'address-types'
+    public static final String ADDRESS_TYPE = 'addressType'
+
 }

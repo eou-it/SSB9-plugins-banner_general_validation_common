@@ -112,7 +112,7 @@ class PersonNameTypeCompositeService extends LdmService {
                 if (entities.code.contains(it.value) && nameTypeCategory) {
                     bannerNameTypeToHedmNameTypeMap.put(it.value, nameTypeCategory.versionToEnumMap[version])
                 } else {
-                    if(!NameTypeCategory.isValidEnum(it.translationValue) && !entities.code.contains(it.value)){
+                    if(!NameTypeCategory.isValidEnum(it.translationValue) || !entities.code.contains(it.value)){
                     throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                     }
                 }

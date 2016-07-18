@@ -173,8 +173,12 @@ class PhoneTypeCompositeService extends LdmService {
                 HedmPhoneType hedmPhoneType = HedmPhoneType.getByString(it.translationValue, version)
                 if (entities.code.contains(it.value) && hedmPhoneType) {
                     bannerPhoneTypeToHedmPhoneTypeMap.put(it.value, hedmPhoneType.versionToEnumMap[version])
+                } else {
+                    throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                 }
             }
+        } else {
+            throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerPhoneTypeToHedmPhoneTypeMap
     }

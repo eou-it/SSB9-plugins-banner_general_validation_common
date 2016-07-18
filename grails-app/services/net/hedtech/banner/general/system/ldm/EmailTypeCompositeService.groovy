@@ -167,13 +167,17 @@ class EmailTypeCompositeService extends LdmService {
         Map<String, String> bannerEmailTypeToHedmEmailTypeMap = [:]
         List<IntegrationConfiguration> integrationConfigurationList = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
         if (integrationConfigurationList) {
-            List<EmailType> emailTypeList = emailTypeService.fetchAllByCodeInList(integrationConfigurationList.value)
+            List<EmailType> entities = emailTypeService.fetchAllByCodeInList(integrationConfigurationList.value)
             integrationConfigurationList.each {
                 HedmEmailType hedmEmailType = HedmEmailType.getByString(it.translationValue, version)
-                if (emailTypeList.code.contains(it.value) && hedmEmailType) {
+                if (entities.code.contains(it.value) && hedmEmailType) {
                     bannerEmailTypeToHedmEmailTypeMap.put(it.value, hedmEmailType.versionToEnumMap[version])
+                } else {
+                    throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                 }
             }
+        } else {
+            throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerEmailTypeToHedmEmailTypeMap
     }

@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.IntegrationConfiguration
@@ -110,8 +111,14 @@ class PersonNameTypeCompositeService extends LdmService {
                 NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(it.translationValue, version)
                 if (entities.code.contains(it.value) && nameTypeCategory) {
                     bannerNameTypeToHedmNameTypeMap.put(it.value, nameTypeCategory.versionToEnumMap[version])
+                } else {
+                    if(!NameTypeCategory.isValidEnum(it.translationValue) && !entities.code.contains(it.value)){
+                    throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
+                    }
                 }
             }
+        } else {
+            throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerNameTypeToHedmNameTypeMap
     }

@@ -130,6 +130,7 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
     void testFetchCampusCodeNotInListWithNoCampusCode() {
         List campusList = []
         try {
+            //If campusList is empty the in statement will be incomplete and an exception will should occur.
             List campusReturnList = Campus.fetchCampusCodesNotInList(campusList)
             fail "Fetch should fail as the query is incomplete"
         } catch(Exception e) {
@@ -140,6 +141,11 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchCampusCodeNotInListWithWrongCampusCode() {
         List campusList = ['DOES_NOT_EXIST']
+        /*
+            If campus code is invalid then all the campus codes will be returned as the in statement returns
+            all excluding the ones passed.
+        */
+
         List campusReturnList = Campus.fetchCampusCodesNotInList(campusList)
 
         List campusDomains = Campus.findAll()
@@ -152,6 +158,8 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchCampusCodeNotInListWithSingleCampusCode() {
         List campusList = ['M']
+
+        assertNotNull Campus.findByCode('M')
         List campusReturnList = Campus.fetchCampusCodesNotInList(campusList)
 
         List campusDomains = Campus.findAll()

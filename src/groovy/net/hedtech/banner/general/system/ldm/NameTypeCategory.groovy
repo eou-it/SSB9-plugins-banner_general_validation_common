@@ -42,17 +42,18 @@ enum NameTypeCategory {
         return null
     }
 
-    public static boolean isValidEnum(String value) {
+
+    public static NameTypeCategory getByString(String value) {
         if (value) {
             Iterator itr = NameTypeCategory.values().iterator()
-            def allEnums = []
             while (itr.hasNext()) {
                 NameTypeCategory nameTypeCategory = itr.next()
-                allEnums.addAll(nameTypeCategory.versionToEnumMap.values())
+                if (nameTypeCategory.versionToEnumMap.values().contains(value)) {
+                    return nameTypeCategory
+                }
             }
-          return  allEnums.contains(value)
         }
-        return false
+        return null
     }
 
 }

@@ -45,6 +45,7 @@ class PersonNameTypeCompositeService extends LdmService {
         return nameTypeList
     }
 
+
     @Transactional(readOnly = true)
     Long count() {
         return getBannerNameTypeToHedmV6NameTypeMap().size()
@@ -89,6 +90,7 @@ class PersonNameTypeCompositeService extends LdmService {
         return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V6)
     }
 
+
     def getNameTypeCodeToGuidMap(Collection<String> codes) {
         Map<String, String> codeToGuidMap = [:]
         if (codes) {
@@ -102,6 +104,7 @@ class PersonNameTypeCompositeService extends LdmService {
         return codeToGuidMap
     }
 
+
     private def getBannerNameTypeToHedmNameTypeMap(String settingName, String version) {
         Map<String, String> bannerNameTypeToHedmNameTypeMap = [:]
         List<IntegrationConfiguration> intConfs = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
@@ -112,8 +115,9 @@ class PersonNameTypeCompositeService extends LdmService {
                 if (entities.code.contains(it.value) && nameTypeCategory) {
                     bannerNameTypeToHedmNameTypeMap.put(it.value, nameTypeCategory.versionToEnumMap[version])
                 } else {
-                    if(!NameTypeCategory.isValidEnum(it.translationValue) || !entities.code.contains(it.value)){
-                    throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
+                    NameTypeCategory nameTypeCategoryInOtherVersion = NameTypeCategory.getByString(it.translationValue)
+                    if ((nameTypeCategory == null && nameTypeCategoryInOtherVersion == null) || (nameTypeCategory != null && !entities.code.contains(it.value))) {
+                        throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                     }
                 }
             }

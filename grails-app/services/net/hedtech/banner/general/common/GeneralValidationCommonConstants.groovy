@@ -116,6 +116,7 @@ class GeneralValidationCommonConstants {
     //common constants for visa-types
     static final String IMMIGRANT = 'immigrant'
     static final String NON_IMMIGRANT = 'nonImmigrant'
+    static final String VISA_TYPES_LDM_NAME = 'visa-types'
 
     //common constants for geographic-areas
     static final String GEOGRAPHIC_REGION_LDM_NAME = 'geographic-regions'

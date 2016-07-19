@@ -16,6 +16,10 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "STVVTYP")
+@NamedQueries(value = [
+        @NamedQuery(name = "VisaType.fetchAllWithGuid", query = """ FROM VisaType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code """),
+        @NamedQuery(name = "VisaType.fetchAllWithGuidByCodeInList", query = """ FROM VisaType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code and n.code in :codes """)
+])
 class VisaType implements Serializable {
 
     /**

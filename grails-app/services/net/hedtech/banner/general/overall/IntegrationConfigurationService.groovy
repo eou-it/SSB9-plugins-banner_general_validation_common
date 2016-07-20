@@ -51,17 +51,25 @@ class IntegrationConfigurationService extends  ServiceBase {
     }
 
 
-    public String getDefaultISO3CountryCodeForAddress() {
+    public String getDefaultISOCountryCodeForAddress() {
         IntegrationConfiguration intConfig= IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, COUNTRY_DEFAULT_ISO)[0]
         if (!intConfig) {
             throw new ApplicationException('Country ISOCODE', new BusinessLogicValidationException("goriccr.not.found.message", [COUNTRY_DEFAULT_ISO]))
         }
-        if (intConfig.value && isoCodeService.getISO2CountryCode(intConfig.value)){
+        if (intConfig.value){
+            if (isInstitutionUsingISO2CountryCodes()){
+                if(isoCodeService.getISO3CountryCode(intConfig.value) == null){
+                    throw new ApplicationException('Country ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [COUNTRY_DEFAULT_ISO]))
+                }
+            } else {
+                if(isoCodeService.getISO2CountryCode(intConfig.value) == null){
+                    throw new ApplicationException('Country ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [COUNTRY_DEFAULT_ISO]))
+                }
+            }
             return intConfig.value
         }
         else {
             throw new ApplicationException('Country ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [COUNTRY_DEFAULT_ISO]))
         }
     }
-
 }

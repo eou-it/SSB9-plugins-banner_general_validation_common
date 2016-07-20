@@ -186,4 +186,6 @@ class GeneralValidationCommonConstants {
     public static final String ADDRESS_TYPE_LDM_NAME = 'address-types'
     public static final String ADDRESS_TYPE = 'addressType'
 
+    static final String NON_PERSONS_LDM_NAME = 'non-persons'
+
 }

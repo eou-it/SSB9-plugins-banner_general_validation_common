@@ -4,6 +4,8 @@
 package net.hedtech.banner.general.overall
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.system.ldm.HedmAddressType
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -68,31 +70,22 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
     }
 
     @Test
-    void testgetDefaultAddressTypeV6(){
+    void testGetDefaultAddressTypeV6() {
         IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, ADDRESSES_DEFAULT_ADDRESSTYPE)[0]
         if (!intConfig) {
             shouldFail(ApplicationException) {
                 integrationConfigurationService.getDefaultAddressTypeV6()
             }
         } else {
-            intConfig.value = 'home'
-            String result
-            result = integrationConfigurationService.getDefaultAddressTypeV6()
-            assertNotNull result
-        }
-    }
-
-    @Test
-    void testgetDefaultAddressTypeV6Invalid() {
-        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, ADDRESSES_DEFAULT_ADDRESSTYPE)[0]
-        if (!intConfig) {
-            shouldFail(ApplicationException) {
-                integrationConfigurationService.getDefaultAddressTypeV6()
+            HedmAddressType hedmAddressType = HedmAddressType.getByString(intConfig.value, GeneralValidationCommonConstants.VERSION_V6)
+            if(!hedmAddressType) {
+                shouldFail(ApplicationException) {
+                    integrationConfigurationService.getDefaultAddressTypeV6()
+                }
             }
-        } else {
-            intConfig.value = 'In-valid'
-            shouldFail(ApplicationException) {
-                integrationConfigurationService.getDefaultAddressTypeV6()
+            else {
+                String value = integrationConfigurationService.getDefaultAddressTypeV6()
+                assertTrue hedmAddressType.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6].equals(value)
             }
         }
     }

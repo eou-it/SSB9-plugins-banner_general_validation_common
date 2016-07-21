@@ -12,6 +12,7 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
 
     static final String PROCESS_CODE = "HEDM"
     static final String NATION_ISO = "NATION.ISOCODE"
+    static final String ADDRESSES_DEFAULT_ADDRESSTYPE = "ADDRESSES.DEFAULT.ADDRESSTYPE"
     IntegrationConfigurationService integrationConfigurationService
 
     @Before
@@ -62,6 +63,36 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
             boolean result
             shouldFail(ApplicationException) {
                 result = integrationConfigurationService.isInstitutionUsingISO2CountryCodes()
+            }
+        }
+    }
+
+    @Test
+    void testgetDefaultAddressTypeV6(){
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, ADDRESSES_DEFAULT_ADDRESSTYPE)[0]
+        if (!intConfig) {
+            shouldFail(ApplicationException) {
+                integrationConfigurationService.getDefaultAddressTypeV6()
+            }
+        } else {
+            intConfig.value = 'home'
+            String result
+            result = integrationConfigurationService.getDefaultAddressTypeV6()
+            assertNotNull result
+        }
+    }
+
+    @Test
+    void testgetDefaultAddressTypeV6Invalid() {
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, ADDRESSES_DEFAULT_ADDRESSTYPE)[0]
+        if (!intConfig) {
+            shouldFail(ApplicationException) {
+                integrationConfigurationService.getDefaultAddressTypeV6()
+            }
+        } else {
+            intConfig.value = 'In-valid'
+            shouldFail(ApplicationException) {
+                integrationConfigurationService.getDefaultAddressTypeV6()
             }
         }
     }

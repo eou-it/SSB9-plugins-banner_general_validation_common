@@ -58,6 +58,12 @@ class EducationalInstitutionCompositeService extends LdmService {
         int offset = ((map?.offset ?: '0') as Integer)
         String sortField = map?.sort
         String sortOrder = map?.order
+        if(sortField) {
+            RestfulApiValidationUtility.validateSortField(map.sort, ['type'])
+        }
+        if(sortOrder) {
+            RestfulApiValidationUtility.validateSortOrder(map.order)
+        }
         List<EducationalInstitutionView> educationalInstitutionViewList = educationalInstitutionViewService.fetchAllByCriteria(map, sortField, sortOrder, max, offset)
         String addressType = integrationConfigurationService.getDefaultAddressTypeV6()
         educationalInstitutionViewList.each { educationalInstitutionView ->

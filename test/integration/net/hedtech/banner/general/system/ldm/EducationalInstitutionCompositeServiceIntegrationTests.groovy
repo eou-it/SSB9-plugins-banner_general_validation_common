@@ -71,7 +71,7 @@ class EducationalInstitutionCompositeServiceIntegrationTests extends BaseIntegra
     }
 
     @Test
-    void testListWithPagination_StudentCharges_v5(){
+    void testListWithPagination(){
         setAcceptHeader("application/vnd.hedtech.integration.v6+json")
         def paginationParams = [max: '2', offset: '1']
         List<EducationalInstitutionV6> institutionList = educationalInstitutionCompositeService.list(paginationParams)

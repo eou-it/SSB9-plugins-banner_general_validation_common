@@ -75,9 +75,9 @@ class DurationUnitServiceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllByDurationUnitCodes() {
-        List<String> durationUnitCodes = ["DAY", "WEEK", "DAYS", "SEM", "HALF"]
+        List<String> durationUnitCodes = ["DAY", "WEEK", "DAYS", "SEM"]
         List<DurationUnit> durationUnits = durationUnitService.fetchAllByDurationUnitCodes( durationUnitCodes )
-        assertEquals 5, durationUnits.size()
+        assertEquals 4, durationUnits.size()
 
         assertNull durationUnits.find {it.code == 'MTHS'}
 
@@ -85,7 +85,6 @@ class DurationUnitServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull durationUnits.find {it.code == durationUnitCodes[1]}
         assertNotNull durationUnits.find {it.code == durationUnitCodes[2]}
         assertNotNull durationUnits.find {it.code == durationUnitCodes[3]}
-        assertNotNull durationUnits.find {it.code == durationUnitCodes[4]}
     }
 
 

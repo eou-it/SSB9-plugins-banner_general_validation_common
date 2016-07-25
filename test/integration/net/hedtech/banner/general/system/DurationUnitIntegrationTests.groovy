@@ -154,7 +154,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchByCodeOrDescriptionILike() {
 
-        def filter = "HALF"
+        def filter = "WEEK"
         def results = DurationUnit.fetchByCodeOrDescriptionILike(formatWildCard(filter))
         assertEquals 1, results.size()
 
@@ -164,7 +164,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
 
         filter = "day"
         results = DurationUnit.fetchByCodeOrDescriptionILike(formatWildCard(filter))
-        assertEquals 3, results.size()
+        assertEquals 2, results.size()
     }
 
 

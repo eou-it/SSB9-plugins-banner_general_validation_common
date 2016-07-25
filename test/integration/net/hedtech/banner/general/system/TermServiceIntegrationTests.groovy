@@ -307,7 +307,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllByTermCodes(){
-        String TERM_CODE_ONE = "200211"
+        String TERM_CODE_ONE = "200920"
         String TERM_CODE_TWO = "201410"
 
         List<Term> terms = termService.fetchAllByTermCodes( [TERM_CODE_ONE, TERM_CODE_TWO] )

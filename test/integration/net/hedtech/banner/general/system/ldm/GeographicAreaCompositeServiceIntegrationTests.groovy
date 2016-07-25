@@ -40,7 +40,7 @@ class GeographicAreaCompositeServiceIntegrationTests extends BaseIntegrationTest
 
 
     void initializeTestDataForReferences() {
-        insertContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUMRC1', regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
+        insertContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUM', regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
     }
 
     @Test

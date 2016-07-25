@@ -43,7 +43,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     private void initiializeDataReferences() {
-        i_success_level = Level.findByCode('LW')
+        i_success_level = Level.findByCode('CS')
         i_success_content = [code: 'SV',description:'Test Title', metadata: [dataOrigin: 'Banner']]
     }
 

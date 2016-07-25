@@ -28,7 +28,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
 
     private void initiializeDataReferences() {
-        subjectResource = Subject.findByCode('OPEN')
+        subjectResource = Subject.findByCode('AC')
         i_success_content = [code: 'S1', description: 'Subject 1', metadata: [dataOrigin: 'Banner']]
     }
 

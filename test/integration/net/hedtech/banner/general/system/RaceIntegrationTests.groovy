@@ -65,6 +65,8 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testDates() {
         def hour = new SimpleDateFormat('HH')
+        def expectedHour = new SimpleDateFormat('HH')
+        expectedHour.setTimeZone(TimeZone.getTimeZone("UTC"))
         def date = new SimpleDateFormat('yyyy-M-d')
         def today = new Date()
 
@@ -76,7 +78,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
 
         // test date values -
         assertEquals date.format(today), date.format(race.lastModified)
-        assertEquals hour.format(today), hour.format(race.lastModified)
+        assertEquals expectedHour.format(today), hour.format(race.lastModified)
     }
 
 
@@ -133,7 +135,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllLikeRaceOrDescription() {
-        def races = Race.fetchAllLikeRaceOrDescription("AA")
+        def races = Race.fetchAllLikeRaceOrDescription("A")
         assertNotNull  races
         assertTrue races.size() > 1
     }

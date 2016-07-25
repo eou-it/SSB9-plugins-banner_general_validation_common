@@ -42,12 +42,12 @@ class IntegrationConfigurationService extends  ServiceBase {
         if (!intConf) {
             throw new ApplicationException("Default Address", new BusinessLogicValidationException("goriccr.not.found.message", [ADDRESSES_DEFAULT_ADDRESSTYPE]))
         }
-        HedmAddressType hedmAddressType = HedmAddressType.getByString(intConf.value, GeneralValidationCommonConstants.VERSION_V6)
+        HedmAddressType hedmAddressType = HedmAddressType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6)
         if (!hedmAddressType) {
             throw new ApplicationException("Default Address", new BusinessLogicValidationException("goriccr.invalid.value.message", [ADDRESSES_DEFAULT_ADDRESSTYPE]))
         }
 
-        return intConf.value
+        return intConf.translationValue
     }
 
 

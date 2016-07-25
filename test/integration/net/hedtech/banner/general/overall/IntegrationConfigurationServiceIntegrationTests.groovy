@@ -77,15 +77,15 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
                 integrationConfigurationService.getDefaultAddressTypeV6()
             }
         } else {
-            HedmAddressType hedmAddressType = HedmAddressType.getByString(intConfig.value, GeneralValidationCommonConstants.VERSION_V6)
+            HedmAddressType hedmAddressType = HedmAddressType.getByString(intConfig.translationValue, GeneralValidationCommonConstants.VERSION_V6)
             if(!hedmAddressType) {
                 shouldFail(ApplicationException) {
                     integrationConfigurationService.getDefaultAddressTypeV6()
                 }
             }
             else {
-                String value = integrationConfigurationService.getDefaultAddressTypeV6()
-                assertTrue hedmAddressType.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6].equals(value)
+                String translationValue = integrationConfigurationService.getDefaultAddressTypeV6()
+                assertTrue hedmAddressType.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6].equals(translationValue)
             }
         }
     }

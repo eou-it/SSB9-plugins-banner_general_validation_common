@@ -26,7 +26,7 @@ class RestfulApiValidationUtility {
      * @param maxDefault Default value to be assigned if "max" is absent.  By default it is turned off (zero).
      * @param maxUpperLimit Upper limit for "max".  By default it is turned off (zero).
      */
-    public static void correctMaxAndOffset(Map params, Integer maxDefault = MAX_DEFAULT, Integer maxUpperLimit = MAX_UPPER_LIMIT) {
+    public static void correctMaxAndOffset(Map params, Integer maxDefault = 0, Integer maxUpperLimit = 0) {
         // Override "max" upper limit with setting api.<resource name>.page.maxUpperLimit (if available).
         String resourceName = params?.pluralizedResourceName
         if (resourceName) {

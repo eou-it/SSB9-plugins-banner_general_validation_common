@@ -4,6 +4,8 @@
 package net.hedtech.banner.general.overall
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.system.ldm.HedmAddressType
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -12,6 +14,7 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
 
     static final String PROCESS_CODE = "HEDM"
     static final String NATION_ISO = "NATION.ISOCODE"
+    static final String ADDRESSES_DEFAULT_ADDRESSTYPE = "ADDRESSES.DEFAULT.ADDRESSTYPE"
     IntegrationConfigurationService integrationConfigurationService
 
     @Before
@@ -62,6 +65,27 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
             boolean result
             shouldFail(ApplicationException) {
                 result = integrationConfigurationService.isInstitutionUsingISO2CountryCodes()
+            }
+        }
+    }
+
+    @Test
+    void testGetDefaultAddressTypeV6() {
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, ADDRESSES_DEFAULT_ADDRESSTYPE)[0]
+        if (!intConfig) {
+            shouldFail(ApplicationException) {
+                integrationConfigurationService.getDefaultAddressTypeV6()
+            }
+        } else {
+            HedmAddressType hedmAddressType = HedmAddressType.getByString(intConfig.translationValue, GeneralValidationCommonConstants.VERSION_V6)
+            if(!hedmAddressType) {
+                shouldFail(ApplicationException) {
+                    integrationConfigurationService.getDefaultAddressTypeV6()
+                }
+            }
+            else {
+                String translationValue = integrationConfigurationService.getDefaultAddressTypeV6()
+                assertTrue hedmAddressType.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6].equals(translationValue)
             }
         }
     }

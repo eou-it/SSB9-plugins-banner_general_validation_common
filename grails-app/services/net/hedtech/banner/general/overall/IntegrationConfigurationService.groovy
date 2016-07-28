@@ -33,7 +33,7 @@ class IntegrationConfigurationService extends  ServiceBase {
             return false
         }
         else {
-          //  throw new ApplicationException('Nation ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [NATION_ISO]))
+            throw new ApplicationException('Nation ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [NATION_ISO]))
         }
     }
 

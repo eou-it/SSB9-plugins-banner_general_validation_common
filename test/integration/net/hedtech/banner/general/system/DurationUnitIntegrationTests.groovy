@@ -164,7 +164,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
 
         filter = "day"
         results = DurationUnit.fetchByCodeOrDescriptionILike(formatWildCard(filter))
-        assertEquals 2, results.size()
+        assertEquals 3, results.size()
     }
 
 

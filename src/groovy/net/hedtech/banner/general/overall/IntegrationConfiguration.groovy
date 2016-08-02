@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall
 
@@ -11,8 +11,6 @@ import javax.persistence.*
 /**
  * Integration configuration rules table
  */
-
-
 @Cacheable(true)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "ldmEnumeration")
 @Entity
@@ -46,7 +44,9 @@ import javax.persistence.*
                                      and a.settingName = :settingName""")
 ])
 class IntegrationConfiguration implements Serializable {
+
     static final String LDM_CACHE_REGION_NAME = "ldmEnumeration"
+
     /**
      * Surrogate ID for GORICCR
      */
@@ -204,7 +204,7 @@ class IntegrationConfiguration implements Serializable {
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue')
-                    .setString('processCode', processCode).setString('settingName', settingName).setString('translationValue', translationValue).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('translationValue', translationValue).setCacheable(true).list()
 
 
         }
@@ -221,7 +221,7 @@ class IntegrationConfiguration implements Serializable {
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
-                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).list()
 
 
         }
@@ -235,7 +235,7 @@ class IntegrationConfiguration implements Serializable {
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
-                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).list()
         }
         return integrationList?.size() > 0 ? integrationList?.get(0) : null
 
@@ -247,7 +247,7 @@ class IntegrationConfiguration implements Serializable {
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValues')
-                    .setString('processCode', processCode).setString('settingName', settingName).setParameterList('values', values).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+                    .setString('processCode', processCode).setString('settingName', settingName).setParameterList('values', values).setCacheable(true).list()
         }
         return integrationList
 
@@ -259,7 +259,7 @@ class IntegrationConfiguration implements Serializable {
         if (processCode && settingName) {
             integrationConfiguration = IntegrationConfiguration.withSession { session ->
                 session.getNamedQuery('IntegrationConfiguration.fetchByProcessCodeAndSettingName')
-                        .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).uniqueResult()
+                        .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).uniqueResult()
             }
         }
         return integrationConfiguration
@@ -271,7 +271,7 @@ class IntegrationConfiguration implements Serializable {
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
             integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingName')
-                    .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).setCacheRegion(LDM_CACHE_REGION_NAME).list()
+                    .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).list()
         }
         return integrationList
     }

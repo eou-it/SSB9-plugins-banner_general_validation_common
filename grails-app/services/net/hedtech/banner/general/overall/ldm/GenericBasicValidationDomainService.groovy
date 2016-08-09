@@ -5,9 +5,8 @@ package net.hedtech.banner.general.overall.ldm
 
 import groovy.transform.ToString
 import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.query.DynamicFinder
-import net.hedtech.banner.query.QueryBuilder
-import net.hedtech.banner.query.operators.Operators
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 
 import javax.annotation.PostConstruct
@@ -17,60 +16,175 @@ import javax.annotation.PostConstruct
  */
 @ToString(includeFields = true)
 class GenericBasicValidationDomainService {
-    Class baseDomain
-    String baseDomainKeyField
-    Class guidDomain
-    String guidIdField
-    String guidDomainKeyField
-    String ldmNameField
-    String ldmNameValue
-    Class decorator
-    List supportedSearchFields
-    List supportedSortFields
-    Map ethosToDomainFieldNameMap
-    String defaultSortField
+    protected Class baseDomain
+    protected Class guidDomain
+    protected String guidIdField
+    protected Class decorator
+    protected List supportedSearchFields
+    protected List supportedSortFields
+    protected Map ethosToDomainFieldNameMap
+    protected String defaultSortField
+    protected Map joinFieldMap
+    protected String joinFieldSeperator
+    protected Map baseDomainFilter
+    protected Map guidDomainFilter
     Integer DEFAULT_PAGE_SIZE = 500
     Integer MAX_PAGE_SIZE = 1000
-    private static
+    protected static
     final List<String> grailsDynamicPropeties = ['attached', 'domainClass', 'class', 'constraints', 'dirtyPropertyNames', 'errors', 'dirty', 'metadata']
 
     def get(guid) {
-        log.info("Begin get for id:${guid} with setup:${this.toString()}")
-        def decoratedResponse;
+        log.debug("Begin get for id:${guid} with setup:${this.toString()}")
         validateSettings()
-        if (baseDomain == guidDomain) {
-            //base table has guid field in it we will not join
-            String query = """FROM ${guidDomain.getName()}
-                                WHERE ${ldmNameField} = '${ldmNameValue}'
-                                AND ${guidIdField} = (:guid)"""
-            def response = guidDomain.executeQuery(query, [guid: guid])[0]
-            Map properties = response.properties
-            removeGrailsProperties(properties)
-            decoratedResponse = decorator.newInstance()
-            properties.keySet().each {
-                if (decoratedResponse.hasProperty(it)) {
-                    decoratedResponse."${it}" = properties.get(it)
-                }
+        def decoratedResponse = decorateObject(getDomainObject(guid))
+        log.debug("End get for id:${guid}")
+        return decoratedResponse
+    }
+
+    def decorateObject(def object) {
+        if (object) {
+            def decoratedResponse = decorator.newInstance();
+            if (baseDomain == guidDomain) {
+                Map properties = object.properties
+                assignPropertyToObject(decoratedResponse, properties)
+            } else {
+                Map properties = object[0].properties
+                properties.putAll(object[1].properties)
+                assignPropertyToObject(decoratedResponse, properties)
             }
+            return decoratedResponse;
         } else {
-            //we will have to perform join
-            String query = """  FROM ${baseDomain.getName()} a, ${guidDomain.getName()} b
-                                WHERE a.${baseDomainKeyField} = b.${guidDomainKeyField}
-                                AND b.${ldmNameField} = '${ldmNameValue}'
-                                AND b.${guidIdField} = (:guid)"""
-            def response = guidDomain.executeQuery(query, [guid: guid])[0]
-            Map properties = response[0].properties
-            properties.putAll(response[1].properties)
-            removeGrailsProperties(properties)
-            decoratedResponse = decorator.newInstance()
-            properties.keySet().each {
-                if (decoratedResponse.hasProperty(it)) {
-                    decoratedResponse."${it}" = properties.get(it)
-                }
+            throw new ApplicationException(baseDomain, new NotFoundException())
+        }
+    }
+
+    void assignPropertyToObject(def object, def properties) {
+        removeGrailsProperties(properties)
+        properties.keySet().each {
+            if (object.hasProperty(it)) {
+                object."${it}" = properties.get(it)
             }
         }
-        log.info("End get for id:${guid}")
-        return decoratedResponse
+    }
+
+    def getDomainObject(String guid) {
+        StringBuffer query = new StringBuffer()
+        addFromClause(query)
+        addWhereClause(guid, query)
+        addBasicDomainFilter(query)
+        addGuidDomainFilter(query)
+        if (baseDomain == guidDomain) {
+            return guidDomain.executeQuery(query.toString(), [guid: guid])[0]
+        } else {
+            addJoinFields(query)
+            return guidDomain.executeQuery(query.toString(), [guid: guid])[0]
+        }
+    }
+
+    protected StringBuffer addFromClause(StringBuffer query) {
+        if (baseDomain == guidDomain) {
+            query.append(" FROM ${guidDomain.getName()} ")
+        } else {
+            query.append(" FROM ${baseDomain.getName()} a, ${guidDomain.getName()} b ")
+        }
+        return query
+    }
+
+    protected StringBuffer addWhereClause(String guid, StringBuffer query) {
+        if (baseDomain == guidDomain) {
+            if (guid) {
+                query.append(" WHERE guid = :guid ")
+            } else {
+                query.append(" WHERE 1 = 1 ")
+            }
+        } else {
+            if (guid) {
+                query.append(" WHERE b.guid = :guid ")
+            } else {
+                query.append(" WHERE 1 = 1 ")
+            }
+        }
+        return query
+    }
+
+    protected StringBuffer addBasicDomainFilter(StringBuffer query) {
+        return addBasicDomainFilter(query, baseDomainFilter)
+    }
+
+    protected StringBuffer addBasicDomainFilter(StringBuffer query, Map baseDomainFilter) {
+        return addFilter("a", query, baseDomainFilter)
+    }
+
+    protected StringBuffer addFilter(String tableIdentifier, StringBuffer query, Map domainFilter) {
+        if (domainFilter) {
+            if (tableIdentifier) {
+                domainFilter.each {
+                    query.append(" AND ${tableIdentifier}.${it.key} = '${it.value}' ")
+                }
+            } else {
+                domainFilter.each {
+                    query.append(" AND ${it.key} = '${it.value}' ")
+                }
+            }
+
+        }
+        return query
+    }
+
+    protected StringBuffer addGuidDomainFilter(StringBuffer query) {
+        return addGuidDomainFilter(query, guidDomainFilter)
+    }
+
+    protected StringBuffer addGuidDomainFilter(StringBuffer query, Map guidDomainFilter) {
+        String tableIdentifier
+        if (baseDomain != guidDomain) {
+            tableIdentifier = "b"
+        }
+        return addFilter(tableIdentifier, query, guidDomainFilter)
+    }
+
+    protected StringBuffer addJoinFields(StringBuffer query) {
+        return addJoinFields(query, joinFieldMap)
+    }
+
+    protected StringBuffer addJoinFields(StringBuffer query, Map joinFieldMap) {
+        if (joinFieldMap) {
+            joinFieldMap.each {
+                String baseJoinField
+                String guidJoinField
+                if (it.key instanceof List) {
+                    baseJoinField = parseFileName(it.key, 'a')
+                } else if (it.key instanceof String) {
+                    baseJoinField = "a.${it.key}"
+                } else {
+                    throw new ApplicationException(baseDomain, new BusinessLogicValidationException("invalid.join.field.type", null))
+                }
+                if (it.value instanceof List) {
+                    guidJoinField = parseFileName(it.value, 'b')
+                } else if (it.value instanceof String) {
+                    guidJoinField = "b.${it.value}"
+                } else {
+                    throw new ApplicationException(baseDomain, new BusinessLogicValidationException("invalid.join.field.type", null))
+                }
+                query.append(" AND ${baseJoinField} = ${guidJoinField} ")
+            }
+        }
+        return query
+    }
+
+    String parseFileName(List fields, String tableIdentifier) {
+        StringBuffer fieldName = new StringBuffer()
+        fieldName.append('concat(')
+        fields.each {
+            fieldName.append(tableIdentifier)
+            fieldName.append('.')
+            fieldName.append(it)
+            fieldName.append(',')
+            fieldName.append("'${joinFieldSeperator}'")
+            fieldName.append(',')
+        }
+
+        return fieldName.toString().substring(0, fieldName.toString().lastIndexOf(",'${joinFieldSeperator}',")) + ")"
     }
 
     def list(Map params) {
@@ -80,7 +194,7 @@ class GenericBasicValidationDomainService {
         return decoratedListResponse
     }
 
-    private List decorateListResponse(def listResponse) {
+    protected List decorateListResponse(def listResponse) {
         def decoratedResponse;
         if (baseDomain == guidDomain) {
             List decoratedListResponse = []
@@ -119,113 +233,97 @@ class GenericBasicValidationDomainService {
     }
 
     private def fetchForListOrCount(Map params, boolean count = false) {
+        if (!params.offset) {
+            params.offset = "0"
+        }
         RestfulApiValidationUtility.correctMaxAndOffset(params, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE)
         RestfulApiValidationUtility.validateSortField(params.sort, supportedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
-        Map pagingAndSortParams = params.clone()
-        pagingAndSortParams.sort = ethosToDomainFieldNameMap && ethosToDomainFieldNameMap.get(pagingAndSortParams.sort) ?
-                ethosToDomainFieldNameMap.get(pagingAndSortParams.sort) : pagingAndSortParams.sort
-        pagingAndSortParams.sort = pagingAndSortParams.sort ?: defaultSortField
-        pagingAndSortParams.order = pagingAndSortParams.order ?: 'ASC'
-        String query
-        DynamicFinder df
-        if (baseDomain == guidDomain) {
-            //base table has guid field in it we will not join
-            query = """FROM ${guidDomain.getName()} a"""
-            df = new DynamicFinder(guidDomain, query, "a")
-        } else {
-            //we will have to perform join
-            query = """  FROM ${baseDomain.getName()} a, ${guidDomain.getName()} b
-                                WHERE a.${baseDomainKeyField} = b.${guidDomainKeyField}
-                                AND b.${ldmNameField} = '${ldmNameValue}'"""
-            df = new DynamicFinder(baseDomain, query, "a")
+        StringBuffer query = new StringBuffer()
+        if (count) {
+            query.append(" SELECT COUNT(*) ")
         }
-        Map queryParams = [:]
-        List criteria = []
-        supportedSearchFields.each { field ->
-            if (params.containsKey(field)) {
-                queryParams.put(field, params.get(field))
-                criteria.add([key: field, binding: ethosToDomainFieldNameMap?.get(field) ?: field, operator: Operators.EQUALS])
+        addFromClause(query)
+        addWhereClause(null, query)
+        addBasicDomainFilter(query)
+        addGuidDomainFilter(query)
+        addSearchFilter(query, params)
+        if (baseDomain == guidDomain) {
+            return guidDomain.executeQuery(query.toString(), [max: params.max, offset: params.offset])
+        } else {
+            addJoinFields(query)
+            return baseDomain.executeQuery(query.toString(), [max: params.max, offset: params.offset])
+        }
+    }
+
+    //TODO: currently search filter only works on baseDomain when baseDomain!=guidDomain and guidDomain when baseDomain==guidDomain
+    //TODO: we need to enhance it
+    private StringBuffer addSearchFilter(StringBuffer query, Map params) {
+        if (baseDomain == guidDomain) {
+            supportedSearchFields.each { field ->
+                if (params.containsKey(field)) {
+                    String fieldName = field;
+                    if (ethosToDomainFieldNameMap && ethosToDomainFieldNameMap.containsKey(fieldName)) {
+                        fieldName = ethosToDomainFieldNameMap.get(fieldName)
+                    }
+                    query.append(" AND ${fieldName} = '${params.get(fieldName)}' ")
+                }
+            }
+        } else {
+            supportedSearchFields.each { field ->
+                if (params.containsKey(field)) {
+                    String fieldName = field;
+                    if (ethosToDomainFieldNameMap && ethosToDomainFieldNameMap.containsKey(fieldName)) {
+                        fieldName = ethosToDomainFieldNameMap.get(fieldName)
+                    }
+                    query.append(" AND a.${fieldName} = '${params.get(fieldName)}' ")
+                }
             }
         }
-        if (count) {
-            return df.count([params: queryParams, criteria: criteria])
-        } else {
-            return df.find([params: queryParams, criteria: criteria], QueryBuilder.getFilterData(pagingAndSortParams).pagingAndSortParams)
-        }
+        return query
     }
 
     protected void validateSettings() {
         if (baseDomain == null) {
-            throw new ApplicationException(baseDomain, "required.baseDomain")
+            throw new ApplicationException(baseDomain, new BusinessLogicValidationException("required.baseDomain", null))
         }
 
         if (guidDomain == null) {
-            throw new ApplicationException(guidDomain, "required.guidDomain")
+            throw new ApplicationException(guidDomain, new BusinessLogicValidationException("required.guidDomain", null))
         }
 
         if (decorator == null) {
-            throw new ApplicationException(decorator, "required.decorator")
+            throw new ApplicationException(decorator, new BusinessLogicValidationException("required.decorator", null))
         }
 
         if (!guidIdField) {
-            throw new ApplicationException(guidDomain, "required.guidIdField")
-        }
-        if (!ldmNameField) {
-            throw new ApplicationException(guidDomain, "required.ldmNameField")
-        }
-        if (!ldmNameValue) {
-            throw new ApplicationException(guidDomain, "required.ldmNameValue")
-        }
-        if (baseDomain != guidDomain) {
-            if (!baseDomainKeyField) {
-                throw new ApplicationException(guidDomain, "required.baseDomainKeyField")
-            }
-            if (!guidDomainKeyField) {
-                throw new ApplicationException(guidDomain, "required.guidDomainKeyField")
-            }
+            throw new ApplicationException(guidDomain, new BusinessLogicValidationException("required.guidIdField", null))
         }
     }
 
-    private void removeGrailsProperties(Map properties) {
+    protected void removeGrailsProperties(Map properties) {
         grailsDynamicPropeties.each {
             properties.remove(it)
         }
     }
 
     public def fetchByFieldValueInList(String fieldName, List fieldValueList) {
-        List listResponse
-        fieldValueList = fieldValueList.unique()
-        List fieldParamObject = []
-        fieldValueList.each {
-            fieldParamObject << [data: it]
-        }
-        String query
-        DynamicFinder df
+        StringBuffer query = new StringBuffer()
+        addFromClause(query)
+        addWhereClause(null, query)
+        addBasicDomainFilter(query)
+        addGuidDomainFilter(query)
         if (baseDomain == guidDomain) {
-            //base table has guid field in it we will not join
-            query = """FROM ${guidDomain.getName()} a"""
-            df = new DynamicFinder(guidDomain, query, "a")
+            query.append(" AND ${fieldName} in (:fieldValueList) ")
         } else {
-            //we will have to perform join
-            query = """  FROM ${baseDomain.getName()} a, ${guidDomain.getName()} b
-                                WHERE a.${baseDomainKeyField} = b.${guidDomainKeyField}
-                                AND b.${ldmNameField} = '${ldmNameValue}'"""
-            df = new DynamicFinder(baseDomain, query, "a")
+            query.append(" AND a.${fieldName} in (:fieldValueList) ")
         }
-
-        Map queryParams = [:]
-        List criteria = []
-        queryParams.put(fieldName, fieldParamObject)
-        criteria.add([key: fieldName, binding: fieldName, operator: Operators.IN])
-        listResponse = df.find([params: queryParams, criteria: criteria], [:])
-
-        return decorateListResponse(listResponse)
+        return decorateListResponse(baseDomain.executeQuery(query.toString(), [fieldValueList: fieldValueList]))
     }
 
     @PostConstruct
-    public void setDecorator(){
-        if(!this.decorator){
+    public void setDecorator() {
+        if (!this.decorator) {
             this.decorator = GenericBasicValidationDecorator.class
         }
     }

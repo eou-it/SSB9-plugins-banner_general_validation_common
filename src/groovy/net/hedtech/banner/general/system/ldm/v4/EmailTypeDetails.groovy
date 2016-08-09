@@ -19,6 +19,9 @@ class EmailTypeDetails {
     String id
     String emailType
 
+    //used by generic service
+    EmailTypeDetails(){}
+
     EmailTypeDetails(String code, String description, String guid, String emailType) {
         this.code = code
         this.description = description

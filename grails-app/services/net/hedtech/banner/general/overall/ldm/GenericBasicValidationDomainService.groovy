@@ -93,13 +93,13 @@ class GenericBasicValidationDomainService {
     protected StringBuffer addWhereClause(String guid, StringBuffer query) {
         if (baseDomain == guidDomain) {
             if (guid) {
-                query.append(" WHERE guid = :guid ")
+                query.append(" WHERE ${guidIdField} = :guid ")
             } else {
                 query.append(" WHERE 1 = 1 ")
             }
         } else {
             if (guid) {
-                query.append(" WHERE b.guid = :guid ")
+                query.append(" WHERE b.${guidIdField} = :guid ")
             } else {
                 query.append(" WHERE 1 = 1 ")
             }

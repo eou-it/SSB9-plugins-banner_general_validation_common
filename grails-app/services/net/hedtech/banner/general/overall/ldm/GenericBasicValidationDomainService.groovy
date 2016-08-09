@@ -229,7 +229,7 @@ class GenericBasicValidationDomainService {
     }
 
     def count(params) {
-        return fetchForListOrCount(params, true)
+        return fetchForListOrCount(params, true)[0]
     }
 
     private def fetchForListOrCount(Map params, boolean count = false) {

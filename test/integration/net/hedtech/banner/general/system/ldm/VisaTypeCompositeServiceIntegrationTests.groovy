@@ -116,7 +116,7 @@ class VisaTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testfetchGUIDs(){
         List<String> visaCodes= VisaType.findAll(max: 2).code
-        Map content=visaTypeCompositeService.fetchGUIDs((visaCodes))
+        Map content=visaTypeCompositeService.getVisaTypeCodeToGuidMap((visaCodes))
         content.each{ visaStatus ->
             assertTrue visaCodes.contains(visaStatus.key)
         }

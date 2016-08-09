@@ -48,6 +48,7 @@ there is no concept of an 'entity manager' within this project.
         <mapping class="net.hedtech.banner.general.system.CitizenType"/>
         <mapping class="net.hedtech.banner.general.system.College"/>
         <mapping class="net.hedtech.banner.general.system.CommitteeAndServiceType"/>
+        <mapping class="net.hedtech.banner.general.system.CommitteeFunction"/>
         <mapping class="net.hedtech.banner.general.system.CommonMatchingSource"/>
         <mapping class="net.hedtech.banner.general.system.County"/>
         <mapping class="net.hedtech.banner.general.system.CreditCardType"/>

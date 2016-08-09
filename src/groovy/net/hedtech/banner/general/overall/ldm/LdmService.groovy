@@ -83,6 +83,7 @@ class LdmService {
         return integrationConfig
     }
 
+
     List<IntegrationConfiguration> findAllByProcessCodeAndSettingName(String processCode, String settingName) {
         List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(processCode, settingName)
         LdmService.log.debug("ldmEnumeration MissCount--" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getMissCount())
@@ -284,6 +285,7 @@ class LdmService {
             if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
                 // Assume latest (current) version
                 representationVersion = sortedApiVersions.last()
+                setRequestAttributeOverwriteMediaType(representationVersion)
             } else {
                 int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
                 if (index != -1) {
@@ -364,6 +366,12 @@ class LdmService {
     }
 
 
+    private static void setRequestAttributeOverwriteMediaType(String version) {
+        HttpServletRequest request = getHttpServletRequest()
+        request.setAttribute("overwriteMediaTypeHeader", "application/vnd.hedtech.integration.${version}+json")
+    }
+
+
     public static HttpServletRequest getHttpServletRequest() {
         HttpServletRequest request
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes()
@@ -425,6 +433,7 @@ class LdmService {
         newEntity.guid = guid
         globalUniqueIdentifierService.update(newEntity)
     }
+
 
     public static String generateGUID() {
         return GlobalUniqueIdentifier.generateGUID()

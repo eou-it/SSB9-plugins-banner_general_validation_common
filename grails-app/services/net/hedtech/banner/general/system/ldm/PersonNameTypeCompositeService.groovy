@@ -108,6 +108,8 @@ class PersonNameTypeCompositeService extends LdmService {
     private def getBannerNameTypeToHedmNameTypeMap(String settingName, String version) {
         Map<String, String> bannerNameTypeToHedmNameTypeMap = [:]
         List<IntegrationConfiguration> intConfs = findAllByProcessCodeAndSettingName(GeneralValidationCommonConstants.PROCESS_CODE, settingName)
+        log.debug "List of IntegrationConfiguration objects"
+        log.debug intConfs
         if (intConfs) {
             List<NameType> entities = nameTypeService.fetchAllByCodeInList(intConfs.value)
             intConfs.each {

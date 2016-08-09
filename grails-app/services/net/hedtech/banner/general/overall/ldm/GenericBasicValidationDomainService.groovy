@@ -16,21 +16,21 @@ import javax.annotation.PostConstruct
  */
 @ToString(includeFields = true)
 class GenericBasicValidationDomainService {
-    protected Class baseDomain
-    protected Class guidDomain
-    protected String guidIdField
-    protected Class decorator
-    protected List supportedSearchFields
-    protected List supportedSortFields
-    protected Map ethosToDomainFieldNameMap
-    protected String defaultSortField
-    protected Map joinFieldMap
-    protected String joinFieldSeperator
-    protected Map baseDomainFilter
-    protected Map guidDomainFilter
+    Class baseDomain
+    Class guidDomain
+    String guidIdField
+    Class decorator
+    List supportedSearchFields
+    List supportedSortFields
+    Map ethosToDomainFieldNameMap
+    String defaultSortField
+    Map joinFieldMap
+    String joinFieldSeperator
+    Map baseDomainFilter
+    Map guidDomainFilter
     Integer DEFAULT_PAGE_SIZE = 500
     Integer MAX_PAGE_SIZE = 1000
-    protected static
+    static
     final List<String> grailsDynamicPropeties = ['attached', 'domainClass', 'class', 'constraints', 'dirtyPropertyNames', 'errors', 'dirty', 'metadata']
 
     def get(guid) {

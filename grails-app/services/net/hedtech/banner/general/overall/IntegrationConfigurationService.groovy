@@ -10,7 +10,7 @@ import net.hedtech.banner.service.ServiceBase
 import net.hedtech.banner.general.system.ldm.HedmAddressType
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 
-class IntegrationConfigurationService extends  ServiceBase {
+class IntegrationConfigurationService extends ServiceBase {
 
     boolean transactional = true
 
@@ -21,19 +21,17 @@ class IntegrationConfigurationService extends  ServiceBase {
     static final String ADDRESSES_DEFAULT_ADDRESSTYPE = "ADDRESSES.DEFAULT.ADDRESSTYPE"
     static final String COUNTRY_DEFAULT_ISO = "ADDRESS.COUNTRY.DEFAULT"
 
-    public boolean isInstitutionUsingISO2CountryCodes(){
-        IntegrationConfiguration intConfig= IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, NATION_ISO)[0]
+    public boolean isInstitutionUsingISO2CountryCodes() {
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, NATION_ISO)[0]
         if (!intConfig) {
-            throw new ApplicationException('Nation ISOCODE', new BusinessLogicValidationException("goriccr.not.found.message", [NATION_ISO]))
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.not.found.message", [NATION_ISO]))
         }
-        if (intConfig.value=='2'){
+        if (intConfig.value == '2') {
             return true
-        }
-        else if(intConfig.value=='3'){
+        } else if (intConfig.value == '3') {
             return false
-        }
-        else {
-            throw new ApplicationException('Nation ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [NATION_ISO]))
+        } else {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException('goriccr.invalid.value.message', [NATION_ISO]))
         }
     }
 
@@ -50,26 +48,40 @@ class IntegrationConfigurationService extends  ServiceBase {
         return intConf.translationValue
     }
 
-
+    /**
+     * Default country code to be displayed for Banner addresses that do not have an associated country code.
+     * Country code can be 2-char ISO code or 3-char ISO code depending on client preference.
+     *
+     * @return
+     */
     public String getDefaultISOCountryCodeForAddress() {
-        IntegrationConfiguration intConfig= IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, COUNTRY_DEFAULT_ISO)[0]
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, COUNTRY_DEFAULT_ISO)[0]
         if (!intConfig) {
-            throw new ApplicationException('Country ISOCODE', new BusinessLogicValidationException("goriccr.not.found.message", [COUNTRY_DEFAULT_ISO]))
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.not.found.message", [COUNTRY_DEFAULT_ISO]))
         }
-        if (intConfig.value){
-            if (isInstitutionUsingISO2CountryCodes()){
-                if(isoCodeService.getISO3CountryCode(intConfig.value) == null){
-                    throw new ApplicationException('Country ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [COUNTRY_DEFAULT_ISO]))
-                }
-            } else {
-                if(isoCodeService.getISO2CountryCode(intConfig.value) == null){
-                    throw new ApplicationException('Country ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [COUNTRY_DEFAULT_ISO]))
-                }
-            }
-            return intConfig.value
+        if (!isoCodeService.getISO2CountryCode(intConfig.value) && !isoCodeService.getISO3CountryCode(intConfig.value)) {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException('goriccr.invalid.value.message', [COUNTRY_DEFAULT_ISO]))
         }
-        else {
-            throw new ApplicationException('Country ISOCODE', new BusinessLogicValidationException('goriccr.invalid.value.message', [COUNTRY_DEFAULT_ISO]))
-        }
+        return intConfig.value
     }
+
+
+    public String getDefaultISO3CountryCodeForAddress() {
+        String isoCountryCode = getDefaultISOCountryCodeForAddress()
+        if (isInstitutionUsingISO2CountryCodes()) {
+            isoCountryCode = isoCodeService.getISO3CountryCode(isoCountryCode)
+
+        }
+        return isoCountryCode
+    }
+
+    public String getDefaultISO3CountryCodeForAddress(boolean institutionUsingISO2CountryCodes) {
+        String isoCountryCode = getDefaultISOCountryCodeForAddress()
+        if (institutionUsingISO2CountryCodes) {
+            isoCountryCode = isoCodeService.getISO3CountryCode(isoCountryCode)
+
+        }
+        return isoCountryCode
+    }
+
 }

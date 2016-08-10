@@ -248,11 +248,50 @@ class GenericBasicValidationDomainService {
         addBasicDomainFilter(query)
         addGuidDomainFilter(query)
         addSearchFilter(query, params)
+        Map queryParms = prepareSearchQueryParams(params)
         if (baseDomain == guidDomain) {
-            return guidDomain.executeQuery(query.toString(), [max: params.max, offset: params.offset])
+            addSorting(null, query, params.sort, params.order)
+            return guidDomain.executeQuery(query.toString(), queryParms, [max: params.max, offset: params.offset])
         } else {
             addJoinFields(query)
-            return baseDomain.executeQuery(query.toString(), [max: params.max, offset: params.offset])
+            addSorting("a", query, params.sort, params.order)
+            return baseDomain.executeQuery(query.toString(), queryParms, [max: params.max, offset: params.offset])
+        }
+    }
+
+    private Map prepareSearchQueryParams(Map params) {
+        Map queryParams = [:]
+        supportedSearchFields.each { field ->
+            if (params.containsKey(field)) {
+                String fieldName = field;
+                if (ethosToDomainFieldNameMap && ethosToDomainFieldNameMap.containsKey(fieldName)) {
+                    fieldName = ethosToDomainFieldNameMap.get(fieldName)
+                }
+                queryParams.put(fieldName, params.get(field))
+            }
+        }
+        return queryParams
+    }
+
+    private StringBuffer addSorting(String tableIdentifier, StringBuffer query, String sortField, String sortOrder) {
+        if (sortField && ethosToDomainFieldNameMap && ethosToDomainFieldNameMap.get(sortField)) {
+            sortField = ethosToDomainFieldNameMap.get(sortField)
+        }
+
+        if (tableIdentifier) {
+            if (sortField) {
+                query.append(" ORDER BY ${tableIdentifier}.${sortField} ")
+                if (sortOrder) {
+                    query.append(" ${sortOrder} ")
+                }
+            }
+        } else {
+            if (sortField) {
+                query.append(" ORDER BY ${sortField} ")
+                if (sortOrder) {
+                    query.append(" ${sortOrder} ")
+                }
+            }
         }
     }
 
@@ -266,7 +305,7 @@ class GenericBasicValidationDomainService {
                     if (ethosToDomainFieldNameMap && ethosToDomainFieldNameMap.containsKey(fieldName)) {
                         fieldName = ethosToDomainFieldNameMap.get(fieldName)
                     }
-                    query.append(" AND ${fieldName} = '${params.get(fieldName)}' ")
+                    query.append(" AND ${fieldName} = :${fieldName} ")
                 }
             }
         } else {
@@ -276,7 +315,7 @@ class GenericBasicValidationDomainService {
                     if (ethosToDomainFieldNameMap && ethosToDomainFieldNameMap.containsKey(fieldName)) {
                         fieldName = ethosToDomainFieldNameMap.get(fieldName)
                     }
-                    query.append(" AND a.${fieldName} = '${params.get(fieldName)}' ")
+                    query.append(" AND a.${fieldName} = :${fieldName} ")
                 }
             }
         }

@@ -7,6 +7,7 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
 import org.springframework.dao.InvalidDataAccessResourceUsageException
+import org.springframework.orm.hibernate3.HibernateQueryException
 
 class GenericBasicValidationDomainServiceIntegrationTests extends BaseIntegrationTestCase {
 
@@ -324,6 +325,41 @@ class GenericBasicValidationDomainServiceIntegrationTests extends BaseIntegratio
         genericBasicValidationDomainService.guidDomainFilter = ['ldmName': 'section-grade-types']
         shouldFail(ApplicationException) {
             genericBasicValidationDomainService.get('invalid-guid')
+        }
+    }
+
+    @Test
+    void testListSortWithFieldNameMapping() {
+        genericBasicValidationDomainService.baseDomain = Level.class
+        genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.decorator = GenericBasicValidationDecorator.class
+        genericBasicValidationDomainService.joinFieldMap = ['code': 'domainKey']
+        genericBasicValidationDomainService.guidDomainFilter = ['ldmName': 'academic-levels']
+        genericBasicValidationDomainService.defaultSortField = 'code'
+        genericBasicValidationDomainService.supportedSearchFields = ['ceuInd']
+        genericBasicValidationDomainService.supportedSortFields = ['field1']
+        genericBasicValidationDomainService.ethosToDomainFieldNameMap = ['field1': 'description']
+        List<GenericBasicValidationDecorator> response = genericBasicValidationDomainService.list(['ceuInd': true, sort: 'field1', order: 'asc'])
+        assertNotNull(response)
+        assertEquals(response.description.sort(), response.description)
+        List<GenericBasicValidationDecorator> response1 = genericBasicValidationDomainService.list(['ceuInd': true, sort: 'field1', order: 'desc'])
+        assertNotNull(response1)
+        assertEquals(response1.description.sort().reverse(), response1.description)
+    }
+
+    @Test
+    void testListSortWithInvalidFieldNameMapping() {
+        genericBasicValidationDomainService.baseDomain = Level.class
+        genericBasicValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericBasicValidationDomainService.decorator = GenericBasicValidationDecorator.class
+        genericBasicValidationDomainService.joinFieldMap = ['code': 'domainKey']
+        genericBasicValidationDomainService.guidDomainFilter = ['ldmName': 'academic-levels']
+        genericBasicValidationDomainService.defaultSortField = 'code'
+        genericBasicValidationDomainService.supportedSearchFields = ['ceuInd']
+        genericBasicValidationDomainService.supportedSortFields = ['field1']
+        genericBasicValidationDomainService.ethosToDomainFieldNameMap = ['field1': 'description1']
+        shouldFail(HibernateQueryException) {
+            List<GenericBasicValidationDecorator> response = genericBasicValidationDomainService.list(['ceuInd': true, sort: 'field1', order: 'asc'])
         }
     }
 }

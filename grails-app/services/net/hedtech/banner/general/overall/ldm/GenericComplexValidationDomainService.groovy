@@ -6,6 +6,7 @@ package net.hedtech.banner.general.overall.ldm
 import groovy.transform.ToString
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.exceptions.NotFoundException
 
 /**
  * Generic service method for complex validation tables used by HEDM
@@ -51,6 +52,8 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
                         decoratedResponse."${additionDataFieldMap.get(it)}" = properties.get(it)
                     }
                 }
+            } else if (skipRecordsWithNoAdditionalData) {
+                throw new ApplicationException(baseDomain, new NotFoundException())
             }
         }
         log.debug("End get for id:${guid}")

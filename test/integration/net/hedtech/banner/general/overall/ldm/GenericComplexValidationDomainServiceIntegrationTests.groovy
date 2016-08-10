@@ -147,4 +147,25 @@ class GenericComplexValidationDomainServiceIntegrationTests extends BaseIntegrat
             assertTrue(integrationConfigurationList.translationValue.contains(it.emailType))
         }
     }
+
+    @Test
+    void tesGetValidGuidWithNoAdditionalDataMappedAndSkipFlagOn() {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findAllByLdmName('email-types')[0]
+        genericComplexValidationDomainService.baseDomain = EmailType.class
+        genericComplexValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericComplexValidationDomainService.decorator = EmailTypeDetails.class
+        genericComplexValidationDomainService.guidIdField = 'guid'
+        genericComplexValidationDomainService.joinFieldMap = ['code': 'domainKey']
+        genericComplexValidationDomainService.guidDomainFilter = ['ldmName': 'email-types']
+        genericComplexValidationDomainService.additionDataDomain = IntegrationConfiguration.class
+        genericComplexValidationDomainService.additionalDataJoinFieldMap = ['code': 'value']
+        genericComplexValidationDomainService.additionDataFieldMap = ['translationValue': 'emailType']
+        genericComplexValidationDomainService.joinFieldMap = ['code': 'domainKey']
+        genericComplexValidationDomainService.joinFieldSeperator = '^'
+        genericComplexValidationDomainService.additionDataDomainFilter = ['processCode': 'HEDM', 'settingName': 'EMAILS.EMAILTYPE']
+        genericComplexValidationDomainService.skipRecordsWithNoAdditionalData = true
+        shouldFail(ApplicationException) {
+            genericComplexValidationDomainService.get(globalUniqueIdentifier.guid)
+        }
+    }
 }

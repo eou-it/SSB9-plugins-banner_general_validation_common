@@ -18,14 +18,15 @@ class PhoneTypeDecorator {
     String id
     String phoneType
 
-    PhoneTypeDecorator(String code, String description, String guid, String phoneType) {
+    PhoneTypeDecorator(String code, String description, String guid, String hedmPhoneType) {
         this.code = code
         this.description = description
         this.id = guid
-        this.phoneType = phoneType
+        this.phoneType = hedmPhoneType
     }
 
-    Map getDetail(){
-        return [id:this.id]
+    Map getDetail() {
+        return [id: this.id]
     }
+
 }

@@ -8,6 +8,8 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
@@ -21,7 +23,11 @@ import javax.persistence.SequenceGenerator
 
 @Entity
 @Table(name = "STVCOMF")
-
+@NamedQueries(value = [
+        @NamedQuery(name = "CommitteeFunction.fetchAllWithGuid", query = """ FROM CommitteeFunction n,GlobalUniqueIdentifier g where g.ldmName = 'campus-involvement-roles' AND g.domainKey = n.code """),
+        @NamedQuery(name = "CommitteeFunction.fetchAllWithGuidByCodeInList", query = """ FROM CommitteeFunction n,GlobalUniqueIdentifier g where g.ldmName = 'campus-involvement-roles' AND g.domainKey = n.code and n.code in :codes """),
+        @NamedQuery(name = "CommitteeFunction.fetchAllByCodeInList", query = """ FROM CommitteeFunction n where n.code in :codes """)
+])
 class CommitteeFunction implements Serializable {
 
     /**

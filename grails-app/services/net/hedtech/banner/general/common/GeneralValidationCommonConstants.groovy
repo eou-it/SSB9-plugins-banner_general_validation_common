@@ -189,4 +189,6 @@ class GeneralValidationCommonConstants {
 
     static final String NON_PERSONS_LDM_NAME = 'non-persons'
 
+    static final String COMMITTEE_FUNCTION_LDM_NAME = 'committee-function'
+
 }

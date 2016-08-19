@@ -25,7 +25,11 @@ class JSONQuery {
         this.jsonQuery = jsonQuery
         // Preserve parsed data structure
         JsonSlurper slurper = new JsonSlurper()
-        this.jsonQueryObjectModel = slurper.parseText(jsonQuery)
+        try {
+            this.jsonQueryObjectModel = slurper.parseText(jsonQuery)
+        } catch (Exception ex) {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid", null))
+        }
     }
 
 

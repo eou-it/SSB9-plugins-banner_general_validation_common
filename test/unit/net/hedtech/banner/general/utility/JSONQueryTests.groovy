@@ -25,7 +25,7 @@ class JSONQueryTests extends GrailsUnitTestCase {
     void testObjectCreationWithInvalidJSONQuery() {
         // closing double quote is missing for description
         String temp = """ {"description : "Beginning mathematics", "number" : "101"} """
-        shouldFail(groovy.json.JsonException) {
+        shouldFail(ApplicationException) {
             JSONQuery jsonQuery = new JSONQuery(temp)
         }
     }

@@ -69,23 +69,7 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
         def domainObjects = super.fetchForListOrCount(params)
         Map domainIdToAdditionDataMap = [:]
         if (additionDataDomain != null) {
-            StringBuffer query = new StringBuffer();
-            addAdditionalDataFromClause(query)
-            addWhereClause(null, query)
-            //TODO: we are using id here, its not mandatory to have a Id field named 'id'
-            query.append(" AND a.id in :id ")
-            addJoinFields(query, additionalDataJoinFieldMap)
-            addFilter("b", query, additionDataDomainFilter)
-            List listResponse
-            if (baseDomain == guidDomain) {
-                listResponse = baseDomain.executeQuery(query.toString(), [id: domainObjects.id])
-            } else {
-                List ids = []
-                domainObjects.each {
-                    ids << it[0].id
-                }
-                listResponse = baseDomain.executeQuery(query.toString(), [id: ids])
-            }
+            List listResponse = fetchAdditionalData(domainObjects)
             if (listResponse) {
                 listResponse.each {
                     domainIdToAdditionDataMap.put(it[0].id, it[1])
@@ -93,6 +77,38 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
             }
         }
         return decorateListResponse(domainObjects, domainIdToAdditionDataMap)
+    }
+
+    private List fetchAdditionalData(def domainObjects){
+        StringBuffer query = new StringBuffer();
+        addAdditionalDataFromClause(query)
+        addWhereClause(null, query)
+        //TODO: we are using id here, its not mandatory to have a Id field named 'id'
+        query.append(" AND a.id in :id ")
+        addJoinFields(query, additionalDataJoinFieldMap)
+        addFilter("b", query, additionDataDomainFilter)
+        List listResponse
+        if (baseDomain == guidDomain) {
+            listResponse = baseDomain.executeQuery(query.toString(), [id: domainObjects.id])
+        } else {
+            List ids = []
+            domainObjects.each {
+                ids << it[0].id
+            }
+            listResponse = baseDomain.executeQuery(query.toString(), [id: ids])
+        }
+        return listResponse
+    }
+
+    @Override
+    def count(Object params) {
+        if(skipRecordsWithNoAdditionalData && additionDataDomain){
+            def domainObjects = super.fetchForListOrCount(params)
+            List listResponse = fetchAdditionalData(domainObjects)
+            return listResponse.size()
+        }else{
+            return super.count(params)
+        }
     }
 
     protected List decorateListResponse(Object listResponse, Map additionalDataMap) {

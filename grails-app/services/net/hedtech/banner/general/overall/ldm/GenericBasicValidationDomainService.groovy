@@ -229,7 +229,7 @@ class GenericBasicValidationDomainService {
     }
 
     def count(params) {
-        return fetchForListOrCount(params, true)[0]
+        return fetchForListOrCount(params, true)
     }
 
     private def fetchForListOrCount(Map params, boolean count = false) {
@@ -240,23 +240,23 @@ class GenericBasicValidationDomainService {
         RestfulApiValidationUtility.validateSortField(params.sort, supportedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         StringBuffer query = new StringBuffer()
-        if (count) {
-            query.append(" SELECT COUNT(*) ")
-        }
         addFromClause(query)
         addWhereClause(null, query)
         addBasicDomainFilter(query)
         addGuidDomainFilter(query)
         addSearchFilter(query, params)
         Map queryParms = prepareSearchQueryParams(params)
+        List response
         if (baseDomain == guidDomain) {
             addSorting(null, query, params.sort, params.order)
-            return guidDomain.executeQuery(query.toString(), queryParms, [max: params.max, offset: params.offset])
+            response = guidDomain.executeQuery(query.toString(), queryParms, [max: params.max, offset: params.offset])
         } else {
             addJoinFields(query)
             addSorting("a", query, params.sort, params.order)
-            return baseDomain.executeQuery(query.toString(), queryParms, [max: params.max, offset: params.offset])
+            response = baseDomain.executeQuery(query.toString(), queryParms, [max: params.max, offset: params.offset])
         }
+
+        return count?response.size():response
     }
 
     private Map prepareSearchQueryParams(Map params) {

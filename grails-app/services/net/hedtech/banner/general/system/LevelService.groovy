@@ -17,7 +17,7 @@ import net.hedtech.banner.service.ServiceBase
  * A transactional service supporting persistence of the Level model. 
  *
  */
-class LevelService extends ServiceBase{
+class LevelService extends ServiceBase {
 
     boolean transactional = true
 
@@ -26,11 +26,36 @@ class LevelService extends ServiceBase{
      * @param code
      * @return
      */
-    Level fetchByCode(String code){
+    Level fetchByCode(String code) {
         return Level.fetchByCode(code)
     }
 
-    List<Level> fetchAllByCodeInList(List<String> codes){
+    List<Level> fetchAllByCodeInList(List<String> codes) {
         return Level.fetchAllByCodeInList(codes)
     }
+
+    List fetchAllWithGuidByCodeInList(Collection<String> levelCodes, int max = 0, int offset = -1) {
+        List rows = []
+        if (levelCodes) {
+            List entities = Level.withSession { session ->
+                def namedQuery = session.getNamedQuery('Level.fetchAllWithGuidByCodeInList')
+                namedQuery.with {
+                    setParameterList('codes', levelCodes)
+                    if (max > 0) {
+                        setMaxResults(max)
+                    }
+                    if (offset > -1) {
+                        setFirstResult(offset)
+                    }
+                    list()
+                }
+            }
+            entities?.each {
+                Map entitiesMap = [level: it[0], globalUniqueIdentifier: it[1]]
+                rows.add(entitiesMap)
+            }
+        }
+        return rows
+    }
+
 }

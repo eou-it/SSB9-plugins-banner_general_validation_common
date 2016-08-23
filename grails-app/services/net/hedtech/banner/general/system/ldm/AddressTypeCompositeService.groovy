@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AddressTypeCompositeService extends LdmService {
 
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
+
 
     def addressTypeService
 
@@ -33,6 +35,8 @@ class AddressTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     List<AddressTypeDecorator> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         List<AddressTypeDecorator> addressTypes = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         Map<String, String> bannerAddressTypeToHedmAddressTypeMap = getBannerAddressTypeToHedmV6AddressTypeMap()
@@ -61,6 +65,8 @@ class AddressTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     AddressTypeDecorator get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ADDRESS_TYPE_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GeneralValidationCommonConstants.ADDRESS_TYPE, new NotFoundException())
@@ -86,6 +92,8 @@ class AddressTypeCompositeService extends LdmService {
      * @param content Request body
      */
     def create(Map content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         if (!content?.code) {
             throw new ApplicationException(GeneralValidationCommonConstants.ADDRESS_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
         }
@@ -113,6 +121,8 @@ class AddressTypeCompositeService extends LdmService {
      * @return
      */
     def update(Map content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         String addressTypeGuid = content?.id?.trim()?.toLowerCase()
         if (!addressTypeGuid) {
             throw new ApplicationException(GeneralValidationCommonConstants.ADDRESS_TYPE, new NotFoundException())
@@ -181,11 +191,11 @@ class AddressTypeCompositeService extends LdmService {
                 HedmAddressType hedmAddressType = HedmAddressType.getByString(it.translationValue, version)
                 if (addressTypeList.code.contains(it.value) && hedmAddressType) {
                     bannerAddressTypeToHedmAddressTypeMap.put(it.value, hedmAddressType.versionToEnumMap[version])
-                }else {
+                } else {
                     throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                 }
             }
-        }else{
+        } else {
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerAddressTypeToHedmAddressTypeMap

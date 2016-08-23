@@ -1,11 +1,12 @@
 /** *******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Subject
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class SubjectCompositeService extends LdmService {
 
+    private static
+    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V4]
     private static final String LDM_NAME = "subjects"
 
     def subjectService
@@ -33,6 +36,8 @@ class SubjectCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<SubjectDetail> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         List subjectList = []
 
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
@@ -71,6 +76,8 @@ class SubjectCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     SubjectDetail get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException("subject", new NotFoundException())
@@ -90,6 +97,8 @@ class SubjectCompositeService extends LdmService {
      * @param content Request body
      */
     def create(content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         validateRequest(content)
 
         Subject subject = Subject.findByCode(content?.code?.trim())
@@ -118,6 +127,8 @@ class SubjectCompositeService extends LdmService {
      * @param content Request body
      */
     def update(content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         String subjectGuid = content?.id?.trim()?.toLowerCase()
 
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, subjectGuid)

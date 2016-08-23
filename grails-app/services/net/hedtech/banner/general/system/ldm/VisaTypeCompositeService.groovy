@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class VisaTypeCompositeService extends LdmService {
 
     def visaTypeService
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
 
     /**
      * GET /api/visa-types
@@ -30,6 +31,7 @@ class VisaTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<VisaTypeDetail> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         log.debug "list:Begin:$params"
         List<VisaTypeDetail> visaTypeDetailList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
@@ -73,6 +75,7 @@ class VisaTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     VisaTypeDetail get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         log.debug "get:Begin:$guid"
 
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.VISA_TYPES_LDM_NAME, guid)

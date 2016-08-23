@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -76,19 +76,20 @@ class SubjectCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     SubjectDetail get(String guid) {
-        String acceptVersion = getAcceptVersion(VERSIONS)
-
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
-        if (!globalUniqueIdentifier) {
-            throw new ApplicationException("subject", new NotFoundException())
-        }
-
-        Subject subject = Subject.get(globalUniqueIdentifier.domainId)
+        Subject subject = fetchSubjectByGuid(guid)
         if (!subject) {
             throw new ApplicationException("subject", new NotFoundException())
         }
+        return getDecorator(subject, guid)
+    }
 
-        return getDecorator(subject, globalUniqueIdentifier.guid)
+    Subject fetchSubjectByGuid(String guid) {
+        Subject subject
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid?.trim()?.toLowerCase())
+        if (globalUniqueIdentifier) {
+            subject = Subject.get(globalUniqueIdentifier.domainId)
+        }
+        return subject
     }
 
     /**

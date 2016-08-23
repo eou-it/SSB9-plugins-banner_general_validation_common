@@ -3,6 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -17,7 +18,7 @@ import net.hedtech.banner.service.ServiceBase
  * A transactional service supporting persistence of the Level model. 
  *
  */
-class LevelService extends ServiceBase {
+class LevelService extends ServiceBase{
 
     boolean transactional = true
 
@@ -26,11 +27,11 @@ class LevelService extends ServiceBase {
      * @param code
      * @return
      */
-    Level fetchByCode(String code) {
+    Level fetchByCode(String code){
         return Level.fetchByCode(code)
     }
 
-    List<Level> fetchAllByCodeInList(List<String> codes) {
+    List<Level> fetchAllByCodeInList(List<String> codes){
         return Level.fetchAllByCodeInList(codes)
     }
 
@@ -54,6 +55,16 @@ class LevelService extends ServiceBase {
                 Map entitiesMap = [level: it[0], globalUniqueIdentifier: it[1]]
                 rows.add(entitiesMap)
             }
+        }
+        return rows
+    }
+
+
+    def fetchAllWithGuidByGuidInList(Collection<String> guids) {
+        List rows = []
+        if (guids) {
+            List<GlobalUniqueIdentifier> globalUniqueIdentifiers = GlobalUniqueIdentifier.fetchAllByGuidInList(guids.unique())
+            rows = fetchAllWithGuidByCodeInList(globalUniqueIdentifiers?.domainKey)
         }
         return rows
     }

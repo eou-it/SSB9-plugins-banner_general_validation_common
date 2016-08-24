@@ -27,6 +27,7 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
     @Override
     def get(Object guid) {
         log.debug("Begin get for id:${guid} with setup:${this.toString()}")
+        LdmService.getAcceptVersion(VERSIONS)
         validateSettings()
         def domainObject = super.getDomainObject(guid)
         def decoratedResponse = super.decorateObject(domainObject)
@@ -66,6 +67,7 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
 
     @Override
     def list(Map params) {
+        LdmService.getAcceptVersion(VERSIONS)
         def domainObjects = super.fetchForListOrCount(params)
         Map domainIdToAdditionDataMap = [:]
         if (additionDataDomain != null) {

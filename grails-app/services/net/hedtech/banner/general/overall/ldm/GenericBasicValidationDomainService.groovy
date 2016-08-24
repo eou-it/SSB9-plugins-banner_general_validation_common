@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct
  */
 @ToString(includeFields = true)
 class GenericBasicValidationDomainService {
+    List<String> VERSIONS
     Class baseDomain
     Class guidDomain
     String guidIdField
@@ -35,6 +36,7 @@ class GenericBasicValidationDomainService {
 
     def get(guid) {
         log.debug("Begin get for id:${guid} with setup:${this.toString()}")
+        LdmService.getAcceptVersion(VERSIONS)
         validateSettings()
         def decoratedResponse = decorateObject(getDomainObject(guid))
         log.debug("End get for id:${guid}")
@@ -189,6 +191,7 @@ class GenericBasicValidationDomainService {
 
     def list(Map params) {
         log.info("Begin list with params:${params} with setup:${this.toString()}")
+        LdmService.getAcceptVersion(VERSIONS)
         List decoratedListResponse = decorateListResponse(fetchForListOrCount(params))
         log.info("End list with params:${params}")
         return decoratedListResponse
@@ -256,7 +259,7 @@ class GenericBasicValidationDomainService {
             response = baseDomain.executeQuery(query.toString(), queryParms, [max: params.max, offset: params.offset])
         }
 
-        return count?response.size():response
+        return count ? response.size() : response
     }
 
     private Map prepareSearchQueryParams(Map params) {

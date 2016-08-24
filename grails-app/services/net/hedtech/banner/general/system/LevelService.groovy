@@ -3,6 +3,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -33,4 +34,39 @@ class LevelService extends ServiceBase{
     List<Level> fetchAllByCodeInList(List<String> codes){
         return Level.fetchAllByCodeInList(codes)
     }
+
+    List fetchAllWithGuidByCodeInList(Collection<String> levelCodes, int max = 0, int offset = -1) {
+        List rows = []
+        if (levelCodes) {
+            List entities = Level.withSession { session ->
+                def namedQuery = session.getNamedQuery('Level.fetchAllWithGuidByCodeInList')
+                namedQuery.with {
+                    setParameterList('codes', levelCodes)
+                    if (max > 0) {
+                        setMaxResults(max)
+                    }
+                    if (offset > -1) {
+                        setFirstResult(offset)
+                    }
+                    list()
+                }
+            }
+            entities?.each {
+                Map entitiesMap = [level: it[0], globalUniqueIdentifier: it[1]]
+                rows.add(entitiesMap)
+            }
+        }
+        return rows
+    }
+
+
+    def fetchAllWithGuidByGuidInList(Collection<String> guids) {
+        List rows = []
+        if (guids) {
+            List<GlobalUniqueIdentifier> globalUniqueIdentifiers = GlobalUniqueIdentifier.fetchAllByGuidInList(guids.unique())
+            rows = fetchAllWithGuidByCodeInList(globalUniqueIdentifiers?.domainKey)
+        }
+        return rows
+    }
+
 }

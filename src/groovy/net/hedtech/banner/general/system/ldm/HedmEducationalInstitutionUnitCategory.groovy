@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system.ldm
 
 
 enum HedmEducationalInstitutionUnitCategory {
+
     FACULTY([v1: 'Faculty']),
     UNIVERSITY([v1: 'University']),
     COLLEGE([v1: 'College', v6: 'college']),
@@ -46,4 +47,5 @@ enum HedmEducationalInstitutionUnitCategory {
         }
         return null
     }
+
 }

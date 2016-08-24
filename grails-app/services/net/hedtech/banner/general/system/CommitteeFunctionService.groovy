@@ -4,6 +4,7 @@
 
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
 
 class CommitteeFunctionService extends ServiceBase {
@@ -17,6 +18,7 @@ class CommitteeFunctionService extends ServiceBase {
             List entities = []
             CommitteeFunction.withSession { session ->
                 def namedQuery = session.getNamedQuery('CommitteeFunction.fetchAllWithGuidByCodeInList')
+                namedQuery.setParameter('committeeFunction', GeneralValidationCommonConstants.COMMITTEE_FUNCTION_LDM_NAME)
                 namedQuery.with {
                     setParameterList('codes', codes)
                     if (max > 0) {
@@ -53,6 +55,7 @@ class CommitteeFunctionService extends ServiceBase {
         def rows = []
         def entities = CommitteeFunction.withSession { session ->
             def namedQuery = session.getNamedQuery('CommitteeFunction.fetchAllWithGuid')
+            namedQuery.setParameter('committeeFunction', GeneralValidationCommonConstants.COMMITTEE_FUNCTION_LDM_NAME)
             namedQuery.with {
                 if (max > 0) {
                     setMaxResults(max)

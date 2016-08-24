@@ -24,8 +24,8 @@ import javax.persistence.SequenceGenerator
 @Entity
 @Table(name = "STVCOMF")
 @NamedQueries(value = [
-        @NamedQuery(name = "CommitteeFunction.fetchAllWithGuid", query = """ FROM CommitteeFunction n,GlobalUniqueIdentifier g where g.ldmName = 'committee-function' AND g.domainKey = n.code """),
-        @NamedQuery(name = "CommitteeFunction.fetchAllWithGuidByCodeInList", query = """ FROM CommitteeFunction n,GlobalUniqueIdentifier g where g.ldmName = 'committee-function' AND g.domainKey = n.code and n.code in :codes """),
+        @NamedQuery(name = "CommitteeFunction.fetchAllWithGuid", query = """ FROM CommitteeFunction n,GlobalUniqueIdentifier g where g.ldmName = :committeeFunction AND g.domainKey = n.code """),
+        @NamedQuery(name = "CommitteeFunction.fetchAllWithGuidByCodeInList", query = """ FROM CommitteeFunction n,GlobalUniqueIdentifier g where g.ldmName = :committeeFunction AND g.domainKey = n.code and n.code in :codes """),
         @NamedQuery(name = "CommitteeFunction.fetchAllByCodeInList", query = """ FROM CommitteeFunction n where n.code in :codes """)
 ])
 class CommitteeFunction implements Serializable {

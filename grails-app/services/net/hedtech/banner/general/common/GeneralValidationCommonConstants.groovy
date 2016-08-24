@@ -29,6 +29,7 @@ class GeneralValidationCommonConstants {
     final static String VERSION_V2 = 'v2'
     final static String VERSION_V3 = 'v3'
     final static String VERSION_V4 = 'v4'
+    final static String VERSION_V5 = 'v5'
     final static String VERSION_V6 = 'v6'
     final static String VERSION_V7 = 'v7'
     final static String NON_HISPANIC = 'nonHispanic'
@@ -188,5 +189,20 @@ class GeneralValidationCommonConstants {
     public static final String ADDRESS_TYPE = 'addressType'
 
     static final String NON_PERSONS_LDM_NAME = 'non-persons'
+
+    static final String COMMITTEE_FUNCTION_LDM_NAME = 'committee-function'
+
+    //Section V4 Status Settings Name
+    public static final String SECTION_STATUS_SETTING_NAME_V4 = 'SECTIONDETAIL.STATUS.V4'
+    public static final String SECTION_STATUS_SETTING_NAME_V1 = 'SECTIONDETAIL.STATUS'
+    public static final String SECTION_DURATION_UNIT_SETTING_NAME_V1 = 'SECTIONDETAIL.DURATION.UNIT'
+    public static final String SECTION_DURATION_UNIT_SETTING_NAME_V4 = 'SECTIONDETAIL.DURATION.UNIT.V4'
+
+    public final static String COLLEGE_LDM_NAME = "colleges"
+    public final static String DEPARTMENT_LDM_NAME = "departments"
+    public final static String DIVISION_LDM_NAME = "divisions"
+
+    //Relationship type V7 constants
+    public static final String RELATIONSHIP_TYPE_SETTING_NAME_V7 = 'PERSONAL.RELATIONSHIP.TYPES'
 
 }

@@ -1,3 +1,7 @@
+/*********************************************************************************
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
+ **********************************************************************************/
+
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
@@ -9,7 +13,7 @@ import net.hedtech.banner.general.system.DurationUnit
 import net.hedtech.banner.general.system.DurationUnitService
 
 /**
- * Created by venut on 8/20/2016.
+ * Section Duration Unit GORICCR Mapping service.
  */
 class DurationUnitCompositeService extends LdmService{
 

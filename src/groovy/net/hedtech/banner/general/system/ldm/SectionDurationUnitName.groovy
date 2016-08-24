@@ -5,7 +5,7 @@
 package net.hedtech.banner.general.system.ldm
 
 /**
- * Section Status Enum
+ * Section Duration Enum
  */
 public enum SectionDurationUnitName {
 

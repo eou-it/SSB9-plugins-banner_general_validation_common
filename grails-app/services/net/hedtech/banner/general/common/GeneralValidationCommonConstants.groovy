@@ -201,4 +201,8 @@ class GeneralValidationCommonConstants {
     public final static String COLLEGE_LDM_NAME = "colleges"
     public final static String DEPARTMENT_LDM_NAME = "departments"
     public final static String DIVISION_LDM_NAME = "divisions"
+
+    //Relationship type V7 constants
+    public static final String RELATIONSHIP_TYPE_SETTING_NAME_V7 = 'PERSONAL.RELATIONSHIP.TYPES'
+
 }

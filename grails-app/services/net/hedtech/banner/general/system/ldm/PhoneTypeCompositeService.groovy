@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 class PhoneTypeCompositeService extends LdmService {
 
     def telephoneTypeService
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
 
     /**
      * GET /api/phone-types
@@ -31,6 +32,8 @@ class PhoneTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     def list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         List<PhoneTypeDecorator> phoneTypeList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         Map<String, String> bannerPhoneTypeToHedmPhoneTypeMap = getBannerPhoneTypeToHedmV6PhoneTypeMap()
@@ -59,6 +62,8 @@ class PhoneTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     PhoneTypeDecorator get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         if (!guid) {
             throw new ApplicationException(GeneralValidationCommonConstants.PHONE_ENTITY_TYPE, new NotFoundException())
         }

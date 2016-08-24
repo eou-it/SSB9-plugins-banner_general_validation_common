@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class ReligionCompositeService extends LdmService {
 
     def religionService
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
 
 
     /**
@@ -31,6 +32,8 @@ class ReligionCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<ReligionDecorator> list(Map params) {
         log.debug "list:Begin:$params"
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         List religionsList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         params.offset = params?.offset?:0
@@ -64,6 +67,8 @@ class ReligionCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     ReligionDecorator get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+        
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RELIGION_LDM_NAME, guid?.toLowerCase()?.trim())
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(ReligionCompositeService.class, new NotFoundException())

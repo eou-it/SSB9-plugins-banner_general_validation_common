@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 class PersonNameTypeCompositeService extends LdmService {
 
     def nameTypeService
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
 
     /**
      * GET /api/person-name-types
@@ -31,6 +32,8 @@ class PersonNameTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     List<NameTypeDecorator> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         List<NameTypeDecorator> nameTypeList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         Map<String, String> bannerNameTypeToHedmV6NameTypeMap = getBannerNameTypeToHedmV6NameTypeMap()
@@ -57,6 +60,8 @@ class PersonNameTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     NameTypeDecorator get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         if (!guid) {
             throw new ApplicationException(PersonNameTypeCompositeService.class, new NotFoundException())
         }

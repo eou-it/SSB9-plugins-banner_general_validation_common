@@ -23,12 +23,15 @@ class EmailTypeCompositeService extends LdmService {
 
     def emailTypeService
 
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
+
     /**
      * GET /api/email-types
      * @return List
      */
     @Transactional(readOnly = true)
     List<EmailTypeDetails> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         List<EmailTypeDetails> emailTypes = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         Map<String, String> bannerEmailTypeToHedmEmailTypeMap = getBannerEmailTypeToHedmV6EmailTypeMap()
@@ -53,6 +56,7 @@ class EmailTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     EmailTypeDetails get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         if (!guid) {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())
         }
@@ -83,6 +87,7 @@ class EmailTypeCompositeService extends LdmService {
      * @return EmailTypeDetails object post creating the record
      */
     def create(Map content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         if (!(content.code)) {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
         }
@@ -107,6 +112,7 @@ class EmailTypeCompositeService extends LdmService {
      * @return
      */
     def update(Map content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         String emailGuid = content.id?.trim()?.toLowerCase()
         if (!emailGuid) {
             throw new ApplicationException(GeneralValidationCommonConstants.EMAIL_TYPE, new NotFoundException())

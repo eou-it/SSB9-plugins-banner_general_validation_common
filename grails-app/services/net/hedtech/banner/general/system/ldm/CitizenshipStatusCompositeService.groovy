@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Transactional
 class CitizenshipStatusCompositeService extends LdmService {
+
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
+
     def citizenTypeService
 
     /**
@@ -30,6 +33,7 @@ class CitizenshipStatusCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<CitizenshipStatus> list(Map params) {
         log.debug "list:Begin:$params"
+        String acceptVersion = getAcceptVersion(VERSIONS)
         List<CitizenshipStatus> citizenshipStatuses = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
@@ -70,6 +74,7 @@ class CitizenshipStatusCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     CitizenshipStatus get(String guid) {
         log.debug "get:Begin:$guid"
+        String acceptVersion = getAcceptVersion(VERSIONS)
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GeneralValidationCommonConstants.CITIZENSHIP_STATUS, new NotFoundException())

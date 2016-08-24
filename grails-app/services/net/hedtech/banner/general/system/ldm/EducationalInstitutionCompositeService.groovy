@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.IntegrationConfigurationService
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.EducationalInstitutionView
@@ -18,6 +19,8 @@ class EducationalInstitutionCompositeService extends LdmService {
     EducationalInstitutionViewService educationalInstitutionViewService
     IntegrationConfigurationService integrationConfigurationService
 
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
+
 /**
  * GET /api/educational-institutions/<guid>
  *
@@ -26,6 +29,7 @@ class EducationalInstitutionCompositeService extends LdmService {
  */
     @Transactional(readOnly = true)
     def get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         EducationalInstitutionView educationalInstitutionView
         educationalInstitutionView = EducationalInstitutionView.get(guid)
         if (!educationalInstitutionView) {
@@ -52,6 +56,7 @@ class EducationalInstitutionCompositeService extends LdmService {
      * @return
      */
     def list(Map map) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         List<EducationalInstitutionV6> educationalInstitutionList = []
         RestfulApiValidationUtility.correctMaxAndOffset(map, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         int max = (map?.max as Integer)

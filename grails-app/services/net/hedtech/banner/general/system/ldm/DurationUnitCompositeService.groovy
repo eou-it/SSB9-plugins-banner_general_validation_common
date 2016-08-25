@@ -37,7 +37,7 @@ class DurationUnitCompositeService extends LdmService{
             integrationConfigurationList.each {
                 SectionDurationUnitName sectionDurationName = SectionDurationUnitName.getByString(it.translationValue, version)
                 String value = it.value
-                DurationUnit durationUnit = entities.find{ durationUnit -> durationUnit.code = value}
+                DurationUnit durationUnit = entities.find{ durationUnit -> durationUnit.code == value}
                 if (durationUnit.code.contains(value) && sectionDurationName) {
                     bannerDurationUnitCodeToHedmDurationMap.put(it.value, [durationName : sectionDurationName.versionToEnumMap[version], durationUnit:durationUnit])
                 } else {

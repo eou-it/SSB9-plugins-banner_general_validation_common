@@ -23,12 +23,19 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
     Map<String, String> additionalDataJoinFieldMap
     Map additionDataDomainFilter
     boolean skipRecordsWithNoAdditionalData = false
+    //in the validations map we can add key, value pair where the key can be anything but the value must be a valid HQL
+    // returning 0/non-0 for valid/invalid respectively - Hint: use count queries
+    Map<String, String> validations
+    //If you want to send a custom error message for a failure by the validation done using validations Map
+    //then add them here. The key must be same as the one for validations and value must be the error message you wish to throw
+    Map<String, String> errorCodes
 
     @Override
     def get(Object guid) {
         log.debug("Begin get for id:${guid} with setup:${this.toString()}")
         LdmService.getAcceptVersion(VERSIONS)
         validateSettings()
+        validateDataSetup()
         def domainObject = super.getDomainObject(guid)
         def decoratedResponse = super.decorateObject(domainObject)
         if (additionDataDomain != null) {
@@ -67,7 +74,9 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
 
     @Override
     def list(Map params) {
+        log.debug("Begin list with params:${params} with setup:${this.toString()}")
         LdmService.getAcceptVersion(VERSIONS)
+        validateDataSetup()
         def domainObjects = super.fetchForListOrCount(params)
         Map domainIdToAdditionDataMap = [:]
         if (additionDataDomain != null) {
@@ -79,9 +88,10 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
             }
         }
         return decorateListResponse(domainObjects, domainIdToAdditionDataMap)
+        log.debug("End list with params:${params}")
     }
 
-    private List fetchAdditionalData(def domainObjects){
+    private List fetchAdditionalData(def domainObjects) {
         StringBuffer query = new StringBuffer();
         addAdditionalDataFromClause(query)
         addWhereClause(null, query)
@@ -104,11 +114,11 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
 
     @Override
     def count(Object params) {
-        if(skipRecordsWithNoAdditionalData && additionDataDomain){
+        if (skipRecordsWithNoAdditionalData && additionDataDomain) {
             def domainObjects = super.fetchForListOrCount(params)
             List listResponse = fetchAdditionalData(domainObjects)
             return listResponse.size()
-        }else{
+        } else {
             return super.count(params)
         }
     }
@@ -178,6 +188,22 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
         }
         if (additionDataDomain && !additionDataFieldMap) {
             throw new ApplicationException(additionDataDomain, new BusinessLogicValidationException("addtional.data.fields.missing", null))
+        }
+    }
+
+    protected void validateDataSetup() {
+        if (validations && validations.size() > 0) {
+            validations.keySet().each { key ->
+                String query = validations.get(key)
+                int response = baseDomain.executeQuery(query)[0]
+                if (response != 0) {
+                    String errorCode = "invalid.setup.${key}"
+                    if (errorCodes && errorCodes.get(key)) {
+                        errorCode = errorCodes.get(key)
+                    }
+                    throw new ApplicationException(baseDomain, new BusinessLogicValidationException(errorCode, [key]))
+                }
+            }
         }
     }
 }

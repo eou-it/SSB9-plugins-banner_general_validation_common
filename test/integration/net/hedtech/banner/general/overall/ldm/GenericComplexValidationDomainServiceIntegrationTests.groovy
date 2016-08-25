@@ -34,6 +34,8 @@ class GenericComplexValidationDomainServiceIntegrationTests extends BaseIntegrat
         genericComplexValidationDomainService.joinFieldSeperator = null
         genericComplexValidationDomainService.baseDomainFilter = null
         genericComplexValidationDomainService.guidDomainFilter = null
+        genericComplexValidationDomainService.validations = null
+        genericComplexValidationDomainService.errorCodes = null
     }
 
     @Test
@@ -167,5 +169,48 @@ class GenericComplexValidationDomainServiceIntegrationTests extends BaseIntegrat
         shouldFail(ApplicationException) {
             genericComplexValidationDomainService.get(globalUniqueIdentifier.guid)
         }
+    }
+
+    @Test
+    void testGetAdditionalDataValidationsReturningError() {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findAllByLdmNameAndDomainKey('email-types', 'BUSI')[0]
+        genericComplexValidationDomainService.baseDomain = EmailType.class
+        genericComplexValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericComplexValidationDomainService.decorator = EmailTypeDetails.class
+        genericComplexValidationDomainService.guidIdField = 'guid'
+        genericComplexValidationDomainService.joinFieldMap = ['code': 'domainKey']
+        genericComplexValidationDomainService.guidDomainFilter = ['ldmName': 'email-types']
+        genericComplexValidationDomainService.additionDataDomain = IntegrationConfiguration.class
+        genericComplexValidationDomainService.additionalDataJoinFieldMap = ['code': 'value']
+        genericComplexValidationDomainService.additionDataFieldMap = ['translationValue': 'emailType']
+        genericComplexValidationDomainService.joinFieldMap = ['code': 'domainKey']
+        genericComplexValidationDomainService.joinFieldSeperator = '^'
+        genericComplexValidationDomainService.additionDataDomainFilter = ['processCode': 'HEDM', 'settingName': 'EMAILS.EMAILTYPE']
+        genericComplexValidationDomainService.validations = ['key1': "select 1 from EmailType where rownum = 1"]
+        genericComplexValidationDomainService.errorCodes = ['key1': "data setup missing for key: key1"]
+        shouldFail(ApplicationException) {
+            genericComplexValidationDomainService.get(globalUniqueIdentifier.guid)
+        }
+    }
+
+    @Test
+    void testGetAdditionalDataValidationsReturningNoError() {
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.findAllByLdmNameAndDomainKey('email-types', 'BUSI')[0]
+        genericComplexValidationDomainService.baseDomain = EmailType.class
+        genericComplexValidationDomainService.guidDomain = GlobalUniqueIdentifier.class
+        genericComplexValidationDomainService.decorator = EmailTypeDetails.class
+        genericComplexValidationDomainService.guidIdField = 'guid'
+        genericComplexValidationDomainService.joinFieldMap = ['code': 'domainKey']
+        genericComplexValidationDomainService.guidDomainFilter = ['ldmName': 'email-types']
+        genericComplexValidationDomainService.additionDataDomain = IntegrationConfiguration.class
+        genericComplexValidationDomainService.additionalDataJoinFieldMap = ['code': 'value']
+        genericComplexValidationDomainService.additionDataFieldMap = ['translationValue': 'emailType']
+        genericComplexValidationDomainService.joinFieldMap = ['code': 'domainKey']
+        genericComplexValidationDomainService.joinFieldSeperator = '^'
+        genericComplexValidationDomainService.additionDataDomainFilter = ['processCode': 'HEDM', 'settingName': 'EMAILS.EMAILTYPE']
+        genericComplexValidationDomainService.validations = ['key1': "select 0 from EmailType where rownum = 1"]
+        genericComplexValidationDomainService.errorCodes = ['key1': "data setup missing for key: key1"]
+        EmailTypeDetails response = genericComplexValidationDomainService.get(globalUniqueIdentifier.guid)
+        assertNotNull(response)
     }
 }

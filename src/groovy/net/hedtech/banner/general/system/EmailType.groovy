@@ -13,6 +13,11 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "GTVEMAL")
+@NamedQueries(value = [
+    @NamedQuery(name = "EmailType.fetchByCodeAndWebDisplayable",
+        query = """FROM EmailType a
+                  WHERE a.code = :code
+                    AND a.displayWebIndicator = 'Y'""")])
 class EmailType implements Serializable {
 
     /**
@@ -136,4 +141,13 @@ class EmailType implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+    public static List fetchByCodeAndWebDisplayable(String code) {
+        def emailTypes
+
+        EmailType.withSession { session ->
+            emailTypes = session.getNamedQuery('EmailType.fetchByCodeAndWebDisplayable').setString('code', code).list()
+        }
+        return emailTypes
+    }
 }

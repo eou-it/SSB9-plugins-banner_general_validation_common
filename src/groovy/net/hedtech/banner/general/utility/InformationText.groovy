@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.utility
 
@@ -13,15 +13,15 @@ import javax.persistence.*
 @Entity
 @Table(name = "GURINFO")
 @NamedQueries(value = [
-    @NamedQuery(name = "InformationText.fetchInfoTextByRole",
-        query = """ FROM InformationText a
+        @NamedQuery(name = "InformationText.fetchInfoTextByRole",
+                query = """ FROM InformationText a
                                WHERE a.pageName = :pageName
                                AND a.persona IN (:roleCode)
                                AND a.locale IN (:locale)
                                AND trunc(sysdate) BETWEEN trunc(NVL( a.startDate, (sysdate - 1) ) ) AND trunc( NVL( a.endDate, (sysdate + 1) ))
                                ORDER BY a.label, a.sequenceNumber """),
-    @NamedQuery(name = "InformationText.fetchInfoTextByRoleAndLabel",
-            query = """ FROM InformationText a
+        @NamedQuery(name = "InformationText.fetchInfoTextByRoleAndLabel",
+                query = """ FROM InformationText a
                                    WHERE a.pageName = :pageName
                                    AND a.persona IN (:roleCode)
                                    AND a.locale IN (:locale)
@@ -252,16 +252,21 @@ class InformationText implements Serializable {
      * @return
      */
 
-     public static List<InformationText> fetchInfoTextByRoles(String pageName, List<String> roleCode, List<String> locale) {
-         InformationText.withSession {session ->
-             def infoText =  session.getNamedQuery('InformationText.fetchInfoTextByRole')
-                    .setString(PAGENAME, pageName)
-                    .setParameterList(ROLECODE, roleCode)
-                    .setParameterList(LOCALE,locale)
-                    .list()
-            return infoText
-         }
+    public static List<InformationText> fetchInfoTextByRoles(String pageName, List<String> roleCode, List<String> locale) {
+        def infoTextResponse = []
+        roleCode.collate(1000).each { miniRoleCode ->
+            InformationText.withSession {session ->
+                def infoText =  session.getNamedQuery('InformationText.fetchInfoTextByRole')
+                        .setString(PAGENAME, pageName)
+                        .setParameterList(ROLECODE, miniRoleCode)
+                        .setParameterList(LOCALE,locale)
+                        .list()
+                infoTextResponse << infoText
+            }
+        }
+        infoTextResponse.flatten().unique()
     }
+
 
     /**
      * fetchInfoTextByRolesAndLabel method returns info text for the given roles and
@@ -272,15 +277,20 @@ class InformationText implements Serializable {
      * @param label
      * @return
      */
-   public static List<InformationText> fetchInfoTextByRolesAndLabel(String pageName, List<String> roleCode, List<String> locale, String label) {
-        InformationText.withSession {session ->
-            def infoText = session.getNamedQuery('InformationText.fetchInfoTextByRoleAndLabel')
-                    .setString(PAGENAME, pageName)
-                    .setParameterList(ROLECODE, roleCode)
-                    .setParameterList(LOCALE,locale)
-                    .setString(LABEL_TEXT, label)
-                    .list()
-            return infoText
+    public static List<InformationText> fetchInfoTextByRolesAndLabel(String pageName, List<String> roleCode, List<String> locale, String label) {
+        def infoTextResponse = []
+        roleCode.collate(1000).each { miniRoleCode ->
+            InformationText.withSession { session ->
+                def infoText = session.getNamedQuery('InformationText.fetchInfoTextByRoleAndLabel')
+                        .setString(PAGENAME, pageName)
+                        .setParameterList(ROLECODE, miniRoleCode)
+                        .setParameterList(LOCALE, locale)
+                        .setString(LABEL_TEXT, label)
+                        .list()
+                infoTextResponse << infoText
+            }
         }
+        infoTextResponse.flatten().unique()
     }
+
 }

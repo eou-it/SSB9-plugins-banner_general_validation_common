@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -26,7 +26,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     def i_success_title = "TTTTT"
     def i_success_statusIndicator = "I"
     def i_success_accountsPayableAccount = "TTTTT"
-    def i_success_nation = "TTTTT"
+    def i_success_nation = "150"
     def i_success_conversionType = "P"
     def i_success_exchAccount = "TTTTT"
     def i_success_disbAgentPidm = 1
@@ -60,7 +60,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
     def u_success_title = "TTTTT"
     def u_success_statusIndicator = "I"
     def u_success_accountsPayableAccount = "TTTTT"
-    def u_success_nation = "TTTTT"
+    def u_success_nation = "155"
     def u_success_conversionType = "D"
     def u_success_exchAccount = "TTTTT"
     def u_success_disbAgentPidm = 1

@@ -25,7 +25,7 @@ class TestScore implements Serializable {
     /**
      * This field identifies the test code referenced on the Admissions Decision (SAADCRV) and Admissions Decision Rules (SAADECN) Forms and by SOATEST and SOABGIY.
      */
-    @Column(name = "STVTESC_CODE", nullable = false, unique = true, length = 4)
+    @Column(name = "STVTESC_CODE", nullable = false, unique = true, length = 6)
     String code
 
     /**
@@ -35,9 +35,9 @@ class TestScore implements Serializable {
     String description
 
     /**
-     * This field specifies the number of positions of the score for the associated test.  Valid are values 1 through 5.
+     * This field specifies the number of positions of the score for the associated test.  Valid are values 1 through 15.
      */
-    @Column(name = "STVTESC_NO_POSITIONS", nullable = false, precision = 1)
+    @Column(name = "STVTESC_NO_POSITIONS", nullable = false, precision = 2)
     Integer numberPositions
 
     /**
@@ -49,13 +49,13 @@ class TestScore implements Serializable {
     /**
      * This field identifies the value of the minimum score for the associated test.
      */
-    @Column(name = "STVTESC_MIN_VALUE", length = 5)
+    @Column(name = "STVTESC_MIN_VALUE", length = 15)
     String minimumValue
 
     /**
      * This field identifies the value of the maximum score for the associated test.
      */
-    @Column(name = "STVTESC_MAX_VALUE", length = 5)
+    @Column(name = "STVTESC_MAX_VALUE", length = 15)
     String maximumValue
 
     /**
@@ -140,12 +140,12 @@ class TestScore implements Serializable {
 
 
     static constraints = {
-        code(nullable: false, maxSize: 4)
+        code(nullable: false, maxSize: 6)
         description(nullable: true, maxSize: 30)
-        numberPositions(nullable: false, max: 9)
+        numberPositions(nullable: false, max: 15)
         dataType(nullable: false, maxSize: 1)
-        minimumValue(nullable: true, maxSize: 5)
-        maximumValue(nullable: true, maxSize: 5)
+        minimumValue(nullable: true, maxSize: 15)
+        maximumValue(nullable: true, maxSize: 15)
         systemRequiredIndicator(nullable: true)
         managementInformationSystemCode(nullable: true, maxSize: 6)
         assessmentForm(nullable: true, maxSize: 1)

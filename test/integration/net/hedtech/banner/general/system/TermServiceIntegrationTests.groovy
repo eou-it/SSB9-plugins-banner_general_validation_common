@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -307,7 +307,7 @@ class TermServiceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllByTermCodes(){
-        String TERM_CODE_ONE = "200211"
+        String TERM_CODE_ONE = "200920"
         String TERM_CODE_TWO = "201410"
 
         List<Term> terms = termService.fetchAllByTermCodes( [TERM_CODE_ONE, TERM_CODE_TWO] )

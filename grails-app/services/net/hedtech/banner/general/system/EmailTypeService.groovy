@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -16,4 +17,14 @@ import net.hedtech.banner.service.ServiceBase
 
 class EmailTypeService extends ServiceBase {
     boolean transactional = true
+
+    def fetchByCodeAndWebDisplayable(code) {
+        def emailType = EmailType.fetchByCodeAndWebDisplayable(code)[0]
+        if(emailType){
+            return emailType
+        }
+        else{
+            throw new ApplicationException(EmailType, "@@r1:invalidEmailType@@")
+        }
+    }
 }

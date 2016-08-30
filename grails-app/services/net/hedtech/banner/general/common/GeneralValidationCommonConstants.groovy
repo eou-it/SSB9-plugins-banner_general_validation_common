@@ -191,6 +191,7 @@ class GeneralValidationCommonConstants {
     static final String NON_PERSONS_LDM_NAME = 'non-persons'
 
     static final String COMMITTEE_FUNCTION_LDM_NAME = 'committee-function'
+    static final String ACTIVITY_TYPE_LDM_NAME = 'activity-type'
 
     //Section V4 Status Settings Name
     public static final String SECTION_STATUS_SETTING_NAME_V4 = 'SECTIONDETAIL.STATUS.V4'

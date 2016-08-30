@@ -4,11 +4,10 @@
 
 package net.hedtech.banner.general.system
 
-import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
- * Model representing College (the Banenr Validation Table).
+ * Model representing College (the Banner Validation Table).
  */
 @Entity
 @Table(name = "STVCOLL")
@@ -140,11 +139,6 @@ class College implements Serializable {
     @Column(name = "STVCOLL_DATA_ORIGIN", length = 30, nullable = true)
     String dataOrigin
 
-    /**
-     * Global Unique Identifier for STVCOLL
-     */
-    @Column(name= "STVCOLL_GUID")
-    String addressGuid
 
     public String toString() {
         "College[id=$id, code=$code, description=$description, addressStreetLine1=$addressStreetLine1, addressStreetLine2=$addressStreetLine2, addressStreetLine3=$addressStreetLine3, addressCity=$addressCity, addressState=$addressState, addressCountry=$addressCountry, addressZipCode=$addressZipCode, lastModified=$lastModified, systemRequiredIndicator=$systemRequiredIndicator, voiceResponseMessageNumber=$voiceResponseMessageNumber, statisticsCanadianInstitution=$statisticsCanadianInstitution, districtDivision=$districtDivision, houseNumber=$houseNumber, addressStreetLine4=$addressStreetLine4, lastModifiedBy=$lastModifiedBy, version=$version, dataOrigin=$dataOrigin]"
@@ -170,7 +164,6 @@ class College implements Serializable {
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
-        addressGuid(nullable: true, maxSize: 36)
     }
 
 
@@ -201,7 +194,6 @@ class College implements Serializable {
         if (systemRequiredIndicator != college.systemRequiredIndicator) return false
         if (version != college.version) return false
         if (voiceResponseMessageNumber != college.voiceResponseMessageNumber) return false
-        if (addressGuid != college.addressGuid) return false
 
         return true
     }
@@ -230,7 +222,6 @@ class College implements Serializable {
         result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
         result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (addressGuid != null ? addressGuid.hashCode() : 0)
 
         return result
     }

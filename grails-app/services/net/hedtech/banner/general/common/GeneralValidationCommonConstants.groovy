@@ -205,4 +205,7 @@ class GeneralValidationCommonConstants {
     //Relationship type V7 constants
     public static final String RELATIONSHIP_TYPE_SETTING_NAME_V7 = 'PERSONAL.RELATIONSHIP.TYPES'
 
+    //Section Registration Status constants
+    public static final String COURSE_REGISTRATION_STATUSES_LDM_NAME = 'course-registration-statuses'
+
 }

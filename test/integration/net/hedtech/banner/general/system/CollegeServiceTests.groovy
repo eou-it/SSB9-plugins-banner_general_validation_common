@@ -1,7 +1,10 @@
 /** *****************************************************************************
- Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -97,6 +100,60 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
         }
     }
 
+    @Test
+    void testFetchByCode() {
+        College actualCollege = collegeService.create(newCollege("TT"))
+        assertNotNull actualCollege
+        assertNotNull actualCollege.id
+
+        College expectCollege = collegeService.fetchByCode(actualCollege.code)
+        assertNotNull expectCollege
+
+        assertEquals actualCollege, expectCollege
+    }
+
+    @Test
+    void testFetchAllWithGuidByCodeInList() {
+        College actualCollege = collegeService.create(newCollege("TT"))
+        assertNotNull actualCollege
+        assertNotNull actualCollege.id
+
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.COLLEGE_LDM_NAME, actualCollege.id)
+        assertNotNull globalUniqueIdentifier
+
+        List entities = collegeService.fetchAllWithGuidByCodeInList([actualCollege.code])
+        assertFalse entities.isEmpty()
+        assertEquals entities.size(), 1
+
+        Map entitiesMap = entities[0]
+        assertFalse entitiesMap.isEmpty()
+
+        assertEquals actualCollege, entitiesMap.college
+        assertEquals globalUniqueIdentifier, entitiesMap.globalUniqueIdentifier
+    }
+
+    @Test
+    void testFetchAllWithGuidByCodeInListWithPagination() {
+        List<College> colleges = collegeService.list(params)
+        assertNotNull colleges
+        assertFalse colleges.isEmpty()
+
+        College college = colleges[0]
+        assertNotNull college.id
+
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.COLLEGE_LDM_NAME, college.id)
+        assertNotNull globalUniqueIdentifier
+
+        List entities = collegeService.fetchAllWithGuidByCodeInList(colleges.code, 1, 0)
+        assertFalse entities.isEmpty()
+        assertEquals entities.size(), 1
+
+        Map entitiesMap = entities[0]
+        assertFalse entitiesMap.isEmpty()
+
+        assertEquals college, entitiesMap.college
+        assertEquals globalUniqueIdentifier, entitiesMap.globalUniqueIdentifier
+    }
 
     private College newCollege(String code) {
         new College(code: code, description: "$code description", addressStreetLine1: "TT", addressStreetLine2: "TT", addressStreetLine3: "TT", addressCity: "TT",

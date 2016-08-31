@@ -195,7 +195,7 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void testFetchByLdmNameAndDomainKeyLike(){
+    void testFetchByLdmNameAndDomainKeyLike() {
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyLike('instructional-events', '201410-^20434')
         globalUniqueIdentifierList.each {
             assertTrue "expected to contain 201410-^20434 but had ${it.domainKey}", it.domainKey.contains('201410-^20434')
@@ -203,19 +203,39 @@ class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void testFetchAllByGuidInListNullList(){
+    void testFetchAllByGuidInListNullList() {
         assertEquals([], GlobalUniqueIdentifier.fetchAllByGuidInList(null))
     }
 
     @Test
-    void testFetchAllByGuidInListEmptyList(){
+    void testFetchAllByGuidInListEmptyList() {
         assertEquals([], GlobalUniqueIdentifier.fetchAllByGuidInList(null))
     }
 
     @Test
-    void testFetchAllByGuidInList(){
-        List<String> guids = GlobalUniqueIdentifier.findAll(max:100).guid
+    void testFetchAllByGuidInList() {
+        List<String> guids = GlobalUniqueIdentifier.findAll(max: 100).guid
         assertEquals(guids.sort(), GlobalUniqueIdentifier.fetchAllByGuidInList(guids).guid.sort())
+    }
+
+    @Test
+    void testFetchByLdmNameAndDomainIdsNullLdmName() {
+        assertEquals([], GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds(null, []))
+    }
+
+    @Test
+    void testFetchByLdmNameAndDomainIdsNullIds() {
+        assertEquals([], GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds("academic-levels", null))
+    }
+
+    @Test
+    void testFetchByLdmNameAndDomainIdsEmptyIds() {
+        assertEquals([], GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds("academic-levels", []))
+    }
+
+    @Test
+    void testFetchByLdmNameAndDomainIds() {
+        assertEquals(GlobalUniqueIdentifier.fetchByLdmName("academic-levels"), GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds("academic-levels", GlobalUniqueIdentifier.fetchByLdmName("academic-levels").domainId))
     }
 
     private GlobalUniqueIdentifier createNewGlobalUniqueIdentifier() {

@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -40,5 +40,52 @@ class EmailTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         catch(ApplicationException ae) {
             assertApplicationException ae, "invalidEmailType"
         }
+    }
+
+    @Test
+    void testListEmailTypes() {
+        def emailTypeList = EmailType.list()
+
+        assertEquals 29, emailTypeList.size()
+    }
+
+    @Test
+    void testFetchEmailTypeList() {
+        def emailTypeList = emailTypeService.fetchEmailTypeList()
+
+        assertEquals 10, emailTypeList.size()
+    }
+
+    @Test
+    void testFetchEmailTypeListFifty() {
+        def emailTypeList = emailTypeService.fetchEmailTypeList(50)
+
+        assertEquals 28, emailTypeList.size()
+        assertEquals 'AOL Email', emailTypeList[0].description
+        assertEquals 'Support E-Mail', emailTypeList[27].description
+    }
+
+    @Test
+    void testFetchEmailTypeListMidList() {
+        def emailTypeList = emailTypeService.fetchEmailTypeList(12, 15)
+
+        assertEquals 12, emailTypeList.size()
+        assertEquals 'Legal E-Mail', emailTypeList[0].description
+    }
+
+    @Test
+    void testFetchOEmailTypesList() {
+        def emailTypeList = emailTypeService.fetchEmailTypeList(10, 0, 'o')
+
+        assertEquals 10, emailTypeList.size()
+        assertEquals 'AOL Email', emailTypeList[0].description
+    }
+
+    @Test
+    void testFetchOEmailTypesMidList() {
+        def emailTypeList = emailTypeService.fetchEmailTypeList(5, 2, 'o')
+
+        assertEquals 5, emailTypeList.size()
+        assertEquals 'Colorado Springs Email', emailTypeList[0].description
     }
 }

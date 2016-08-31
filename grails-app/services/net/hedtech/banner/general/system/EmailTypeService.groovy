@@ -27,4 +27,16 @@ class EmailTypeService extends ServiceBase {
             throw new ApplicationException(EmailType, "@@r1:invalidEmailType@@")
         }
     }
+
+    def fetchEmailTypeList(int max = 10, int offset = 0, String searchString = '') {
+        def criteria = EmailType.createCriteria()
+        def emailTypeList = criteria.list(max: max, offset: offset, sort: 'description', order: 'asc') {
+            and {
+                eq("displayWebIndicator", true)
+                ilike("description", "%${searchString}%")
+            }
+        }
+
+        emailTypeList
+    }
 }

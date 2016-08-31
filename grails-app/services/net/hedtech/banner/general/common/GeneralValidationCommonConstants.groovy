@@ -209,8 +209,9 @@ class GeneralValidationCommonConstants {
     //Section Registration Status constants
     public static final String COURSE_REGISTRATION_STATUSES_LDM_NAME = 'course-registration-statuses'
 
-}
-
     static final String INSTRUCTIONAL_METHOD_LDM_NAME = 'instructional-methods'
 
 }
+
+
+

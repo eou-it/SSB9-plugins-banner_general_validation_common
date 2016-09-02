@@ -33,7 +33,6 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         def params = [:]
         RestfulApiValidationUtility.correctMaxAndOffset(params)
         assertFalse params.containsKey("max")
-        assertFalse params.containsKey("offset")
 
         // Invalid "max" will be removed in the absence of maxDefault
         // Invalid "offset" will be replaced with 0

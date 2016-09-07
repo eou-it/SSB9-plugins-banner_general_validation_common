@@ -324,4 +324,12 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
         return level
     }
 
+
+    @Test
+    void testGetLevelCodeToGuidMap(){
+        List levelCodes = [i_success_level.code]
+        def codeToGuidMap = academicLevelCompositeService.getLevelCodeToGuidMap(levelCodes)
+        assertTrue(codeToGuidMap.containsKey(i_success_level.code))
+    }
+
 }

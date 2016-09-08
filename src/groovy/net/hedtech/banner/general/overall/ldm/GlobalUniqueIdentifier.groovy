@@ -44,7 +44,7 @@ import javax.persistence.*
                 query = """FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName
                                 AND a.domainId =   :id  """),
-        @NamedQuery(name = "GlobalUniqueIdentifier.fetchByLdmNameAndDomainIds",
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds",
                 query = """FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName
                                 AND a.domainId in (:ids)  """),
@@ -251,6 +251,16 @@ class GlobalUniqueIdentifier implements Serializable {
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = []
         GlobalUniqueIdentifier.withSession{session ->
             globalUniqueIdentifierList = session.getNamedQuery("GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyInList").setString('ldmName', ldmName).setParameterList('domainKeys', domainKeys).list()
+        }
+        return globalUniqueIdentifierList
+    }
+
+    public static List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainIds(String ldmName, List<Long> domainIds){
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = []
+        if(ldmName && domainIds){
+            GlobalUniqueIdentifier.withSession{session ->
+                globalUniqueIdentifierList = session.getNamedQuery("GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds").setString('ldmName', ldmName).setParameterList('ids', domainIds).list()
+            }
         }
         return globalUniqueIdentifierList
     }

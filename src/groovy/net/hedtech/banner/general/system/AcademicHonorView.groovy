@@ -30,10 +30,12 @@ import javax.persistence.*
                 query = """SELECT count(*) FROM AcademicHonorView"""),
         @NamedQuery(name = "AcademicHonorView.fetchCountByType",
                 query = """SELECT count(*) FROM  AcademicHonorView honor
-           WHERE honor.type = :type""")
+           WHERE honor.type = :type"""),
+        @NamedQuery(name = "AcademicHonorView.fetchAllByCodeInList",
+                query = """FROM AcademicHonorView where code in (:codes)""")
 
 ])
-class AcademicHonorView implements Serializable{
+class AcademicHonorView implements Serializable {
 
     /**
      * Guid for Honors
@@ -55,7 +57,6 @@ class AcademicHonorView implements Serializable{
     @Column(name = "TITLE")
     String title
 
-
     /**
      * Type of Honors
      * */
@@ -63,18 +64,17 @@ class AcademicHonorView implements Serializable{
     String type
 
     /**
-     *VERSION: Optimistic lock token.
+     * VERSION: Optimistic lock token.
      * */
     @Version
     @Column(name = "VERSION", length = 19)
     Long version
 
-
     /**
      * @param params
      * @return count
      */
-    public static Long countRecord(){
+    public static Long countRecord() {
         return AcademicHonorView.withSession { session ->
             session.getNamedQuery('AcademicHonorView.countRecord').uniqueResult()
         }
@@ -86,46 +86,55 @@ class AcademicHonorView implements Serializable{
      */
     public static Long countRecordWithFilter(type) {
         return AcademicHonorView.withSession { session ->
-            session.getNamedQuery('AcademicHonorView.fetchCountByType').setString('type',type ).uniqueResult()
+            session.getNamedQuery('AcademicHonorView.fetchCountByType').setString('type', type).uniqueResult()
         }
     }
 
     /**
-     * @param type,params
+     * @param type , params
      * @return academicHonors List
      */
-    public static List fetchByType(type,params){
-       return AcademicHonorView.withSession { session ->
-                session.getNamedQuery('AcademicHonorView.fetchByType')
-                        .setString( 'type', type )
-                        .setMaxResults(params?.max as Integer)
-                        .setFirstResult(params?.offset as Integer).list()
+    public static List fetchByType(type, params) {
+        return AcademicHonorView.withSession { session ->
+            session.getNamedQuery('AcademicHonorView.fetchByType')
+                    .setString('type', type)
+                    .setMaxResults(params?.max as Integer)
+                    .setFirstResult(params?.offset as Integer).list()
         }
     }
-
 
     /**
-     * @param type,params
+     * @param type , params
      * @return academicHonors List
      */
-    public static List fetchAll(params){
-        return AcademicHonorView.withSession {session ->
-                 session.getNamedQuery('AcademicHonorView.fetchAll')
-                        .setMaxResults(params?.max as Integer)
-                        .setFirstResult(params?.offset as Integer).list()
+    public static List fetchAll(params) {
+        return AcademicHonorView.withSession { session ->
+            session.getNamedQuery('AcademicHonorView.fetchAll')
+                    .setMaxResults(params?.max as Integer)
+                    .setFirstResult(params?.offset as Integer).list()
         }
     }
-
-
 
     /**
      * @param guid
      * @return academicHonor
      */
-    public static AcademicHonorView fetchByGuid( String guid) {
+    public static AcademicHonorView fetchByGuid(String guid) {
         return AcademicHonorView.withSession {
-            session -> session.getNamedQuery( 'AcademicHonorView.fetchByGuid' ).setString( 'guid', guid ).uniqueResult()
+            session -> session.getNamedQuery('AcademicHonorView.fetchByGuid').setString('guid', guid).uniqueResult()
         }
+    }
+
+    public static List<AcademicHonorView> fetchAllByCodeInList(List<String> codes) {
+        List<AcademicHonorView> academicHonorViewList = []
+
+        if (codes) {
+            AcademicHonorView.withSession { session ->
+                academicHonorViewList = session.getNamedQuery("AcademicHonorView.fetchAllByCodeInList").setParameterList('codes', codes).list()
+            }
+        }
+
+        return academicHonorViewList
     }
 
 }

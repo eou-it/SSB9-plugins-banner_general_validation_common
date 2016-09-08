@@ -101,4 +101,8 @@ class GlobalUniqueIdentifierService extends ServiceBase {
         return entities
     }
 
+    List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainIds(String ldmName, List<Long> domainIds){
+        return GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds(ldmName, domainIds)
+    }
+
 }

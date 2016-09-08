@@ -33,49 +33,50 @@ class AcademicHonorServiceIntegrationTests extends BaseIntegrationTestCase {
     /* *
     * Test to check count
     * */
+
     @Test
-    public void testCount(){
+    public void testCount() {
         Sql sql
-        try{
+        try {
             Integer count = academicHonorService.countRecord()
             assertNotNull count
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             def result = sql.firstRow("SELECT COUNT(*) as cnt FROM gvq_acad_honors")
             Long expectCount = result.cnt
             assertNotNull expectCount
-            assertEquals expectCount,count
+            assertEquals expectCount, count
         }
         finally {
             sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
 
     }
-
 
     /* *
     * Test to check count
     * */
+
     @Test
-    public void testCountWithFilter(){
+    public void testCountWithFilter() {
         Sql sql
-        try{
+        try {
             Integer count = academicHonorService.countRecordWithFilter(GeneralValidationCommonConstants.LDM_NAME_INSTITUTIONAL)
             assertNotNull count
             sql = new Sql(sessionFactory.getCurrentSession().connection())
-            def result = sql.firstRow("SELECT COUNT(*) as cnt FROM gvq_acad_honors  WHERE honor_type= '"+GeneralValidationCommonConstants.LDM_NAME_INSTITUTIONAL+"'")
+            def result = sql.firstRow("SELECT COUNT(*) as cnt FROM gvq_acad_honors  WHERE honor_type= '" + GeneralValidationCommonConstants.LDM_NAME_INSTITUTIONAL + "'")
             Long expectCount = result.cnt
             assertNotNull expectCount
-            assertEquals expectCount,count
+            assertEquals expectCount, count
         }
         finally {
             sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
     }
 
-
     /*
     * Tests validate for list
     * */
+
     @Test
     void testFetchList() {
         def params = [max: '10', offset: '0']
@@ -83,28 +84,25 @@ class AcademicHonorServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull academicHonorList
     }
 
-
-
     /*
      * Tests validate for filter
      * */
+
     @Test
     void fetchCrossListByType() {
         def params = academicHonorFilterMap()
-        def academicHonorList= academicHonorService.fetchByType(params.get("type"),params)
+        def academicHonorList = academicHonorService.fetchByType(params.get("type"), params)
         assertNotNull academicHonorList
     }
-
 
     /*
     * create a param map
     * */
 
     private Map academicHonorFilterMap() {
-        def param = [max: '10', offset: '0',type:'award']
+        def param = [max: '10', offset: '0', type: 'award']
         return param
     }
-
 
     /** Tests validate for crosslist sections*/
     @Test
@@ -114,6 +112,11 @@ class AcademicHonorServiceIntegrationTests extends BaseIntegrationTestCase {
         def academicHonorGuid = academicHonorList.get(0).id
         def crossList = academicHonorService.fetchByGuid(academicHonorGuid)
         assertNotNull crossList
+    }
+
+    @Test
+    void testFetchAllByCodeInList() {
+        assertEquals(AcademicHonorView.findAll(), academicHonorService.fetchAllByCodeInList(AcademicHonorView.findAll().code))
     }
 
 }

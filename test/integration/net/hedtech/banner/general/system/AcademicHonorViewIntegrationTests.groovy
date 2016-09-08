@@ -32,32 +32,32 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p> Test to get the count from AcademicHonorView and cumulative count of DepartmentalHonor and InstitutionalHonor</p>
      * */
     @Test
-    public void testCount(){
+    public void testCount() {
         def departmentalHonorCount = DepartmentalHonor.count()
         assertNotNull departmentalHonorCount
         def institutionalHonorCount = InstitutionalHonor.count()
         assertNotNull institutionalHonorCount
-        assertTrue AcademicHonorView.count()==(institutionalHonorCount+departmentalHonorCount)
+        assertTrue AcademicHonorView.count() == (institutionalHonorCount + departmentalHonorCount)
     }
 
     /**
      * <p> Test to get the departmental-honors records from AcademicHonorView </p>
      * */
     @Test
-    public void testFetchDeptHonorsCount(){
+    public void testFetchDeptHonorsCount() {
         def type = 'departmental-honors'
         def params = setParams()
-        List academicHonorViewRecords = AcademicHonorView.fetchByType(type,params)
+        List academicHonorViewRecords = AcademicHonorView.fetchByType(type, params)
         assertNotNull academicHonorViewRecords
         def departmentalHonorsCount = DepartmentalHonor.count()
         assertNotNull departmentalHonorsCount
-        assertEquals academicHonorViewRecords.size(),departmentalHonorsCount
+        assertEquals academicHonorViewRecords.size(), departmentalHonorsCount
         AcademicHonorView academicHonorView = academicHonorViewRecords.get(0)
-        assertEquals academicHonorView.type,type
+        assertEquals academicHonorView.type, type
     }
 
 
-    public def setParams(){
+    public def setParams() {
         def params = [max: '10', offset: '0']
         return params
     }
@@ -65,18 +65,16 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p> Test to get the institutional-honors records from AcademicHonorView </p>
      * */
     @Test
-    public void testFetchInstitutionalHonorsCount(){
+    public void testFetchInstitutionalHonorsCount() {
         def params = setParams()
-        List list = AcademicHonorView.fetchByType(INSTITUTIONAL_HONORS,params)
+        List list = AcademicHonorView.fetchByType(INSTITUTIONAL_HONORS, params)
         assertNotNull list
         def institutionalHonorCount = InstitutionalHonor.count();
         assertNotNull institutionalHonorCount
-        assertEquals institutionalHonorCount,list.size()
+        assertEquals institutionalHonorCount, list.size()
         AcademicHonorView academicHonorView = list.get(0)
-        assertEquals academicHonorView.type,INSTITUTIONAL_HONORS
+        assertEquals academicHonorView.type, INSTITUTIONAL_HONORS
     }
-
-
 
     /**
      * <p> Test to get the record from AcademicHonorView based on Guid</p>
@@ -87,8 +85,8 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull instHonorsGuid
         AcademicHonorView academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid);
         assertNotNull academicHonorView
-        assertEquals INSTITUTIONAL_HONORS,academicHonorView.type
-        assertEquals 'M',academicHonorView.code
+        assertEquals INSTITUTIONAL_HONORS, academicHonorView.type
+        assertEquals 'M', academicHonorView.code
     }
 
     /**
@@ -98,7 +96,7 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
     void testFetchByInvalidGuid() {
         String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
         assertNotNull instHonorsGuid
-        AcademicHonorView academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid.substring(0,10));
+        AcademicHonorView academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid.substring(0, 10));
         assertNull academicHonorView
     }
 
@@ -106,9 +104,9 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p> Test to create a record on AcademicHonorView which will return exception as this is a read-only view</p>
      */
     @Test
-    void testReadOnlyForCreateAcademicHonor(){
+    void testReadOnlyForCreateAcademicHonor() {
         def academicHonorView = new AcademicHonorView()
-        academicHonorView.id='aaaaaaaa'
+        academicHonorView.id = 'aaaaaaaa'
         assertNotNull academicHonorView
         shouldFail(InvalidDataAccessResourceUsageException) {
             academicHonorView.save(flush: true, onError: true)
@@ -119,23 +117,22 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
      * <p>Test to update on AcademicHonorView which will return exception as this is a read-only view</p>
      */
     @Test
-    void testReadOnlyForUpdateAcademicHonor(){
+    void testReadOnlyForUpdateAcademicHonor() {
         String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
         assertNotNull instHonorsGuid
         def academicHonorView = AcademicHonorView.fetchByGuid(instHonorsGuid)
         assertNotNull academicHonorView
-        academicHonorView.title='Dummy Value'
+        academicHonorView.title = 'Dummy Value'
         shouldFail(InvalidDataAccessResourceUsageException) {
             academicHonorView.save(flush: true, onError: true)
         }
     }
 
-
     /**
      * <p>Test to delete on AcademicHonorView which will return exception as this is a read-only view</p>
      */
     @Test
-    void testReadOnlyForDeleteAcademicHonor(){
+    void testReadOnlyForDeleteAcademicHonor() {
         String instHonorsGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(INSTITUTIONAL_HONORS, 'M')?.guid
         assertNotNull instHonorsGuid
         def academicDiscipline = AcademicHonorView.fetchByGuid(instHonorsGuid)
@@ -145,9 +142,24 @@ class AcademicHonorViewIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-    private def newAcademicHonors(){
+    @Test
+    void testFetchAllByCodeInListNullList() {
+        assertEquals([], AcademicHonorView.fetchAllByCodeInList(null))
+    }
+
+    @Test
+    void testFetchAllByCodeInListEmptyList() {
+        assertEquals([], AcademicHonorView.fetchAllByCodeInList([]))
+    }
+
+    @Test
+    void testFetchAllByCodeInList() {
+        assertEquals(AcademicHonorView.findAll(), AcademicHonorView.fetchAllByCodeInList(AcademicHonorView.findAll().code))
+    }
+
+    private def newAcademicHonors() {
         new AcademicHonorView(
-                code: 'SS',title: 'Dummy Description',type: INSTITUTIONAL_HONORS,guid: 'aaaaaaaaaaaaa'
+                code: 'SS', title: 'Dummy Description', type: INSTITUTIONAL_HONORS, guid: 'aaaaaaaaaaaaa'
         )
     }
 

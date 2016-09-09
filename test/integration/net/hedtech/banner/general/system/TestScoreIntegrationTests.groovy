@@ -47,9 +47,9 @@ class TestScoreIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testMaxSizeValidationFailures() {
-        def testScore = new TestScore(code: "TTXXX", description: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        def testScore = new TestScore(code: "TTXXXXX", description: "TTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 numberPositions: 22567,
-                minimumValue: "XXXXXX", maximumValue: "XXXXXX",
+                minimumValue: "XXXXXXXXXXXXXXXX", maximumValue: "XXXXXXXXXXXXXXXX",
                 systemRequiredIndicator: true, managementInformationSystemCode: 'XXXXXXXXXXXXX',
                 assessmentForm: "XX", voiceResponseMessageNumber: 1234567)
 

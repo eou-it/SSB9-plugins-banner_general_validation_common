@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 package net.hedtech.banner.general.system
@@ -7,6 +7,11 @@ package net.hedtech.banner.general.system
 import org.hibernate.annotations.Type
 import javax.persistence.*
 
+@NamedQueries(value = [
+        @NamedQuery(name = "Campus.fetchCampusCodeNotInList",
+                query = """Select code FROM Campus a
+        WHERE a.code not in (:campCodeList)""")
+])
 /**
  * Campus Validation Table
  */
@@ -118,5 +123,13 @@ class Campus implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+    public static List fetchCampusCodesNotInList(List campCodes) {
+
+        def result = Campus.withSession { session ->
+            session.getNamedQuery('Campus.fetchCampusCodeNotInList').setParameterList("campCodeList",campCodes).list()
+        }
+        return result
+    }
 
 }

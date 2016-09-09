@@ -133,7 +133,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllLikeRaceOrDescription() {
-        def races = Race.fetchAllLikeRaceOrDescription("AA")
+        def races = Race.fetchAllLikeRaceOrDescription("A")
         assertNotNull  races
         assertTrue races.size() > 1
     }

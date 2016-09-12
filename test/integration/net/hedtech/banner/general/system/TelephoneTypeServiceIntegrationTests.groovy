@@ -48,7 +48,7 @@ class TelephoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void testFetchUpdateableAddressTypeListMidList() {
+    void testFetchUpdateableTelephoneTypeListMidList() {
         def telephoneTypeList = telephoneTypeService.fetchUpdateableTelephoneTypeList(10, 10)
 
         assertEquals 10, telephoneTypeList.size()
@@ -56,7 +56,7 @@ class TelephoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void testFetchUpdateableAddressTypeListEndOfList() {
+    void testFetchUpdateableTelephoneTypeListEndOfList() {
         def telephoneTypeList = telephoneTypeService.fetchUpdateableTelephoneTypeList(10, 40)
 
         assertEquals 8, telephoneTypeList.size()
@@ -64,7 +64,7 @@ class TelephoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void testFetchUpdateableAddressTypesListUsingPartialSearchTerm() {
+    void testFetchUpdateableTelephoneTypesListUsingPartialSearchTerm() {
         def telephoneTypeList = telephoneTypeService.fetchUpdateableTelephoneTypeList(10, 0, 'adm')
 
         assertEquals 1, telephoneTypeList.size()

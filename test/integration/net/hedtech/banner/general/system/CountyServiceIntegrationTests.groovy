@@ -28,7 +28,7 @@ class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
     void testListCountys() {
         def countyList = County.list()
 
-        assertEquals 275, countyList.size()
+        assertTrue 200 < countyList.size()
     }
 
     @Test

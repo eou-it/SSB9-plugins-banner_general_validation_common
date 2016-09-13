@@ -107,6 +107,8 @@ class DepartmentServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllWithGuidByCodeInListWithPagination() {
+        params.sort = 'id'
+        params.order = 'asc'
         List<Department> departments = departmentService.list(params)
         assertNotNull departments
         assertFalse departments.isEmpty()

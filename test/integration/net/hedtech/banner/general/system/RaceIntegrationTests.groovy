@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -133,7 +133,7 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllLikeRaceOrDescription() {
-        def races = Race.fetchAllLikeRaceOrDescription("AA")
+        def races = Race.fetchAllLikeRaceOrDescription("A")
         assertNotNull  races
         assertTrue races.size() > 1
     }

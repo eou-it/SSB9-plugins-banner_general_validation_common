@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -43,7 +43,7 @@ class AcademicLevelCompositeServiceIntegrationTests extends BaseIntegrationTestC
 
 
     private void initiializeDataReferences() {
-        i_success_level = Level.findByCode('LW')
+        i_success_level = Level.findByCode('CS')
         i_success_content = [code: 'SV',description:'Test Title', metadata: [dataOrigin: 'Banner']]
     }
 

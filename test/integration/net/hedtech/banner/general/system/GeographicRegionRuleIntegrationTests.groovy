@@ -35,8 +35,8 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void initializeTestDataForReferences() {
-        insertContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUMRC1', regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
-        updateContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUMRC1', regionType: 'u_test', startTypeRange: '21', endTypeRange: '57']
+        insertContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUM', regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
+        updateContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUM', regionType: 'u_test', startTypeRange: '21', endTypeRange: '57']
     }
 
     @Test

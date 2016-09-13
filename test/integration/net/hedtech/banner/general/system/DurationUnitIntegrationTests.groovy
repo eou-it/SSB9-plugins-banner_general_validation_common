@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -154,7 +154,7 @@ class DurationUnitIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchByCodeOrDescriptionILike() {
 
-        def filter = "HALF"
+        def filter = "WEEK"
         def results = DurationUnit.fetchByCodeOrDescriptionILike(formatWildCard(filter))
         assertEquals 1, results.size()
 

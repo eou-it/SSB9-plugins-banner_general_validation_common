@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -28,7 +28,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
 
     private void initiializeDataReferences() {
-        subjectResource = Subject.findByCode('OPEN')
+        subjectResource = Subject.findByCode('0202')
         i_success_content = [code: 'S1', description: 'Subject 1', metadata: [dataOrigin: 'Banner']]
     }
 
@@ -37,7 +37,7 @@ class SubjectCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testListWithPagination() {
-        def paginationParams = [max: '20', offset: '0']
+        def paginationParams = [max: '20', offset: '0', sort: 'abbreviation', order:'asc']
         List subjectList = subjectCompositeService.list(paginationParams)
         assertNotNull subjectList
         assertFalse subjectList.isEmpty()

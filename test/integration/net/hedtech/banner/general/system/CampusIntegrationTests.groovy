@@ -1,13 +1,13 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.After
-
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import groovy.sql.Sql
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 /**
@@ -124,6 +124,67 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
                 description: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
         assertFalse "Campus should have failed validation", campus.validate()
         assertErrorsFor campus, 'maxSize', ['description']
+    }
+
+    @Test
+    void testFetchCampusCodeNotInListWithNoCampusCode() {
+        List campusList = []
+        try {
+            //If campusList is empty the in statement will be incomplete and an exception will should occur.
+            List campusReturnList = Campus.fetchCampusCodesNotInList(campusList)
+            fail "Fetch should fail as the query is incomplete"
+        } catch(Exception e) {
+            //Hibernate Query exception should occur.
+        }
+    }
+
+    @Test
+    void testFetchCampusCodeNotInListWithWrongCampusCode() {
+        List campusList = ['DOES_NOT_EXIST']
+        /*
+            If campus code is invalid then all the campus codes will be returned as the in statement returns
+            all excluding the ones passed.
+        */
+
+        List campusReturnList = Campus.fetchCampusCodesNotInList(campusList)
+
+        List campusDomains = Campus.findAll()
+
+        assertNotNull campusReturnList
+        assertNotNull campusDomains
+        assertTrue campusDomains.size() == campusReturnList.size()
+    }
+
+    @Test
+    void testFetchCampusCodeNotInListWithSingleCampusCode() {
+        List campusList = ['M']
+
+        assertNotNull Campus.findByCode('M')
+        List campusReturnList = Campus.fetchCampusCodesNotInList(campusList)
+
+        List campusDomains = Campus.findAll()
+
+        assertNotNull campusReturnList
+        assertNotNull campusDomains
+        assertTrue campusDomains.size() == (campusReturnList.size() + campusList.size())
+
+        assertNull campusReturnList.find { it == "M" }
+    }
+
+    @Test
+    void testFetchCampusCodeNotInListWithMultipleCampusCode() {
+        List campusList = ['M', 'A', 'C']
+        List campusReturnList = Campus.fetchCampusCodesNotInList(campusList)
+
+        List campusDomains = Campus.findAll()
+
+        assertNotNull campusReturnList
+        assertNotNull campusDomains
+        assertTrue campusDomains.size() == (campusReturnList.size() + campusList.size())
+
+        assertNull campusReturnList.find { it == "M" }
+        assertNull campusReturnList.find { it == "A" }
+        assertNull campusReturnList.find { it == "C" }
     }
 
 

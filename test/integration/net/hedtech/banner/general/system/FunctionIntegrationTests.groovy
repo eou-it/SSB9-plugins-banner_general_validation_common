@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -46,13 +46,13 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 0L, function.version
         assertEquals "TTTTT", function.code
         assertEquals "TTTTT", function.description
-        assertEquals "TTTT", function.etypCode
+        assertEquals "EBRK", function.etypCode
 
         //Update the entity
         def testDate = new Date()
         function.code = "UUUUU"
         function.description = "UUUUU"
-        function.etypCode = "UUUU"
+        function.etypCode = "EKEY"
         function.lastModified = testDate
         function.lastModifiedBy = "test"
         function.dataOrigin = "Banner"
@@ -62,7 +62,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 1L, function?.version
         assertEquals "UUUUU", function.code
         assertEquals "UUUUU", function.description
-        assertEquals "UUUU", function.etypCode
+        assertEquals "EKEY", function.etypCode
     }
 
 
@@ -128,7 +128,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
 
 
     private def newFunction() {
-        new Function(code: "TTTTT", description: "TTTTT", etypCode: "TTTT", lastModified: new Date(),
+        new Function(code: "TTTTT", description: "TTTTT", etypCode: "EBRK", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
     }
 

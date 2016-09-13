@@ -313,6 +313,13 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
 
 
     @Test
+    void testFetchCurrentCurrencyConversion() {
+        def currencyConversion = CurrencyConversion.fetchCurrentCurrencyConversion("USD")
+        assertNotNull(currencyConversion)
+    }
+
+
+    @Test
     void testMaxSizeValidationFailures() {
         def currencyConversion = new CurrencyConversion(
                 currencyConversion: 'XXXXX',

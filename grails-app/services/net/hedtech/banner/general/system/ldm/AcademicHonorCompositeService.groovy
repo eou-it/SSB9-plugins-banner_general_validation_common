@@ -81,4 +81,13 @@ class AcademicHonorCompositeService extends LdmService {
         new AcademicHonor(academicHonorView)
     }
 
+
+    List<AcademicHonor> fetchAllByCodeInList(List<String> codes) {
+        List<AcademicHonorView> academicHonorViewList = academicHonorService.fetchAllByCodeInList(codes)
+        List<AcademicHonor> academicHonorList = []
+        academicHonorViewList.each {
+            academicHonorList.add(new AcademicHonor(it))
+        }
+        return academicHonorList
+    }
 }

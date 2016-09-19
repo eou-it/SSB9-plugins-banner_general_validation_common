@@ -285,7 +285,6 @@ class LdmService {
             if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
                 // Assume latest (current) version
                 representationVersion = sortedApiVersions.last()
-                setRequestAttributeOverwriteMediaType(representationVersion)
             } else {
                 int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
                 if (index != -1) {
@@ -293,6 +292,7 @@ class LdmService {
                 }
             }
         }
+        setRequestAttributeOverwriteMediaType(representationVersion)
         return representationVersion
     }
 

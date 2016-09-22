@@ -29,39 +29,13 @@ class TelephoneTypeService extends ServiceBase {
      * @return List of TelephoneType objects
      */
     def fetchUpdateableTelephoneTypeList(int max = 10, int offset = 0, String searchString = '') {
-        def telephoneTypeList = super.list(sort: "description", order: "asc")
-        def results
-
-
-        if(telephoneTypeList.size() == 0) {
-            throw new ApplicationException(TelephoneTypeService, "@@r1:noTelephoneTypesAvailable@@")
-        }
-
-        telephoneTypeList = telephoneTypeList.sort {
-            it.description
-        }
-
-        if(searchString.size() > 0) {
-            results = telephoneTypeList.findAll {
-                it.description.find(/(?i)$searchString/)
+        def criteria = TelephoneType.createCriteria()
+        def telephoneTypeList = criteria.list(max: max, offset: offset, sort: 'description', order: 'asc') {
+            and {
+                ilike("description", "%${searchString}%")
             }
         }
-        else {
-            results = telephoneTypeList
-        }
 
-        if(offset >= results.size()) {
-            results = []
-        }
-        else {
-            results = results.subList(offset, results.size())
-        }
-
-        if(max >= results.size()) {
-            return results
-        }
-        else {
-            return results.subList(0, max)
-        }
+        telephoneTypeList
     }
 }

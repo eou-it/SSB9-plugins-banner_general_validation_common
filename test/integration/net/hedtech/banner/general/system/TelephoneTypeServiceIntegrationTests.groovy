@@ -43,8 +43,8 @@ class TelephoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         def telephoneTypeList = telephoneTypeService.fetchUpdateableTelephoneTypeList(20)
 
         assertEquals 20, telephoneTypeList.size()
-        assertEquals 'Administrative', telephoneTypeList[1].description
-        assertEquals 'Loc Mgt Phn Type', telephoneTypeList[19].description
+        assertEquals 'AMCAS Phone type', telephoneTypeList[1].description
+        assertEquals 'Home', telephoneTypeList[19].description
     }
 
     @Test
@@ -60,7 +60,7 @@ class TelephoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         def telephoneTypeList = telephoneTypeService.fetchUpdateableTelephoneTypeList(10, 40)
 
         assertEquals 8, telephoneTypeList.size()
-        assertEquals 'Term', telephoneTypeList[0].description
+        assertEquals 'Temporary', telephoneTypeList[0].description
     }
 
     @Test

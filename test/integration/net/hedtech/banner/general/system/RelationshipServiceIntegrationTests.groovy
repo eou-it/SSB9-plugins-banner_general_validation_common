@@ -38,37 +38,36 @@ class RelationshipServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 'Spouse', relationship.description
     }
 
-    // TODO: implement as part of BXEGS-86 "Fetch relationship types for select list"
-//    @Test
-//    void testFetchUpdateableTelephoneTypeListTwenty() {
-//        def telephoneTypeList = relationshipService.fetchUpdateableTelephoneTypeList(20)
-//
-//        assertEquals 20, telephoneTypeList.size()
-//        assertEquals 'Administrative', telephoneTypeList[1].description
-//        assertEquals 'Loc Mgt Phn Type', telephoneTypeList[19].description
-//    }
-//
-//    @Test
-//    void testFetchUpdateableTelephoneTypeListMidList() {
-//        def telephoneTypeList = relationshipService.fetchUpdateableTelephoneTypeList(10, 10)
-//
-//        assertEquals 10, telephoneTypeList.size()
-//        assertEquals 'Dorm', telephoneTypeList[0].description
-//    }
-//
-//    @Test
-//    void testFetchUpdateableTelephoneTypeListEndOfList() {
-//        def telephoneTypeList = relationshipService.fetchUpdateableTelephoneTypeList(10, 40)
-//
-//        assertEquals 8, telephoneTypeList.size()
-//        assertEquals 'Term', telephoneTypeList[0].description
-//    }
-//
-//    @Test
-//    void testFetchUpdateableTelephoneTypesListUsingPartialSearchTerm() {
-//        def telephoneTypeList = relationshipService.fetchUpdateableTelephoneTypeList(10, 0, 'adm')
-//
-//        assertEquals 1, telephoneTypeList.size()
-//        assertEquals 'Administrative', telephoneTypeList[0].description
-//    }
+    @Test
+    void testFetchRelationshipListFive() {
+        def relationshipList = relationshipService.fetchRelationshipList(5)
+
+        assertEquals 5, relationshipList.size()
+        assertEquals 'Brother', relationshipList[1].description
+        assertEquals 'Father', relationshipList[4].description
+    }
+
+    @Test
+    void testFetchRelationshipListMidList() {
+        def relationshipList = relationshipService.fetchRelationshipList(5, 5)
+
+        assertEquals 5, relationshipList.size()
+        assertEquals 'Ferpa Clearance', relationshipList[0].description
+    }
+
+    @Test
+    void testFetchRelationshipListEndOfList() {
+        def relationshipList = relationshipService.fetchRelationshipList(10, 10)
+
+        assertEquals 6, relationshipList.size()
+        assertEquals 'Mother', relationshipList[0].description
+    }
+
+    @Test
+    void testFetchRelationshipListUsingPartialSearchTerm() {
+        def relationshipList = relationshipService.fetchRelationshipList(10, 0, 'fath')
+
+        assertEquals 1, relationshipList.size()
+        assertEquals 'Father', relationshipList[0].description
+    }
 }

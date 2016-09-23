@@ -14,7 +14,8 @@ import javax.persistence.*
             WHERE a.bank = :bankCode
             AND a.effectiveDate <= :effectiveDate
             AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
-            AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate) """)
+            AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate)
+            AND a.statusIndicator ='A' """)
 ])
 @Entity
 @Table(name = "GXVBANK")

@@ -84,4 +84,13 @@ class IntegrationConfigurationService extends ServiceBase {
         return isoCountryCode
     }
 
+
+    public List<IntegrationConfiguration> getAcademicLoadEnum() {
+        List<IntegrationConfiguration> intConfigList = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, GeneralValidationCommonConstants.STUDENT_ACADEMICLOAD_CODE)
+        if (!intConfigList) {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.not.found.message", [GeneralValidationCommonConstants.STUDENT_ACADEMICLOAD_CODE]))
+        }
+        return intConfigList
+    }
+
 }

@@ -211,6 +211,8 @@ class GeneralValidationCommonConstants {
 
     static final String INSTRUCTIONAL_METHOD_LDM_NAME = 'instructional-methods'
 
+    public static final String STUDENT_ACADEMICLOAD_CODE = "STUDENT.ACADEMICLOAD.CODE"
+
 }
 
 

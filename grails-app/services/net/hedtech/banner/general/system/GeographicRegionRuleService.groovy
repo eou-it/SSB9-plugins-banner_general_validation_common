@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.service.ServiceBase
 
 /**
@@ -39,4 +41,22 @@ class GeographicRegionRuleService extends ServiceBase {
         return GeographicRegionRule.fetchByGuid(guid)
     }
 
+    def fetchAllByGuidInList(Collection<String> guids){
+        List rows = []
+        if (guids) {
+          List entities = GeographicRegionRule.withSession { session ->
+                session.getNamedQuery('GeographicRegionRule.fetchAllByGuidInList')
+                        .setParameterList('guids', guids)
+                        .setString('gAreaLdmName', GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME)
+                        .list()
+            }
+
+            entities.each{
+                GeographicRegionRule geographicRegionRule = it[0]
+                GlobalUniqueIdentifier globalUniqueIdentifier = it[1]
+                rows << [geographicRegionRule: geographicRegionRule, globalUniqueIdentifier: globalUniqueIdentifier]
+            }
+        }
+        return rows
+    }
 }

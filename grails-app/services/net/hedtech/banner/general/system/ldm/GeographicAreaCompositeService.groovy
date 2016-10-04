@@ -6,7 +6,9 @@ package net.hedtech.banner.general.system.ldm
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
+import net.hedtech.banner.general.system.GeographicRegionRule
 import net.hedtech.banner.general.system.ldm.v4.GeographicArea
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
@@ -62,6 +64,19 @@ class GeographicAreaCompositeService extends LdmService {
          throw new ApplicationException(GeographicAreaCompositeService.class, new NotFoundException())
      }
 
+    }
+
+    def getGeographicAreaGuidToGeographicAreaRuleMap(Collection geographicAreaGuids){
+        Map guidToGeographicAreaRuleMap = [:]
+        if(geographicAreaGuids) {
+            List rows = geographicRegionRuleService.fetchAllByGuidInList(geographicAreaGuids)
+            rows.each {
+                GeographicRegionRule geographicRegionRule = it.geographicRegionRule
+                GlobalUniqueIdentifier globalUniqueIdentifier = it.globalUniqueIdentifier
+                guidToGeographicAreaRuleMap.put(globalUniqueIdentifier.guid, geographicRegionRule)
+            }
+        }
+        return guidToGeographicAreaRuleMap
     }
 }
 

@@ -12,6 +12,9 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.JoinColumns
+import javax.persistence.ManyToOne
 import javax.persistence.NamedQueries
 import javax.persistence.NamedQuery
 import javax.persistence.SequenceGenerator
@@ -35,19 +38,24 @@ import javax.persistence.Version
                    query = """SELECT distinct CONCAT(s2.code,'-',s1.code) AS gaCODE,CONCAT(s2.description,'-',s1.description) AS TITLE, g.guid AS GAGUID,
                              (SELECT g1.guid from GlobalUniqueIdentifier g1 where g1.ldmName= :gDivisonLdmName AND s1.code = g1.domainKey) AS GDGUID,
                              (SELECT g2.guid from GlobalUniqueIdentifier g2 where g2.ldmName= :gRegionLdmName AND s2.code = g2.domainKey) AS GRGUID FROM GeographicRegionRule s ,GeographicDivision s1,GeographicRegion s2,GlobalUniqueIdentifier g
-                              where s.divisionCode = s1.code and s.regionCode = s2.code and g.ldmName = :gAreaLdmName and g.domainKey = concat(s.regionCode, '-^' , s.divisionCode) order by gaCODE
+                              where s.division.code = s1.code and s.region.code = s2.code and g.ldmName = :gAreaLdmName and g.domainKey = concat(s.region.code, '-^' , s.division.code) order by gaCODE
                                """),
         @NamedQuery(name = "GeographicRegionRule.countAllGeographicRegionArea",
                 query = """select  COUNT(s) FROM GeographicRegionRule s
-                           where EXISTS(select s1.regionCode,s1.divisionCode from GeographicRegionRule s1 group by s1.regionCode,s1.divisionCode  having min(s1.id) = s.id)
+                           where EXISTS(select s1.region.code,s1.division.code from GeographicRegionRule s1 group by s1.region.code,s1.division.code  having min(s1.id) = s.id)
                         """),
         @NamedQuery(name = "GeographicRegionRule.fetchByGeographicRegionAreaGuid",
                 query = """SELECT distinct CONCAT(s2.code,'-',s1.code) AS CODE,CONCAT(s2.description,'-',s1.description) AS TITLE, g.guid AS GAGUID,
                              (SELECT g1.guid from GlobalUniqueIdentifier g1 where g1.ldmName= :gDivisonLdmName AND s1.code = g1.domainKey) AS GDGUID,
                              (SELECT g2.guid from GlobalUniqueIdentifier g2 where g2.ldmName= :gRegionLdmName AND s2.code = g2.domainKey) AS GRGUID FROM GeographicRegionRule s ,GeographicDivision s1,GeographicRegion s2,GlobalUniqueIdentifier g
-                              where s.divisionCode = s1.code and s.regionCode = s2.code and g.ldmName = :gAreaLdmName and g.domainKey = concat(s.regionCode, '-^' , s.divisionCode)
+                              where s.division.code = s1.code and s.region.code = s2.code and g.ldmName = :gAreaLdmName and g.domainKey = concat(s.region.code, '-^' , s.division.code)
                               and g.guid = :guid
-                               """)
+                               """),
+        @NamedQuery(name = "GeographicRegionRule.fetchAllByGuidInList",
+                query = """FROM GeographicRegionRule s,GlobalUniqueIdentifier g
+                           where EXISTS(select s1.region.code,s1.division.code from GeographicRegionRule s1 group by s1.region.code,s1.division.code  having min(s1.id) = s.id)
+                           and g.ldmName = :gAreaLdmName and g.domainKey = concat(s.region.code, '-^' , s.division.code) and g.guid in :guids
+                         """)
 ])
 class GeographicRegionRule implements Serializable{
 
@@ -68,16 +76,22 @@ class GeographicRegionRule implements Serializable{
     Long version
 
     /**
-     * The geographic region code.
+     * Foreign Key : FK1_SORGEOR_INV_STVGEOR_CODE
      */
-    @Column(name = "SORGEOR_GEOR_CODE")
-    String regionCode
+    @ManyToOne
+    @JoinColumns([
+            @JoinColumn(name = "SORGEOR_GEOR_CODE", referencedColumnName = "STVGEOR_CODE")
+    ])
+    GeographicRegion region
 
     /**
-     * The geographic region division for the region code.
+     * Foreign Key : FK1_SORGEOR_INV_STVGEOD_CODE
      */
-    @Column(name = "SORGEOR_GEOD_CODE")
-    String divisionCode
+    @ManyToOne
+    @JoinColumns([
+            @JoinColumn(name = "SORGEOR_GEOD_CODE", referencedColumnName = "STVGEOD_CODE")
+    ])
+    GeographicDivision division
 
     /**
      * The geographic region type corresponding to the ranges specified.
@@ -122,8 +136,8 @@ class GeographicRegionRule implements Serializable{
      * Constraints
      */
     static constraints = {
-        regionCode(nullable: false, maxSize: 10)
-        divisionCode(nullable: false, maxSize: 10)
+        region(nullable: false, maxSize: 10)
+        division(nullable: false, maxSize: 10)
         regionType(nullable : false,maxSize:10)
         startTypeRange(nullable: false,maxSize: 20)
         endTypeRange(nullable: false,maxSize: 20)
@@ -165,5 +179,5 @@ class GeographicRegionRule implements Serializable{
     /**
      * Protect the field against the updates
      */
-   // public static readonlyProperties = ['regionCode','divisionCode']
+   // public static readonlyProperties = ['region','division']
 }

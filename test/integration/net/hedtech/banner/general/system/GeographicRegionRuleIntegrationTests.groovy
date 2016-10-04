@@ -35,8 +35,8 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void initializeTestDataForReferences() {
-        insertContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUM', regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
-        updateContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUM', regionType: 'u_test', startTypeRange: '21', endTypeRange: '57']
+        insertContent = [region:  GeographicRegion.findByCode('BALT/WASH'), division: GeographicDivision.findByCode('ALUM'), regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
+        updateContent = [region: GeographicRegion.findByCode('BALT/WASH'),  division: GeographicDivision.findByCode('ALUM'), regionType: 'u_test', startTypeRange: '21', endTypeRange: '57']
     }
 
     @Test
@@ -50,8 +50,8 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull geographicRegionRule.lastModified
         assertNotNull geographicRegionRule.lastModifiedBy
         assertNotNull geographicRegionRule.dataOrigin
-        assertEquals geographicRegionRule.regionCode, insertContent.regionCode
-        assertEquals geographicRegionRule.divisionCode, insertContent.divisionCode
+        assertEquals geographicRegionRule.region, insertContent.region
+        assertEquals geographicRegionRule.division, insertContent.division
         assertEquals geographicRegionRule.regionType, insertContent.regionType
         assertEquals geographicRegionRule.startTypeRange, insertContent.startTypeRange
         assertEquals geographicRegionRule.endTypeRange, insertContent.endTypeRange
@@ -68,20 +68,20 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 0L, geographicRegionRule.version
         assertNotNull geographicRegionRule.lastModified
         assertNotNull geographicRegionRule.lastModifiedBy
-        assertEquals geographicRegionRule.regionCode, insertContent.regionCode
-        assertEquals geographicRegionRule.divisionCode, insertContent.divisionCode
+        assertEquals geographicRegionRule.region, insertContent.region
+        assertEquals geographicRegionRule.division, insertContent.division
         assertEquals geographicRegionRule.regionType, insertContent.regionType
         assertEquals geographicRegionRule.startTypeRange, insertContent.startTypeRange
         assertEquals geographicRegionRule.endTypeRange, insertContent.endTypeRange
-        geographicRegionRule.regionCode = updateContent.regionCode
-        geographicRegionRule.divisionCode = updateContent.divisionCode
+        geographicRegionRule.region = updateContent.region
+        geographicRegionRule.division = updateContent.division
         geographicRegionRule.regionType = updateContent.regionType
         geographicRegionRule.startTypeRange = updateContent.startTypeRange
         geographicRegionRule.endTypeRange = updateContent.endTypeRange
         geographicRegionRule = save geographicRegionRule
         assertEquals 1L, geographicRegionRule.version
-        assertEquals geographicRegionRule.regionCode, updateContent.regionCode
-        assertEquals geographicRegionRule.divisionCode, updateContent.divisionCode
+        assertEquals geographicRegionRule.region, updateContent.region
+        assertEquals geographicRegionRule.division, updateContent.division
         assertEquals geographicRegionRule.regionType, updateContent.regionType
         assertEquals geographicRegionRule.startTypeRange, updateContent.startTypeRange
         assertEquals geographicRegionRule.endTypeRange, updateContent.endTypeRange
@@ -101,7 +101,7 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
     void testNullValidationFailure() {
         def geographicRegionRule = new GeographicRegionRule()
         assertFalse "GeographicRegionRule should have failed validation", geographicRegionRule.validate()
-        assertErrorsFor(geographicRegionRule, 'nullable', ['regionCode', 'divisionCode', 'regionType', 'startTypeRange', 'endTypeRange'])
+        assertErrorsFor(geographicRegionRule, 'nullable', ['region', 'division', 'regionType', 'startTypeRange', 'endTypeRange'])
         assertNoErrorsFor(geographicRegionRule, ['dataOrigin'])
     }
 
@@ -153,14 +153,14 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
     void testFindByGuid() {
         GeographicRegionRule geographicRegionRule = save newGeographicRegionRule(insertContent)
         assertNotNull geographicRegionRule
-        def guid = GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicRegionRule.regionCode + '-^' + geographicRegionRule.divisionCode, GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME).guid
+        def guid = GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicRegionRule.region.code + '-^' + geographicRegionRule.division.code, GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME).guid
         assertNotNull guid
         def geographicArea = GeographicRegionRule.fetchByGuid(guid)
-        assertEquals geographicArea.getAt(0), geographicRegionRule.regionCode + '-' + geographicRegionRule.divisionCode
-        GeographicRegion geographicRegion = GeographicRegion.findByCode(geographicRegionRule.regionCode)
+        assertEquals geographicArea.getAt(0), geographicRegionRule.region.code + '-' + geographicRegionRule.division.code
+        GeographicRegion geographicRegion = GeographicRegion.findByCode(geographicRegionRule.region.code)
         assertNotNull geographicRegion
        assertEquals geographicArea.getAt(4),GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicRegion.code,GeneralValidationCommonConstants.GEOGRAPHIC_REGION_LDM_NAME).guid
-        GeographicDivision geographicDivision = GeographicDivision.findByCode(geographicRegionRule.divisionCode)
+        GeographicDivision geographicDivision = GeographicDivision.findByCode(geographicRegionRule.division.code)
         assertNotNull geographicDivision
         assertEquals geographicArea.getAt(3),GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicDivision.code,GeneralValidationCommonConstants.GEOGRAPHIC_DIVISION_LDM_NAME).guid
         assertEquals geographicArea.getAt(1),geographicRegion.description+ '-' +geographicDivision.description

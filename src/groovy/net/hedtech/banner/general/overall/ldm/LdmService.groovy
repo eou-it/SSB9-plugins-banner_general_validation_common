@@ -282,9 +282,10 @@ class LdmService {
         List<String> sortedApiVersions = apiVersions?.sort(false)
         String representationVersion = getResponseRepresentationVersion()
         if (sortedApiVersions) {
-            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+            if (representationVersion == null) {
                 // Assume latest (current) version
                 representationVersion = sortedApiVersions.last()
+                setRequestAttributeOverwriteMediaType(representationVersion)
             } else {
                 int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
                 if (index != -1) {
@@ -292,7 +293,6 @@ class LdmService {
                 }
             }
         }
-        setRequestAttributeOverwriteMediaType(representationVersion)
         return representationVersion
     }
 
@@ -340,7 +340,7 @@ class LdmService {
         List<String> sortedApiVersions = apiVersions?.sort(false)
         String representationVersion = getRequestRepresentationVersion()
         if (sortedApiVersions) {
-            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+            if (representationVersion == null) {
                 // Assume latest (current) version
                 representationVersion = sortedApiVersions.last()
             } else {
@@ -368,7 +368,9 @@ class LdmService {
 
     private static void setRequestAttributeOverwriteMediaType(String version) {
         HttpServletRequest request = getHttpServletRequest()
-        request.setAttribute("overwriteMediaTypeHeader", "application/vnd.hedtech.integration.${version}+json")
+        if (request.getAttribute("overwriteMediaTypeHeader") == null) {
+            request.setAttribute("overwriteMediaTypeHeader", "application/vnd.hedtech.integration.${version}+json")
+        }
     }
 
 

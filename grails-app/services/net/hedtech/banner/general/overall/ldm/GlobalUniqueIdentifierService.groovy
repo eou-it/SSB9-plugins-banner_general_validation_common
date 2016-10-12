@@ -73,6 +73,7 @@ class GlobalUniqueIdentifierService extends ServiceBase {
 
     }
 
+
     public List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyLike(ldmName, domainKey) {
         log.trace("fetchAllByLdmNameAndDomainKeyLike Begin with ldmName = ${ldmName} and domainKey = ${domainKey}")
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList
@@ -81,27 +82,47 @@ class GlobalUniqueIdentifierService extends ServiceBase {
         return globalUniqueIdentifierList
     }
 
+
     public List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyInList(String ldmName, List<String> domainKeys) {
         return GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyInList(ldmName, domainKeys)
     }
+
 
     public List<GlobalUniqueIdentifier> fetchAllByGuidInList(List<String> guidList) {
         return GlobalUniqueIdentifier.fetchAllByGuidInList(guidList)
     }
 
-    List<GlobalUniqueIdentifier> fetchAllByLdmName(String ldmName) {
-        List<GlobalUniqueIdentifier> entities
+
+    def fetchAllByLdmName(String ldmName, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
+        def entities = []
         if (ldmName) {
             GlobalUniqueIdentifier.withSession { session ->
                 def query = session.getNamedQuery('GlobalUniqueIdentifier.fetchByLdmName')
+                String hql = query.getQueryString()
+                if (sortField) {
+                    hql += " order by $sortField"
+                    if (sortOrder) {
+                        hql += " $sortOrder"
+                    }
+                } else {
+                    hql += " order by id"
+                }
+                query = session.createQuery(hql)
                 query.setString('ldmName', ldmName)
+                if (max > 0) {
+                    query.setMaxResults(max)
+                }
+                if (offset > -1) {
+                    query.setFirstResult(offset)
+                }
                 entities = query.list()
             }
         }
         return entities
     }
 
-    List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainIds(String ldmName, List<Long> domainIds){
+
+    List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainIds(String ldmName, List<Long> domainIds) {
         return GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds(ldmName, domainIds)
     }
 

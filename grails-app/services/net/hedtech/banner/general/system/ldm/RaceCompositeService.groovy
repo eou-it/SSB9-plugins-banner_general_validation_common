@@ -286,6 +286,8 @@ class RaceCompositeService extends LdmService {
                     bannerRaceCodHedmRacialCategoryMap.put(it.value, hedmRacialCategory.versionToEnumMap[version])
                 }
             }
+        } else {
+            throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerRaceCodHedmRacialCategoryMap
     }

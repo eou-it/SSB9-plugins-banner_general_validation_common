@@ -121,11 +121,6 @@ class PersonNameTypeCompositeService extends LdmService {
                 NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(it.translationValue, version)
                 if (entities.code.contains(it.value) && nameTypeCategory) {
                     bannerNameTypeToHedmNameTypeMap.put(it.value, nameTypeCategory.versionToEnumMap[version])
-                } else {
-                    NameTypeCategory nameTypeCategoryInOtherVersion = NameTypeCategory.getByString(it.translationValue)
-                    if ((nameTypeCategory == null && nameTypeCategoryInOtherVersion == null) || (nameTypeCategory != null && !entities.code.contains(it.value))) {
-                        throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
-                    }
                 }
             }
         } else {

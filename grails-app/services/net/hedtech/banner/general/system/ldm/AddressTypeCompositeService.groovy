@@ -191,8 +191,6 @@ class AddressTypeCompositeService extends LdmService {
                 HedmAddressType hedmAddressType = HedmAddressType.getByString(it.translationValue, version)
                 if (addressTypeList.code.contains(it.value) && hedmAddressType) {
                     bannerAddressTypeToHedmAddressTypeMap.put(it.value, hedmAddressType.versionToEnumMap[version])
-                } else {
-                    throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                 }
             }
         } else {

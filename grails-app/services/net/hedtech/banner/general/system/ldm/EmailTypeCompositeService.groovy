@@ -178,8 +178,6 @@ class EmailTypeCompositeService extends LdmService {
                 HedmEmailType hedmEmailType = HedmEmailType.getByString(it.translationValue, version)
                 if (entities.code.contains(it.value) && hedmEmailType) {
                     bannerEmailTypeToHedmEmailTypeMap.put(it.value, hedmEmailType.versionToEnumMap[version])
-                } else {
-                    throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                 }
             }
         } else {

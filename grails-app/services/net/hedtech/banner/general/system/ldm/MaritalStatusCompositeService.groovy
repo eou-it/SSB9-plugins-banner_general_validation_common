@@ -44,9 +44,15 @@ class MaritalStatusCompositeService extends LdmService {
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
         if (GeneralValidationCommonConstants.VERSION_V4.equals(version)) {
-            maritalStatusService.fetchMartialStatusDetails(params).each { maritalStatus ->
-                maritalStatusDetailList << getDecorator(maritalStatus[0], maritalStatus[1]?.translationValue)
+           List rows = maritalStatusService.fetchMartialStatusDetails(params)
+            if(rows){
+                rows.each { maritalStatus ->
+                    maritalStatusDetailList << getDecorator(maritalStatus[0], maritalStatus[1]?.translationValue)
+                }
+            }else {
+                throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY]))
             }
+
         } else if (GeneralValidationCommonConstants.VERSION_V1.equals(version)) {
             maritalStatusService.list(params).each { maritalStatus ->
                 maritalStatusDetailList << getDecorator(maritalStatus, null)

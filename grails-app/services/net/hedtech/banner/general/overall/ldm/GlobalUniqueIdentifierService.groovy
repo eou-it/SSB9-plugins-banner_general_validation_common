@@ -101,11 +101,11 @@ class GlobalUniqueIdentifierService extends ServiceBase {
                 String hql = query.getQueryString()
                 if (sortField) {
                     hql += " order by $sortField"
-                    if (sortOrder) {
-                        hql += " $sortOrder"
-                    }
                 } else {
                     hql += " order by id"
+                }
+                if (sortOrder) {
+                    hql += " $sortOrder"
                 }
                 query = session.createQuery(hql)
                 query.setString('ldmName', ldmName)

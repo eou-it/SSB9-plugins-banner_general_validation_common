@@ -87,12 +87,30 @@ class PersonNameTypeCompositeService extends LdmService {
 
 
     def getBannerNameTypeToHedmV3NameTypeMap() {
-        return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V3)
+        def map = getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V3)
+
+        // Remove "legal"
+        def entryToRemove = map.find {
+            it.value == NameTypeCategory.LEGAL.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
+        }
+        map.remove(entryToRemove)
+
+        return map
     }
 
 
     def getBannerNameTypeToHedmV6NameTypeMap() {
-        return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V6)
+        def map = getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V6)
+
+        // Replace value "Birth" with "birth"
+        def entry = map.find {
+            it.value == NameTypeCategory.BIRTH.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
+        }
+        if (entry) {
+            map.put(entry.key, NameTypeCategory.BIRTH.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6])
+        }
+
+        return map
     }
 
 
@@ -118,7 +136,7 @@ class PersonNameTypeCompositeService extends LdmService {
         if (intConfs) {
             List<NameType> entities = nameTypeService.fetchAllByCodeInList(intConfs.value)
             intConfs.each {
-                NameTypeCategory nameTypeCategory = NameTypeCategory.getByString(it.translationValue, version)
+                NameTypeCategory nameTypeCategory = NameTypeCategory.getByDataModelValue(it.translationValue, version)
                 if (entities.code.contains(it.value) && nameTypeCategory) {
                     bannerNameTypeToHedmNameTypeMap.put(it.value, nameTypeCategory.versionToEnumMap[version])
                 }

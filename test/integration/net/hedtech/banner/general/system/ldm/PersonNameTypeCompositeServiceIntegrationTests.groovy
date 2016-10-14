@@ -3,14 +3,12 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
-import groovy.sql.Sql
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.system.NameType
 import net.hedtech.banner.general.system.NameTypeService
-import net.hedtech.banner.general.system.PersonType
 import net.hedtech.banner.general.system.ldm.v6.NameTypeDecorator
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
@@ -169,7 +167,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         def map = personNameTypeCompositeService.getBannerNameTypeToHedmV6NameTypeMap()
         assertNotNull map
         assertTrue map.containsKey(nameType.code)
-        assertEquals map.get(nameType.code), NameTypeCategory.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
+        assertEquals map.get(nameType.code), NameTypeCategory.getByDataModelValue(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
 
     }
 
@@ -182,7 +180,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         def map = personNameTypeCompositeService.getBannerNameTypeToHedmV3NameTypeMap()
         assertNotNull map
         assertTrue map.containsKey(nameType.code)
-        assertEquals map.get(nameType.code), NameTypeCategory.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
+        assertEquals map.get(nameType.code), NameTypeCategory.getByDataModelValue(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
 
     }
 

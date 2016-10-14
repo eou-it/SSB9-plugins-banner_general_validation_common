@@ -29,26 +29,12 @@ enum NameTypeCategory {
      * @param version
      * @return
      */
-    public static NameTypeCategory getByString(String value, String version) {
+    public static NameTypeCategory getByDataModelValue(String value, String version) {
         if (value) {
             Iterator itr = NameTypeCategory.values().iterator()
             while (itr.hasNext()) {
                 NameTypeCategory nameTypeCategory = itr.next()
                 if (nameTypeCategory.versionToEnumMap.containsKey(version) && nameTypeCategory.versionToEnumMap[version].equalsIgnoreCase(value)) {
-                    return nameTypeCategory
-                }
-            }
-        }
-        return null
-    }
-
-
-    public static NameTypeCategory getByString(String value) {
-        if (value) {
-            Iterator itr = NameTypeCategory.values().iterator()
-            while (itr.hasNext()) {
-                NameTypeCategory nameTypeCategory = itr.next()
-                if (nameTypeCategory.versionToEnumMap.values().contains(value)) {
                     return nameTypeCategory
                 }
             }

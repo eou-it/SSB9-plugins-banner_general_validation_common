@@ -37,20 +37,21 @@ class MaritalStatusService extends ServiceBase {
         return maritalStatus
     }
 
+
     def fetchAllWithGuid(String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
         def rows = []
         List entities = []
         MaritalStatus.withSession { session ->
             def namedQuery = session.getNamedQuery('MaritalStatus.fetchAllWithGuid')
+            String hql = namedQuery.getQueryString()
+            String orderBy
             if (sortField) {
-                String hql = namedQuery.getQueryString()
-                String orderBy = " order by a." + sortField
-                if (["asc", "desc"].contains(sortOrder?.trim()?.toLowerCase())) {
-                    orderBy += " $sortOrder"
-                }
-                hql += orderBy
-                namedQuery = session.createQuery(hql)
+                orderBy = " order by a.$sortField ${sortOrder ?: ''} , a.id asc"
+            } else {
+                orderBy = " order by a.id ${sortOrder ?: ''}"
             }
+            hql += orderBy
+            namedQuery = session.createQuery(hql)
             namedQuery.with {
                 setString('ldmName', GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME)
                 if (max > 0) {
@@ -68,21 +69,22 @@ class MaritalStatusService extends ServiceBase {
         return rows
     }
 
+
     def fetchAllWithGuidByCodeInList(Collection<String> maritalStatusCodes, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
         def rows = []
         if (maritalStatusCodes) {
             List entities = []
             MaritalStatus.withSession { session ->
                 def namedQuery = session.getNamedQuery('MaritalStatus.fetchAllWithGuidByCodeInList')
+                String hql = namedQuery.getQueryString()
+                String orderBy
                 if (sortField) {
-                    String hql = namedQuery.getQueryString()
-                    String orderBy = " order by a." + sortField
-                    if (["asc", "desc"].contains(sortOrder?.trim()?.toLowerCase())) {
-                        orderBy += " $sortOrder"
-                    }
-                    hql += orderBy
-                    namedQuery = session.createQuery(hql)
+                    orderBy = " order by a.$sortField ${sortOrder ?: ''} , a.id asc"
+                } else {
+                    orderBy = " order by a.id ${sortOrder ?: ''}"
                 }
+                hql += orderBy
+                namedQuery = session.createQuery(hql)
                 namedQuery.with {
                     setString('ldmName', GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME)
                     setParameterList('codes', maritalStatusCodes)
@@ -101,6 +103,7 @@ class MaritalStatusService extends ServiceBase {
         }
         return rows
     }
+
 
     List<MaritalStatus> fetchAllByCodeInList(Collection<String> maritalStatusCodes) {
         List entities = []

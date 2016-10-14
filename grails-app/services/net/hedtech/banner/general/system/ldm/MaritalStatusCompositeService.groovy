@@ -323,8 +323,6 @@ class MaritalStatusCompositeService extends LdmService {
                 MaritalStatusCategory maritalStatusCategory = MaritalStatusCategory.getByString(it.translationValue, version)
                 if (entities.code.contains(it.value) && maritalStatusCategory) {
                     bannerMaritalStatusToHedmMaritalStatusMap.put(it.value, maritalStatusCategory.versionToEnumMap[version])
-                } else {
-                    //throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                 }
             }
         } else {

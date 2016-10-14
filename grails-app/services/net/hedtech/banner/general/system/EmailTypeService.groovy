@@ -68,5 +68,13 @@ class EmailTypeService extends ServiceBase {
         }
     }
 
+    EmailType fetchByCode(String code){
+        EmailType emailType
+        if(code){
+            emailType = EmailType.findByCode(code)
+        }
+        return emailType
+    }
+
 
 }

@@ -1,8 +1,9 @@
 /*********************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -18,36 +19,101 @@ import net.hedtech.banner.service.ServiceBase
  *
  */
 class MaritalStatusService extends ServiceBase {
-    public static final MARITAL_STATUS_QUERY = "from MaritalStatus r,IntegrationConfiguration i where r.code = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"
-
 
     boolean transactional = true
-
-    /**
-     * fetch marital status details which are mapped on goriccr settings
-     * @param content
-     * @param count
-     */
-    def  fetchMartialStatusDetails(def content) {
-      return  MaritalStatus.fetchMartialStatusDetails(content)
-    }
-
-    /**
-     * fetch marital status total count which are mapped on goriccr settings
-     * @param content
-     * @param count
-     */
-    def  fetchMartialStatusDetailsCount() {
-        return  MaritalStatus.fetchMartialStatusDetailsCount()
-    }
 
     /**
      * fetching marital status details based on code
      * @param code
      * @return
      */
-    MaritalStatus fetchByCode(String code){
-        return MaritalStatus.fetchByCode(code)
+    MaritalStatus fetchByCode(String code) {
+        MaritalStatus maritalStatus
+        if (code) {
+            maritalStatus = MaritalStatus.withSession { session ->
+                session.getNamedQuery('MaritalStatus.fetchByCode').setString('code', code).uniqueResult()
+            }
+        }
+        return maritalStatus
+    }
+
+    def fetchAllWithGuid(String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
+        def rows = []
+        List entities = []
+        MaritalStatus.withSession { session ->
+            def namedQuery = session.getNamedQuery('MaritalStatus.fetchAllWithGuid')
+            if (sortField) {
+                String hql = namedQuery.getQueryString()
+                String orderBy = " order by a." + sortField
+                if (["asc", "desc"].contains(sortOrder?.trim()?.toLowerCase())) {
+                    orderBy += " $sortOrder"
+                }
+                hql += orderBy
+                namedQuery = session.createQuery(hql)
+            }
+            namedQuery.with {
+                setString('ldmName', GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME)
+                if (max > 0) {
+                    setMaxResults(max)
+                }
+                if (offset > -1) {
+                    setFirstResult(offset)
+                }
+                entities = list()
+            }
+        }
+        entities?.each {
+            rows << [maritalStatus: it[0], globalUniqueIdentifier: it[1]]
+        }
+        return rows
+    }
+
+    def fetchAllWithGuidByCodeInList(Collection<String> maritalStatusCodes, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
+        def rows = []
+        if (maritalStatusCodes) {
+            List entities = []
+            MaritalStatus.withSession { session ->
+                def namedQuery = session.getNamedQuery('MaritalStatus.fetchAllWithGuidByCodeInList')
+                if (sortField) {
+                    String hql = namedQuery.getQueryString()
+                    String orderBy = " order by a." + sortField
+                    if (["asc", "desc"].contains(sortOrder?.trim()?.toLowerCase())) {
+                        orderBy += " $sortOrder"
+                    }
+                    hql += orderBy
+                    namedQuery = session.createQuery(hql)
+                }
+                namedQuery.with {
+                    setString('ldmName', GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME)
+                    setParameterList('codes', maritalStatusCodes)
+                    if (max > 0) {
+                        setMaxResults(max)
+                    }
+                    if (offset > -1) {
+                        setFirstResult(offset)
+                    }
+                    entities = list()
+                }
+            }
+            entities?.each {
+                rows << [maritalStatus: it[0], globalUniqueIdentifier: it[1]]
+            }
+        }
+        return rows
+    }
+
+    List<MaritalStatus> fetchAllByCodeInList(Collection<String> maritalStatusCodes) {
+        List entities = []
+        if (maritalStatusCodes) {
+            MaritalStatus.withSession { session ->
+                def namedQuery = session.getNamedQuery('MaritalStatus.fetchAllByCodeInList')
+                namedQuery.with {
+                    setParameterList('codes', maritalStatusCodes)
+                    entities = list()
+                }
+            }
+        }
+        return entities
     }
 
 }

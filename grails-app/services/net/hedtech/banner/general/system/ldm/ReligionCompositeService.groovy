@@ -97,4 +97,14 @@ class ReligionCompositeService extends LdmService {
         return content
     }
 
+
+    public def fetchByGuid(String religionGuid){
+        Religion religionObj
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RELIGION_LDM_NAME, religionGuid?.toLowerCase()?.trim())
+        if(globalUniqueIdentifier){
+            religionObj = religionService.get(globalUniqueIdentifier.domainId)
+        }
+       return religionObj
+    }
+
 }

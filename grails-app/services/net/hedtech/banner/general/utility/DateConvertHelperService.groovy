@@ -93,4 +93,17 @@ class DateConvertHelperService {
           }
         return utcDate
     }
+
+    static Date convertDateStringToServerDate(String date) {
+        Date serverDate
+        if(!date){
+            return null
+        }
+        try{
+            serverDate = new SimpleDateFormat(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE).parse(date)
+        }catch (ParseException pe){
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
+        }
+        return serverDate
+    }
 }

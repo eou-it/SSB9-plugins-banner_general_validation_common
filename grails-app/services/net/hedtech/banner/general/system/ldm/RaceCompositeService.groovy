@@ -312,4 +312,14 @@ class RaceCompositeService extends LdmService {
         }
         return decorators
     }
+
+    public def fetchByGuid(String raceGuid){
+        Race race
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RACE_LDM_NAME, raceGuid?.toLowerCase()?.trim())
+        if(globalUniqueIdentifier){
+            race = raceService.get(globalUniqueIdentifier.domainId)
+        }
+        return race
+    }
+
 }

@@ -40,8 +40,6 @@ class DurationUnitCompositeService extends LdmService{
                 DurationUnit durationUnit = entities.find{ durationUnit -> durationUnit.code == value}
                 if (durationUnit.code.contains(value) && sectionDurationName) {
                     bannerDurationUnitCodeToHedmDurationMap.put(it.value, [durationName : sectionDurationName.versionToEnumMap[version], durationUnit:durationUnit])
-                } else {
-                    throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                 }
             }
         } else {

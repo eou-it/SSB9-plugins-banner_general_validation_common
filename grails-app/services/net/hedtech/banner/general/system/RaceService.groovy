@@ -30,6 +30,10 @@ class RaceService extends ServiceBase{
                     if (["asc", "desc"].contains(sortOrder?.trim()?.toLowerCase())) {
                         orderBy += " $sortOrder"
                     }
+                    orderBy += ", a.id asc"
+                    namedQuery = session.createQuery(namedQuery.getQueryString() + orderBy)
+                } else {
+                    def orderBy = " order by a.id asc"
                     namedQuery = session.createQuery(namedQuery.getQueryString() + orderBy)
                 }
 
@@ -69,6 +73,10 @@ class RaceService extends ServiceBase{
                 if (["asc", "desc"].contains(sortOrder?.trim()?.toLowerCase())) {
                     orderBy += " $sortOrder"
                 }
+                orderBy += ", a.id asc"
+                namedQuery = session.createQuery(namedQuery.getQueryString() + orderBy)
+            } else {
+                def orderBy = " order by a.id asc"
                 namedQuery = session.createQuery(namedQuery.getQueryString() + orderBy)
             }
             namedQuery.with {

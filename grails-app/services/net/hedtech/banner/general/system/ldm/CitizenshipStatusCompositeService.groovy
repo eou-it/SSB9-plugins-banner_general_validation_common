@@ -35,20 +35,38 @@ class CitizenshipStatusCompositeService extends LdmService {
         log.debug "list:Begin:$params"
         String acceptVersion = getAcceptVersion(VERSIONS)
         List<CitizenshipStatus> citizenshipStatuses = []
-        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+        setPagingParams(params)
+        setSortingParams(params)
 
-        List allowedSortFields = [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE]
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
-        List<CitizenType> citizenTypes = citizenTypeService.list(params) as List
+        String sortField = params.sort?.trim()
+        String sortOrder = params.order?.trim()
+        int max = params.max?.trim()?.toInteger() ?: 0
+        int offset = params.offset?.trim()?.toInteger() ?: 0
 
+        Map mapForSearch = [:]
+        List<CitizenType> citizenTypes = citizenTypeService.fetchAllByCriteria(mapForSearch, sortField, sortOrder, max, offset) as List
         citizenTypes?.each { citizenType ->
             citizenshipStatuses << getDecorator(citizenType)
         }
-
         log.debug "list:End:${citizenshipStatuses?.size()}"
         return citizenshipStatuses
+    }
+
+    protected void setPagingParams(Map requestParams) {
+        RestfulApiValidationUtility.correctMaxAndOffset(requestParams, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+    }
+
+    protected void setSortingParams(Map requestParams) {
+        if (requestParams.containsKey("sort")) {
+            RestfulApiValidationUtility.validateSortField(requestParams.sort, [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE])
+            requestParams.sort = fetchBannerDomainPropertyForLdmField(requestParams.sort)
+        }
+
+        if (requestParams.containsKey("order")) {
+            RestfulApiValidationUtility.validateSortOrder(requestParams.order)
+        } else {
+            requestParams.put('order', "asc")
+        }
     }
 
     /**

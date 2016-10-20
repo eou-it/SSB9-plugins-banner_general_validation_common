@@ -40,18 +40,38 @@ class SubjectCompositeService extends LdmService {
 
         List subjectList = []
 
-        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+        setPagingParams(params)
+        setSortingParams(params)
 
-        List allowedSortFields = ['abbreviation', 'title']
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+        String sortField = params.sort?.trim()
+        String sortOrder = params.order?.trim()
+        int max = params.max?.trim()?.toInteger() ?: 0
+        int offset = params.offset?.trim()?.toInteger() ?: 0
 
-        List<Subject> subjects = subjectService.list(params) as List
+        Map mapForSearch = [:]
+        List<Subject> subjects = subjectService.fetchAllByCriteria(mapForSearch, sortField, sortOrder, max, offset) as List
+
         subjects.each { subject ->
             subjectList << getDecorator(subject)
         }
         return subjectList
+    }
+
+    protected void setPagingParams(Map requestParams) {
+        RestfulApiValidationUtility.correctMaxAndOffset(requestParams, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+    }
+
+    protected void setSortingParams(Map requestParams) {
+        if (requestParams.containsKey("sort")) {
+            RestfulApiValidationUtility.validateSortField(requestParams.sort, ['abbreviation', 'title'])
+            requestParams.sort = fetchBannerDomainPropertyForLdmField(requestParams.sort)
+        }
+
+        if (requestParams.containsKey("order")) {
+            RestfulApiValidationUtility.validateSortOrder(requestParams.order)
+        } else {
+            requestParams.put('order', "asc")
+        }
     }
 
     /**

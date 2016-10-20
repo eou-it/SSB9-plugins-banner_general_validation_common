@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.query.DynamicFinder
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -69,4 +70,35 @@ class LevelService extends ServiceBase{
         return rows
     }
 
+    def fetchAllByCriteria(Map content, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
+
+        Map params = [:]
+        List criteria = []
+        Map pagingAndSortParams = [:]
+
+        sortOrder = sortOrder ?: 'asc'
+        if (sortField) {
+            pagingAndSortParams.sortCriteria = [
+                    ["sortColumn": sortField, "sortDirection": sortOrder],
+                    ["sortColumn": "id", "sortDirection": "asc"]
+            ]
+        } else {
+            pagingAndSortParams.sortColumn = "id"
+            pagingAndSortParams.sortDirection = sortOrder
+        }
+
+        if (max > 0) {
+            pagingAndSortParams.max = max
+        }
+        if (offset > -1) {
+            pagingAndSortParams.offset = offset
+        }
+
+        return getDynamicFinderForFetchAllByCriteria().find([params: params, criteria: criteria], pagingAndSortParams)
+    }
+
+    private DynamicFinder getDynamicFinderForFetchAllByCriteria() {
+        def query = """ FROM Level a """
+        return new DynamicFinder(Level.class, query, "a")
+    }
 }

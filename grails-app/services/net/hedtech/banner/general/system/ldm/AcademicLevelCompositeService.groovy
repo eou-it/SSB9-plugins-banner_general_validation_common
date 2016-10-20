@@ -39,10 +39,25 @@ class AcademicLevelCompositeService extends LdmService {
         List academicLevels = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS)) ? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE] : [GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
-        List<Level> levels = levelService.list(params) as List
+        if (params.containsKey("sort")) {
+            RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
+            params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+        }
+
+        if (params.containsKey("order")) {
+            RestfulApiValidationUtility.validateSortOrder(params.order)
+        } else {
+            params.put('order', "asc")
+        }
+
+        String sortField = params.sort?.trim()
+        String sortOrder = params.order?.trim()
+        int max = params.max?.trim()?.toInteger() ?: 0
+        int offset = params.offset?.trim()?.toInteger() ?: 0
+
+        Map mapForSearch = [:]
+        List<Level> levels = levelService.fetchAllByCriteria(mapForSearch, sortField, sortOrder, max, offset) as List
+
         levels.each { level ->
             academicLevels << getDecorator(level)
         }

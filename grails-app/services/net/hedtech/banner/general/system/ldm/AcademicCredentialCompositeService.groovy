@@ -49,12 +49,20 @@ class AcademicCredentialCompositeService extends LdmService {
         String acceptVersion = getAcceptVersion(VERSIONS)
 
         List<AcademicCredentialDecorator> academicCredentialsList = []
-        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        params.sort = params.sort ?: GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_ABBREVIATION
+
         params.order = params.order ?: GeneralValidationCommonConstants.DEFAULT_ORDER_TYPE
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort) ?: params.sort
+        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+        if (params.containsKey("sort")) {
+            RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
+            params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort) ?: params.sort
+        }
+        if (params.containsKey("order")) {
+            RestfulApiValidationUtility.validateSortOrder(params.order)
+        } else {
+            params.put('order', "asc")
+        }
+        params.sort = params.sort ?: "id"
+
         fetchAcademicCredentialByCriteria(params).each { academicCredential ->
             academicCredentialsList << new AcademicCredentialDecorator(academicCredential.code, academicCredential.description, academicCredential.guid, academicCredential.type, academicCredential.suplementaryDesc)
         }
@@ -200,6 +208,22 @@ class AcademicCredentialCompositeService extends LdmService {
             params.put(GeneralValidationCommonConstants.TYPE, content.get(GeneralValidationCommonConstants.TYPE)?.trim())
             criteria.add([key: GeneralValidationCommonConstants.TYPE, binding: GeneralValidationCommonConstants.TYPE, operator: Operators.EQUALS])
         }
+
+        content.order = content.order?.trim() ?: 'asc'
+        if (content.containsKey("sort")) {
+            if (!content.sort.equals('id')) {
+                pagingAndSortParams.sortCriteria = [
+                        ["sortColumn": content.sort, "sortDirection": content.order],
+                        ["sortColumn": 'id', "sortDirection": 'asc']
+                ]
+                pagingAndSortParams.remove('sortColumn')
+                pagingAndSortParams.remove('sortDirection')
+            } else {
+                pagingAndSortParams.sortColumn = "id"
+                pagingAndSortParams.sortDirection = "asc"
+            }
+        }
+
         if (count) {
             result = academicCredentialService.countAll([params: params, criteria: criteria])
         } else {

@@ -65,4 +65,43 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
         def maritalStatus = maritalStatusService.list()
         assertTrue maritalStatus.size() > 0
     }
+
+    @Test
+    void testFetchMaritalStatusList() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList()
+
+        assertTrue 10 > maritalStatusList.size()
+    }
+
+    @Test
+    void testFetchMaritalStatusListFifty() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList(50)
+
+        assertTrue 50 > maritalStatusList.size()
+        assertTrue maritalStatusList.description.contains('Divorced')
+        assertTrue maritalStatusList.description.contains('Widowed')
+    }
+
+    @Test
+    void testFetchMaritalStatusListMidList() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList(12, 2)
+
+        assertTrue 12 > maritalStatusList.size()
+        assertTrue maritalStatusList.description.contains('Single')
+    }
+
+    @Test
+    void testFetchRMaritalStatusList() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList(10, 0, 'r')
+
+        assertTrue 10 > maritalStatusList.size()
+        assertTrue maritalStatusList.description.contains('Re-Married')
+    }
+
+    @Test
+    void testFetchRMaritalStatusMidList() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList(10, 20, 'r')
+
+        assertEquals 0, maritalStatusList.size()
+    }
 }

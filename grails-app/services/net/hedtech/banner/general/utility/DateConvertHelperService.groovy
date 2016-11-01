@@ -99,8 +99,14 @@ class DateConvertHelperService {
         if(!date){
             return null
         }
+        if (!date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})")){
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
+        }
+
         try{
-            serverDate = new SimpleDateFormat(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE).parse(date)
+            SimpleDateFormat dateFormat = new SimpleDateFormat(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE)
+            dateFormat.setLenient(false)
+            serverDate = dateFormat.parse(date)
         }catch (ParseException pe){
             throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
         }

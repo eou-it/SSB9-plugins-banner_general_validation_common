@@ -33,6 +33,9 @@ class AddressTypeService extends ServiceBase {
             List entities = []
             AddressType.withSession { session ->
                 def namedQuery = session.getNamedQuery('AddressType.fetchAllWithGuidByCodeInList')
+                String hql = namedQuery.getQueryString()
+                hql += " order by a.id asc"
+                namedQuery = session.createQuery(hql)
                 namedQuery.with {
                     setString('ldmName', GeneralValidationCommonConstants.ADDRESS_TYPE_LDM_NAME)
                     setParameterList('codes', addressTypeCodes)

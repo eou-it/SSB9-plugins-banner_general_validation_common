@@ -23,6 +23,9 @@ class TelephoneTypeService extends ServiceBase {
         if (phoneTypeCodes) {
             entities = TelephoneType.withSession { session ->
                 def namedQuery = session.getNamedQuery('TelephoneType.fetchAllWithGuidByCodeInList')
+                String hql = namedQuery.getQueryString()
+                hql += " order by a.id asc"
+                namedQuery = session.createQuery(hql)
                 namedQuery.with {
                     setString('ldmName', GeneralValidationCommonConstants.PHONE_TYPE_LDM_NAME)
                     setParameterList('codes', phoneTypeCodes)

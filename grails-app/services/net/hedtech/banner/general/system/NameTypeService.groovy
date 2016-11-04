@@ -19,6 +19,9 @@ class NameTypeService extends ServiceBase {
         if (nameTypeCodes) {
             entities = NameType.withSession { session ->
                 def namedQuery = session.getNamedQuery('NameType.fetchAllWithGuidByCodeInList')
+                String hql = namedQuery.getQueryString()
+                hql += " order by n.id asc"
+                namedQuery = session.createQuery(hql)
                 namedQuery.with {
                     setString('ldmName', GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME)
                     setParameterList('codes', nameTypeCodes)

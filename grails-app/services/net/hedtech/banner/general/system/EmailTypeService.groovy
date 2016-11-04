@@ -24,6 +24,9 @@ class EmailTypeService extends ServiceBase {
         if (emailTypeCodes) {
             entities = EmailType.withSession { session ->
                 def namedQuery = session.getNamedQuery('EmailType.fetchAllWithGuidByCodeInList')
+                String hql = namedQuery.getQueryString()
+                hql += " order by a.id asc"
+                namedQuery = session.createQuery(hql)
                 namedQuery.with {
                     setString('ldmName', GeneralValidationCommonConstants.EAMIL_TYPE_LDM_NAME)
                     setParameterList('codes', emailTypeCodes)

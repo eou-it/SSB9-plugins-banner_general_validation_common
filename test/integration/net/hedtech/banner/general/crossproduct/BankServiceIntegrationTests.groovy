@@ -52,10 +52,13 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
         Bank bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
         //Test if the generated entity now has an id assigned
+        bank.refresh()
         assertNotNull bank.id
+        assertNotNull bank.guid
 
         Bank getBankDetails = bankService.fetchByBankCode(i_success_bank, new Date())
         assertNotNull getBankDetails.id
+        assertNotNull getBankDetails.guid
         assertEquals getBankDetails.effectiveDate, bank.effectiveDate
         assertEquals getBankDetails.nextChangeDate, bank.nextChangeDate
         assertEquals getBankDetails.bankPidm, bank.bankPidm

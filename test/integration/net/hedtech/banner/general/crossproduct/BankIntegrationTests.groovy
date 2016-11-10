@@ -139,7 +139,9 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
         //Test if the generated entity now has an id assigned
+        bank.refresh()
         assertNotNull bank.id
+        assertNotNull bank.guid
     }
 
 
@@ -179,6 +181,8 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_achOriginalName, bank.achOriginatingName
         assertEquals i_success_bankRoutNumber, bank.bankOriginatingRoutingNumber
         assertEquals i_success_achFileNumber, bank.achFileNumber
+        bank.refresh()
+        assertNotNull bank.guid
 
         //Update the entity
         bank.bankPidm = u_success_bankPidm
@@ -206,7 +210,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
 
         //Assert for successful update
         bank = Bank.get(bank.id)
-        assertEquals 1L, bank?.version
+        assertEquals 2L, bank?.version
         assertEquals u_success_bankPidm, bank.bankPidm
         assertEquals u_success_accountNumber, bank.bankAccountNumber
         assertEquals u_success_accountName, bank.bankAccountName
@@ -256,7 +260,8 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_achOriginalName, bank.achOriginatingName
         assertEquals i_success_bankRoutNumber, bank.bankOriginatingRoutingNumber
         assertEquals i_success_achFileNumber, bank.achFileNumber
-
+        bank.refresh()
+        assertNotNull bank.guid
         //Update the entity with invalid values
         bank.bankPidm = u_failure_bankPidm
         bank.bankAccountNumber = u_failure_accountNumber
@@ -438,7 +443,9 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         bank.terminationDate = new Date() + 10
         bank.save(failOnError: true, flush: true)
         //Test if the generated entity now has an id assigned
+        bank.refresh()
         assertNotNull bank.id
+        assertNotNull bank.guid
 
         Bank getBankDetails = Bank.fetchByBankCode(i_success_bank, new Date())
         assertNotNull getBankDetails.id
@@ -463,6 +470,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals getBankDetails.achOriginatingName, bank.achOriginatingName
         assertEquals getBankDetails.bankOriginatingRoutingNumber, bank.bankOriginatingRoutingNumber
         assertEquals getBankDetails.achFileNumber, bank.achFileNumber
+        assertNotNull getBankDetails.guid
     }
 
     private def newValidForCreateBank() {

@@ -199,6 +199,12 @@ class Bank implements Serializable {
     @Column(name = "GXVBANK_DATA_ORIGIN")
     String dataOrigin
 
+    /**
+     * GUID: Unique identifier for global integration.
+     */
+    @Column(name = "GXVBANK_GUID")
+    String guid
+
 
     public String toString() {
         """Bank[
@@ -229,7 +235,8 @@ class Bank implements Serializable {
                     achFileNumber=$achFileNumber,
 					lastModified=$lastModified,
 					lastModifiedBy=$lastModifiedBy, 
-					dataOrigin=$dataOrigin]"""
+					dataOrigin=$dataOrigin,
+                    guid=$guid]"""
     }
 
 
@@ -265,6 +272,7 @@ class Bank implements Serializable {
         if (dataOrigin != that.dataOrigin) return false
         if (bank != that.bank) return false
         if (currencyConversion != that.currencyConversion) return false
+        if (guid != that.guid) return false
         return true
     }
 
@@ -299,6 +307,7 @@ class Bank implements Serializable {
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
         result = 31 * result + (bank != null ? bank.hashCode() : 0)
         result = 31 * result + (currencyConversion != null ? currencyConversion.hashCode() : 0)
+        result = 31 * result + (guid != null ? guid.hashCode() : 0)
         return result
     }
 
@@ -330,6 +339,7 @@ class Bank implements Serializable {
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)
+        guid(nullable: true, maxSize: 36)
     }
 
     //Read Only fields that should be protected against update

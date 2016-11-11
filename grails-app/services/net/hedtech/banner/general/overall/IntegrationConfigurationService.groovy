@@ -91,8 +91,6 @@ class IntegrationConfigurationService extends ServiceBase {
         List<IntegrationConfiguration> currencyCodeConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, BASE_ISO_CURRENCY_CODE)
         if (currencyCodeConfigs.size() > 0) {
             defaultCurrencyCode = currencyCodeConfigs[0].value
-        } else {
-            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.not.found.message", [BASE_ISO_CURRENCY_CODE]))
         }
         return defaultCurrencyCode
     }
@@ -102,8 +100,6 @@ class IntegrationConfigurationService extends ServiceBase {
         List<IntegrationConfiguration> currencyCodeConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, DEFAULT_ISO_CURRENCY_CODE)
         if (currencyCodeConfigs.size() > 0) {
             defaultCurrencyCode = currencyCodeConfigs[0].value
-        } else {
-            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.not.found.message", [DEFAULT_ISO_CURRENCY_CODE]))
         }
         return defaultCurrencyCode
     }

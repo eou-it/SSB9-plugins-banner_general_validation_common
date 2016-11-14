@@ -32,6 +32,9 @@ class RelationshipCompositeService extends LdmService {
                     bannerRelationshipTypeToHedmRelationshipTypeMap.put(it.value, hedmPersonalRelationshipType.versionToEnumMap[version])
                 }
             }
+            if (bannerRelationshipTypeToHedmRelationshipTypeMap.size() == 0) {
+                throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
+            }
         } else {
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }

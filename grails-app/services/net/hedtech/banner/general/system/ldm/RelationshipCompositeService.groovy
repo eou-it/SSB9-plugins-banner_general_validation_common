@@ -30,8 +30,6 @@ class RelationshipCompositeService extends LdmService {
                 HedmPersonalRelationshipType hedmPersonalRelationshipType = HedmPersonalRelationshipType.getByString(it.translationValue, version)
                 if (entities.code.contains(it.value) && hedmPersonalRelationshipType) {
                     bannerRelationshipTypeToHedmRelationshipTypeMap.put(it.value, hedmPersonalRelationshipType.versionToEnumMap[version])
-                } else {
-                    throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
                 }
             }
         } else {

@@ -325,7 +325,8 @@ class MaritalStatusCompositeService extends LdmService {
                     bannerMaritalStatusToHedmMaritalStatusMap.put(it.value, maritalStatusCategory.versionToEnumMap[version])
                 }
             }
-        } else {
+        }
+        if(bannerMaritalStatusToHedmMaritalStatusMap.isEmpty()){
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerMaritalStatusToHedmMaritalStatusMap

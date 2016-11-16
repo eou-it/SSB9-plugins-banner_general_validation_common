@@ -193,7 +193,8 @@ class AddressTypeCompositeService extends LdmService {
                     bannerAddressTypeToHedmAddressTypeMap.put(it.value, hedmAddressType.versionToEnumMap[version])
                 }
             }
-        } else {
+        }
+        if(bannerAddressTypeToHedmAddressTypeMap.isEmpty()) {
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerAddressTypeToHedmAddressTypeMap

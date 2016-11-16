@@ -42,7 +42,8 @@ class DurationUnitCompositeService extends LdmService{
                     bannerDurationUnitCodeToHedmDurationMap.put(it.value, [durationName : sectionDurationName.versionToEnumMap[version], durationUnit:durationUnit])
                 }
             }
-        } else {
+        }
+        if(bannerDurationUnitCodeToHedmDurationMap.isEmpty()){
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerDurationUnitCodeToHedmDurationMap

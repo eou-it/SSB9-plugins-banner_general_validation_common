@@ -180,7 +180,8 @@ class EmailTypeCompositeService extends LdmService {
                     bannerEmailTypeToHedmEmailTypeMap.put(it.value, hedmEmailType.versionToEnumMap[version])
                 }
             }
-        } else {
+        }
+        if (bannerEmailTypeToHedmEmailTypeMap.isEmpty()) {
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerEmailTypeToHedmEmailTypeMap

@@ -123,7 +123,8 @@ class PersonNameTypeCompositeService extends LdmService {
                     bannerNameTypeToHedmNameTypeMap.put(it.value, nameTypeCategory.versionToEnumMap[version])
                 }
             }
-        } else {
+        }
+        if(bannerNameTypeToHedmNameTypeMap.isEmpty()){
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerNameTypeToHedmNameTypeMap

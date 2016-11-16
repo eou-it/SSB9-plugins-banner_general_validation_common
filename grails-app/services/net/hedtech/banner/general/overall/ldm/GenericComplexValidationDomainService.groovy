@@ -196,7 +196,7 @@ class GenericComplexValidationDomainService extends GenericBasicValidationDomain
             validations.keySet().each { key ->
                 String query = validations.get(key)
                 int response = baseDomain.executeQuery(query)[0]
-                if (response != 0) {
+                if (response == 0) {
                     String errorCode = "invalid.setup.${key}"
                     if (errorCodes && errorCodes.get(key)) {
                         errorCode = errorCodes.get(key)

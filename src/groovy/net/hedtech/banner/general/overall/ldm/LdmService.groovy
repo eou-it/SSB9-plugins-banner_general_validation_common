@@ -362,7 +362,16 @@ class LdmService {
 
     private static String responseBodyMediaType() {
         HttpServletRequest request = getHttpServletRequest()
-        return request?.getHeader("Accept")
+        Enumeration<String> values = request.getHeaders("Accept")
+        if(values){
+            String accept
+            while (values.hasMoreElements()){
+                accept = values.nextElement()
+            }
+            return accept
+        }else{
+            return request?.getHeader("Accept")
+        }
     }
 
 

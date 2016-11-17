@@ -141,7 +141,6 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         //Test if the generated entity now has an id assigned
         bank.refresh()
         assertNotNull bank.id
-        assertNotNull bank.guid
     }
 
 
@@ -182,7 +181,6 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_bankRoutNumber, bank.bankOriginatingRoutingNumber
         assertEquals i_success_achFileNumber, bank.achFileNumber
         bank.refresh()
-        assertNotNull bank.guid
 
         //Update the entity
         bank.bankPidm = u_success_bankPidm
@@ -261,7 +259,6 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_bankRoutNumber, bank.bankOriginatingRoutingNumber
         assertEquals i_success_achFileNumber, bank.achFileNumber
         bank.refresh()
-        assertNotNull bank.guid
         //Update the entity with invalid values
         bank.bankPidm = u_failure_bankPidm
         bank.bankAccountNumber = u_failure_accountNumber
@@ -445,7 +442,6 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         //Test if the generated entity now has an id assigned
         bank.refresh()
         assertNotNull bank.id
-        assertNotNull bank.guid
 
         Bank getBankDetails = Bank.fetchByBankCode(i_success_bank, new Date())
         assertNotNull getBankDetails.id
@@ -470,7 +466,6 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals getBankDetails.achOriginatingName, bank.achOriginatingName
         assertEquals getBankDetails.bankOriginatingRoutingNumber, bank.bankOriginatingRoutingNumber
         assertEquals getBankDetails.achFileNumber, bank.achFileNumber
-        assertNotNull getBankDetails.guid
     }
 
     private def newValidForCreateBank() {

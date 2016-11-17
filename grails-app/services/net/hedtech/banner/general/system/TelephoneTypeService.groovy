@@ -18,8 +18,14 @@ class TelephoneTypeService extends ServiceBase {
      * @param code
      * @return
      */
-      TelephoneType fetchValidByCode(String code){
-        return TelephoneType.fetchByCode(code)
+    TelephoneType fetchValidByCode(String code){
+        TelephoneType telephoneType = TelephoneType.fetchByCode(code)
+
+        if(!telephoneType){
+            throw new ApplicationException(TelephoneType, "@@r1:invalidTelephoneType@@")
+        }
+
+        telephoneType
     }
 
     /**

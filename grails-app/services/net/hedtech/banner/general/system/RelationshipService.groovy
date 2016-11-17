@@ -1,3 +1,6 @@
+/*********************************************************************************
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
+ ********************************************************************************* */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.exceptions.ApplicationException
@@ -35,7 +38,7 @@ class RelationshipService extends ServiceBase {
         def relationship = Relationship.fetchByCode(code)
 
         if(!relationship){
-            throw new ApplicationException(County, "@@r1:invalidRelationship@@")
+            throw new ApplicationException(Relationship, "@@r1:invalidRelationship@@")
         }
 
         relationship

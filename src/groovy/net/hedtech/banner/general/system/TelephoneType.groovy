@@ -86,4 +86,17 @@ class TelephoneType implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
+    /**
+     * fetching TelephoneType details based on code
+     * @param code
+     * @return
+     */
+    public static TelephoneType fetchByCode(String code){
+        TelephoneType telephoneType = TelephoneType.withSession{ session ->
+            session.getNamedQuery('TelephoneType.fetchByCode').setString('code',code).uniqueResult()
+        }
+        return telephoneType
+
+    }
+
 }

@@ -3,7 +3,9 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.service.ServiceBase
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 
 // NOTE:
 // This service is injected with create, update, and delete methods that may throw runtime exceptions (listed below).
@@ -18,7 +20,7 @@ class EmailTypeService extends ServiceBase {
     boolean transactional = true
 
 
-List fetchAllWithGuidByCodeInList(Collection<String> emailTypeCodes, int max = 0, int offset = -1) {
+    List fetchAllWithGuidByCodeInList(Collection<String> emailTypeCodes, int max = 0, int offset = -1) {
         List entities = []
         if (emailTypeCodes) {
             entities = EmailType.withSession { session ->

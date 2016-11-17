@@ -155,7 +155,6 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
 
         assertEquals 0, maritalStatusList.size()
     }
-}
 
     private void assertListIsSortedOnField(def list, String field, String sortOrder = "ASC") {
         def prevListItemVal

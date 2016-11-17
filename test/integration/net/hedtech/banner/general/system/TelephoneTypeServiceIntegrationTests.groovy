@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
@@ -36,6 +37,25 @@ class TelephoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
 
         assertNotNull telephoneType
         assertEquals 'Emergency Contact', telephoneType.description
+    }
+
+    @Test
+    void testFetchValidByCode() {
+        def telephoneType = telephoneTypeService.fetchValidByCode('EMER')
+
+        assertNotNull telephoneType
+        assertEquals 'Emergency Contact', telephoneType.description
+    }
+
+    @Test
+    void testFetchValidByCodeInvalid() {
+        try {
+            def telephoneType = telephoneTypeService.fetchValidByCode('9QQQ')
+            fail("I should have received an error but it passed; @@r1:invalidTelephoneType@@ ")
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, "invalidTelephoneType"
+        }
     }
 
     @Test

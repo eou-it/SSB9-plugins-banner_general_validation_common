@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -13,6 +13,12 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 import java.text.SimpleDateFormat
 
 class ReligionIntegrationTests extends BaseIntegrationTestCase {
+
+
+    private String i_failure_religion = 'HINDU'
+    private String i_success_description = 'Protestant'
+    private String i_success_code = 'PR'
+
 
     @Before
     public void setUp() {
@@ -69,7 +75,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
 
         religion.save(flush: true, failOnError: true)
         religion.refresh()
-        assertNotNull "Religion should have been saved", religion.id
+        assertNotNull "ReligionDecorator should have been saved", religion.id
 
         // test date values -
         assertEquals date.format(today), date.format(religion.lastModified)
@@ -112,14 +118,14 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testValidation() {
         def religion = new Religion()
-        assertFalse "Religion could not be validated as expected due to ${religion.errors}", religion.validate()
+        assertFalse "ReligionDecorator could not be validated as expected due to ${religion.errors}", religion.validate()
     }
 
 
     @Test
     void testNullValidationFailure() {
         def religion = new Religion()
-        assertFalse "Religion should have failed validation", religion.validate()
+        assertFalse "ReligionDecorator should have failed validation", religion.validate()
         assertErrorsFor religion, 'nullable', ['code']
         assertNoErrorsFor religion, ['description']
     }
@@ -131,7 +137,7 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
                 code: "TTTTT",
                 description: 'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT')
 
-        assertFalse "Religion should have failed validation", religion.validate()
+        assertFalse "ReligionDecorator should have failed validation", religion.validate()
         assertErrorsFor religion, 'maxSize', ['code', 'description']
     }
 
@@ -142,6 +148,19 @@ class ReligionIntegrationTests extends BaseIntegrationTestCase {
                 description: "TTTTTTTTTT"
         )
         return religion
+    }
+/**
+ * This test case is checking for Religion list
+ */
+    @Test
+    void testList() {
+        def params = [max: '500', offset: '0']
+        List religionList= Religion.list(params)
+        assertNotNull religionList
+        assertFalse religionList.isEmpty()
+        assertTrue religionList.description.contains(i_success_description)
+        assertTrue religionList.code.contains(i_success_code)
+        assertFalse religionList.code.contains(i_failure_religion)
     }
 
 }

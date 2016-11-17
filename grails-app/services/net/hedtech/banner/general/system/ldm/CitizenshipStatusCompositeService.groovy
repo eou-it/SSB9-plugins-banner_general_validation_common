@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Transactional
 class CitizenshipStatusCompositeService extends LdmService {
+
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
+
     def citizenTypeService
 
     /**
@@ -30,21 +33,40 @@ class CitizenshipStatusCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<CitizenshipStatus> list(Map params) {
         log.debug "list:Begin:$params"
+        String acceptVersion = getAcceptVersion(VERSIONS)
         List<CitizenshipStatus> citizenshipStatuses = []
-        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+        setPagingParams(params)
+        setSortingParams(params)
 
-        List allowedSortFields = [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE]
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
-        List<CitizenType> citizenTypes = citizenTypeService.list(params) as List
+        String sortField = params.sort?.trim()
+        String sortOrder = params.order?.trim()
+        int max = params.max?.trim()?.toInteger() ?: 0
+        int offset = params.offset?.trim()?.toInteger() ?: 0
 
+        Map mapForSearch = [:]
+        List<CitizenType> citizenTypes = citizenTypeService.fetchAllByCriteria(mapForSearch, sortField, sortOrder, max, offset) as List
         citizenTypes?.each { citizenType ->
             citizenshipStatuses << getDecorator(citizenType)
         }
-
         log.debug "list:End:${citizenshipStatuses?.size()}"
         return citizenshipStatuses
+    }
+
+    protected void setPagingParams(Map requestParams) {
+        RestfulApiValidationUtility.correctMaxAndOffset(requestParams, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+    }
+
+    protected void setSortingParams(Map requestParams) {
+        if (requestParams.containsKey("sort")) {
+            RestfulApiValidationUtility.validateSortField(requestParams.sort, [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE])
+            requestParams.sort = fetchBannerDomainPropertyForLdmField(requestParams.sort)
+        }
+
+        if (requestParams.containsKey("order")) {
+            RestfulApiValidationUtility.validateSortOrder(requestParams.order)
+        } else {
+            requestParams.put('order', "asc")
+        }
     }
 
     /**
@@ -70,6 +92,7 @@ class CitizenshipStatusCompositeService extends LdmService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     CitizenshipStatus get(String guid) {
         log.debug "get:Begin:$guid"
+        String acceptVersion = getAcceptVersion(VERSIONS)
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(GeneralValidationCommonConstants.CITIZENSHIP_STATUS, new NotFoundException())
@@ -89,11 +112,26 @@ class CitizenshipStatusCompositeService extends LdmService {
             guid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_LDM_NAME, citizenType.id)?.guid
         }
 
-        return new CitizenshipStatus(citizenType, guid, getHeDMEnumeration(citizenType.citizenIndicator ?: null))
+        return new CitizenshipStatus(citizenType, guid, getCitizenshipStatusCategory(citizenType.citizenIndicator ?: null))
+    }
+
+    public Map fetchGUIDs(List<String> citizenCodes){
+        Map content=[:]
+        def result
+        String hql='''select a.code, b.guid from CitizenType a, GlobalUniqueIdentifier b WHERE a.code in :citizenCodes and b.ldmName = :ldmName and a.code = b.domainKey'''
+        CitizenType.withSession { session ->
+            def query = session.createQuery(hql).setString('ldmName', 'citizenship-statuses')
+            query.setParameterList('citizenCodes', citizenCodes)
+            result = query.list()
+        }
+        result.each { citizenType ->
+            content.put(citizenType[0], citizenType[1])
+        }
+        return content
     }
 
 
-    private String getHeDMEnumeration(Boolean citizenIndicator) {
+    public String getCitizenshipStatusCategory(Boolean citizenIndicator) {
         String category
         if (citizenIndicator) {
             category = GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_CATEGORY_CITIZEN

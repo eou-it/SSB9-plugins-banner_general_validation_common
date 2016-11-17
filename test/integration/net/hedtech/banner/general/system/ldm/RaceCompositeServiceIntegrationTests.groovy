@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -8,18 +8,17 @@ import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
-import net.hedtech.banner.general.system.MaritalStatus
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.RegulatoryRace
 import net.hedtech.banner.general.system.ldm.v1.RaceDetail
-import net.hedtech.banner.general.system.ldm.v4.MaritalStatusMaritalCategory
 import net.hedtech.banner.general.system.ldm.v4.RaceRacialCategory
+import net.hedtech.banner.general.system.ldm.v6.RaceDetailV6
+import net.hedtech.banner.general.system.ldm.v6.ReportingDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
 import org.junit.Before
 import org.junit.Test
-
 
 class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
@@ -28,6 +27,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     private String invalid_sort_orderErrorMessage = 'RestfulApiValidationUtility.invalidSortField'
     Map i_success_input_content
     def i_creation_guid = 'ttt_guid'
+
 
     @Before
     public void setUp() {
@@ -43,6 +43,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         i_success_input_content = [race: 'TWO', metadata: [dataOrigin: 'Banner'], description: 'The Y code']
     }
 
+
     @Test
     void testListWithoutPaginationParams() {
         //we will forcefully set the accept header so that the tests go through all possible code flows
@@ -53,6 +54,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertFalse races.isEmpty()
         assertTrue races.size() > 0
     }
+
 
     @Test
     void testListWithPagination() {
@@ -66,14 +68,16 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertTrue races.size() == 2
     }
 
+
     @Test
     void testCount() {
         //we will forcefully set the accept header so that the tests go through all possible code flows
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v1+json")
         assertNotNull i_success_race
-        assertEquals Race.count(), raceCompositeService.count([max:500,offset:0])
+        assertEquals Race.count(), raceCompositeService.count([max: 500, offset: 0])
     }
+
 
     @Test
     void testGetInvalidGuid() {
@@ -84,6 +88,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     @Test
     void testGetNullGuid() {
         try {
@@ -92,6 +97,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
             assertApplicationException ae, "NotFoundException"
         }
     }
+
 
     @Test
     void testGet() {
@@ -115,6 +121,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetails[0], raceDetail
     }
 
+
     @Test
     void testFetchByRaceIdInvalid() {
         try {
@@ -123,6 +130,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
             assertApplicationException ae, "NotFoundException"
         }
     }
+
 
     @Test
     void testFetchByRaceId() {
@@ -135,11 +143,13 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceCompositeService.getLdmRace(i_success_race.race), raceDetail.parentCategory
     }
 
+
     @Test
     void testFetchByRaceInvalid() {
         assertNull raceCompositeService.fetchByRaceCode(null)
         assertNull raceCompositeService.fetchByRaceCode('Q')
     }
+
 
     @Test
     void testFetchByRace() {
@@ -166,36 +176,38 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
      * Test to check the sort by code on RaceCompositeService
      * */
     @Test
-    public void testSortByCode(){
-        params.order='ASC'
-        params.sort='code'
+    public void testSortByCode() {
+        params.order = 'ASC'
+        params.sort = 'code'
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         List list = raceCompositeService.list(params)
         assertNotNull list
-        def tempParam=null
-        list.each{
-            race->
-                String code=race.race
-                if(!tempParam){
-                    tempParam=code
+        def tempParam = null
+        list.each {
+            race ->
+                String code = race.race
+                if (!tempParam) {
+                    tempParam = code
                 }
-                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
-                tempParam=code
+                assertTrue tempParam.compareTo(code) < 0 || tempParam.compareTo(code) == 0
+                tempParam = code
         }
 
         params.clear()
-        params.order='DESC'
-        params.sort='code'
+        params.order = 'DESC'
+        params.sort = 'code'
         list = raceCompositeService.list(params)
         assertNotNull list
-        tempParam=null
-        list.each{
-            race->
-                String code=race.race
-                if(!tempParam){
-                    tempParam=code
+        tempParam = null
+        list.each {
+            race ->
+                String code = race.race
+                if (!tempParam) {
+                    tempParam = code
                 }
-                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
-                tempParam=code
+                assertTrue tempParam.compareTo(code) > 0 || tempParam.compareTo(code) == 0
+                tempParam = code
         }
     }
 
@@ -206,11 +218,13 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     void testListWithInvalidSortField() {
         try {
             def map = [sort: 'test']
+            GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+            request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
             raceCompositeService.list(map)
             fail()
         } catch (RestfulApiValidationException e) {
             assertEquals 400, e.getHttpStatusCode()
-            assertEquals invalid_sort_orderErrorMessage , e.messageCode.toString()
+            assertEquals invalid_sort_orderErrorMessage, e.messageCode.toString()
         }
     }
 
@@ -219,11 +233,15 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testListWithInvalidOrderField() {
+
         shouldFail(RestfulApiValidationException) {
             def map = [order: 'test']
+            GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+            request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
             raceCompositeService.list(map)
         }
     }
+
 
     private def newRace() {
         def regulatoryRace = RegulatoryRace.findByCode("1")
@@ -236,6 +254,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         )
         race.save(failOnError: true, flush: true)
     }
+
 
     @Test
     void testCreateV1Header() {
@@ -250,9 +269,10 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_input_content.metadata.dataOrigin, raceDetail.dataOrigin
     }
 
+
     @Test
     void testCreateV4Header() {
-        i_success_input_content.put('racialCategory','asian')
+        i_success_input_content.put('racialCategory', 'asian')
         //we will forcefully set the accept header so that the tests go through all possible code flows
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
@@ -264,15 +284,17 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_input_content.metadata.dataOrigin, raceDetail.dataOrigin
     }
 
+
     @Test
     void testCreateWithNoCode() {
         i_success_input_content.remove('race')
         try {
-           raceCompositeService.create(i_success_input_content)
+            raceCompositeService.create(i_success_input_content)
         } catch (Exception ae) {
             assertApplicationException ae, "code.required"
         }
     }
+
 
     @Test
     void testCreateWithNoDesc() {
@@ -284,20 +306,22 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     @Test
     void testCreateWithAlreadyExistCodeV4Header() {
-        i_success_input_content.put('racialCategory','asian')
+        i_success_input_content.put('racialCategory', 'asian')
         i_success_input_content?.race = i_success_race?.race
         //we will forcefully set the accept header so that the tests go through all possible code flows
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
-        try{
+        try {
             raceCompositeService.create(i_success_input_content)
-        }catch (Exception ae){
+        } catch (Exception ae) {
             assertApplicationException ae, "code.exists"
         }
     }
+
 
     @Test
     void testUpdateNoId() {
@@ -307,6 +331,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
             assertApplicationException ae, "NotFoundException"
         }
     }
+
 
     @Test
     void testUpdateCreateV1Header() {
@@ -323,9 +348,10 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_input_content.metadata.dataOrigin, raceDetail.dataOrigin
     }
 
+
     @Test
     void testUpdateCreateV4Header() {
-        i_success_input_content.put('racialCategory','asian')
+        i_success_input_content.put('racialCategory', 'asian')
         //we will forcefully set the accept header so that the tests go through all possible code flows
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
@@ -338,6 +364,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_input_content.description, raceDetail.description
         assertEquals i_success_input_content.metadata.dataOrigin, raceDetail.dataOrigin
     }
+
 
     @Test
     void testUpdateRaceV1Header() {
@@ -355,18 +382,20 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_input_content.metadata.dataOrigin, raceDetail.dataOrigin
     }
 
+
     @Test
     void testUpdateRaceV4Header() {
         //we will forcefully set the accept header so that the tests go through all possible code flows
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         request.addHeader("Content-Type", "application/vnd.hedtech.integration.v4+json")
-        i_success_input_content.put('id',GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_race.race,GeneralValidationCommonConstants.RACE_LDM_NAME)?.guid)
+        i_success_input_content.put('id', GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_race.race, GeneralValidationCommonConstants.RACE_LDM_NAME)?.guid)
         RaceDetail raceDetail = raceCompositeService.update(i_success_input_content)
         assertEquals i_success_input_content?.race, raceDetail.race
         assertEquals i_success_input_content?.description, raceDetail.description
         assertEquals i_success_input_content.metadata.dataOrigin, raceDetail.dataOrigin
     }
+
 
     @Test
     void testListWithPaginationV4Header() {
@@ -377,8 +406,9 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         List races = raceCompositeService.list(paginationParams)
         assertNotNull races
         assertFalse races.isEmpty()
-        assertEquals races.size() , 2
+        assertEquals races.size(), 2
     }
+
 
     @Test
     void testCountV4Header() {
@@ -389,8 +419,9 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         int racialCount = IntegrationConfiguration.countByTranslationValueInListAndSettingNameAndValueInList(RaceRacialCategory.RACE_RACIAL_CATEGORY,
                 GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY,
                 Race.findAll().race)
-        assertEquals racialCount, raceCompositeService.count([max:500,offset:0])
+        assertEquals racialCount, raceCompositeService.count([max: 500, offset: 0])
     }
+
 
     @Test
     void testGetV4Header() {
@@ -413,6 +444,7 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals raceDetail.parentCategory, raceDetails[0].parentCategory
     }
 
+
     @Test
     void testGetInvalidGuidV4Header() {
         try {
@@ -422,15 +454,91 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
+
     @Test
     void testGetNonExistGuidV4Header() {
         try {
             //we will forcefully set the accept header so that the tests go through all possible code flows
             GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
             request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
-            raceCompositeService.get(GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_race.race,GeneralValidationCommonConstants.RACE_LDM_NAME)?.guid)
+            raceCompositeService.get(GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_race.race, GeneralValidationCommonConstants.RACE_LDM_NAME)?.guid)
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
     }
+
+
+    @Test
+    void testCountV6() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v6+json")
+        assertNotNull i_success_race
+        assertEquals Race.count(), raceCompositeService.count()
+    }
+
+
+    @Test
+    void testGetInvalidGuidV6Header() {
+        try {
+            GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+            request.addHeader("Accept", "application/vnd.hedtech.integration.v6+json")
+            raceCompositeService.get('Invalid-guid')
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+
+
+    @Test
+    void testGetV6Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v6+json")
+        def paginationParams = [max: '1', offset: '0']
+        def raceDetails = raceCompositeService.list(paginationParams)
+        assertNotNull raceDetails
+        assertFalse raceDetails.isEmpty()
+        assertNotNull raceDetails[0].guid
+        RaceDetailV6 raceDetail = raceCompositeService.get(raceDetails[0].guid)
+        assertNotNull raceDetail.toString()
+        assertNotNull raceDetail.race
+        assertEquals raceDetail.race, raceDetails[0].race
+        assertNotNull raceDetail.guid
+        assertEquals raceDetail.guid, raceDetails[0].guid
+    }
+
+
+    @Test
+    void testListWithPaginationV6Header() {
+        //we will forcefully set the accept header so that the tests go through all possible code flows
+        GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
+        request.addHeader("Accept", "application/vnd.hedtech.integration.v6+json")
+        def paginationParams = [max: '2', offset: '0']
+        List races = raceCompositeService.list(paginationParams)
+        assertNotNull races
+        assertFalse races.isEmpty()
+        assertEquals races.size(), 2
+    }
+
+
+    @Test
+    void testRaceDecorator() {
+        ReportingDecorator report = new ReportingDecorator(null, "abc")
+        def country = report.getCountry()
+        assertNotNull country
+    }
+
+
+    @Test
+    void testGetRaceCodeToGuidMap() {
+        RaceDetail raceDetail = raceCompositeService.create(i_success_input_content)
+        assertNotNull raceDetail
+        assertNotNull raceDetail.guid
+        Map<String, String> raceCodeToGuidMap = raceCompositeService.getRaceCodeToGuidMap([raceDetail.race])
+        assertFalse raceCodeToGuidMap.isEmpty()
+        assertTrue raceCodeToGuidMap.containsKey(raceDetail.race)
+        assertEquals raceDetail.guid, raceCodeToGuidMap.get(raceDetail.race)
+    }
+
 }

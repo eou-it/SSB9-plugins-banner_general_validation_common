@@ -76,6 +76,15 @@ class CitizenshipStatusCompositeServiceIntegrationTests extends BaseIntegrationT
         }
     }
 
+    @Test
+    void testfetchGUIDs(){
+        List<String> citizenCodes= CitizenType.findAll(max: 2).code
+        Map content=citizenshipStatusCompositeService.fetchGUIDs((citizenCodes))
+        content.each{ citizenStatus ->
+            assertTrue citizenCodes.contains(citizenStatus.key)
+        }
+    }
+
 
     private String getHeDMEnumeration(Boolean citizenIndicator) {
         String category

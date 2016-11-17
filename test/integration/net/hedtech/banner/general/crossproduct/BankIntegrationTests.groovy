@@ -1,7 +1,8 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
+
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -138,6 +139,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         def bank = newValidForCreateBank()
         bank.save(failOnError: true, flush: true)
         //Test if the generated entity now has an id assigned
+        bank.refresh()
         assertNotNull bank.id
     }
 
@@ -178,6 +180,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_achOriginalName, bank.achOriginatingName
         assertEquals i_success_bankRoutNumber, bank.bankOriginatingRoutingNumber
         assertEquals i_success_achFileNumber, bank.achFileNumber
+        bank.refresh()
 
         //Update the entity
         bank.bankPidm = u_success_bankPidm
@@ -205,7 +208,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
 
         //Assert for successful update
         bank = Bank.get(bank.id)
-        assertEquals 1L, bank?.version
+        assertEquals 2L, bank?.version
         assertEquals u_success_bankPidm, bank.bankPidm
         assertEquals u_success_accountNumber, bank.bankAccountNumber
         assertEquals u_success_accountName, bank.bankAccountName
@@ -255,7 +258,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_achOriginalName, bank.achOriginatingName
         assertEquals i_success_bankRoutNumber, bank.bankOriginatingRoutingNumber
         assertEquals i_success_achFileNumber, bank.achFileNumber
-
+        bank.refresh()
         //Update the entity with invalid values
         bank.bankPidm = u_failure_bankPidm
         bank.bankAccountNumber = u_failure_accountNumber
@@ -424,11 +427,46 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
                 bankOriginatingRoutingNumber: 'XXXXXXXXXXX')
         assertFalse "Bank should have failed validation", bank.validate()
         assertErrorsFor bank, 'maxSize', ['chartOfAccounts', 'accountCash', 'accountInterfund', 'fund', 'companyType', 'companyId',
-                'bankOriginatingRoutingNumber',
-                'achDestinationName', 'achDestinationRoutingNumber',
-                'achOriginatingName', 'achOriginatingRoutingNumber', 'achOriginatingNameShort']
+                                          'bankOriginatingRoutingNumber',
+                                          'achDestinationName', 'achDestinationRoutingNumber',
+                                          'achOriginatingName', 'achOriginatingRoutingNumber', 'achOriginatingNameShort']
     }
 
+    @Test
+    void testFetchByBankCode() {
+        Bank bank = newValidForCreateBank()
+        bank.effectiveDate = new Date() - 10
+        bank.nextChangeDate = new Date() + 10
+        bank.terminationDate = new Date() + 10
+        bank.save(failOnError: true, flush: true)
+        //Test if the generated entity now has an id assigned
+        bank.refresh()
+        assertNotNull bank.id
+
+        Bank getBankDetails = Bank.fetchByBankCode(i_success_bank, new Date())
+        assertNotNull getBankDetails.id
+        assertEquals getBankDetails.effectiveDate, bank.effectiveDate
+        assertEquals getBankDetails.nextChangeDate, bank.nextChangeDate
+        assertEquals getBankDetails.bankPidm, bank.bankPidm
+        assertEquals getBankDetails.bankAccountNumber, bank.bankAccountNumber
+        assertEquals getBankDetails.bankAccountName, bank.bankAccountName
+        assertEquals getBankDetails.achStatus, bank.achStatus
+        assertEquals getBankDetails.statusIndicator, bank.statusIndicator
+        assertEquals getBankDetails.terminationDate, bank.terminationDate
+        assertEquals getBankDetails.chartOfAccounts, bank.chartOfAccounts
+        assertEquals getBankDetails.accountCash, bank.accountCash
+        assertEquals getBankDetails.accountInterfund, bank.accountInterfund
+        assertEquals getBankDetails.fund, bank.fund
+        assertEquals getBankDetails.achDestinationRoutingNumber, bank.achDestinationRoutingNumber
+        assertEquals getBankDetails.achOriginatingRoutingNumber, bank.achOriginatingRoutingNumber
+        assertEquals getBankDetails.achDestinationName, bank.achDestinationName
+        assertEquals getBankDetails.achOriginatingNameShort, bank.achOriginatingNameShort
+        assertEquals getBankDetails.companyType, bank.companyType
+        assertEquals getBankDetails.companyId, bank.companyId
+        assertEquals getBankDetails.achOriginatingName, bank.achOriginatingName
+        assertEquals getBankDetails.bankOriginatingRoutingNumber, bank.bankOriginatingRoutingNumber
+        assertEquals getBankDetails.achFileNumber, bank.achFileNumber
+    }
 
     private def newValidForCreateBank() {
         def bank = new Bank(

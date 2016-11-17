@@ -113,6 +113,15 @@ class VisaTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals visaTypeDetail.category, "nonImmigrant"
     }
 
+    @Test
+    void testfetchGUIDs(){
+        List<String> visaCodes= VisaType.findAll(max: 2).code
+        Map content=visaTypeCompositeService.getVisaTypeCodeToGuidMap((visaCodes))
+        content.each{ visaStatus ->
+            assertTrue visaCodes.contains(visaStatus.key)
+        }
+    }
+
 
     private void setAcceptHeader(String acceptHeader) {
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()

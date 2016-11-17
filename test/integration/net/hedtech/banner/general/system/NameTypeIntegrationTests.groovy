@@ -1,19 +1,16 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
+import groovy.sql.Sql
+import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.After
-
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import groovy.sql.Sql
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
 
 class NameTypeIntegrationTests extends BaseIntegrationTestCase {
-
-    def nameTypeService
-
 
     @Before
     public void setUp() {
@@ -116,7 +113,6 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
                 ]
     }
 
-
     private def newNameType() {
         def nameType = new NameType(
                 code: "TTTT",
@@ -127,6 +123,5 @@ class NameTypeIntegrationTests extends BaseIntegrationTestCase {
         )
         return nameType
     }
-
 
 }

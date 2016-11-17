@@ -1,8 +1,10 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 import org.hibernate.annotations.Type
 
 import javax.persistence.*
@@ -13,11 +15,16 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "GTVEMAL")
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
-    @NamedQuery(name = "EmailType.fetchByCodeAndWebDisplayable",
-        query = """FROM EmailType a
-                  WHERE a.code = :code
-                    AND a.displayWebIndicator = 'Y'""")])
+        @NamedQuery(name = "EmailType.fetchAllWithGuid",
+                query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName"""),
+        @NamedQuery(name = "EmailType.fetchAllWithGuidByCodeInList",
+                query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in :codes """),
+        @NamedQuery(name = "EmailType.fetchAllByCodeInList",
+                query = """from EmailType a where a.code in :codes""")
+])
 class EmailType implements Serializable {
 
     /**
@@ -82,53 +89,6 @@ class EmailType implements Serializable {
     String dataOrigin
 
 
-
-    public String toString() {
-        """EmailType[
-					id=$id, 
-					version=$version, 
-					code=$code, 
-					description=$description, 
-					displayWebIndicator=$displayWebIndicator, 
-					urlIndicator=$urlIndicator, 
-					lastModified=$lastModified, 
-					lastModifiedBy=$lastModifiedBy, 
-					dataOrigin=$dataOrigin]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (!(o instanceof EmailType)) return false
-        EmailType that = (EmailType) o
-        if (id != that.id) return false
-        if (version != that.version) return false
-        if (code != that.code) return false
-        if (description != that.description) return false
-        if (displayWebIndicator != that.displayWebIndicator) return false
-        if (urlIndicator != that.urlIndicator) return false
-        if (lastModified != that.lastModified) return false
-        if (lastModifiedBy != that.lastModifiedBy) return false
-        if (dataOrigin != that.dataOrigin) return false
-        return true
-    }
-
-
-    int hashCode() {
-        int result
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (version != null ? version.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (displayWebIndicator != null ? displayWebIndicator.hashCode() : 0)
-        result = 31 * result + (urlIndicator != null ? urlIndicator.hashCode() : 0)
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        return result
-    }
-
-
     static constraints = {
         code(nullable: false, maxSize: 4)
         description(nullable: true, maxSize: 60)
@@ -142,12 +102,4 @@ class EmailType implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
-    public static List fetchByCodeAndWebDisplayable(String code) {
-        def emailTypes
-
-        EmailType.withSession { session ->
-            emailTypes = session.getNamedQuery('EmailType.fetchByCodeAndWebDisplayable').setString('code', code).list()
-        }
-        return emailTypes
-    }
 }

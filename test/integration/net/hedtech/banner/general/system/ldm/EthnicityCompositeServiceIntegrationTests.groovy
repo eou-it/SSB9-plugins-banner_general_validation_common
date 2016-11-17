@@ -1,15 +1,18 @@
 /** *******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.IpedsEthnicity
 import net.hedtech.banner.general.system.Race
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
+import net.hedtech.banner.general.system.ldm.v6.EthnicityDecorator
+import net.hedtech.banner.general.system.ldm.v6.ReportingDecorator
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
 import org.junit.Before
@@ -76,7 +79,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
         List ethnicities = ethnicityCompositeService.list([:])
         assertTrue ethnicities?.size() > 0
-        def actualGuids = ethnicities.collect { it.guid }
+        def actualGuids = ethnicities.collect { it.id }
         assertEquals expectedGuids.size(), actualGuids.size()
         assertTrue expectedGuids.containsAll(actualGuids)
         assertEquals expectedGuids.size(), ethnicityCompositeService.count()
@@ -183,7 +186,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
 
         def result = ethnicityCompositeService.get(globUniqIds[0].guid)
         assertNotNull result
-        assertEquals globUniqIds[0].guid, result.guid
+        assertEquals globUniqIds[0].guid, result.id
         assertEquals globUniqIds[0].domainKey, result.title
     }
 
@@ -197,7 +200,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertNotNull result
         assertEquals globUniqIds.guid, result.id
         assertEquals globUniqIds.domainKey, result.title
-        assertEquals 'nonHispanic', result.ethnicCategory
+        assertEquals 'nonHispanic', result.category
     }
 
     @Test
@@ -210,7 +213,7 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         assertNotNull result
         assertEquals globUniqIds.guid, result.id
         assertEquals globUniqIds.domainKey, result.title
-        assertEquals 'hispanic', result.ethnicCategory
+        assertEquals 'hispanic', result.category
     }
 
     @Test
@@ -389,5 +392,105 @@ class EthnicityCompositeServiceIntegrationTests extends BaseIntegrationTestCase 
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", acceptHeader)
     }
+//version v6
+    @Test
+    void testCountWithV6Header() {
+        setAcceptHeader("application/vnd.hedtech.integration.v6+json")
+        assertEquals GlobalUniqueIdentifier.countByLdmNameAndDomainIdGreaterThan('ethnicities-us',0L), ethnicityCompositeService.count()
+    }
 
+    @Test
+    void testGetV6WithInvalidGuid() {
+        GlobalUniqueIdentifier globUniqIds = GlobalUniqueIdentifier.findByLdmNameAndDomainId('ethnicities-us', 0L)
+        assertNotNull globUniqIds
+
+        setAcceptHeader("application/vnd.hedtech.integration.v6+json")
+        try {
+            ethnicityCompositeService.get(globUniqIds.guid)
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+
+    }
+    @Test
+    void testGetV6WithNonHispanicCategory() {
+        GlobalUniqueIdentifier globUniqIds = GlobalUniqueIdentifier.findByLdmNameAndDomainId('ethnicities-us',1L)
+        assertNotNull globUniqIds
+
+        setAcceptHeader("application/vnd.hedtech.integration.v6+json")
+        def result = ethnicityCompositeService.get(globUniqIds.guid)
+        assertNotNull result
+        assertEquals globUniqIds.guid, result.id
+        assertEquals globUniqIds.domainKey, result.title
+        assertEquals 'nonHispanic', result.category
+
+
+    }
+
+    @Test
+    void testGetV6WithHispanicCategory() {
+        GlobalUniqueIdentifier globUniqIds = GlobalUniqueIdentifier.findByLdmNameAndDomainId('ethnicities-us',2L)
+        assertNotNull globUniqIds
+
+        setAcceptHeader("application/vnd.hedtech.integration.v6+json")
+        def result = ethnicityCompositeService.get(globUniqIds.guid)
+        assertNotNull result
+        assertEquals globUniqIds.guid, result.id
+        assertEquals globUniqIds.domainKey, result.title
+        assertEquals 'hispanic', result.category
+    }
+
+    @Test
+    void testGetV6_NullGuid() {
+        setAcceptHeader("application/vnd.hedtech.integration.v6+json")
+        try {
+            ethnicityCompositeService.get(null)
+            fail("Expected NotFoundException")
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "NotFoundException"
+        }
+    }
+    @Test
+    void testListV6() {
+        List<GlobalUniqueIdentifier> globUniqIds = GlobalUniqueIdentifier.findAllByLdmNameAndDomainIdGreaterThan('ethnicities-us',0L)
+        assertTrue globUniqIds?.size() > 0
+        def expectedGuids = globUniqIds.collect { it.guid }
+
+        setAcceptHeader("application/vnd.hedtech.integration.v6+json")
+
+        List ethnicities = ethnicityCompositeService.list([:])
+        assertTrue ethnicities?.size() > 0
+        def actualGuids = ethnicities.collect { it.id }
+        assertEquals expectedGuids.size(), actualGuids.size()
+        assertTrue expectedGuids.containsAll(actualGuids)
+        assertEquals expectedGuids.size(), ethnicityCompositeService.count()
+    }
+    @Test
+    void testDecoratorV6() {
+        GlobalUniqueIdentifier globUniqIds = GlobalUniqueIdentifier.findByLdmNameAndDomainId('ethnicities-us',2L)
+        assertNotNull globUniqIds
+        setAcceptHeader("application/vnd.hedtech.integration.v6+json")
+
+        EthnicityDecorator ethnicityDecorator  = new EthnicityDecorator(globUniqIds.guid,globUniqIds.domainKey,"hispanic")
+        assertNotNull(ethnicityDecorator.id)
+        assertNotNull(ethnicityDecorator.category)
+        assertNotNull(ethnicityDecorator.title)
+        assertNotNull(ethnicityDecorator.getReporting())
+        ReportingDecorator reportingDecorator = new ReportingDecorator(GeneralValidationCommonConstants.ETHNICITIES,"hispanic")
+        ReportingDecorator reportingDecorator1 = new ReportingDecorator("RACES","hispanic")
+        assertNotNull(reportingDecorator.country)
+        assertNotNull(reportingDecorator1.country)
+
+    }
+    @Test
+    void testfetchGUIDs(){
+        List<GlobalUniqueIdentifier> globUniqIds = GlobalUniqueIdentifier.findAllByLdmNameAndDomainIdGreaterThan('ethnicities-us',0L)
+        assertTrue globUniqIds?.size() > 0
+        List<String> expectedGuids = globUniqIds.collect { it.domainId.toString() }
+        assertTrue expectedGuids?.size() > 0
+        Map content=ethnicityCompositeService.fetchGUIDsForUnitedStatesEthnicCodes()
+        content.each{ ethnicityStatus ->
+            assertTrue expectedGuids.contains(ethnicityStatus.key)
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -23,13 +23,15 @@ import org.springframework.transaction.annotation.Transactional
  * <p> If we'll pass type is minor then, Academic Discipline minor type of data will return else, It will return all  type of Academic Discipline data.</p>
  */
 @Transactional
-class AcademicDisciplineCompositeService extends LdmService{
-    
+class AcademicDisciplineCompositeService extends LdmService {
+
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
+    private static final String ACADEMIC_DISCIPLINE_HEDM = 'academic-disciplines'
+    private static
+    final List allowedSortFields = [GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_ABBREVIATION, GeneralValidationCommonConstants.TYPE]
+
     //This filed is used for only to create and update of Academic Discipline data
     def majorMinorConcentrationService
-    
-    private static final String ACADEMIC_DISCIPLINE_HEDM = 'academic-disciplines'
-    private static final List allowedSortFields = [GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_ABBREVIATION,GeneralValidationCommonConstants.TYPE]
 
     /**
      * GET /api/academic-disciplines
@@ -38,15 +40,25 @@ class AcademicDisciplineCompositeService extends LdmService{
      */
     @Transactional(readOnly = true)
     List<AcademicDiscipline> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         List<AcademicDiscipline> academicDisciplineDetailList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        params?.sort = params?.sort ?: GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_ABBREVIATION
+        //params?.sort = params?.sort ?: GeneralValidationCommonConstants.DEFAULT_SORT_FIELD_ABBREVIATION
         params?.order = params?.order ?: GeneralValidationCommonConstants.DEFAULT_ORDER_TYPE
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort)?:params.sort
-       fetchAcademicDisciplineByCriteria(false, params).each { academicDiscipline ->
-            academicDisciplineDetailList <<  new AcademicDiscipline(academicDiscipline?.code, academicDiscipline?.description, academicDiscipline?.type, academicDiscipline?.id)
+
+        if (params.containsKey("sort")) {
+            RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
+            params.sort = LdmService.fetchBannerDomainPropertyForLdmField(params.sort) ?: params.sort
+        }
+        if (params.containsKey("order")) {
+            RestfulApiValidationUtility.validateSortOrder(params.order)
+        } else {
+            params.put('order', "asc")
+        }
+        params?.sort = params?.sort ?: 'id'
+        fetchAcademicDisciplineByCriteria(false, params).each { academicDiscipline ->
+            academicDisciplineDetailList << new AcademicDiscipline(academicDiscipline?.code, academicDiscipline?.description, academicDiscipline?.type, academicDiscipline?.id)
         }
         return academicDisciplineDetailList;
     }
@@ -61,12 +73,13 @@ class AcademicDisciplineCompositeService extends LdmService{
     }
 
     /**
-     * GET /api/academic-disciplines/{guid}
-     * @param guid
-     * @return 
+     * GET /api/academic-disciplines/{guid}* @param guid
+     * @return
      */
     @Transactional(readOnly = true)
     AcademicDiscipline get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         if (!guid) {
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new NotFoundException())
         }
@@ -94,6 +107,23 @@ class AcademicDisciplineCompositeService extends LdmService{
             params.put(GeneralValidationCommonConstants.TYPE, content.get(GeneralValidationCommonConstants.TYPE).trim())
             criteria.add([key: GeneralValidationCommonConstants.TYPE, binding: GeneralValidationCommonConstants.TYPE, operator: Operators.EQUALS])
         }
+
+        content.order = content.order?.trim() ?: 'asc'
+
+        if (content.containsKey("sort")) {
+            if (!content.sort.equals('id')) {
+                pagingAndSortParams.sortCriteria = [
+                        ["sortColumn": content.sort, "sortDirection": content.order],
+                        ["sortColumn": 'id', "sortDirection": 'asc']
+                ]
+                pagingAndSortParams.remove('sortColumn')
+                pagingAndSortParams.remove('sortDirection')
+            } else {
+                pagingAndSortParams.sortColumn = "id"
+                pagingAndSortParams.sortDirection = "asc"
+            }
+        }
+
         if (count) {
             result = AcademicDisciplineView.countAll([params: params, criteria: criteria])
         } else {
@@ -109,6 +139,8 @@ class AcademicDisciplineCompositeService extends LdmService{
      * @param content Request body
      */
     def create(Map content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         if (!content?.code) {
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
         }
@@ -122,14 +154,13 @@ class AcademicDisciplineCompositeService extends LdmService{
             majorMinorConcentration = bindmajorMinorConcentration(new MajorMinorConcentration(), content)
             majorMinorConcentrationGuid = updateGuidIfExist(majorMinorConcentration, content, majorMinorConcentrationGuid)
         }
-            // if code in the request exists - then check with the type
-            else if(AcademicDisciplineView.findByCodeAndType(content?.code,content.type)){
-                throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_EXISTS_MESSAGE, null))
-            }
-            else{
-                majorMinorConcentration = bindmajorMinorConcentration(majorMinorConcentration, content)
-                majorMinorConcentrationGuid = updateGuidIfExist(majorMinorConcentration, content, majorMinorConcentrationGuid)
-            }
+        // if code in the request exists - then check with the type
+        else if (AcademicDisciplineView.findByCodeAndType(content?.code, content.type)) {
+            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_EXISTS_MESSAGE, null))
+        } else {
+            majorMinorConcentration = bindmajorMinorConcentration(majorMinorConcentration, content)
+            majorMinorConcentrationGuid = updateGuidIfExist(majorMinorConcentration, content, majorMinorConcentrationGuid)
+        }
 
         return new AcademicDiscipline(majorMinorConcentration.code, majorMinorConcentration.description, content.type, majorMinorConcentrationGuid)
     }
@@ -141,6 +172,8 @@ class AcademicDisciplineCompositeService extends LdmService{
      * @return
      */
     def update(Map content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         String majorMinorConcentrationGuid = content?.id?.trim()?.toLowerCase()
         if (!majorMinorConcentrationGuid) {
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new NotFoundException())
@@ -172,9 +205,9 @@ class AcademicDisciplineCompositeService extends LdmService{
     private String updateGuidIfExist(MajorMinorConcentration majorMinorConcentration, Map content, String majorMinorConcentrationGuid = null) {
         // if id being sent in the request - update the guid else return the generated guid
         if (majorMinorConcentrationGuid) {
-            majorMinorConcentrationGuid = updateGuidValueByDomainKey(majorMinorConcentration.code+"^"+content.type, majorMinorConcentrationGuid, ACADEMIC_DISCIPLINE_HEDM)?.guid
+            majorMinorConcentrationGuid = updateGuidValueByDomainKey(majorMinorConcentration.code + "^" + content.type, majorMinorConcentrationGuid, ACADEMIC_DISCIPLINE_HEDM)?.guid
         } else {
-            majorMinorConcentrationGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentration.code+"^"+content.type)?.guid
+            majorMinorConcentrationGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentration.code + "^" + content.type)?.guid
         }
         majorMinorConcentrationGuid
     }
@@ -185,17 +218,18 @@ class AcademicDisciplineCompositeService extends LdmService{
      */
     def bindmajorMinorConcentration(MajorMinorConcentration majorMinorConcentration, Map content) {
         bindData(majorMinorConcentration, content, [:])
-        switch (content?.type){
-            case AcademicDisciplineType.MAJOR.value :
+        switch (content?.type) {
+            case AcademicDisciplineType.MAJOR.value:
                 majorMinorConcentration.validMajorIndicator = true
                 break
-            case AcademicDisciplineType.MINOR.value :
+            case AcademicDisciplineType.MINOR.value:
                 majorMinorConcentration.validMinorIndicator = true
                 break
-            case AcademicDisciplineType.CONCENTRATION.value :
+            case AcademicDisciplineType.CONCENTRATION.value:
                 majorMinorConcentration.validConcentratnIndicator = true
                 break
         }
         majorMinorConcentrationService.createOrUpdate(majorMinorConcentration)
     }
+
 }

@@ -1,25 +1,11 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
-
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.JoinColumns
-import javax.persistence.ManyToOne
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.SequenceGenerator
-import javax.persistence.Table
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
-import javax.persistence.Version
+import javax.persistence.*
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Address Type Validation Table
@@ -27,9 +13,17 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "STVATYP")
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
         @NamedQuery(name = "AddressType.fetchByCode",
-                query = """FROM  AddressType a WHERE a.code = :code """)
+                query = """FROM  AddressType a WHERE a.code = :code """),
+        @NamedQuery(name = "AddressType.fetchAllWithGuid",
+                query = """from AddressType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName"""),
+        @NamedQuery(name = "AddressType.fetchAllWithGuidByCodeInList",
+                query = """from AddressType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in :codes """),
+        @NamedQuery(name = "AddressType.fetchAllByCodeInList",
+                query = """from AddressType a where a.code in :codes""")
 ])
 class AddressType implements Serializable {
 
@@ -91,55 +85,9 @@ class AddressType implements Serializable {
      */
     @ManyToOne
     @JoinColumns([
-    @JoinColumn(name = "STVATYP_TELE_CODE", referencedColumnName = "STVTELE_CODE")
+            @JoinColumn(name = "STVATYP_TELE_CODE", referencedColumnName = "STVTELE_CODE")
     ])
     TelephoneType telephoneType
-
-
-    public String toString() {
-        """AddressType[
-					id=$id,
-					version=$version,
-					code=$code,
-					description=$description,
-					systemRequiredIndicator=$systemRequiredIndicator,
-					lastModified=$lastModified,
-					lastModifiedBy=$lastModifiedBy,
-					dataOrigin=$dataOrigin,
-					telephoneType=$telephoneType]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (!(o instanceof AddressType)) return false
-        AddressType that = (AddressType) o
-        if (id != that.id) return false
-        if (version != that.version) return false
-        if (code != that.code) return false
-        if (description != that.description) return false
-        if (systemRequiredIndicator != that.systemRequiredIndicator) return false
-        if (lastModified != that.lastModified) return false
-        if (lastModifiedBy != that.lastModifiedBy) return false
-        if (dataOrigin != that.dataOrigin) return false
-        if (telephoneType != that.telephoneType) return false
-        return true
-    }
-
-
-    int hashCode() {
-        int result
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (version != null ? version.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (systemRequiredIndicator != null ? systemRequiredIndicator.hashCode() : 0)
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (telephoneType != null ? telephoneType.hashCode() : 0)
-        return result
-    }
 
 
     static constraints = {
@@ -155,15 +103,4 @@ class AddressType implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
-    /**
-     * fetch AddressType based on code value
-     * @param code
-     * @return addressType
-     */
-    public static AddressType fetchByCode(String code) {
-        AddressType addressType = AddressType.withSession { session ->
-            session.getNamedQuery('AddressType.fetchByCode').setString(GeneralValidationCommonConstants.CODE, code).uniqueResult()
-        }
-        return addressType
-    }
 }

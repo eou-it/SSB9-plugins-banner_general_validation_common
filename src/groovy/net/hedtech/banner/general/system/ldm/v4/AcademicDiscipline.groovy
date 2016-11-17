@@ -11,6 +11,9 @@ class AcademicDiscipline {
     String description
     String code
 
+    //used by the genericBasicValidationService/genericComlexValidationService
+    AcademicDiscipline(){}
+
     AcademicDiscipline(String code, String description, String type, String guid) {
         this.guid = guid
         this.type = type

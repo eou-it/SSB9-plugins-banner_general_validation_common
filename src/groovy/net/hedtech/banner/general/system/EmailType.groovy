@@ -18,6 +18,10 @@ import javax.persistence.*
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
+        @NamedQuery(name = "EmailType.fetchByCodeAndWebDisplayable",
+            query = """FROM EmailType a
+                      WHERE a.code = :code
+                        AND a.displayWebIndicator = 'Y'"""),
         @NamedQuery(name = "EmailType.fetchAllWithGuid",
                 query = """from EmailType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName"""),
         @NamedQuery(name = "EmailType.fetchAllWithGuidByCodeInList",
@@ -102,4 +106,12 @@ class EmailType implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
+    public static List fetchByCodeAndWebDisplayable(String code) {
+        def emailTypes
+
+        EmailType.withSession { session ->
+            emailTypes = session.getNamedQuery('EmailType.fetchByCodeAndWebDisplayable').setString('code', code).list()
+        }
+        return emailTypes
+    }
 }

@@ -85,6 +85,8 @@ class AcademicLevelCompositeService extends LdmService {
      */
     @Transactional(readOnly = true)
     AcademicLevel get(String guid) {
+        getAcceptVersion(VERSIONS)
+
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME, guid)
 
         Level level = fetchLevelByGuid(guid)

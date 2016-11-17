@@ -96,6 +96,8 @@ class SubjectCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     SubjectDetail get(String guid) {
+        getAcceptVersion(VERSIONS)
+
         Subject subject = fetchSubjectByGuid(guid)
         if (!subject) {
             throw new ApplicationException("subject", new NotFoundException())

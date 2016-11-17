@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v1
 
@@ -16,6 +16,10 @@ class AcademicLevel {
     Metadata metadata
     String guid
 
+    AcademicLevel(){
+        //used by GenericBasicValidationService
+        level = new Level()
+    }
 
     AcademicLevel(Level level, String guid, Metadata metadata) {
         this.level = level

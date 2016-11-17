@@ -1,29 +1,32 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
 
-import net.hedtech.banner.general.system.PhoneType
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Decorator for "phone-types" API
  */
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 class PhoneTypeDecorator {
-    @Delegate
-    private final PhoneType phoneType
-    Map<String,String> type
 
-    PhoneTypeDecorator(PhoneType phoneType,Map type){
-        this.phoneType = phoneType
-        this.type = type
+    String code
+    String description
+    String id
+    String phoneType
+
+    PhoneTypeDecorator(String code, String description, String guid, String hedmPhoneType) {
+        this.code = code
+        this.description = description
+        this.id = guid
+        this.phoneType = hedmPhoneType
     }
 
-
-    @Override
-    public String toString() {
-        return """PhoneTypeDecorator{ +
-                phoneTypeView = $phoneType ,
-                type = $type
-                }"""
+    Map getDetail() {
+        return [id: this.id]
     }
+
 }

@@ -67,4 +67,17 @@ class VisaTypeServiceTests extends BaseIntegrationTestCase {
         assertTrue visaType.size() > 0
     }
 
+    @Test
+    void testFetchAllWithGuidByCodeInList(){
+        List<VisaType> visaTypes = visaTypeService.list()
+        def visaTypeGuids = visaTypeService.fetchAllWithGuidByCodeInList(visaTypes.code)
+        assertTrue visaTypeGuids.size()>0
+    }
+
+    @Test
+    void testFetchAllWithGuid(){
+        def visaTypes = visaTypeService.fetchAllWithGuid()
+        assertTrue visaTypes.size()>0
+    }
+
 }

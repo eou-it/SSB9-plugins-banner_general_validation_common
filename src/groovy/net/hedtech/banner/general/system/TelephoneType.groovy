@@ -1,21 +1,12 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.SequenceGenerator
-import javax.persistence.Table
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
-import javax.persistence.Version
-import org.hibernate.annotations.Type
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
+import javax.persistence.*
 
 /**
  * Telephone Type Validation Table.
@@ -23,11 +14,17 @@ import org.hibernate.annotations.Type
 
 @Entity
 @Table(name = "STVTELE")
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
-        @NamedQuery(name = "TelephoneType.fetchByCode",query = """FROM TelephoneType a WHERE a.code = :code""")
+        @NamedQuery(name = "TelephoneType.fetchByCode",query = """FROM TelephoneType a WHERE a.code = :code"""),
+        @NamedQuery(name = "TelephoneType.fetchAllWithGuid",
+                query = """from TelephoneType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName"""),
+        @NamedQuery(name = "TelephoneType.fetchAllWithGuidByCodeInList",
+                query = """from TelephoneType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in :codes"""),
+        @NamedQuery(name = "TelephoneType.fetchAllByCodeInList",
+                query = """from TelephoneType a where a.code in :codes""")
 ])
-
-
 class TelephoneType implements Serializable {
 
     /**
@@ -78,46 +75,6 @@ class TelephoneType implements Serializable {
     String dataOrigin
 
 
-
-    public String toString() {
-        """TelephoneType[
-					id=$id,
-					version=$version,
-					code=$code,
-					description=$description,
-					lastModified=$lastModified,
-					lastModifiedBy=$lastModifiedBy,
-					dataOrigin=$dataOrigin]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (!(o instanceof TelephoneType)) return false
-        TelephoneType that = (TelephoneType) o
-        if (id != that.id) return false
-        if (version != that.version) return false
-        if (code != that.code) return false
-        if (description != that.description) return false
-        if (lastModified != that.lastModified) return false
-        if (lastModifiedBy != that.lastModifiedBy) return false
-        if (dataOrigin != that.dataOrigin) return false
-        return true
-    }
-
-
-    int hashCode() {
-        int result
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (version != null ? version.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        return result
-    }
-
     static constraints = {
         code(nullable: false, maxSize: 4)
         description(nullable: false, maxSize: 30)
@@ -128,18 +85,5 @@ class TelephoneType implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
-
-    /**
-     * fetching TelephoneType details based on code
-     * @param code
-     * @return
-     */
-    public static TelephoneType fetchByCode(String code){
-       TelephoneType telephoneType = TelephoneType.withSession{ session ->
-            session.getNamedQuery('TelephoneType.fetchByCode').setString('code',code).uniqueResult()
-        }
-        return telephoneType
-
-    }
 
 }

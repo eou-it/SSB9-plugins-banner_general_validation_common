@@ -1,12 +1,15 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.IntegrationConfiguration
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.system.TelephoneType
+import net.hedtech.banner.general.system.TelephoneTypeService
 import net.hedtech.banner.general.system.ldm.v4.PhoneTypeDecorator
-import net.hedtech.banner.restfulapi.RestfulApiValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -17,13 +20,12 @@ import org.junit.Test
  */
 class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase {
 
- def phoneTypeCompositeService
+    def phoneTypeCompositeService
+    TelephoneTypeService telephoneTypeService
 
     def invalid_resource_guid
-    def success_guid
-    def invalid_guid
     def i_success_input_content
-    
+
     @Before
     public void setUp() {
         formContext = ['GUAGMNU']
@@ -33,9 +35,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
 
     private void initializeDataReferences() {
         invalid_resource_guid=GlobalUniqueIdentifier.findByLdmName('subjects')
-        success_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyInList('phone-types',net.hedtech.banner.general.system.PhoneType.findAll()?.code)
-        invalid_guid=GlobalUniqueIdentifier.findByLdmNameAndDomainKeyNotInList('phone-types',net.hedtech.banner.general.system.PhoneType.findAll()?.code)
-        i_success_input_content = [code: 'KKR', description: 'Test Description',type:[organization:[phoneType:"billing"]]]
+        i_success_input_content = [code: 'KKR', description: 'Test Description', phoneType:"billing"]
     }
 
     @After
@@ -48,48 +48,46 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
      */
     @Test
     void testCount(){
-        def expectedCount= phoneTypeCompositeService.count([:])
-        assertNotNull expectedCount
-        def actualCount= net.hedtech.banner.general.system.PhoneType.count()
+        def actualCount = phoneTypeCompositeService.count().toInteger()
         assertNotNull actualCount
-        assertEquals expectedCount,actualCount
+
+        Map<String, String> bannerPhoneTypeToHedmPhoneTypeMap = phoneTypeCompositeService.getBannerPhoneTypeToHedmV6PhoneTypeMap()
+        assertFalse bannerPhoneTypeToHedmPhoneTypeMap.isEmpty()
+
+        List<TelephoneType> phoneTypeList = telephoneTypeService.fetchAllByCodeInList(bannerPhoneTypeToHedmPhoneTypeMap.keySet())
+        assertFalse phoneTypeList.isEmpty()
+        assertEquals phoneTypeList.size(), actualCount
     }
 
-    /**
-     * This test case is checking for PhoneTypeCompositeService list method passing with invalid sort order
-     */
-    @Test
-    void testListWithInvalidSortOrder(){
-        shouldFail(RestfulApiValidationException) {
-            def map = [order:'test']
-            phoneTypeCompositeService.list(map)
-        }
-    }
-
-    /**
-     * This test case is checking for PhoneTypeCompositeService list method passing with invalid sort field
-     */
-    @Test
-    void testListWithInvalidSortField(){
-        shouldFail(RestfulApiValidationException) {
-            def map = [sort:'test']
-            phoneTypeCompositeService.list(map)
-        }
-    }
 
     /**
      * This test case is checking for PhoneTypeCompositeService list method without pagination
      */
     @Test
     void testListWithoutPaginationParams() {
-        List phoneTypes = phoneTypeCompositeService.list([:])
-        assertNotNull phoneTypes
+        List phoneTypes = phoneTypeCompositeService.list(params)
         assertFalse phoneTypes.isEmpty()
-        List actualTypes= net.hedtech.banner.general.system.PhoneType.list(max:'500')
-        assertNotNull actualTypes
-        assertFalse actualTypes.isEmpty()
-        assertTrue phoneTypes.code.containsAll(actualTypes.code)
-        assertEquals phoneTypes.size() , actualTypes.size()
+
+        Map<String, String> bannerPhoneTypeToHedmPhoneTypeMap = phoneTypeCompositeService.getBannerPhoneTypeToHedmV6PhoneTypeMap()
+        assertFalse bannerPhoneTypeToHedmPhoneTypeMap.isEmpty()
+
+        List entities = telephoneTypeService.fetchAllWithGuidByCodeInList(bannerPhoneTypeToHedmPhoneTypeMap.keySet(), 500, 0)
+        assertFalse entities.isEmpty()
+
+        assertEquals phoneTypes.size(), entities.size()
+        Iterator it1 = phoneTypes.iterator()
+        Iterator it2 = entities.iterator()
+
+        while (it1.hasNext() && it2.hasNext()) {
+            PhoneTypeDecorator phoneTypeDecorator = it1.next()
+            List actualEntities = it2.next()
+            TelephoneType telephoneType = actualEntities.getAt(0)
+            assertEquals telephoneType.code, phoneTypeDecorator.code
+            assertEquals telephoneType.description, phoneTypeDecorator.description
+            GlobalUniqueIdentifier globalUniqueIdentifier = actualEntities.getAt(1)
+            assertEquals globalUniqueIdentifier.guid, phoneTypeDecorator.id
+            assertEquals phoneTypeDecorator.phoneType, bannerPhoneTypeToHedmPhoneTypeMap.get(telephoneType.code)
+        }
     }
 
     /**
@@ -102,6 +100,25 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         assertNotNull phoneTypes
         assertFalse phoneTypes.isEmpty()
         assertTrue phoneTypes.size() == 4
+    }
+
+    @Test
+    public void testOffsetCriteria(){
+        List<PhoneTypeDecorator> phoneTypeDetailses = phoneTypeCompositeService.list(params)
+        assertNotNull phoneTypeDetailses
+        params.offset='2'
+        List phoneTypeCompositeServiceNew = phoneTypeCompositeService.list(params)
+        assertNotNull phoneTypeCompositeServiceNew
+
+        PhoneTypeDecorator phoneTypeDetails = phoneTypeDetailses.get(2)
+        assertNotNull phoneTypeDetails
+        PhoneTypeDecorator phoneTypeDetailsWithOffset = phoneTypeCompositeServiceNew.get(0)
+        assertNotNull phoneTypeDetails
+
+        assertEquals phoneTypeDetails.id,phoneTypeDetailsWithOffset.id
+        assertEquals phoneTypeDetails.code,phoneTypeDetailsWithOffset.code
+        assertEquals phoneTypeDetails.description,phoneTypeDetailsWithOffset.description
+
     }
 
 
@@ -134,12 +151,17 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
      */
     @Test
     void testGetWithValidGuid(){
-        assertNotNull success_guid //success_guid variable is defined at the top of the class
-        def  phoneType= phoneTypeCompositeService.get(success_guid?.guid)
-        assertNotNull phoneType
-        assertNotNull phoneType.code
-        assertNotNull phoneType.id
-        assertNotNull phoneType.type
+        List list = phoneTypeCompositeService.list([max:'1'])
+        assertFalse list.isEmpty()
+        PhoneTypeDecorator phoneTypeDetails = list.get(0)
+        assertNotNull phoneTypeDetails
+
+        PhoneTypeDecorator newPhoneTypeDetails = phoneTypeCompositeService.get(phoneTypeDetails.id)
+        assertNotNull newPhoneTypeDetails
+        assertEquals phoneTypeDetails.code,newPhoneTypeDetails.code
+        assertEquals phoneTypeDetails.description,newPhoneTypeDetails.description
+        assertEquals phoneTypeDetails.id,newPhoneTypeDetails.id
+        assertEquals newPhoneTypeDetails.phoneType, phoneTypeDetails.phoneType
     }
 
    /**
@@ -147,9 +169,8 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
      */
     @Test
     void testGetWithInValidGuid(){
-        assertNotNull success_guid //success_guid variable is defined at the top of the class
         try {
-            phoneTypeCompositeService.get(success_guid?.guid + '2')
+            phoneTypeCompositeService.get('invalid_guid')
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
@@ -160,48 +181,15 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
      */
     @Test
     void testGetWithNotMappedGuid(){
-        assertNotNull invalid_guid //success_guid variable is defined at the top of the class
+        PhoneTypeDecorator phoneType = phoneTypeCompositeService.create(i_success_input_content)
+        assertNotNull phoneType
         try {
-            phoneTypeCompositeService.get(invalid_guid?.guid)
+            phoneTypeCompositeService.get(phoneType.id)
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
     }
 
-    /**
-     * <p> Test to check the sort order and sorting field on PhoneTypeCompositeService</p>
-     * */
-    @Test
-    public void testSortOrder(){
-        params.order='DESC'
-        params.sort='code'
-        List list = phoneTypeCompositeService.list(params)
-        String tempParam
-        list.each{
-            phoneType->
-                String code=phoneType.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)>0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-
-        params.clear()
-        params.order='ASC'
-        params.sort='code'
-        list = phoneTypeCompositeService.list(params)
-        tempParam=null
-        list.each{
-            phoneType->
-                String code=phoneType.code
-                if(!tempParam){
-                    tempParam=code
-                }
-                assertTrue tempParam.compareTo(code)<0 || tempParam.compareTo(code)==0
-                tempParam=code
-        }
-    }
 
     @Test
     void testCreate() {
@@ -248,7 +236,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
        PhoneTypeDecorator i_phoneType = phoneTypeCompositeService.create(i_success_input_content)
        assertNotNull i_phoneType
        assertNotNull i_phoneType.id
-       def u_success_input_content = i_success_input_content.clone()
+        Map u_success_input_content = i_success_input_content.clone()
        u_success_input_content.code = 'TESTC'
        u_success_input_content.id = i_phoneType.id
        u_success_input_content.description = 'Test phone type description'
@@ -279,4 +267,40 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         assertEquals u_phoneType.description, i_success_input_content.description
         assertEquals u_phoneType.id, i_success_input_content.id.toLowerCase()
     }
+
+    @Test
+    void testGetPhoneTypeCodeToGuidMap() {
+        PhoneTypeDecorator phoneType = phoneTypeCompositeService.create(i_success_input_content)
+        assertNotNull phoneType
+        assertNotNull phoneType.id
+        Map<String,String> phoneTypeCodeToGuidMap = phoneTypeCompositeService.getPhoneTypeCodeToGuidMap([phoneType.code])
+        assertFalse phoneTypeCodeToGuidMap.isEmpty()
+        assertTrue phoneTypeCodeToGuidMap.containsKey(phoneType.code)
+        assertEquals phoneType.id, phoneTypeCodeToGuidMap.get(phoneType.code)
+    }
+
+    @Test
+    void testGetBannerPhoneTypeToHedmV6PhoneTypeMap() {
+        TelephoneType telephoneType = TelephoneType.findByCode("HOME")
+        assertNotNull telephoneType
+        IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PHONE_TYPE_SETTING_NAME_V6, telephoneType.code)
+        assertNotNull intConf
+        def map = phoneTypeCompositeService.getBannerPhoneTypeToHedmV6PhoneTypeMap()
+        assertNotNull map
+        assertTrue map.containsKey(telephoneType.code)
+        assertEquals map.get(telephoneType.code), HedmPhoneType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
+    }
+
+    @Test
+    void testGetBannerPhoneTypeToHedmV3PhoneTypeMap() {
+        TelephoneType telephoneType = TelephoneType.findByCode("HOME")
+        assertNotNull telephoneType
+        IntegrationConfiguration intConf = IntegrationConfiguration.fetchByProcessCodeAndSettingNameAndValue(GeneralValidationCommonConstants.PROCESS_CODE, GeneralValidationCommonConstants.PHONE_TYPE_SETTING_NAME_V3, telephoneType.code)
+        assertNotNull intConf
+        def map = phoneTypeCompositeService.getBannerPhoneTypeToHedmV3PhoneTypeMap()
+        assertNotNull map
+        assertTrue map.containsKey(telephoneType.code)
+        assertEquals map.get(telephoneType.code), HedmPhoneType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
+    }
+
 }

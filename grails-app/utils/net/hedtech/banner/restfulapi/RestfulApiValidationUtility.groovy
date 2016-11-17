@@ -75,6 +75,8 @@ class RestfulApiValidationUtility {
             } else {
                 params.offset = "0"
             }
+        } else {
+            params << [offset: "0"]
         }
     }
 

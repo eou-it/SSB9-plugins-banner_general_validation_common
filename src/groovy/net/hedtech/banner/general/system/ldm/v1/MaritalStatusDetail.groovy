@@ -46,4 +46,8 @@ class MaritalStatusDetail {
                     metadata=$metadata,
                     parentCategory=$parentCategory]"""
     }
+
+    public getDetail() {
+        return [id: guid]
+    }
 }

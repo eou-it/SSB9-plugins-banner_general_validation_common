@@ -10,6 +10,11 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVACTP")
+@NamedQueries(value = [
+        @NamedQuery(name = "ActivityType.fetchAllWithGuid", query = """ FROM ActivityType n,GlobalUniqueIdentifier g where g.ldmName = :activityType AND g.domainKey = n.code """),
+        @NamedQuery(name = "ActivityType.fetchAllWithGuidByCodeInList", query = """ FROM ActivityType n,GlobalUniqueIdentifier g where g.ldmName = :activityType AND g.domainKey = n.code and n.code in :codes """),
+        @NamedQuery(name = "ActivityType.fetchAllByCodeInList", query = """ FROM ActivityType n where n.code in :codes """)
+])
 class ActivityType implements Serializable {
 
     /**

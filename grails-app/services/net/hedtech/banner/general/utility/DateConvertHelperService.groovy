@@ -4,10 +4,13 @@
 package net.hedtech.banner.general.utility
 
 import groovy.sql.Sql
+import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import org.apache.log4j.Logger
 
 import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 
 /**
@@ -79,9 +82,34 @@ class DateConvertHelperService {
      * @return date object of server running it
      */
       static Date convertUTCStringToServerDate(String utc) {
+          Date utcDate
         if(!utc){
             return null
         }
-        return new SimpleDateFormat(GeneralValidationCommonConstants.UTC_DATE_FORMAT).parse(utc)
+          try{
+              utcDate = new SimpleDateFormat(GeneralValidationCommonConstants.UTC_DATE_FORMAT).parse(utc)
+          }catch (ParseException pe){
+              throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
+          }
+        return utcDate
+    }
+
+    static Date convertDateStringToServerDate(String date) {
+        Date serverDate
+        if(!date){
+            return null
+        }
+        if (!date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})")){
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
+        }
+
+        try{
+            SimpleDateFormat dateFormat = new SimpleDateFormat(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE)
+            dateFormat.setLenient(false)
+            serverDate = dateFormat.parse(date)
+        }catch (ParseException pe){
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
+        }
+        return serverDate
     }
 }

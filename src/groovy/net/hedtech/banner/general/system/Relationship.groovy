@@ -1,22 +1,9 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import javax.management.relation.Relation
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.NamedQueries
-import javax.persistence.NamedQuery
-import javax.persistence.SequenceGenerator
-import javax.persistence.Table
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
-import javax.persistence.Version
-import org.hibernate.annotations.Type
+import javax.persistence.*
 
 /**
  * Relationship Validation Table
@@ -26,7 +13,9 @@ import org.hibernate.annotations.Type
 @Table(name = "STVRELT")
 @NamedQueries(value = [
         @NamedQuery(name = "Relationship.fetchByCode",
-                query = """ FROM Relationship a WHERE a.code = :code """)
+                query = """ FROM Relationship a WHERE a.code = :code """),
+        @NamedQuery(name = "Relationship.fetchAllByCodeInList",
+                query = """from Relationship a where a.code in :codes""")
 ])
 
 class Relationship implements Serializable {

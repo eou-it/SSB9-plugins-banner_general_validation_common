@@ -67,6 +67,11 @@ class GlobalUniqueIdentifierServiceIntegrationTests extends BaseIntegrationTestC
         }
     }
 
+    @Test
+    void testFetchAllByLdmNameAndDomainIds(){
+        assertEquals(GlobalUniqueIdentifier.findAllByLdmName('academic-levels'), globalUniqueIdentifierService.fetchAllByLdmNameAndDomainIds('academic-levels', GlobalUniqueIdentifier.findAllByLdmName('academic-levels').domainId))
+    }
+
     private GlobalUniqueIdentifier createNewGlobalUniqueIdentifier() {
         GlobalUniqueIdentifier globalUniqueIdentifier = new GlobalUniqueIdentifier(
                 guid: i_success_guid,

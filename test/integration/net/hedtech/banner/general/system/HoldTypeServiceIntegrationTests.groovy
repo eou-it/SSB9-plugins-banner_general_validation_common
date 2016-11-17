@@ -2,6 +2,11 @@
  Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
+import net.hedtech.banner.general.overall.ldm.LdmService
+import net.hedtech.banner.general.system.ldm.v1.Metadata
+import net.hedtech.banner.general.system.ldm.v1.RestrictionType
+import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -192,4 +197,26 @@ class HoldTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         Map args = [id: "BA", pluralizedResourceName: "holdTypes"]
         return args
     }
+    //start-for Version 6 Schema support -PERSON-HOLD-TYPES
+    @Test
+    void testHoldTypeListV6() {
+        Metadata i_success_metadata =[dataOrigin: 'Banner']
+        List<HoldType> list = holdTypeService.list()
+        RestrictionType restrictionType_oldversion = new RestrictionType(list[0],"adasdd",i_success_metadata)
+        list.each { holdType ->
+            RestrictionType restrictionType = new RestrictionType(holdType,"adasdd",i_success_metadata)
+            if (holdType.accountsReceivableHoldIndicator&&!holdType.registrationHoldIndicator&&!holdType.applicationHoldIndicator
+                    &&!holdType.complianceHoldIndicator&&!holdType.enrollmentVerificationHoldIndicator&&
+                    !holdType.gradeHoldIndicator&&!holdType.transcriptHoldIndicator&&!holdType.graduationHoldIndicator) {
+               assertEquals(restrictionType.category,"financial")
+           }
+        }
+        assertTrue list.size() > 0
+        assertTrue list[0] instanceof HoldType
+
+        assertNotNull restrictionType_oldversion.toString()
+        assertEquals(restrictionType_oldversion.guid,"adasdd")
+        assertEquals(restrictionType_oldversion.category,"academic")
+         }
+    //end-for Version 6 Schema support -PERSON-HOLD-TYPES
 }

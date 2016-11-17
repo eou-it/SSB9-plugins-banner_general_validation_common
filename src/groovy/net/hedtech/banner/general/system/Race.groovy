@@ -1,10 +1,8 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
-import net.hedtech.banner.general.system.ldm.v4.RaceRacialCategory
 import org.apache.commons.lang.StringUtils
 
 import javax.persistence.*
@@ -16,21 +14,22 @@ import javax.persistence.*
 @Entity
 @Table(name = "GV_GORRACE")
 @NamedQueries(value = [
-@NamedQuery(name = "Race.fetchAllLikeRaceOrDescription",
-query = """FROM  Race a
-		   WHERE a.race LIKE :filter
-		      OR a.description LIKE :filter
-		   ORDER BY a.race
-	"""),
-@NamedQuery(name = "Race.fetchAllByRegulatoryRace",
-query = """FROM Race a
-           WHERE a.regulatoryRace.code = :regulatoryRaceCode
-           order by a.description"""),
-@NamedQuery(name = "Race.fetchByRace",query = """FROM Race a WHERE a.race = :race"""),
-        @NamedQuery(name = "Race.fetchRaceDetailsCount",
-                query = """select count(*) from Race r,IntegrationConfiguration i where r.race = i.value and i.settingName = :settingName and i.processCode = :processCode and i.translationValue in (:translationValueList)"""),
-
-
+        @NamedQuery(name = "Race.fetchAllLikeRaceOrDescription",
+                query = """  FROM  Race a
+		                     WHERE a.race LIKE :filter
+		                     OR a.description LIKE :filter
+		                     ORDER BY a.race """),
+        @NamedQuery(name = "Race.fetchAllByRegulatoryRace",
+                query = """ FROM Race a
+                            WHERE a.regulatoryRace.code = :regulatoryRaceCode
+                            order by a.description"""),
+        @NamedQuery(name = "Race.fetchByRace", query = """FROM Race a WHERE a.race = :race"""),
+        @NamedQuery(name = "Race.fetchAllWithGuid",
+                query = """from Race a , GlobalUniqueIdentifier b where a.race = b.domainKey and b.ldmName = :ldmName"""),
+        @NamedQuery(name = "Race.fetchAllWithGuidByRaceInList",
+                query = """from Race a , GlobalUniqueIdentifier b where a.race = b.domainKey and b.ldmName = :ldmName and a.race in :races """),
+        @NamedQuery(name = "Race.fetchAllByRaceInList",
+                query = """from Race a where a.race in :races""")
 
 ])
 class Race implements Serializable {
@@ -205,55 +204,5 @@ class Race implements Serializable {
         return result
     }
 
-    /**
-     * fetch Race details which are mapped to goriccr setting otherwise
-     * @param content
-     * @return
-     */
-    def static fetchRaceDetails(def content) {
-        Race.withSession { session ->
-            String query = RaceService.RACE_QUERY
-            if (content.sort) {
-                def order = content.order ?: 'asc'
-                query += " order by LOWER(r.$content.sort) $order"
-            }
-            def raceQuery = session.createQuery(query).
-                    setString(GeneralValidationCommonConstants.SETTING_NAME, GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY).
-                    setString(GeneralValidationCommonConstants.PROCESS_CODE_NAME, GeneralValidationCommonConstants.PROCESS_CODE).
-                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, RaceRacialCategory.RACE_RACIAL_CATEGORY).
-                    setMaxResults(content.max as Integer).setFirstResult((content?.offset ?: '0') as Integer)
-
-            return  raceQuery.list()
-        }
-    }
-
-    /**
-     *  return count of races which are mapped to goriccr setting
-     * @param content
-     * @return
-     */
-    def static fetchRaceDetailsCount() {
-      def count =  Race.withSession { session ->
-            session.getNamedQuery('Race.fetchRaceDetailsCount').
-                    setString(GeneralValidationCommonConstants.SETTING_NAME, GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY).
-                    setString(GeneralValidationCommonConstants.PROCESS_CODE_NAME, GeneralValidationCommonConstants.PROCESS_CODE).
-                    setParameterList(GeneralValidationCommonConstants.TRANSLATION_VALUE, RaceRacialCategory.RACE_RACIAL_CATEGORY).uniqueResult()
-
-        }
-        return count;
-    }
-
-    /**
-     * fetching Race details based on code
-     * @param code
-     * @return
-     */
-    public static Race fetchByRace(String racialCode){
-        Race race = Race.withSession{ session ->
-            session.getNamedQuery('Race.fetchByRace').setString('race',racialCode).uniqueResult()
-        }
-        return race
-
-    }
 
 }

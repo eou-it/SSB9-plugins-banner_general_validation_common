@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
@@ -82,6 +82,7 @@ class LdmService {
         LdmService.log.debug("ldmEnumeration PutCount --" + sessionFactory.getStatistics().getSecondLevelCacheStatistics(IntegrationConfiguration.LDM_CACHE_REGION_NAME).getPutCount())
         return integrationConfig
     }
+
 
     List<IntegrationConfiguration> findAllByProcessCodeAndSettingName(String processCode, String settingName) {
         List<IntegrationConfiguration> integrationConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(processCode, settingName)
@@ -239,7 +240,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Accept header
      */
-    private static String getResponseRepresentationVersion() {
+    protected static String getResponseRepresentationVersion() {
         String version
         String acceptHeader = responseBodyMediaType()
         if (acceptHeader) {
@@ -281,9 +282,10 @@ class LdmService {
         List<String> sortedApiVersions = apiVersions?.sort(false)
         String representationVersion = getResponseRepresentationVersion()
         if (sortedApiVersions) {
-            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+            if (representationVersion == null) {
                 // Assume latest (current) version
                 representationVersion = sortedApiVersions.last()
+                setRequestAttributeOverwriteMediaType(representationVersion)
             } else {
                 int index = sortedApiVersions.findLastIndexOf { it <= representationVersion }
                 if (index != -1) {
@@ -311,7 +313,7 @@ class LdmService {
      *
      * @return version (v1,v2 so on) extracted from Content-Type header
      */
-    private static String getRequestRepresentationVersion() {
+    protected static String getRequestRepresentationVersion() {
         String version
         String contentTypeHeader = requestBodyMediaType()
         if (contentTypeHeader) {
@@ -338,7 +340,7 @@ class LdmService {
         List<String> sortedApiVersions = apiVersions?.sort(false)
         String representationVersion = getRequestRepresentationVersion()
         if (sortedApiVersions) {
-            if (representationVersion == null || representationVersion > sortedApiVersions.last()) {
+            if (representationVersion == null) {
                 // Assume latest (current) version
                 representationVersion = sortedApiVersions.last()
             } else {
@@ -360,7 +362,24 @@ class LdmService {
 
     private static String responseBodyMediaType() {
         HttpServletRequest request = getHttpServletRequest()
-        return request?.getHeader("Accept")
+        Enumeration<String> values = request.getHeaders("Accept")
+        if(values){
+            String accept
+            while (values.hasMoreElements()){
+                accept = values.nextElement()
+            }
+            return accept
+        }else{
+            return request?.getHeader("Accept")
+        }
+    }
+
+
+    private static void setRequestAttributeOverwriteMediaType(String version) {
+        HttpServletRequest request = getHttpServletRequest()
+        if (request.getAttribute("overwriteMediaTypeHeader") == null) {
+            request.setAttribute("overwriteMediaTypeHeader", "application/vnd.hedtech.integration.${version}+json")
+        }
     }
 
 
@@ -377,11 +396,14 @@ class LdmService {
      * Used to bind map properties onto grails domains.
      * Can provide an exclusion and inclusion list in the third param.
      */
-    public void bindData(def domain, Map properties, Map includeExcludeMap) {
-        if (includeExcludeMap?.exclude instanceof List) {
-            includeExcludeMap.exclude.addAll(globalBindExcludes)
-        } else {
-            includeExcludeMap.put('exclude', globalBindExcludes)
+    public void bindData(
+            def domain, Map properties, Map includeExcludeMap, boolean checkForErrors = true, boolean globalBinds = true) {
+        if (globalBinds) {
+            if (includeExcludeMap?.exclude instanceof List) {
+                includeExcludeMap.exclude.addAll(globalBindExcludes)
+            } else {
+                includeExcludeMap.put('exclude', globalBindExcludes)
+            }
         }
         grailsWebDataBinder.bind(domain,
                 properties as SimpleMapDataBindingSource,
@@ -389,7 +411,7 @@ class LdmService {
                 includeExcludeMap?.include,
                 includeExcludeMap?.exclude,
                 null)
-        if (domain.hasErrors()) {
+        if (checkForErrors && domain.hasErrors()) {
             throw new ApplicationException("${domain.class.simpleName}", new ValidationException("${domain.class.simpleName}", domain.errors))
         }
     }
@@ -423,4 +445,8 @@ class LdmService {
         globalUniqueIdentifierService.update(newEntity)
     }
 
+
+    public static String generateGUID() {
+        return GlobalUniqueIdentifier.generateGUID()
+    }
 }

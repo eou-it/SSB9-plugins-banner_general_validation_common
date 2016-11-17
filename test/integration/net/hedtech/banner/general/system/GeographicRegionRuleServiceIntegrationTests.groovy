@@ -34,7 +34,7 @@ class GeographicRegionRuleServiceIntegrationTests extends BaseIntegrationTestCas
     }
 
     void initializeTestDataForReferences() {
-        insertContent = [regionCode: 'BALT/WASH', divisionCode: 'ALUM', regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
+        insertContent = [region:  GeographicRegion.findByCode('BALT/WASH'), division: GeographicDivision.findByCode('ALUM'), regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
     }
 
     @Test
@@ -65,17 +65,26 @@ class GeographicRegionRuleServiceIntegrationTests extends BaseIntegrationTestCas
     void testFindByGuid() {
         GeographicRegionRule geographicRegionRule = geographicRegionRuleService.createOrUpdate(newGeographicRegionRule(insertContent))
         assertNotNull geographicRegionRule
-        def guid = GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicRegionRule.regionCode + '-^' + geographicRegionRule.divisionCode, GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME).guid
+        def guid = GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicRegionRule.region.code + '-^' + geographicRegionRule.division.code, GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME).guid
         assertNotNull guid
         def geographicArea = geographicRegionRuleService.fetchByGuid(guid)
-        assertEquals geographicArea.getAt(0), geographicRegionRule.regionCode + '-' + geographicRegionRule.divisionCode
-        GeographicRegion geographicRegion = GeographicRegion.findByCode(geographicRegionRule.regionCode)
+        assertEquals geographicArea.getAt(0), geographicRegionRule.region.code + '-' + geographicRegionRule.division.code
+        GeographicRegion geographicRegion = GeographicRegion.findByCode(geographicRegionRule.region.code)
         assertNotNull geographicRegion
         assertEquals geographicArea.getAt(4), GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicRegion.code, GeneralValidationCommonConstants.GEOGRAPHIC_REGION_LDM_NAME).guid
-        GeographicDivision geographicDivision = GeographicDivision.findByCode(geographicRegionRule.divisionCode)
+        GeographicDivision geographicDivision = GeographicDivision.findByCode(geographicRegionRule.division.code)
         assertNotNull geographicDivision
         assertEquals geographicArea.getAt(3), GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicDivision.code, GeneralValidationCommonConstants.GEOGRAPHIC_DIVISION_LDM_NAME).guid
         assertEquals geographicArea.getAt(1), geographicRegion.description + '-' + geographicDivision.description
+    }
+
+    @Test
+    void testFetchAllByGuidInList(){
+       List guid = GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME)?.guid
+       List data = geographicRegionRuleService.fetchAllByGuidInList(guid)
+
+        println guid.size()
+        println data.size()
     }
 
     private GeographicRegionRule newGeographicRegionRule(Map content) {

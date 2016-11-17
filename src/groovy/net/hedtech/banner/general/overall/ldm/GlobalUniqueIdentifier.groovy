@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
@@ -44,6 +44,10 @@ import javax.persistence.*
                 query = """FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName
                                 AND a.domainId =   :id  """),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds",
+                query = """FROM GlobalUniqueIdentifier a
+                                WHERE a.ldmName = :ldmName
+                                AND a.domainId in (:ids)  """),
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchCountByLdmName",
                 query = """SELECT count(a) FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName"""),
@@ -51,7 +55,17 @@ import javax.persistence.*
                 query = """FROM GlobalUniqueIdentifier a
                                 WHERE a.ldmName = :ldmName"""),
         @NamedQuery(name = "GlobalUniqueIdentifier.fetchAllByGuidInList",
-                query = """FROM GlobalUniqueIdentifier where guid in (:guids))""")
+                query = """FROM GlobalUniqueIdentifier where guid in (:guids)"""),
+        @NamedQuery(name = "GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyInList",
+                query = """FROM GlobalUniqueIdentifier where ldmName = :ldmName and domainKey in (:domainKeys)""")
+])
+@NamedNativeQueries([
+        @NamedNativeQuery(name = "GlobalUniqueIdentifier.generateGUID",
+        query = """SELECT GOKGUID.get_uuid FROM DUAL""",
+        resultSetMapping = "GlobalUniqueIdentifier.guid")
+])
+@SqlResultSetMappings([
+        @SqlResultSetMapping(name = "GlobalUniqueIdentifier.guid")
 ])
 class GlobalUniqueIdentifier implements Serializable {
     /**
@@ -222,6 +236,30 @@ class GlobalUniqueIdentifier implements Serializable {
         if(guids){
             GlobalUniqueIdentifier.withSession{session ->
                 globalUniqueIdentifierList = session.getNamedQuery("GlobalUniqueIdentifier.fetchAllByGuidInList").setParameterList('guids', guids).list()
+            }
+        }
+        return globalUniqueIdentifierList
+    }
+
+    public static String generateGUID(){
+        return GlobalUniqueIdentifier.withSession{ session ->
+            session.getNamedQuery("GlobalUniqueIdentifier.generateGUID").uniqueResult()
+        }
+    }
+
+    public static List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyInList(String ldmName, List<String> domainKeys){
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = []
+        GlobalUniqueIdentifier.withSession{session ->
+            globalUniqueIdentifierList = session.getNamedQuery("GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyInList").setString('ldmName', ldmName).setParameterList('domainKeys', domainKeys).list()
+        }
+        return globalUniqueIdentifierList
+    }
+
+    public static List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainIds(String ldmName, List<Long> domainIds){
+        List<GlobalUniqueIdentifier> globalUniqueIdentifierList = []
+        if(ldmName && domainIds){
+            GlobalUniqueIdentifier.withSession{session ->
+                globalUniqueIdentifierList = session.getNamedQuery("GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainIds").setString('ldmName', ldmName).setParameterList('ids', domainIds).list()
             }
         }
         return globalUniqueIdentifierList

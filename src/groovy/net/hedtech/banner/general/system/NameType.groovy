@@ -1,9 +1,11 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import org.hibernate.annotations.Type
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
 import javax.persistence.*
 
 /**
@@ -12,6 +14,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "GTVNTYP")
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
+@NamedQueries(value = [
+        @NamedQuery(name = "NameType.fetchAllWithGuid", query = """ FROM NameType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code """),
+        @NamedQuery(name = "NameType.fetchAllWithGuidByCodeInList", query = """ FROM NameType n,GlobalUniqueIdentifier g where g.ldmName = :ldmName AND g.domainKey = n.code and n.code in :codes """),
+        @NamedQuery(name = "NameType.fetchAllByCodeInList", query = """ FROM NameType n where n.code in :codes """)
+])
 class NameType implements Serializable {
 
     /**
@@ -60,49 +69,6 @@ class NameType implements Serializable {
      */
     @Column(name = "GTVNTYP_DATA_ORIGIN", length = 30)
     String dataOrigin
-
-
-
-    public String toString() {
-        """NameType[
-					id=$id, 
-					code=$code, 
-					description=$description, 
-					lastModified=$lastModified, 
-					version=$version, 
-					lastModifiedBy=$lastModifiedBy, 
-					dataOrigin=$dataOrigin, ]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true;
-        if (!(o instanceof NameType)) return false;
-        NameType that = (NameType) o;
-        if (id != that.id) return false;
-        if (code != that.code) return false;
-        if (description != that.description) return false;
-        if (lastModified != that.lastModified) return false;
-        if (version != that.version) return false;
-        if (lastModifiedBy != that.lastModifiedBy) return false;
-        if (dataOrigin != that.dataOrigin) return false;
-        return true;
-    }
-
-
-    int hashCode() {
-        int result;
-        result = (id != null ? id.hashCode() : 0);
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0);
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
-        return result;
-    }
-
 
     static constraints = {
         code(nullable: false, maxSize: 4)

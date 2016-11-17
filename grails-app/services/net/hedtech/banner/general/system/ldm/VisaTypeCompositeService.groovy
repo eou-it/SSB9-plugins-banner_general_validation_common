@@ -7,8 +7,8 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.VisaType
 import net.hedtech.banner.general.overall.ldm.LdmService
+import net.hedtech.banner.general.system.VisaType
 import net.hedtech.banner.general.system.ldm.v4.VisaTypeDetail
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Propagation
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class VisaTypeCompositeService extends LdmService {
 
     def visaTypeService
-    private static final String VISATYPE_LDM_NAME = 'visa-types'
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
 
     /**
      * GET /api/visa-types
@@ -31,18 +31,21 @@ class VisaTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<VisaTypeDetail> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         log.debug "list:Begin:$params"
-        List visaTypeDetailList = []
+        List<VisaTypeDetail> visaTypeDetailList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
 
         List allowedSortFields = [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE]
         RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
         RestfulApiValidationUtility.validateSortOrder(params.order)
         params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+        params.offset = params.offset ?: 0
 
-        List<VisaType> visaTypeList = visaTypeService.list(params) as List
-        visaTypeList?.each { visaTypeDetail ->
-            visaTypeDetailList << getDecorator(visaTypeDetail)
+        visaTypeService.fetchAllWithGuid(params.max as int, params.offset as int).each {
+            VisaType visaType = it.visaType
+            GlobalUniqueIdentifier globalUniqueIdentifier = it.globalUniqueIdentifier
+            visaTypeDetailList << new VisaTypeDetail(visaType, getVisaTypeCategory(visaType.nonResIndicator), globalUniqueIdentifier.guid)
         }
 
         log.debug "list:End:${visaTypeDetailList?.size()}"
@@ -61,12 +64,7 @@ class VisaTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     Long count() {
-        log.debug "count:Begin"
-        int total
-
-        total = VisaType.count()
-        log.debug "count:End:$total"
-        return total
+        return visaTypeService.count()
     }
 
     /**
@@ -76,37 +74,39 @@ class VisaTypeCompositeService extends LdmService {
      * @return
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    def get(String guid) {
+    VisaTypeDetail get(String guid) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         log.debug "get:Begin:$guid"
-        def result
 
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(VISATYPE_LDM_NAME, guid)
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.VISA_TYPES_LDM_NAME, guid)
         if (!globalUniqueIdentifier) {
             throw new ApplicationException("visaType", new NotFoundException())
         }
 
-        VisaType visaType = VisaType.get(globalUniqueIdentifier.domainId)
+        VisaType visaType = visaTypeService.get(globalUniqueIdentifier.domainId)
         if (!visaType) {
             throw new ApplicationException("visaType", new NotFoundException())
         }
 
-        result = getDecorator(visaType, globalUniqueIdentifier.guid)
-        log.debug "get:End:$result"
-        return result;
+        log.debug "get:End"
+        return new VisaTypeDetail(visaType, getVisaTypeCategory(visaType.nonResIndicator), globalUniqueIdentifier.guid)
     }
 
 
-    private VisaTypeDetail getDecorator(VisaType visaType, String visaTypeGuid = null) {
-        if (!visaTypeGuid) {
-            visaTypeGuid = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(VISATYPE_LDM_NAME, visaType.id)?.guid
+    def getVisaTypeCodeToGuidMap(Collection<String> codes) {
+        Map<String, String> codeToGuidMap = [:]
+        if (codes) {
+            List entities = visaTypeService.fetchAllWithGuidByCodeInList(codes)
+            entities.each {
+                VisaType visaType = it.visaType
+                GlobalUniqueIdentifier globalUniqueIdentifier = it.globalUniqueIdentifier
+                codeToGuidMap.put(visaType.code, globalUniqueIdentifier.guid)
+            }
         }
-        def category = getHeDMEnumeration(visaType.nonResIndicator)
-
-        return new VisaTypeDetail(visaType, category, visaTypeGuid)
+        return codeToGuidMap
     }
 
-
-    private String getHeDMEnumeration(String nonResIndicator) {
+    public String getVisaTypeCategory(String nonResIndicator) {
         return nonResIndicator == "Y" ? GeneralValidationCommonConstants.NON_IMMIGRANT : GeneralValidationCommonConstants.IMMIGRANT
     }
 

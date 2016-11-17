@@ -1,11 +1,12 @@
 /** *******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Subject
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class SubjectCompositeService extends LdmService {
 
+    private static
+    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V4]
     private static final String LDM_NAME = "subjects"
 
     def subjectService
@@ -33,20 +36,42 @@ class SubjectCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<SubjectDetail> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         List subjectList = []
 
-        RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+        setPagingParams(params)
+        setSortingParams(params)
 
-        List allowedSortFields = ['abbreviation', 'title']
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+        String sortField = params.sort?.trim()
+        String sortOrder = params.order?.trim()
+        int max = params.max?.trim()?.toInteger() ?: 0
+        int offset = params.offset?.trim()?.toInteger() ?: 0
 
-        List<Subject> subjects = subjectService.list(params) as List
+        Map mapForSearch = [:]
+        List<Subject> subjects = subjectService.fetchAllByCriteria(mapForSearch, sortField, sortOrder, max, offset) as List
+
         subjects.each { subject ->
             subjectList << getDecorator(subject)
         }
         return subjectList
+    }
+
+    protected void setPagingParams(Map requestParams) {
+        RestfulApiValidationUtility.correctMaxAndOffset(requestParams, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
+    }
+
+    protected void setSortingParams(Map requestParams) {
+        if (requestParams.containsKey("sort")) {
+            RestfulApiValidationUtility.validateSortField(requestParams.sort, ['abbreviation', 'title'])
+            requestParams.sort = fetchBannerDomainPropertyForLdmField(requestParams.sort)
+        }
+
+        if (requestParams.containsKey("order")) {
+            RestfulApiValidationUtility.validateSortOrder(requestParams.order)
+        } else {
+            requestParams.put('order', "asc")
+        }
     }
 
     /**
@@ -71,17 +96,22 @@ class SubjectCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     SubjectDetail get(String guid) {
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid)
-        if (!globalUniqueIdentifier) {
-            throw new ApplicationException("subject", new NotFoundException())
-        }
+        getAcceptVersion(VERSIONS)
 
-        Subject subject = Subject.get(globalUniqueIdentifier.domainId)
+        Subject subject = fetchSubjectByGuid(guid)
         if (!subject) {
             throw new ApplicationException("subject", new NotFoundException())
         }
+        return getDecorator(subject, guid)
+    }
 
-        return getDecorator(subject, globalUniqueIdentifier.guid)
+    Subject fetchSubjectByGuid(String guid) {
+        Subject subject
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, guid?.trim()?.toLowerCase())
+        if (globalUniqueIdentifier) {
+            subject = Subject.get(globalUniqueIdentifier.domainId)
+        }
+        return subject
     }
 
     /**
@@ -90,6 +120,8 @@ class SubjectCompositeService extends LdmService {
      * @param content Request body
      */
     def create(content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         validateRequest(content)
 
         Subject subject = Subject.findByCode(content?.code?.trim())
@@ -118,6 +150,8 @@ class SubjectCompositeService extends LdmService {
      * @param content Request body
      */
     def update(content) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
+
         String subjectGuid = content?.id?.trim()?.toLowerCase()
 
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(LDM_NAME, subjectGuid)

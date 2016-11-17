@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -17,6 +17,7 @@ import javax.persistence.*
 @ToString
 @EqualsAndHashCode
 @NamedQueries(value = [
+        @NamedQuery(name = "Level.fetchAllWithGuidByCodeInList", query = """ FROM Level a,GlobalUniqueIdentifier g where g.ldmName = 'academic-levels' AND g.domainKey = a.code and a.code in :codes """),
         @NamedQuery(name = "Level.fetchByCode",query = """FROM Level a WHERE a.code = :code"""),
         @NamedQuery(name = "Level.fetchAllByCodeInList",query = """FROM Level a WHERE a.code in (:codes)"""),
 ])

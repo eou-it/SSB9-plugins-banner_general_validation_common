@@ -1,14 +1,13 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 package net.hedtech.banner.general.system
 
-import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
- * Model representing College (the Banenr Validation Table).
+ * Model representing College (the Banner Validation Table).
  */
 @Entity
 @Table(name = "STVCOLL")
@@ -223,6 +222,7 @@ class College implements Serializable {
         result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
         result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
+
         return result
     }
 

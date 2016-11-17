@@ -5,6 +5,7 @@ package net.hedtech.banner.general.system.ldm
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.NotFoundException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.GeographicAreaType
 import net.hedtech.banner.general.system.ldm.v4.GeographicAreaTypeDecorator
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 class GeographicAreaTypeCompositeService extends LdmService {
     def geographicAreaTypeService
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
 
     /**
      * GET /api/geographic-area-types/
@@ -26,6 +28,7 @@ class GeographicAreaTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     List<GeographicAreaTypeDecorator> list(Map params) {
+        String acceptVersion = getAcceptVersion(VERSIONS)
         List<GeographicAreaTypeDecorator> geographicAreaList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
         geographicAreaTypeService.fetchAll(params).each { geographicAreaType ->
@@ -48,6 +51,8 @@ class GeographicAreaTypeCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     GeographicAreaTypeDecorator get(String guid) {
+
+        String acceptVersion = getAcceptVersion(VERSIONS)
         GeographicAreaType geographicAreaType = geographicAreaTypeService.fetchByGuid(guid?.trim()?.toLowerCase())
         if (!geographicAreaType) {
             throw new ApplicationException(GeographicAreaTypeCompositeService.class, new NotFoundException())

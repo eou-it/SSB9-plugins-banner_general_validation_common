@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -21,11 +21,12 @@ import org.springframework.transaction.annotation.Transactional
  */
 
 @Transactional
-class AcademicLevelCompositeService extends  LdmService {
+class AcademicLevelCompositeService extends LdmService {
 
     def levelService
 
-    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1,GeneralValidationCommonConstants.VERSION_V4]
+    private static
+    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V4]
 
     /**
      * GET /api/academic-levels
@@ -37,13 +38,28 @@ class AcademicLevelCompositeService extends  LdmService {
     List<AcademicLevel> list(Map params) {
         List academicLevels = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS))? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE]:[GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
-        RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
-        RestfulApiValidationUtility.validateSortOrder(params.order)
-        params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
-        List<Level> levels = levelService.list(params) as List
+        List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS)) ? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE] : [GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
+        if (params.containsKey("sort")) {
+            RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
+            params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
+        }
+
+        if (params.containsKey("order")) {
+            RestfulApiValidationUtility.validateSortOrder(params.order)
+        } else {
+            params.put('order', "asc")
+        }
+
+        String sortField = params.sort?.trim()
+        String sortOrder = params.order?.trim()
+        int max = params.max?.trim()?.toInteger() ?: 0
+        int offset = params.offset?.trim()?.toInteger() ?: 0
+
+        Map mapForSearch = [:]
+        List<Level> levels = levelService.fetchAllByCriteria(mapForSearch, sortField, sortOrder, max, offset) as List
+
         levels.each { level ->
-            academicLevels <<  getDecorator(level)
+            academicLevels << getDecorator(level)
         }
         return academicLevels
     }
@@ -69,18 +85,15 @@ class AcademicLevelCompositeService extends  LdmService {
      */
     @Transactional(readOnly = true)
     AcademicLevel get(String guid) {
+        getAcceptVersion(VERSIONS)
+
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME, guid)
 
-        if (!globalUniqueIdentifier) {
-            throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_LEVEL, new NotFoundException())
-        }
-
-        Level level = levelService.get(globalUniqueIdentifier.domainId)
+        Level level = fetchLevelByGuid(guid)
         if (!level) {
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_LEVEL, new NotFoundException())
         }
-
-        return getDecorator(level,globalUniqueIdentifier.guid)
+        return getDecorator(level, globalUniqueIdentifier.guid)
     }
 
     /**
@@ -94,15 +107,15 @@ class AcademicLevelCompositeService extends  LdmService {
             def parameterValue = GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS)) ? GeneralValidationCommonConstants.CODE : GeneralValidationCommonConstants.ABBREVIATION
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_LEVEL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS, [parameterValue]))
         }
-         level = bindLevel(new Level(), content)
+        level = bindLevel(new Level(), content)
         String levelGuid = content.guid?.trim()?.toLowerCase()
         if (levelGuid) {
             // Overwrite the GUID created by DB insert trigger, with the one provided in the request body
-            levelGuid= updateGuidValue(level.id, levelGuid, GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME)?.guid
+            levelGuid = updateGuidValue(level.id, levelGuid, GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME)?.guid
         } else {
             levelGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME, level.id)?.guid
         }
-        return getDecorator(level,levelGuid)
+        return getDecorator(level, levelGuid)
     }
 
     /**
@@ -112,17 +125,17 @@ class AcademicLevelCompositeService extends  LdmService {
      */
     AcademicLevel update(content) {
         String levelGuid = content.id?.trim()?.toLowerCase()
-        if(!levelGuid){
+        if (!levelGuid) {
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_LEVEL, new NotFoundException())
         }
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME, levelGuid)
-            if (!globalUniqueIdentifier) {
-                if (!content.guid) {
-                    content.guid = levelGuid
-                }
-                //Per strategy when a GUID was provided, the create should happen.
-                return create(content)
+        if (!globalUniqueIdentifier) {
+            if (!content.guid) {
+                content.guid = levelGuid
             }
+            //Per strategy when a GUID was provided, the create should happen.
+            return create(content)
+        }
 
         Level level = levelService.get(globalUniqueIdentifier.domainId)
         if (!level) {
@@ -137,23 +150,23 @@ class AcademicLevelCompositeService extends  LdmService {
         return getDecorator(level, levelGuid)
     }
 
-    private  def bindLevel(Level level, Map content) {
+    private def bindLevel(Level level, Map content) {
         bindData(level, content)
         levelService.createOrUpdate(level)
     }
 
-    private void bindData(domainModel,content){
-      super.setDataOrigin(domainModel,content)
-      super.bindData(domainModel,content,[:])
-      domainModel.ceuInd=Boolean.FALSE
+    private void bindData(domainModel, content) {
+        super.setDataOrigin(domainModel, content)
+        super.bindData(domainModel, content, [:])
+        domainModel.ceuInd = Boolean.FALSE
     }
 
-    private def  getDecorator(Level level,String levelGuid=null) {
+    private def getDecorator(Level level, String levelGuid = null) {
         if (level) {
-            if(!levelGuid){
+            if (!levelGuid) {
                 levelGuid = GlobalUniqueIdentifier.findByLdmNameAndDomainId(GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME, level.id)?.guid
             }
-             return   new AcademicLevel(level,levelGuid,  new Metadata(level?.dataOrigin))
+            return new AcademicLevel(level, levelGuid, new Metadata(level?.dataOrigin))
         }
     }
 
@@ -180,11 +193,22 @@ class AcademicLevelCompositeService extends  LdmService {
         return new AcademicLevel(level, GlobalUniqueIdentifier.findByLdmNameAndDomainId(GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME, level.id)?.guid, new Metadata(level.dataOrigin))
     }
 
-    List<AcademicLevel> fetchAllByLevelIdInList(List<String> ids){
+
+    Level fetchLevelByGuid(String guid) {
+        Level level
+        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ACADEMIC_LEVEL_LDM_NAME, guid)
+        if (globalUniqueIdentifier) {
+            level = levelService.get(globalUniqueIdentifier.domainId)
+        }
+        return level
+    }
+
+
+    List<AcademicLevel> fetchAllByLevelIdInList(List<String> ids) {
         List<AcademicLevel> academicLevelList = []
-        if(ids){
+        if (ids) {
             List<GlobalUniqueIdentifier> levelGuidList = GlobalUniqueIdentifier.fetchAllByGuidInList(ids.unique())
-            if(levelGuidList){
+            if (levelGuidList) {
                 List<Level> levelList = levelService.fetchAllByCodeInList(levelGuidList.domainKey)
                 Map levelCodeMap = [:]
                 levelList.each {
@@ -198,4 +222,18 @@ class AcademicLevelCompositeService extends  LdmService {
         }
         return academicLevelList
     }
+
+    def getLevelCodeToGuidMap(Collection<String> codes) {
+        Map<String, String> codeToGuidMap = [:]
+        if (codes) {
+            List entities = levelService.fetchAllWithGuidByCodeInList(codes)
+            entities.each {
+                Level level = it.level
+                GlobalUniqueIdentifier globalUniqueIdentifier = it.globalUniqueIdentifier
+                codeToGuidMap.put(level.code, globalUniqueIdentifier.guid)
+            }
+        }
+        return codeToGuidMap
+    }
+
 }

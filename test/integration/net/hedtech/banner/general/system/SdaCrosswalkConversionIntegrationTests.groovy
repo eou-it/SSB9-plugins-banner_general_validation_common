@@ -296,6 +296,21 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
+    void testFetchAllByInternalGroup() {
+        def internalGroupStr = 'PERSONAL_INFORMATION'
+        def sdaxList = SdaCrosswalkConversion.fetchAllByInternalGroup(internalGroupStr)
+
+        assertTrue sdaxList.size() >= 1
+
+        def piGroup = sdaxList.find { it.internalGroup == internalGroupStr }
+
+        assertNotNull(piGroup)
+        assertEquals("Y", piGroup.external)
+        assertEquals("UPD_P_EMAL", piGroup.internal)
+    }
+
+
     private def newValidForCreateSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = new SdaCrosswalkConversion(
                 external: i_success_external,

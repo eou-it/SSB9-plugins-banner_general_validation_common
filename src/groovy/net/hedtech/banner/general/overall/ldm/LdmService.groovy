@@ -392,6 +392,14 @@ class LdmService {
         return request
     }
 
+
+    public static String getApiResourceNameFromRequestUrl() {
+        String uri = getHttpServletRequest()?.getForwardURI()
+        if(uri.contains("/")) {
+            return uri.split("/")?.getAt(3)
+        }
+    }
+
     /**
      * Used to bind map properties onto grails domains.
      * Can provide an exclusion and inclusion list in the third param.

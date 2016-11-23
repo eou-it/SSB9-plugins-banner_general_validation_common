@@ -186,7 +186,7 @@ class GenericComplexValidationDomainServiceIntegrationTests extends BaseIntegrat
         genericComplexValidationDomainService.joinFieldMap = ['code': 'domainKey']
         genericComplexValidationDomainService.joinFieldSeperator = '^'
         genericComplexValidationDomainService.additionDataDomainFilter = ['processCode': 'HEDM', 'settingName': 'EMAILS.EMAILTYPE']
-        genericComplexValidationDomainService.validations = ['key1': "select 1 from EmailType where rownum = 1"]
+        genericComplexValidationDomainService.validations = ['key1': "select 0 from EmailType where rownum = 1"]
         genericComplexValidationDomainService.errorCodes = ['key1': "data setup missing for key: key1"]
         shouldFail(ApplicationException) {
             genericComplexValidationDomainService.get(globalUniqueIdentifier.guid)
@@ -208,7 +208,7 @@ class GenericComplexValidationDomainServiceIntegrationTests extends BaseIntegrat
         genericComplexValidationDomainService.joinFieldMap = ['code': 'domainKey']
         genericComplexValidationDomainService.joinFieldSeperator = '^'
         genericComplexValidationDomainService.additionDataDomainFilter = ['processCode': 'HEDM', 'settingName': 'EMAILS.EMAILTYPE']
-        genericComplexValidationDomainService.validations = ['key1': "select 0 from EmailType where rownum = 1"]
+        genericComplexValidationDomainService.validations = ['key1': "select 1 from EmailType where rownum = 1"]
         genericComplexValidationDomainService.errorCodes = ['key1': "data setup missing for key: key1"]
         EmailTypeDetails response = genericComplexValidationDomainService.get(globalUniqueIdentifier.guid)
         assertNotNull(response)

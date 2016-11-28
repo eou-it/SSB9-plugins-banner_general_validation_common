@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -14,7 +14,7 @@ class SystemUtilityIntegrationTests extends BaseIntegrationTestCase {
 
     @Before
     public void setUp() {
-        formContext = ['GUAGMNU','SSASECT'] // Since we are not testing a controller, we need to explicitly set this
+        formContext = ['GUAGMNU', 'SSASECT'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 

@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -44,7 +44,7 @@ class DayOfWeekIntegrationTests extends BaseIntegrationTestCase {
 
     @Before
     public void setUp() {
-        formContext = ['GUAGMNU','SSAEXCL', 'SSASECT', 'STVDAYS'] // Since we are not testing a controller, we need to explicitly set this
+        formContext = ['GUAGMNU', 'SSAEXCL', 'SSASECT', 'STVDAYS'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
 

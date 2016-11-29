@@ -299,15 +299,18 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchAllByInternalGroup() {
         def internalGroupStr = 'PERSONAL_INFORMATION'
+        def internalCodeStr = "UPD_P_EMAL"
+
         def sdaxList = SdaCrosswalkConversion.fetchAllByInternalGroup(internalGroupStr)
 
         assertTrue sdaxList.size() >= 1
 
-        def piGroup = sdaxList.find { it.internalGroup == internalGroupStr }
+        def piGroup = sdaxList.find {
+            it.internalGroup == internalGroupStr && it.internal == internalCodeStr
+        }
 
         assertNotNull(piGroup)
         assertEquals("Y", piGroup.external)
-        assertEquals("UPD_P_EMAL", piGroup.internal)
     }
 
 

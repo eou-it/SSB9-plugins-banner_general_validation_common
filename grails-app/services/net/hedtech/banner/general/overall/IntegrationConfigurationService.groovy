@@ -5,23 +5,22 @@ package net.hedtech.banner.general.overall
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.system.ldm.HedmAddressType
 import net.hedtech.banner.general.utility.IsoCodeService
 import net.hedtech.banner.service.ServiceBase
-import net.hedtech.banner.general.system.ldm.HedmAddressType
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 
 class IntegrationConfigurationService extends ServiceBase {
-
-    boolean transactional = true
-
-    IsoCodeService isoCodeService
 
     static final String PROCESS_CODE = "HEDM"
     static final String NATION_ISO = "NATION.ISOCODE"
     static final String ADDRESSES_DEFAULT_ADDRESSTYPE = "ADDRESSES.DEFAULT.ADDRESSTYPE"
     static final String COUNTRY_DEFAULT_ISO = "ADDRESS.COUNTRY.DEFAULT"
-    static final String BASE_ISO_CURRENCY_CODE = "ISO.BASE.CURRENCY.CODE"
-    static final String DEFAULT_ISO_CURRENCY_CODE = 'USD.ISO.CURRENCY.CODE'
+
+    boolean transactional = true
+
+    IsoCodeService isoCodeService
+
 
     public boolean isInstitutionUsingISO2CountryCodes() {
         IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, NATION_ISO)[0]
@@ -36,6 +35,7 @@ class IntegrationConfigurationService extends ServiceBase {
             throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException('goriccr.invalid.value.message', [NATION_ISO]))
         }
     }
+
 
     public String getDefaultAddressTypeV6() {
         IntegrationConfiguration intConf = IntegrationConfiguration.findByProcessCodeAndSettingName(PROCESS_CODE, ADDRESSES_DEFAULT_ADDRESSTYPE)
@@ -77,6 +77,7 @@ class IntegrationConfigurationService extends ServiceBase {
         return isoCountryCode
     }
 
+
     public String getDefaultISO3CountryCodeForAddress(boolean institutionUsingISO2CountryCodes) {
         String isoCountryCode = getDefaultISOCountryCodeForAddress()
         if (institutionUsingISO2CountryCodes) {
@@ -86,21 +87,38 @@ class IntegrationConfigurationService extends ServiceBase {
         return isoCountryCode
     }
 
-    private String getDefaultBaseIsoCurrencyCode() {
-        String defaultCurrencyCode
-        List<IntegrationConfiguration> currencyCodeConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, BASE_ISO_CURRENCY_CODE)
-        if (currencyCodeConfigs.size() > 0) {
-            defaultCurrencyCode = currencyCodeConfigs[0].value
+    /**
+     * ISO 3166-1 two-letter region code that denotes the region that we are expecting the number to be from.
+     *
+     * @return
+     */
+    String getDefaultISO2CountryCodeForPhoneNumberParsing() {
+        String settingName = "PERSON.PHONES.COUNTRY.DEFAULT"
+        IntegrationConfiguration intConf = getIntegrationConfiguration(PROCESS_CODE, settingName)
+        if (!isoCodeService.getISO3CountryCode(intConf.value)) {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
         }
-        return defaultCurrencyCode
+        return intConf.value
     }
 
-    private String getDefaultIsoCurrencyCode() {
-        String defaultCurrencyCode
-        List<IntegrationConfiguration> currencyCodeConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, DEFAULT_ISO_CURRENCY_CODE)
-        if (currencyCodeConfigs.size() > 0) {
-            defaultCurrencyCode = currencyCodeConfigs[0].value
+
+    boolean canUpdatePersonSSN() {
+        boolean val = false
+        String settingName = "PERSON.UPDATESSN"
+        IntegrationConfiguration intConf = getIntegrationConfiguration(PROCESS_CODE, settingName)
+        if (intConf.value == 'Y') {
+            val = true
         }
-        return defaultCurrencyCode
+        return val
     }
+
+
+    private IntegrationConfiguration getIntegrationConfiguration(processCode, settingName) {
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchByProcessCodeAndSettingName(processCode, settingName)
+        if (!intConfig) {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
+        }
+        return intConfig
+    }
+
 }

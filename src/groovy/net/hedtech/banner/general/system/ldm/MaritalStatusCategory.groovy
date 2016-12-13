@@ -12,7 +12,7 @@ enum MaritalStatusCategory {
     WIDOWED([v1: "Widowed", v4: "widowed"]),
     SEPARATED([v1: "Separated", v4: "separated"])
 
-    private final Map<String, String> versionToEnumMap
+    final Map<String, String> versionToEnumMap
 
 
     MaritalStatusCategory(Map<String, String> versionToEnumMap) {
@@ -20,12 +20,7 @@ enum MaritalStatusCategory {
     }
 
 
-    public Map<String, String> getVersionToEnumMap() {
-        return versionToEnumMap
-    }
-
-
-    public static MaritalStatusCategory getByString(String value, String version) {
+    public static MaritalStatusCategory getByDataModelValue(String value, String version) {
         if (value) {
             Iterator itr = MaritalStatusCategory.values().iterator()
             while (itr.hasNext()) {

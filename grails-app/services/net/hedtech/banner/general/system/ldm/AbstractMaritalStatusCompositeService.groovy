@@ -99,7 +99,7 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
         }
         log.debug("GUID: ${msGuid}")
 
-        return prepareDataMapForSingle(msGuid, maritalStatus)
+        return prepareDataMapForSingle_Create(msGuid, maritalStatus)
     }
 
 
@@ -127,7 +127,7 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
         bindData(maritalStatus, requestData, [:])
         maritalStatusService.createOrUpdate(maritalStatus)
 
-        return prepareDataMapForSingle(msGuid, maritalStatus)
+        return prepareDataMapForSingle_Create(msGuid, maritalStatus)
     }
 
 
@@ -136,12 +136,12 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
 
         if (rows) {
             def dataMapForAll = [:]
-            prepareDataMapForAll(dataMapForAll)
+            prepareDataMapForAll_List(dataMapForAll)
 
             rows?.each {
                 MaritalStatus maritalStatus = it.maritalStatus
                 GlobalUniqueIdentifier globalUniqueIdentifier = it.globalUniqueIdentifier
-                def dataMapForSingle = prepareDataMapForSingle(globalUniqueIdentifier.guid, maritalStatus, dataMapForAll)
+                def dataMapForSingle = prepareDataMapForSingle_List(globalUniqueIdentifier.guid, maritalStatus, dataMapForAll)
                 decorators << createMaritalStatusDataModel(dataMapForSingle)
             }
         }
@@ -150,15 +150,17 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
     }
 
 
-    private void prepareDataMapForAll(Map dataMapForAll) {
+    private void prepareDataMapForAll_List(Map dataMapForAll) {
 
         prepareDataMapForAll_ListExtension(dataMapForAll)
     }
 
 
-    private def prepareDataMapForSingle(String maritalStatusGuid, MaritalStatus maritalStatus,
-                                        final Map dataMapForAll) {
-        Map dataMapForSingle = prepareDataMapForSingle(maritalStatusGuid, maritalStatus)
+    private def prepareDataMapForSingle_List(String maritalStatusGuid, MaritalStatus maritalStatus,
+                                             final Map dataMapForAll) {
+        Map dataMapForSingle = prepareDataMapForSingle_Create(maritalStatusGuid, maritalStatus)
+
+        dataMapForSingle.put("sourceForDataMap", "LIST")
 
         prepareDataMapForSingle_ListExtension(dataMapForAll, dataMapForSingle)
 
@@ -166,8 +168,10 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
     }
 
 
-    private def prepareDataMapForSingle(String maritalStatusGuid, MaritalStatus maritalStatus) {
+    private def prepareDataMapForSingle_Create(String maritalStatusGuid, MaritalStatus maritalStatus) {
         Map dataMapForSingle = [:]
+
+        dataMapForSingle.put("sourceForDataMap", "CREATE")
 
         dataMapForSingle << ["maritalStatusGuid": maritalStatusGuid]
         dataMapForSingle << ["maritalStatus": maritalStatus]

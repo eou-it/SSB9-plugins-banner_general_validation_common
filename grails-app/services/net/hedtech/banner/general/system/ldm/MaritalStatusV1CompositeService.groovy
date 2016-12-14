@@ -57,7 +57,7 @@ class MaritalStatusV1CompositeService extends AbstractMaritalStatusCompositeServ
 
     protected def createMaritalStatusDataModel(final Map dataMapForSingle) {
         def bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap = dataMapForSingle.bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap
-        if (!bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap) {
+        if (dataMapForSingle.get("sourceForDataMap") == "CREATE" || !bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap) {
             bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap = getBannerMaritalStatusCodeToHedmMaritalStatusCategoryMap()
         }
         return createMaritalStatusDataModel(dataMapForSingle.get("maritalStatusGuid"), dataMapForSingle.get("maritalStatus"), bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap)

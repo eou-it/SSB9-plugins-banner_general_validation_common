@@ -529,16 +529,4 @@ class RaceCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull country
     }
 
-
-    @Test
-    void testGetRaceCodeToGuidMap() {
-        RaceDetail raceDetail = raceCompositeService.create(i_success_input_content)
-        assertNotNull raceDetail
-        assertNotNull raceDetail.guid
-        Map<String, String> raceCodeToGuidMap = raceCompositeService.getRaceCodeToGuidMap([raceDetail.race])
-        assertFalse raceCodeToGuidMap.isEmpty()
-        assertTrue raceCodeToGuidMap.containsKey(raceDetail.race)
-        assertEquals raceDetail.guid, raceCodeToGuidMap.get(raceDetail.race)
-    }
-
 }

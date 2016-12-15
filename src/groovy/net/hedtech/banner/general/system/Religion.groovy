@@ -10,6 +10,11 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVRELG")
+@NamedQueries(value = [
+        @NamedQuery(name = "Religion.fetchAllWithGuidByCodeInList",
+                query = """from Religion a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in :codes""")
+
+])
 class Religion implements Serializable {
 
     /**

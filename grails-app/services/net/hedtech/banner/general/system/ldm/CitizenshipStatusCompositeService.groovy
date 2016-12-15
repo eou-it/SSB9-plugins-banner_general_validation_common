@@ -115,21 +115,6 @@ class CitizenshipStatusCompositeService extends LdmService {
         return new CitizenshipStatus(citizenType, guid, getCitizenshipStatusCategory(citizenType.citizenIndicator ?: null))
     }
 
-    public Map fetchGUIDs(List<String> citizenCodes){
-        Map content=[:]
-        def result
-        String hql='''select a.code, b.guid from CitizenType a, GlobalUniqueIdentifier b WHERE a.code in :citizenCodes and b.ldmName = :ldmName and a.code = b.domainKey'''
-        CitizenType.withSession { session ->
-            def query = session.createQuery(hql).setString('ldmName', 'citizenship-statuses')
-            query.setParameterList('citizenCodes', citizenCodes)
-            result = query.list()
-        }
-        result.each { citizenType ->
-            content.put(citizenType[0], citizenType[1])
-        }
-        return content
-    }
-
 
     public String getCitizenshipStatusCategory(Boolean citizenIndicator) {
         String category

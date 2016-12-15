@@ -133,13 +133,4 @@ class ReligionCompositeServiceIntegrationTests extends  BaseIntegrationTestCase 
     }
 
 
-    @Test
-    void testfetchGUIDs(){
-        List<String> religionCodes= Religion.findAll(max: 2).code
-        Map content=religionCompositeService.fetchGUIDs((religionCodes))
-        content.each{ religionStatus ->
-            assertTrue religionCodes.contains(religionStatus.key)
-        }
-    }
-
 }

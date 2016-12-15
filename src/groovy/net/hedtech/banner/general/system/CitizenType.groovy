@@ -12,6 +12,11 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVCITZ")
+@NamedQueries(value = [
+        @NamedQuery(name = "CitizenType.fetchAllWithGuidByCodeInList",
+                query = """from CitizenType a , GlobalUniqueIdentifier b where a.code = b.domainKey and b.ldmName = :ldmName and a.code in :codes""")
+
+])
 class CitizenType implements Serializable {
 
     /**

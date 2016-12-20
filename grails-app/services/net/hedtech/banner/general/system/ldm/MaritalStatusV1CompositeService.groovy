@@ -56,11 +56,16 @@ class MaritalStatusV1CompositeService extends AbstractMaritalStatusCompositeServ
 
 
     protected def createMaritalStatusDataModel(final Map dataMapForSingle) {
-        def bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap = dataMapForSingle.bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap
-        if (dataMapForSingle.get("sourceForDataMap") == "CREATE" || !bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap) {
-            bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap = getBannerMaritalStatusCodeToHedmMaritalStatusCategoryMap()
+        String maritalStatusGuid = dataMapForSingle.get("maritalStatusGuid")
+        MaritalStatus maritalStatus = dataMapForSingle.get("maritalStatus")
+
+        if (dataMapForSingle.get("sourceForDataMap") == "CREATE") {
+            def dataMapForAll = initDataMapForAll()
+            prepareDataMapForAll_List(dataMapForAll)
+            dataMapForSingle.putAll(prepareDataMapForSingle_List(maritalStatusGuid, maritalStatus, dataMapForAll))
         }
-        return createMaritalStatusDataModel(dataMapForSingle.get("maritalStatusGuid"), dataMapForSingle.get("maritalStatus"), bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap)
+
+        return createMaritalStatusDataModel(maritalStatusGuid, maritalStatus, dataMapForSingle.bannerMaritalStatusCodeToHedmMaritalStatusCategoryMap)
     }
 
 

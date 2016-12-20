@@ -135,7 +135,7 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
         def decorators = []
 
         if (rows) {
-            def dataMapForAll = [:]
+            def dataMapForAll = initDataMapForAll()
             prepareDataMapForAll_List(dataMapForAll)
 
             rows?.each {
@@ -150,17 +150,31 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
     }
 
 
+    private def initDataMapForAll() {
+        def dataMapForAll = [:]
+        return dataMapForAll
+    }
+
+
     private void prepareDataMapForAll_List(Map dataMapForAll) {
 
         prepareDataMapForAll_ListExtension(dataMapForAll)
     }
 
 
+    private
+    def initDataMapForSingle(String sourceForDataMap, String maritalStatusGuid, MaritalStatus maritalStatus) {
+        Map dataMapForSingle = [:]
+        dataMapForSingle.put("sourceForDataMap", sourceForDataMap)
+        dataMapForSingle.put("maritalStatusGuid", maritalStatusGuid)
+        dataMapForSingle.put("maritalStatus", maritalStatus)
+        return dataMapForSingle
+    }
+
+
     private def prepareDataMapForSingle_List(String maritalStatusGuid, MaritalStatus maritalStatus,
                                              final Map dataMapForAll) {
-        Map dataMapForSingle = prepareDataMapForSingle_Create(maritalStatusGuid, maritalStatus)
-
-        dataMapForSingle.put("sourceForDataMap", "LIST")
+        Map dataMapForSingle = initDataMapForSingle("LIST", maritalStatusGuid, maritalStatus)
 
         prepareDataMapForSingle_ListExtension(dataMapForAll, dataMapForSingle)
 
@@ -169,12 +183,7 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
 
 
     private def prepareDataMapForSingle_Create(String maritalStatusGuid, MaritalStatus maritalStatus) {
-        Map dataMapForSingle = [:]
-
-        dataMapForSingle.put("sourceForDataMap", "CREATE")
-
-        dataMapForSingle << ["maritalStatusGuid": maritalStatusGuid]
-        dataMapForSingle << ["maritalStatus": maritalStatus]
+        Map dataMapForSingle = initDataMapForSingle("CREATE", maritalStatusGuid, maritalStatus)
 
         return dataMapForSingle
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -12,6 +12,10 @@ import javax.persistence.*
 /**
  * <p>Read only view for Academic Disciplines.</p>
  */
+@NamedQueries(value = [
+        @NamedQuery(name = "AcademicDisciplineView.fetchByGuid",
+                query = """FROM  AcademicDisciplineView a
+	  	        WHERE a.id = :academicDisciplineGuid""")])
 @Entity
 @Table(name = "SVQ_MAJORS")
 @EqualsAndHashCode(includeFields = true)
@@ -50,6 +54,12 @@ class AcademicDisciplineView implements Serializable {
      */
     @Column(name = "STVMAJR_DESC", length = 30)
     String description
+
+    /**
+     * This field specifies the cipc code.
+     */
+    @Column(name = "STVMAJR_CIPC_CODE", length = 30)
+    String cipcCode
 
     /**
      * Data Origin column for STVMAJR

@@ -112,6 +112,21 @@ class IntegrationConfigurationService extends ServiceBase {
         return val
     }
 
+    /**
+     * Default zip code to be associated with the address of person
+     *
+     * In address,
+     * if STATE is present, then ZIP is required
+     * if COUNTRY is present, then neither STATE nor ZIP are required
+     * If STATE is present (regardless of whether COUNTRY is present or not), then ZIP is required
+     *
+     * @return
+     */
+    String getDefaultZipCode() {
+        IntegrationConfiguration intConfig = getIntegrationConfiguration(PROCESS_CODE, "PERSON.ADDRESSES.POSTAL.CODE")
+        return intConfig.value
+    }
+
 
     private IntegrationConfiguration getIntegrationConfiguration(processCode, settingName) {
         IntegrationConfiguration intConfig = IntegrationConfiguration.fetchByProcessCodeAndSettingName(processCode, settingName)

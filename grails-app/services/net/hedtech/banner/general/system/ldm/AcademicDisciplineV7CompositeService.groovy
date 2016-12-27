@@ -43,10 +43,7 @@ class AcademicDisciplineV7CompositeService extends AbstractAcademicDisciplineCom
         decorator.description = dataMapForAcademicDiscipline["description"]
         decorator.guid = dataMapForAcademicDiscipline["guid"]
         decorator.type = dataMapForAcademicDiscipline["type"]
-
-        if(dataMapForAcademicDiscipline["cipcCode"]){
-            decorator.cipCode = dataMapForAcademicDiscipline["cipcCode"]
-        }
+        decorator.cipCode = dataMapForAcademicDiscipline["cipcCode"]
         return decorator
     }
 

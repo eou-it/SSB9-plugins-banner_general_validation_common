@@ -71,7 +71,7 @@ abstract class AbstractAcademicDisciplineCompositeService extends LdmService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     protected def count(Map requestParams) {
-        return getInjectedPropertyFromParams(requestParams, "academicDiscipline-injected")
+        return getInjectedPropertyFromParams(requestParams, "totalCount")
     }
 
 
@@ -322,7 +322,7 @@ abstract class AbstractAcademicDisciplineCompositeService extends LdmService {
     private void injectPropertyIntoParams(Map params, String propName, def propVal) {
         def injectedProps = [:]
         if (params.containsKey("academicDiscipline-injected") && params.get("academicDiscipline-injected") instanceof Map) {
-            injectedProps = params.get("courses-injected")
+            injectedProps = params.get("academicDiscipline-injected")
         } else {
             params.put("academicDiscipline-injected", injectedProps)
         }

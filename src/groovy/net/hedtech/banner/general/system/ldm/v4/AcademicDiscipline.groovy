@@ -25,11 +25,13 @@ class AcademicDiscipline {
     }
 
     def getReporting(){
-        if(cipCode){
             List reporting = []
-            reporting.add(country:[code:"USA",cipCode:cipCode])
-            return reporting
-        }
+            Map country = [code:"USA"]
+           if(cipCode){
+               country.put("cipCode",cipCode)
+           }
+           reporting.add([country:country])
+           return reporting
     }
 
     @Override

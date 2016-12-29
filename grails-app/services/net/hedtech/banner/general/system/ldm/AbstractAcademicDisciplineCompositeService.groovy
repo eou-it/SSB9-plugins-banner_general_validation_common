@@ -301,6 +301,7 @@ abstract class AbstractAcademicDisciplineCompositeService extends LdmService {
 
         if (requestParams.containsKey("sort")) {
             RestfulApiValidationUtility.validateSortField(requestParams.sort, allowedSortFields)
+            requestParams.sort = LdmService.fetchBannerDomainPropertyForLdmField(requestParams.sort) ?: requestParams.sort
         }
 
         if (requestParams.containsKey("order")) {

@@ -33,8 +33,6 @@ class GeneralValidationCommonConstants {
     final static String VERSION_V6 = 'v6'
     final static String VERSION_V7 = 'v7'
     final static String VERSION_V8 = 'v8'
-    final static String NON_HISPANIC = 'nonHispanic'
-    final static String HISPANIC = 'hispanic'
     final static String ABBREVIATION = 'abbreviation'
     final static String TITLE = 'title'
     final static String RACE = 'race'
@@ -158,8 +156,6 @@ class GeneralValidationCommonConstants {
     static final String PERSON_HOLD_TYPES_ACADEMIC = "academic"
     static final String PERSON_HOLD_TYPES_FINANCE = "financial"
 
-
-
     //Person Hold Constants
     public static final def PERSON_HOLD_SEARCH_FIELD = 'person'
     static final String PERSON_HOLS_LDM_NAME = 'person-holds'
@@ -178,9 +174,9 @@ class GeneralValidationCommonConstants {
     //Phone Type V6 constants
     public static final String PHONE_TYPE_SETTING_NAME_V6 = 'PHONES.PHONETYPE'
     public static final String PHONE_TYPE_SETTING_NAME_V3 = 'PERSON.PHONES.PHONETYPE'
-    public static final String PHONE_TYPE_LDM_NAME ='phone-types'
+    public static final String PHONE_TYPE_LDM_NAME = 'phone-types'
     public static final String PHONE_ENTITY_TYPE = 'phoneType'
-   // Interest constants
+    // Interest constants
     public static final String INTEREST_LDM_NAME = 'interest-codes'
 
     //Address Type V6 constants

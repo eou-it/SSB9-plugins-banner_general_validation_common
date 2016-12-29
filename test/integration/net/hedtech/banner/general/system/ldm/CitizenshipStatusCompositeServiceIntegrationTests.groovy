@@ -21,6 +21,7 @@ class CitizenshipStatusCompositeServiceIntegrationTests extends BaseIntegrationT
 
     CitizenType citizenType
 
+
     @Before
     public void setUp() {
         formContext = ['GUAGMNU']
@@ -33,6 +34,7 @@ class CitizenshipStatusCompositeServiceIntegrationTests extends BaseIntegrationT
         citizenType = CitizenType.findByCode('Y')
     }
 
+
     @Test
     void testList_CitizenshipStatuses_v4() {
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
@@ -42,12 +44,14 @@ class CitizenshipStatusCompositeServiceIntegrationTests extends BaseIntegrationT
         assertTrue citizenshipStatuses.code.contains(citizenType.code)
     }
 
+
     @Test
     void testCount_CitizenshipStatuses_v4() {
         GrailsMockHttpServletRequest request = LdmService.getHttpServletRequest()
         request.addHeader("Accept", "application/vnd.hedtech.integration.v4+json")
         assertTrue citizenshipStatusCompositeService.count() > 0
     }
+
 
     @Test
     void testGet_CitizenshipStatus_v4() {
@@ -60,8 +64,9 @@ class CitizenshipStatusCompositeServiceIntegrationTests extends BaseIntegrationT
         assertEquals guid, citizenshipStatus.guid
         assertEquals citizenType.code, citizenshipStatus.code
         assertEquals citizenType.description, citizenshipStatus.description
-        assertEquals getHeDMEnumeration(citizenshipStatus.citizenIndicator), citizenshipStatus.category
+        assertEquals citizenshipStatusCompositeService.getCitizenshipStatusCategory(citizenshipStatus.citizenIndicator), citizenshipStatus.category
     }
+
 
     @Test
     void testGet_InvalidCitizenshipStatus_v4() {
@@ -74,16 +79,6 @@ class CitizenshipStatusCompositeServiceIntegrationTests extends BaseIntegrationT
         } catch (ApplicationException ae) {
             assertApplicationException ae, 'NotFoundException'
         }
-    }
-
-    private String getHeDMEnumeration(Boolean citizenIndicator) {
-        String category
-        if (citizenIndicator) {
-            category = GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_CATEGORY_CITIZEN
-        } else {
-            category = GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_CATEGORY_NON_CITIZEN
-        }
-        return category
     }
 
 }

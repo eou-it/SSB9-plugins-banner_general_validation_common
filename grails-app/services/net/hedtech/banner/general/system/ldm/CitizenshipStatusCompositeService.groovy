@@ -52,9 +52,11 @@ class CitizenshipStatusCompositeService extends LdmService {
         return citizenshipStatuses
     }
 
+
     protected void setPagingParams(Map requestParams) {
         RestfulApiValidationUtility.correctMaxAndOffset(requestParams, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
     }
+
 
     protected void setSortingParams(Map requestParams) {
         if (requestParams.containsKey("sort")) {
@@ -116,12 +118,13 @@ class CitizenshipStatusCompositeService extends LdmService {
     }
 
 
-    public String getCitizenshipStatusCategory(Boolean citizenIndicator) {
+    protected String getCitizenshipStatusCategory(Boolean citizenIndicator) {
         String category
-        if (citizenIndicator) {
-            category = GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_CATEGORY_CITIZEN
+        CitizenshipStatusCategory citizenshipStatusCategory = CitizenshipStatusCategory.getByBannerValue(citizenIndicator)
+        if (citizenshipStatusCategory) {
+            category = citizenshipStatusCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
         } else {
-            category = GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_CATEGORY_NON_CITIZEN
+            category = CitizenshipStatusCategory.NON_CITIZEN.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
         }
         return category
     }

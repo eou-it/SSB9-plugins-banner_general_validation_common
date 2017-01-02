@@ -135,8 +135,7 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
         def decorators = []
 
         if (rows) {
-            def dataMapForAll = initDataMapForAll()
-            prepareDataMapForAll_List(dataMapForAll)
+            def dataMapForAll = prepareDataMapForAll_List()
 
             rows?.each {
                 MaritalStatus maritalStatus = it.maritalStatus
@@ -150,15 +149,13 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
     }
 
 
-    private def initDataMapForAll() {
+    private def prepareDataMapForAll_List() {
         def dataMapForAll = [:]
-        return dataMapForAll
-    }
 
-
-    private void prepareDataMapForAll_List(Map dataMapForAll) {
-
+        // Call extension
         prepareDataMapForAll_ListExtension(dataMapForAll)
+
+        return dataMapForAll
     }
 
 
@@ -176,6 +173,7 @@ abstract class AbstractMaritalStatusCompositeService extends LdmService {
                                              final Map dataMapForAll) {
         Map dataMapForSingle = initDataMapForSingle("LIST", maritalStatusGuid, maritalStatus)
 
+        // Call extension
         prepareDataMapForSingle_ListExtension(dataMapForAll, dataMapForSingle)
 
         return dataMapForSingle

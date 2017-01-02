@@ -6,16 +6,14 @@ package net.hedtech.banner.general.system.ldm
 
 enum CitizenshipStatusCategory {
 
-    CITIZEN([v4: "citizen"], true),
-    NON_CITIZEN([v4: "nonCitizen"], false)
+    CITIZEN([v4: "citizen"]),
+    NON_CITIZEN([v4: "nonCitizen"])
 
     final Map<String, String> versionToEnumMap
-    final Boolean bannerValue
 
 
-    CitizenshipStatusCategory(Map<String, String> versionToEnumMap, Boolean bannerValue) {
+    CitizenshipStatusCategory(Map<String, String> versionToEnumMap) {
         this.versionToEnumMap = versionToEnumMap
-        this.bannerValue = bannerValue
     }
 
 
@@ -33,17 +31,14 @@ enum CitizenshipStatusCategory {
     }
 
 
-    public static CitizenshipStatusCategory getByBannerValue(Boolean value) {
-        if (value) {
-            Iterator itr = CitizenshipStatusCategory.values().iterator()
-            while (itr.hasNext()) {
-                CitizenshipStatusCategory citizenshipStatusCategory = itr.next()
-                if (citizenshipStatusCategory.bannerValue == value) {
-                    return citizenshipStatusCategory
-                }
-            }
+    public static CitizenshipStatusCategory getByCitizenIndicator(Boolean citizenIndicator) {
+        CitizenshipStatusCategory citizenshipStatusCategory
+        if (citizenIndicator) {
+            citizenshipStatusCategory = CitizenshipStatusCategory.CITIZEN
+        } else {
+            citizenshipStatusCategory = CitizenshipStatusCategory.NON_CITIZEN
         }
-        return null
+        return citizenshipStatusCategory
     }
 
 }

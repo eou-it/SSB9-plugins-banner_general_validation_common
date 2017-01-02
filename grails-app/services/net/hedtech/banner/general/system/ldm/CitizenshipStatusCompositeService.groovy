@@ -119,14 +119,8 @@ class CitizenshipStatusCompositeService extends LdmService {
 
 
     protected String getCitizenshipStatusCategory(Boolean citizenIndicator) {
-        String category
-        CitizenshipStatusCategory citizenshipStatusCategory = CitizenshipStatusCategory.getByBannerValue(citizenIndicator)
-        if (citizenshipStatusCategory) {
-            category = citizenshipStatusCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
-        } else {
-            category = CitizenshipStatusCategory.NON_CITIZEN.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
-        }
-        return category
+        CitizenshipStatusCategory citizenshipStatusCategory = CitizenshipStatusCategory.getByCitizenIndicator(citizenIndicator)
+        return citizenshipStatusCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
     }
 
 }

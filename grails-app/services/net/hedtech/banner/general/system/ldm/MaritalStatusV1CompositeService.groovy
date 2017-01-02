@@ -60,8 +60,7 @@ class MaritalStatusV1CompositeService extends AbstractMaritalStatusCompositeServ
         MaritalStatus maritalStatus = dataMapForSingle.get("maritalStatus")
 
         if (dataMapForSingle.get("sourceForDataMap") == "CREATE") {
-            def dataMapForAll = initDataMapForAll()
-            prepareDataMapForAll_List(dataMapForAll)
+            def dataMapForAll = prepareDataMapForAll_List()
             dataMapForSingle.putAll(prepareDataMapForSingle_List(maritalStatusGuid, maritalStatus, dataMapForAll))
         }
 

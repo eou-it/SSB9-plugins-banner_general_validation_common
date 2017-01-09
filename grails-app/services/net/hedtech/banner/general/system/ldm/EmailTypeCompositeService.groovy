@@ -175,7 +175,7 @@ class EmailTypeCompositeService extends LdmService {
         if (integrationConfigurationList) {
             List<EmailType> entities = emailTypeService.fetchAllByCodeInList(integrationConfigurationList.value)
             integrationConfigurationList.each {
-                HedmEmailType hedmEmailType = HedmEmailType.getByString(it.translationValue, version)
+                HedmEmailType hedmEmailType = HedmEmailType.getByDataModelValue(it.translationValue, version)
                 if (entities.code.contains(it.value) && hedmEmailType) {
                     bannerEmailTypeToHedmEmailTypeMap.put(it.value, hedmEmailType.versionToEnumMap[version])
                 }

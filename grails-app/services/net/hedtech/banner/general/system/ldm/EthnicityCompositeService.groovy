@@ -315,13 +315,13 @@ class EthnicityCompositeService extends LdmService {
     }
 
 
-    public def fetchByGuid(String ethnicityGuid) {
-        Ethnicity ethnicity
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, ethnicityGuid?.toLowerCase()?.trim())
+    public String fetchUsEthnicCodeByGuid(String usEthnicCodeGuid) {
+        String usEthnicCode
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, usEthnicCodeGuid?.toLowerCase()?.trim())
         if (globalUniqueIdentifier) {
-            ethnicity = ethnicityService.get(globalUniqueIdentifier.domainId)
+            usEthnicCode = String.valueOf(globalUniqueIdentifier.domainId)
         }
-        return ethnicity
+        return usEthnicCode
     }
 
 }

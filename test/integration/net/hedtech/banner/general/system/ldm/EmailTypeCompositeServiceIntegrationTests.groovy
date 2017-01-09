@@ -292,7 +292,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         def map = emailTypeCompositeService.getBannerEmailTypeToHedmV6EmailTypeMap()
         assertNotNull map
         assertTrue map.containsKey(emailType.code)
-        assertEquals map.get(emailType.code), HedmEmailType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
+        assertEquals map.get(emailType.code), HedmEmailType.getByDataModelValue(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
     }
 
     @Test
@@ -304,7 +304,7 @@ class EmailTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCase{
         def map = emailTypeCompositeService.getBannerEmailTypeToHedmV3EmailTypeMap()
         assertNotNull map
         assertTrue map.containsKey(emailType.code)
-        assertEquals map.get(emailType.code), HedmEmailType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
+        assertEquals map.get(emailType.code), HedmEmailType.getByDataModelValue(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
 
     }
 

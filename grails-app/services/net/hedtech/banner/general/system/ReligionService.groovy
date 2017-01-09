@@ -1,11 +1,18 @@
+/** *******************************************************************************
+ Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
+ ********************************************************************************* */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.service.ServiceBase
 
 class ReligionService extends ServiceBase {
 
     boolean transactional = true
+
+    GlobalUniqueIdentifierService globalUniqueIdentifierService
 
 
     def fetchAllWithGuidByCodeInList(Collection<String> religionCodes, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
@@ -42,5 +49,14 @@ class ReligionService extends ServiceBase {
         return rows
     }
 
+
+    Religion fetchByGuid(String religionGuid) {
+        Religion religion
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RELIGION_LDM_NAME, religionGuid?.toLowerCase()?.trim())
+        if (globalUniqueIdentifier) {
+            religion = get(globalUniqueIdentifier.domainId)
+        }
+        return religion
+    }
 
 }

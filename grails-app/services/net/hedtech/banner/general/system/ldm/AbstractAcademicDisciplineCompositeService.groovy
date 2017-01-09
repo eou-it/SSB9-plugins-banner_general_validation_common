@@ -130,8 +130,13 @@ abstract class AbstractAcademicDisciplineCompositeService extends LdmService {
         CIPCode cipcCode
         if (requestData.containsKey("cipcCode") && requestData.get("cipcCode").length() > 0) {
             String code = requestData.get('cipcCode')
-            cipcCode = CIPCodeService.fetchByCode(code)?.get(0)
-            dataMap.put("cipcCode",cipcCode)
+            List cipCodeList = CIPCodeService.fetchByCode(code)
+            if (cipCodeList.size() > 0) {
+                cipcCode = cipCodeList.get(0)
+                dataMap.put("cipcCode", cipcCode)
+            } else {
+                throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CIPC_NOT_EXISTS_MESSAGE, null))
+            }
         }
 
         if (globalUniqueIdentifierService.fetchByLdmNameAndGuid(ACADEMIC_DISCIPLINE_HEDM, majorMinorConcentrationGuid)) {
@@ -219,8 +224,13 @@ abstract class AbstractAcademicDisciplineCompositeService extends LdmService {
         CIPCode cipcCode
         if (requestData.containsKey("cipcCode") && requestData.get("cipcCode").length() > 0) {
             String codeInRequest = requestData.get('cipcCode')
-            cipcCode = CIPCodeService.fetchByCode(codeInRequest)?.get(0)
-            dataMap.put("cipcCode",cipcCode)
+            List cipCodeList = CIPCodeService.fetchByCode(codeInRequest)
+            if (cipCodeList.size() > 0) {
+                cipcCode = cipCodeList.get(0)
+                dataMap.put("cipcCode", cipcCode)
+            } else {
+                throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_DISCIPLINE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CIPC_NOT_EXISTS_MESSAGE, null))
+            }
         } else if (requestData.containsKey("cipcCode") && requestData.get("cipcCode").length() == 0) {
             dataMap.put("cipcCode",null)
         }

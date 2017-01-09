@@ -19,6 +19,7 @@ class GeneralValidationCommonConstants {
     final static String TYPE = 'type'
     final static String CODE = 'code'
     final static String ERROR_MSG_EXISTS_MESSAGE = 'exists.message'
+    final static String ERROR_MSG_CIPC_NOT_EXISTS_MESSAGE = 'cip.code.not.found.message'
     final static String ERROR_MSG_CODE_REQUIRED = 'code.required.message'
     final static String ERROR_MSG_DESCRIPTION_REQUIRED = 'description.required.message'
     final static String ERROR_MSG_CODE_EXISTS = 'code.exists.message'

@@ -188,7 +188,7 @@ class AddressTypeCompositeService extends LdmService {
         if (integrationConfigurationList) {
             List<AddressType> addressTypeList = addressTypeService.fetchAllByCodeInList(integrationConfigurationList.value)
             integrationConfigurationList.each {
-                HedmAddressType hedmAddressType = HedmAddressType.getByString(it.translationValue, version)
+                HedmAddressType hedmAddressType = HedmAddressType.getByDataModelValue(it.translationValue, version)
                 if (addressTypeList.code.contains(it.value) && hedmAddressType) {
                     bannerAddressTypeToHedmAddressTypeMap.put(it.value, hedmAddressType.versionToEnumMap[version])
                 }

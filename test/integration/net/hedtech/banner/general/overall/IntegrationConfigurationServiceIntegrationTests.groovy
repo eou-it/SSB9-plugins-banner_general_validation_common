@@ -79,7 +79,7 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
                 integrationConfigurationService.getDefaultAddressTypeV6()
             }
         } else {
-            HedmAddressType hedmAddressType = HedmAddressType.getByString(intConfig.translationValue, GeneralValidationCommonConstants.VERSION_V6)
+            HedmAddressType hedmAddressType = HedmAddressType.getByDataModelValue(intConfig.translationValue, GeneralValidationCommonConstants.VERSION_V6)
             if (!hedmAddressType) {
                 shouldFail(ApplicationException) {
                     integrationConfigurationService.getDefaultAddressTypeV6()

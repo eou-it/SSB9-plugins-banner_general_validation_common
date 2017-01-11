@@ -288,7 +288,7 @@ class AddressTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         def map = addressTypeCompositeService.getBannerAddressTypeToHedmV6AddressTypeMap()
         assertNotNull map
         assertTrue map.containsKey(addressType.code)
-        assertEquals map.get(addressType.code), HedmAddressType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
+        assertEquals map.get(addressType.code), HedmAddressType.getByDataModelValue(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
     }
 
     @Test
@@ -300,7 +300,7 @@ class AddressTypeCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         def map = addressTypeCompositeService.getBannerAddressTypeToHedmV3AddressTypeMap()
         assertNotNull map
         assertTrue map.containsKey(addressType.code)
-        assertEquals map.get(addressType.code), HedmAddressType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
+        assertEquals map.get(addressType.code), HedmAddressType.getByDataModelValue(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
 
     }
 

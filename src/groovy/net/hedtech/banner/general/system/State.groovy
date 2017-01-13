@@ -27,6 +27,10 @@ import org.hibernate.annotations.Type
         @NamedQuery(name = "State.fetchByCode",
                 query = """FROM  State a
 		   WHERE a.code = :code
+	"""),
+        @NamedQuery(name = "State.fetchByDescription",
+                query = """FROM  State a
+		   WHERE upper(a.description) = upper(:description)
 	""")
 ])
 class State implements Serializable {

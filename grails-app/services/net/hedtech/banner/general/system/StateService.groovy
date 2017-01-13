@@ -16,4 +16,11 @@ class StateService extends ServiceBase {
         return state
     }
 
+    State fetchByDescription(String description){
+        State state = State.withSession { session ->
+            session.getNamedQuery('State.fetchByDescription').setString('description',description).uniqueResult()
+        }
+        return state
+    }
+
 }

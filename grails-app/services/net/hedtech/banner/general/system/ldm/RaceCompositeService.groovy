@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -302,16 +302,6 @@ class RaceCompositeService extends LdmService {
             }
         }
         return decorators
-    }
-
-
-    public def fetchByGuid(String raceGuid) {
-        Race race
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RACE_LDM_NAME, raceGuid?.toLowerCase()?.trim())
-        if (globalUniqueIdentifier) {
-            race = raceService.get(globalUniqueIdentifier.domainId)
-        }
-        return race
     }
 
 }

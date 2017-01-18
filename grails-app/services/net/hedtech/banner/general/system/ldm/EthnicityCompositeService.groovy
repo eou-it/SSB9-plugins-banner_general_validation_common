@@ -196,17 +196,6 @@ class EthnicityCompositeService extends LdmService {
         return ethnicityDetail
     }
 
-
-    Map<String, String> fetchGUIDsForUnitedStatesEthnicCodes() {
-        Map<String, String> usEthnicCodeToGuidMap = [:]
-        getUnitedStatesEthnicCodes().each {
-            if (it.domainId > 0) {
-                usEthnicCodeToGuidMap.put(String.valueOf(it.domainId), it.guid)
-            }
-        }
-        return usEthnicCodeToGuidMap
-    }
-
     /**
      * STVETHN_ETHN_CDE -> HeDM enumeration (Mapping)(in LIST/GET operations)
      *
@@ -219,21 +208,6 @@ class EthnicityCompositeService extends LdmService {
             hedmEnum = usEthnicCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V1]
         }
         return hedmEnum
-    }
-
-    /**
-     * HeDM enumeration -> STVETHN_ETHN_CDE (Default)(in POST/PUT operations)
-     *
-     * @param hedmEnum
-     * @return
-     */
-    private String getEthnicCode(String hedmEnum) {
-        String ethnicCode
-        UsEthnicCategory usEthnicCategory = UsEthnicCategory.getByDataModelValue(hedmEnum, GeneralValidationCommonConstants.VERSION_V1)
-        if (usEthnicCategory) {
-            ethnicCode = usEthnicCategory.bannerValue
-        }
-        return ethnicCode
     }
 
 
@@ -312,16 +286,6 @@ class EthnicityCompositeService extends LdmService {
             decorator = new EthnicityDecorator(guid, title, ethnicCategory)
         }
         return decorator
-    }
-
-
-    public String fetchUsEthnicCodeByGuid(String usEthnicCodeGuid) {
-        String usEthnicCode
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, usEthnicCodeGuid?.toLowerCase()?.trim())
-        if (globalUniqueIdentifier) {
-            usEthnicCode = String.valueOf(globalUniqueIdentifier.domainId)
-        }
-        return usEthnicCode
     }
 
 }

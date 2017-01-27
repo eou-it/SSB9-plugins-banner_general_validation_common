@@ -31,9 +31,13 @@ class DateConvertHelperService {
         if(!date){
             return null
         }
-        DateFormat dateFormat = new SimpleDateFormat(GeneralValidationCommonConstants.UTC_DATE_FORMAT);
-        dateFormat.setTimeZone(TimeZone.getTimeZone(GeneralValidationCommonConstants.UTC_TIME_ZONE));
-        return dateFormat.format(date);
+        //we are not doing proper date conversion using dateformatter as banner does not have timezone
+        //storage capability due to which we loose the timezone info
+        //and dates change between what is saved and what is read
+        //we only convert the date part and simply attach 'T'00:00:00+00:00 to denote UTC
+        DateFormat dateFormat = new SimpleDateFormat(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE);
+        //dateFormat.setTimeZone(TimeZone.getTimeZone(GeneralValidationCommonConstants.UTC_TIME_ZONE));
+        return dateFormat.format(date)+"'T'00:00:00+00:00";
     }
 
     /**
@@ -91,7 +95,11 @@ class DateConvertHelperService {
           }catch (ParseException pe){
               throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
           }
-        return utcDate
+        //we are not doing proper date conversion using dateformatter as banner does not have timezone
+          //storage capability due to which we loose the timezone info
+          //and dates change between what is saved and what is read
+          //we only parse the date component from the given object
+        return new SimpleDateFormat(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE).parse(utc)
     }
 
     static Date convertDateStringToServerDate(String date) {

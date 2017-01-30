@@ -34,10 +34,10 @@ class DateConvertHelperService {
         //we are not doing proper date conversion using dateformatter as banner does not have timezone
         //storage capability due to which we loose the timezone info
         //and dates change between what is saved and what is read
-        //we only convert the date part and simply attach 'T'00:00:00+00:00 to denote UTC
+        //we only convert the date part and simply attach T00:00:00+00:00 to denote UTC
         DateFormat dateFormat = new SimpleDateFormat(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE);
         //dateFormat.setTimeZone(TimeZone.getTimeZone(GeneralValidationCommonConstants.UTC_TIME_ZONE));
-        return dateFormat.format(date)+"'T'00:00:00+00:00";
+        return dateFormat.format(date)+"T00:00:00+00:00";
     }
 
     /**

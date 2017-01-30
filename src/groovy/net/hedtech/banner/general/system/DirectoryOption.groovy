@@ -7,6 +7,8 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.Table
 import javax.persistence.GenerationType
 import javax.persistence.SequenceGenerator
@@ -22,6 +24,12 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "GTVDIRO")
+@NamedQueries(value = [
+        @NamedQuery(name = "DirectoryOption.fetchByCode",
+                query = """FROM DirectoryOption a
+    WHERE a.code = :code
+""")
+])
 class DirectoryOption implements Serializable {
 
     /**
@@ -134,5 +142,15 @@ class DirectoryOption implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = [ 'code' ]
+
+
+    public static List fetchByCode(String code) {
+
+        def directoryOptionsValidationItem = DirectoryOption.withSession { session ->
+            session.getNamedQuery('DirectoryOption.fetchByCode').setString('code', code).list()
+        }
+
+        return directoryOptionsValidationItem
+    }
 
 }

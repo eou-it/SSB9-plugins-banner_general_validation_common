@@ -15,7 +15,13 @@ import javax.persistence.*
             AND a.effectiveDate <= :effectiveDate
             AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
             AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate)
-            AND a.statusIndicator ='A' """)
+            AND a.statusIndicator ='A' """),
+        @NamedQuery(name = "fetchByBankCodeList",
+                query = """FROM Bank a  WHERE  (UPPER(a.bank) LIKE :searchParam OR UPPER(a.bankAccountName) LIKE :searchParam)
+            AND a.effectiveDate <= :effectiveDate
+            AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
+            AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate)
+            """)
 ])
 @Entity
 @Table(name = "GXVBANK")
@@ -346,6 +352,25 @@ class Bank implements Serializable {
         }
 
         return bank
+    }
+
+
+    /**
+     * Provide Bank object for specified bank code
+     * @param bankCode
+     * @return Bank
+     */
+    public static Bank fetchByBankCodeList(def effectiveDate, def searchParam, def pagingParams ) {
+       def codeList= Bank.withSession {session ->
+            session.getNamedQuery( 'fetchByBankCodeList' )
+                    .setString( "searchParam", searchParam )
+                    .setDate( "effectiveDate", effectiveDate )
+                    .setMaxResults( pagingParams.max )
+                    .setFirstResult( pagingParams.offset )
+                    .setCacheable( true )
+                    .list()
+        }
+        return [list: codeList]
     }
 
 }

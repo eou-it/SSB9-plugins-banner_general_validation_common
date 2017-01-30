@@ -214,6 +214,8 @@ class GeneralValidationCommonConstants {
 
     public static final String STUDENT_ACADEMICLOAD_CODE = "STUDENT.ACADEMICLOAD.CODE"
 
+    public static final String ERROR_MSG_MISSING_BANK_CODE = 'missing.finance.bankCode'
+
 }
 
 

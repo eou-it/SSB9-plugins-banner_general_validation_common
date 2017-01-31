@@ -35,8 +35,8 @@ class FinanceBankCompositeService {
                 version             : it.version,
                     bankCode            : it.bank,
                     bankAccountName     : it.bankAccountName,
-                    chartOfAccounts     : it.chartOfAccounts,
-                    currencyConversion : it.currencyConversion
+                    chartOfAccounts     : it.chartOfAccounts ? it.chartOfAccounts : '',
+                    currencyConversion : it.currencyConversion ? it.currencyConversion : ''
             ]
         }
     }

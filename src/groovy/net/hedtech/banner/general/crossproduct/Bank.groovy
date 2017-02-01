@@ -18,7 +18,7 @@ import javax.persistence.*
             AND a.statusIndicator ='A' """),
         @NamedQuery(name = "fetchByBankCodeList",
                 query = """FROM Bank a  WHERE  (UPPER(a.bank) LIKE :searchParam OR UPPER(a.bankAccountName) LIKE :searchParam OR UPPER(a.chartOfAccounts) LIKE :searchParam OR UPPER(a.currencyConversion) LIKE :searchParam)
-            AND a.effectiveDate <= TRUNC(:effectiveDate)
+            AND TRUNC(a.effectiveDate) <= TRUNC(:effectiveDate)
             AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
             AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate) AND a.statusIndicator ='A' 
             """)

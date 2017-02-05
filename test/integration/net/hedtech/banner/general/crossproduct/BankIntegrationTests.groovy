@@ -468,6 +468,22 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals getBankDetails.achFileNumber, bank.achFileNumber
     }
 
+
+    @Test
+    void testFetchByBankCodeList() {
+        Bank bank = newValidForCreateBank()
+        bank.effectiveDate = new Date() - 10
+        bank.nextChangeDate = new Date() + 10
+        bank.terminationDate = new Date() + 10
+        bank.save(failOnError: true, flush: true)
+        //Test if the generated entity now has an id assigned
+        bank.refresh()
+        assertNotNull bank.id
+
+        def getBankDetails = Bank.fetchByBankCodeList(new Date(), i_success_bank, [max:10 , offset:0] ).list
+        assertNotNull getBankDetails
+    }
+
     private def newValidForCreateBank() {
         def bank = new Bank(
                 bank: i_success_bank,

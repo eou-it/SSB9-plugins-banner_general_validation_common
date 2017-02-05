@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -79,7 +80,26 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals getBankDetails.bankOriginatingRoutingNumber, bank.bankOriginatingRoutingNumber
         assertEquals getBankDetails.achFileNumber, bank.achFileNumber
     }
+    @Test
+    void testFetchByBankCodeList() {
+        Bank bank = newValidForCreateBank()
+        bank.save(failOnError: true, flush: true)
+        bank.refresh()
+        assertNotNull bank.id
+        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), i_success_bank,[max:10 , offset:0] )
+        assertNotNull getBankDetails
 
+    }
+
+    @Test
+    void testFetchByBankCodeListWithInvalidSearch() {
+        try{
+            Bank getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0] )
+            fail 'should fail this' + GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE
+        }catch (ApplicationException ae) {
+            assertApplicationException ae, GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE
+        }
+    }
     private Bank newValidForCreateBank() {
         Bank bank = new Bank(
                 bank: i_success_bank,

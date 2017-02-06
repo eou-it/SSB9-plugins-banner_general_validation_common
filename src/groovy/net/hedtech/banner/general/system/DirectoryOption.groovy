@@ -143,14 +143,4 @@ class DirectoryOption implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = [ 'code' ]
 
-
-    public static List fetchByCode(String code) {
-
-        def directoryOptionsValidationItem = DirectoryOption.withSession { session ->
-            session.getNamedQuery('DirectoryOption.fetchByCode').setString('code', code).list()
-        }
-
-        return directoryOptionsValidationItem
-    }
-
 }

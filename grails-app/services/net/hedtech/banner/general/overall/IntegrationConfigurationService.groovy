@@ -16,6 +16,8 @@ class IntegrationConfigurationService extends ServiceBase {
     static final String NATION_ISO = "NATION.ISOCODE"
     static final String ADDRESSES_DEFAULT_ADDRESSTYPE = "ADDRESSES.DEFAULT.ADDRESSTYPE"
     static final String COUNTRY_DEFAULT_ISO = "ADDRESS.COUNTRY.DEFAULT"
+    static final String BASE_ISO_CURRENCY_CODE = "ISO.BASE.CURRENCY.CODE"
+    static final String DEFAULT_ISO_CURRENCY_CODE = 'USD.ISO.CURRENCY.CODE'
 
     boolean transactional = true
 
@@ -142,5 +144,28 @@ class IntegrationConfigurationService extends ServiceBase {
         }
         return intConfs
     }
+
+    private String getDefaultBaseIsoCurrencyCode() {
+        String defaultCurrencyCode
+        List<IntegrationConfiguration> currencyCodeConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, BASE_ISO_CURRENCY_CODE)
+        if (currencyCodeConfigs.size() > 0) {
+            defaultCurrencyCode = currencyCodeConfigs[0].value
+        } else {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.not.found.message", [BASE_ISO_CURRENCY_CODE]))
+        }
+        return defaultCurrencyCode
+    }
+
+    private String getDefaultIsoCurrencyCode() {
+        String defaultCurrencyCode
+        List<IntegrationConfiguration> currencyCodeConfigs = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, DEFAULT_ISO_CURRENCY_CODE)
+        if (currencyCodeConfigs.size() > 0) {
+            defaultCurrencyCode = currencyCodeConfigs[0].value
+        } else {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.not.found.message", [DEFAULT_ISO_CURRENCY_CODE]))
+        }
+        return defaultCurrencyCode
+    }
+
 
 }

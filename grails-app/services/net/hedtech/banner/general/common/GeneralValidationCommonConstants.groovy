@@ -44,7 +44,10 @@ class GeneralValidationCommonConstants {
     final static String ACADEMIC_DISCIPLINE = 'academicDiscipline'
 
     /** Common constants for Financial Aid Fund Classification*/
+
     final static String FINANCIAL_AID_FUND_CLASSIFICATIONS = 'financialaidfundClassification'
+
+    final static String FINANCIAL_AID_FUND_CATEGORY = 'financialaidfundCategory'
 
     //Ethnicity constants
     static final String ETHNICITY_LDM_NAME = 'ethnicities'
@@ -215,7 +218,7 @@ class GeneralValidationCommonConstants {
 
     public static final String STUDENT_ACADEMICLOAD_CODE = "STUDENT.ACADEMICLOAD.CODE"
 
-    public  static final String FUND_CATEGORIES = 'fundCategories'
+
 
 }
 

@@ -43,6 +43,9 @@ class GeneralValidationCommonConstants {
     /** Common constants for AcademicDiscipline*/
     final static String ACADEMIC_DISCIPLINE = 'academicDiscipline'
 
+    /** Common constants for Financial Aid Fund Classification*/
+    final static String FINANCIAL_AID_FUND_CLASSIFICATIONS = 'financialaidfundClassification'
+
     //Ethnicity constants
     static final String ETHNICITY_LDM_NAME = 'ethnicities'
     static final String ETHNICITIES_US = 'ethnicities-us'
@@ -52,6 +55,7 @@ class GeneralValidationCommonConstants {
 
     final static String ORGANIZATION = 'organization'
     final static String PERSON = 'person'
+
 
     /** Common constants for EmailType*/
     final static String PERSONAL = 'personal'
@@ -70,7 +74,7 @@ class GeneralValidationCommonConstants {
     final static String MATCHINGGIFTS = 'matchingGifts'
     final static String EMAIL_TYPE = 'emailType'
 
-    //common constants for  MaritalStatus
+    //common constants for MaritalStatus
     static final String PROCESS_CODE = 'HEDM'
     static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
     static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"

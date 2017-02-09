@@ -1,10 +1,9 @@
 /*******************************************************************************
- Copyright 2016-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
 import net.hedtech.banner.service.ServiceBase
-import net.hedtech.banner.finance.util.FinanceCommonUtility
 import org.apache.commons.lang.StringUtils
 
 class BankService extends ServiceBase {

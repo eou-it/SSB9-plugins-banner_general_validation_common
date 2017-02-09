@@ -4,10 +4,8 @@
 package net.hedtech.banner.general.crossproduct
 
 import net.hedtech.banner.service.ServiceBase
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
-import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.exceptions.BusinessLogicValidationException
-import net.hedtech.banner.finance.util.LoggerUtility
+import net.hedtech.banner.finance.util.FinanceCommonUtility
+import org.apache.commons.lang.StringUtils
 
 class BankService extends ServiceBase {
     boolean transactional = true
@@ -28,11 +26,25 @@ class BankService extends ServiceBase {
      * @return list of Bank.
      */
     def findBankListByEffectiveDateAndBankCode(effectiveDate, searchParam, pagingParams ) {
-        def bankList = Bank.fetchByBankCodeList( effectiveDate, searchParam, pagingParams ).list
-        if (!bankList) {
-            LoggerUtility.warn( log, 'Error: Bank code not found.' )
-            throw new ApplicationException( BankService, new BusinessLogicValidationException( GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE, [] ) )
-        }
+        def bankList = Bank.fetchByBankCodeList( effectiveDate, getLikeFormattedFilter(searchParam?.toUpperCase()), pagingParams ).list
         return bankList
+    }
+
+    /**
+     *
+     * @param filter
+     * @return
+     */
+    private static getLikeFormattedFilter(String filter){
+        def filterText
+        if (StringUtils.isBlank( filter )) {
+            filterText = "%"
+        } else if (!(filter =~ /%/)) {
+            filterText = "%" + filter.toUpperCase() + "%"
+        } else {
+            filterText = filter.toUpperCase()
+        }
+
+        return filterText
     }
 }

@@ -92,13 +92,19 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
+    void testFetchByBankCodeListWithEmpteySearch() {
+        Bank bank = newValidForCreateBank()
+        bank.save(failOnError: true, flush: true)
+        bank.refresh()
+        assertNotNull bank.id
+        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), '',[max:10 , offset:0] )
+        assertNotNull getBankDetails
+
+    }
+    @Test
     void testFetchByBankCodeListWithInvalidSearch() {
-        try{
-            Bank getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0] )
-            fail 'should fail this' + GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE
-        }catch (ApplicationException ae) {
-            assertApplicationException ae, GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE
-        }
+        Bank getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0] )
+        assertNull getBankDetails
     }
     private Bank newValidForCreateBank() {
         Bank bank = new Bank(

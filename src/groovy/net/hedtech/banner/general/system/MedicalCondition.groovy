@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -12,6 +12,10 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVMEDI")
+@NamedQueries(value = [
+        @NamedQuery(name = "MedicalCondition.fetchByCode",
+                query = """ FROM MedicalCondition a WHERE a.code = :code """)
+])
 class MedicalCondition implements Serializable {
 
     @Id

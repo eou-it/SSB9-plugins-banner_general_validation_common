@@ -1,8 +1,9 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.service.ServiceBase
 
 // NOTE:
@@ -19,5 +20,21 @@ import net.hedtech.banner.service.ServiceBase
 class MedicalConditionService extends ServiceBase{
 
     boolean transactional = true
+
+    def fetchMedicalCondition(code) {
+        def medicalCondition
+
+        MedicalCondition.withSession { session ->
+            medicalCondition = session.getNamedQuery(
+                    'MedicalCondition.fetchByCode')
+                    .setString('code', code).list()[0]
+        }
+
+        if(!medicalCondition){
+            throw new ApplicationException(MedicalCondition, "@@r1:invalidMedicalCondition@@")
+        }
+
+        medicalCondition
+    }
 
 }

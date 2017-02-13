@@ -102,6 +102,20 @@ class IntegrationConfigurationService extends ServiceBase {
     }
 
 
+    /**
+     * ISO 3166-1 two-letter region code that denotes the region that we are expecting the number to be from.
+     *
+     * @return
+     */
+    String getDefaultISO2CountryCodeForOrganizationPhoneNumberParsing() {
+        String settingName = "PHONES.COUNTRY.DEFAULT"
+        IntegrationConfiguration intConf = fetchByProcessCodeAndSettingName(PROCESS_CODE, settingName)
+        if (!isoCodeService.getISO3CountryCode(intConf.value)) {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("goriccr.invalid.value.message", [settingName]))
+        }
+        return intConf.value
+    }
+
     boolean canUpdatePersonSSN() {
         boolean val = false
         String settingName = "PERSON.UPDATESSN"
@@ -124,6 +138,21 @@ class IntegrationConfigurationService extends ServiceBase {
      */
     String getDefaultZipCode() {
         IntegrationConfiguration intConfig = fetchByProcessCodeAndSettingName(PROCESS_CODE, "PERSON.ADDRESSES.POSTAL.CODE")
+        return intConfig.value
+    }
+
+    /**
+     * Default zip code to be associated with the address of Organization
+     *
+     * In address,
+     * if STATE is present, then ZIP is required
+     * if COUNTRY is present, then neither STATE nor ZIP are required
+     * If STATE is present (regardless of whether COUNTRY is present or not), then ZIP is required
+     *
+     * @return
+     */
+    String getDefaultOrganizationZipCode() {
+        IntegrationConfiguration intConfig = fetchByProcessCodeAndSettingName(PROCESS_CODE, "ADDRESSES.POSTAL.CODE")
         return intConfig.value
     }
 

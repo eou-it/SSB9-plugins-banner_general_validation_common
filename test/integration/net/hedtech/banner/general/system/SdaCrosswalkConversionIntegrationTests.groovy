@@ -298,8 +298,8 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllByInternalGroup() {
-        def internalGroupStr = 'PERSONAL_INFORMATION'
-        def internalCodeStr = "UPD_P_EMAL"
+        def internalGroupStr = 'WEBREG'
+        def internalCodeStr = "SCHBYDATE"
 
         def sdaxList = SdaCrosswalkConversion.fetchAllByInternalGroup(internalGroupStr)
 

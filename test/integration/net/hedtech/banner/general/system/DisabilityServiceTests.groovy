@@ -1,7 +1,9 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
+import net.hedtech.banner.exceptions.ApplicationException
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -14,7 +16,7 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class DisabilityServiceTests extends BaseIntegrationTestCase {
 
-    def DisabilityService
+    def disabilityService
 
 
     @Before
@@ -32,7 +34,7 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
     void testCreateDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
-        disability = DisabilityService.create(disability)
+        disability = disabilityService.create(disability)
         assertNotNull "Disability ID is null in Disability Create Service Test", disability.id
         assertNotNull "Disability Code is null in Disability Create Service Test", disability.code
     }
@@ -41,13 +43,13 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
     void testUpdateDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
-        disability = DisabilityService.create(disability)
+        disability = disabilityService.create(disability)
 
         Disability disabilityUpdate = Disability.findWhere(code: "TT")
         assertNotNull "Disability ID is null in Disability Update Service Test", disabilityUpdate.id
 
         disabilityUpdate.description = "ZZ"
-        disabilityUpdate = DisabilityService.update(disabilityUpdate)
+        disabilityUpdate = disabilityService.update(disabilityUpdate)
         assertEquals "ZZ", disabilityUpdate.description
     }
 
@@ -55,14 +57,31 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
     void testDeleteDisability() {
         def disability = new Disability(code: "TT", description: "TT", lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")
-        disability = DisabilityService.create(disability)
+        disability = disabilityService.create(disability)
         assertNotNull "Disability ID is null in Disability Delete Service Test", disability.id
 
         Disability disabilityDelete = Disability.findWhere(code: "TT")
         assertNotNull "Disability ID is null in Disability Delete Service Test", disabilityDelete.id
 
-        DisabilityService.delete(disabilityDelete.id)
+        disabilityService.delete(disabilityDelete.id)
         assertNull "Disability should have been deleted in Disability Delete Service Test", disability.get(disabilityDelete.id)
+    }
+
+    @Test
+    void testInvalidDisability(){
+        try{
+            disabilityService.fetchDisability('DJD')
+            fail("I should have received an error but it passed; @@r1:invalidDisability@@ ")
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, "@@r1:invalidDisabilty@@"
+        }
+    }
+
+    @Test
+    void testValidDisability(){
+        def result = disabilityService.fetchDisability('DY')
+        assertEquals 'I have (or had) a disability', result.description
     }
 
 }

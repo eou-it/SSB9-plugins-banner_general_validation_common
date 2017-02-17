@@ -31,9 +31,7 @@ class DateConvertHelperServiceIntegrationTests extends BaseIntegrationTestCase{
         String expectedDate = DateConvertHelperService.convertDateIntoUTCFormat(new Date())
         assertNotNull expectedDate
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone("UTC"))
-        calendar.setTime(Date.parse(GeneralValidationCommonConstants.UTC_DATE_FORMAT, expectedDate));
-        assertEquals TimeZone.getTimeZone("UTC").getID(), calendar.getTimeZone().getID()
+        calendar.setTime(Date.parse(GeneralValidationCommonConstants.UTC_DATE_FORMAT_WITHOUT_TIMEZONE, expectedDate));
         assertEquals calendar.getTimeInMillis(), DateConvertHelperService.convertUTCStringToServerDate(expectedDate).getTime()
     }
 

@@ -15,5 +15,16 @@ import net.hedtech.banner.service.ServiceBase
 
 class CurrencyConversionService extends ServiceBase {
 
+    boolean transactional = true
+
+    CurrencyConversion findByCurrencyConversion(String currencyConversion) {
+        def entity
+        if(currencyConversion) {
+            entity = CurrencyConversion.withSession { session ->
+                session.getNamedQuery('CurrencyConversion.findByCurrencyConversion').setString('currencyConversion', currencyConversion).uniqueResult()
+            }
+        }
+        return entity
+    }
 
 }

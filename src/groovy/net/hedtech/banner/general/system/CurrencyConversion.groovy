@@ -13,6 +13,10 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "GTVCURR")
+@NamedQueries([
+        @NamedQuery(name = "CurrencyConversion.findByCurrencyConversion",
+                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion = :currencyConversion """)
+])
 class CurrencyConversion implements Serializable {
 
     /**

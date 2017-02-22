@@ -203,7 +203,7 @@ class RaceCompositeService extends LdmService {
     private void validateRequest(content, version) {
         if (!content.race) {
             def parameterValue = GeneralValidationCommonConstants.VERSION_V4.equals(version) ? GeneralValidationCommonConstants.CODE.capitalize() : GeneralValidationCommonConstants.ABBREVIATION.capitalize()
-            throw new ApplicationException(GeneralValidationCommonConstants.RACE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, [parameterValue]))
+            throw new ApplicationException(GeneralValidationCommonConstants.RACE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_REQUIRED, null))
         }
         if (!content.description) {
             throw new ApplicationException(GeneralValidationCommonConstants.RACE, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_DESCRIPTION_REQUIRED, null))

@@ -85,6 +85,9 @@ class GeneralValidationCommonConstants {
     static final String MARITAL_STATUS_MARTIAL_CATEGORY = "MARITALSTATUS.MARITALCATEGORY"
     static final String MARITAL_STATUS = 'maritalStatus'
 
+    //common constants for financial-aid-funds
+    static final String FINANCIAL_AID_FUNDS_PRIVACY="FINANCIAL.AID.FUNDS.PRIVACY"
+
     //common constants for academic credentials
     final static String ACADEMIC_CREDENTIAL = 'academicCredential'
     static final String ACADEMIC_CREDENTIAL_LDM_NAME = 'academic-credentials'

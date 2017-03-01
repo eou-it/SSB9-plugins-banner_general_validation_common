@@ -51,7 +51,11 @@ query = """FROM SdaCrosswalkConversion a
            ORDER BY a.internal,a.internalSequenceNumber """),
 @NamedQuery(name = "SdaCrosswalkConversion.fetchAllForRegistrationSession",
         query = """FROM SdaCrosswalkConversion a
-           WHERE a.internalGroup in :internalGroups """)
+           WHERE a.internalGroup in :internalGroups """),
+@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalGroup",
+        query = """FROM SdaCrosswalkConversion a
+           WHERE  a.internalGroup = :internalGroup
+           ORDER BY a.internal,a.internalSequenceNumber """)
 ])
 
 @Entity
@@ -282,5 +286,14 @@ class SdaCrosswalkConversion implements Serializable {
                     .setParameterList('internalGroups', internalGroups).list()
         }
         return sdaxs
+    }
+
+    static List fetchAllByInternalGroup(String internalGroup) {
+        def sdaCrosswalkConversions = []
+        SdaCrosswalkConversion.withSession {session ->
+            sdaCrosswalkConversions = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalGroup')
+                    .setString('internalGroup', internalGroup).list()
+        }
+        return sdaCrosswalkConversions
     }
 }

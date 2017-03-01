@@ -296,6 +296,24 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
     }
 
 
+    @Test
+    void testFetchAllByInternalGroup() {
+        def internalGroupStr = 'WEBREG'
+        def internalCodeStr = "SCHBYDATE"
+
+        def sdaxList = SdaCrosswalkConversion.fetchAllByInternalGroup(internalGroupStr)
+
+        assertTrue sdaxList.size() >= 1
+
+        def piGroup = sdaxList.find {
+            it.internalGroup == internalGroupStr && it.internal == internalCodeStr
+        }
+
+        assertNotNull(piGroup)
+        assertEquals("Y", piGroup.external)
+    }
+
+
     private def newValidForCreateSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = new SdaCrosswalkConversion(
                 external: i_success_external,

@@ -179,6 +179,14 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor relationship, 'maxSize', ['description', 'studentExchangeVisitorInformationSystemEquivalent']
     }
 
+    @Test
+    void testFetchByCode() {
+        newValidForCreateRelationship().save()
+        Relationship relationship = Relationship.fetchByCode(i_success_code)
+        assertNotNull(relationship)
+        assertEquals(i_success_code, relationship.code)
+    }
+
 
 
 

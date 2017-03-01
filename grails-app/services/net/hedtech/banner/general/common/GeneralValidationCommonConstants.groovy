@@ -19,7 +19,6 @@ class GeneralValidationCommonConstants {
     final static String TYPE = 'type'
     final static String CODE = 'code'
     final static String ERROR_MSG_EXISTS_MESSAGE = 'exists.message'
-    final static String ERROR_MSG_CIPC_NOT_EXISTS_MESSAGE = 'cip.code.not.found.message'
     final static String ERROR_MSG_CODE_REQUIRED = 'code.required.message'
     final static String ERROR_MSG_DESCRIPTION_REQUIRED = 'description.required.message'
     final static String ERROR_MSG_CODE_EXISTS = 'code.exists.message'
@@ -124,6 +123,8 @@ class GeneralValidationCommonConstants {
     //common constants for  citizenship statuses
     static final String CITIZENSHIP_STATUS = 'citizenshipStatus'
     static final String CITIZENSHIP_STATUSES_LDM_NAME = 'citizenship-statuses'
+    static final String CITIZENSHIP_STATUSES_CATEGORY_CITIZEN = 'citizen'
+    static final String CITIZENSHIP_STATUSES_CATEGORY_NON_CITIZEN = 'nonCitizen'
 
     //common constants for visa-types
     static final String IMMIGRANT = 'immigrant'
@@ -167,6 +168,8 @@ class GeneralValidationCommonConstants {
     static final String PERSON_HOLD_TYPES = 'personHoldTypes'
     static final String PERSON_HOLD_TYPES_ACADEMIC = "academic"
     static final String PERSON_HOLD_TYPES_FINANCE = "financial"
+
+
 
     //Person Hold Constants
     public static final def PERSON_HOLD_SEARCH_FIELD = 'person'
@@ -221,8 +224,6 @@ class GeneralValidationCommonConstants {
     static final String INSTRUCTIONAL_METHOD_LDM_NAME = 'instructional-methods'
 
     public static final String STUDENT_ACADEMICLOAD_CODE = "STUDENT.ACADEMICLOAD.CODE"
-
-
 
 }
 

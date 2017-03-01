@@ -10,12 +10,18 @@ import javax.persistence.*
 /**
  * Currency conversion validation table.
  */
-
 @Entity
 @Table(name = "GTVCURR")
 @NamedQueries([
         @NamedQuery(name = "CurrencyConversion.findByCurrencyConversion",
-                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion = :currencyConversion """)
+                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion = :currencyConversion """),
+        @NamedQuery(name = "CurrencyConversion.fetchCurrentCurrencyConversion",
+                query = """FROM CurrencyConversion a
+                   WHERE a.rateEffectiveDate <= sysdate
+                   AND a.rateNextChangeDate > sysdate
+                   AND (a.rateTerminationDate > sysdate OR a.rateTerminationDate IS NULL)
+                   AND a.statusIndicator = 'A'
+                   AND a.currencyConversion = :currencyConversion""")
 ])
 class CurrencyConversion implements Serializable {
 
@@ -258,5 +264,14 @@ class CurrencyConversion implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['currencyConversion', 'rateEffectiveDate', 'rateNextChangeDate']
+
+
+    public static CurrencyConversion fetchCurrentCurrencyConversion( String currencyConversion ) {
+        def currencyConversionList
+        CurrencyConversion.withSession {session ->
+            currencyConversionList = session.getNamedQuery( 'CurrencyConversion.fetchCurrentCurrencyConversion' ).setString( 'currencyConversion', currencyConversion ).list()
+            return currencyConversionList[0]
+        }
+    }
 
 }

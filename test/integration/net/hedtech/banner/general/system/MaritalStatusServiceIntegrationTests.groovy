@@ -1,9 +1,9 @@
 package net.hedtech.banner.general.system
-
-import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.After
+
+import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
 
@@ -117,6 +117,44 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
         assertListIsSortedOnField(entities.maritalStatus, "description", "DESC")
     }
 
+    @Test
+    void testFetchMaritalStatusList() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList()
+
+        assertTrue 10 > maritalStatusList.size()
+    }
+
+    @Test
+    void testFetchMaritalStatusListFifty() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList(50)
+
+        assertTrue 50 > maritalStatusList.size()
+        assertTrue maritalStatusList.description.contains('Divorced')
+        assertTrue maritalStatusList.description.contains('Widowed')
+    }
+
+    @Test
+    void testFetchMaritalStatusListMidList() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList(12, 2)
+
+        assertTrue 12 > maritalStatusList.size()
+        assertTrue maritalStatusList.description.contains('Single')
+    }
+
+    @Test
+    void testFetchRMaritalStatusList() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList(10, 0, 'r')
+
+        assertTrue 10 > maritalStatusList.size()
+        assertTrue maritalStatusList.description.contains('Re-Married')
+    }
+
+    @Test
+    void testFetchRMaritalStatusMidList() {
+        def maritalStatusList = maritalStatusService.fetchMaritalStatusList(10, 20, 'r')
+
+        assertEquals 0, maritalStatusList.size()
+    }
 
     private void assertListIsSortedOnField(def list, String field, String sortOrder = "ASC") {
         def prevListItemVal

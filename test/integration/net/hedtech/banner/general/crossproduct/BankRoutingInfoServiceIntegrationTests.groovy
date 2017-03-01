@@ -33,7 +33,7 @@ class BankRoutingInfoServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testRoutingNumberValidation() {
         try {
-            bankRoutingInfoService.validateRoutingNumber("12345679X");
+            bankRoutingInfoService.validateRoutingNumber("678518423");
             fail("I should have received an error but it passed; @@r1:invalidRoutingNum@@ ")
         }
         catch (ApplicationException ae) {

@@ -119,4 +119,15 @@ class MaritalStatusService extends ServiceBase {
         return entities
     }
 
+    def fetchMaritalStatusList(int max = 10, int offset = 0, String searchString = '') {
+        def criteria = MaritalStatus.createCriteria()
+        def maritalStatusList = criteria.list(max: max, offset: offset, sort: 'description', order: 'asc') {
+            and {
+                ilike("description", "%${searchString}%")
+            }
+        }
+
+        maritalStatusList
+    }
+
 }

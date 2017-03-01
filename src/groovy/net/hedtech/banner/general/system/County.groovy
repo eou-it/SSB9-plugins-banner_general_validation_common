@@ -4,10 +4,15 @@
 
 package net.hedtech.banner.general.system
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
@@ -22,6 +27,13 @@ import org.hibernate.annotations.Type
 
 @Entity
 @Table(name = "STVCNTY")
+@NamedQueries(value = [
+        @NamedQuery(name = "County.fetchByCode",
+                query = """ FROM County a WHERE a.code = :code """)
+])
+
+@ToString(includeNames = true, ignoreNulls = false)
+@EqualsAndHashCode(includeFields = true)
 class County implements Serializable {
 
     /**
@@ -73,45 +85,6 @@ class County implements Serializable {
 
 
 
-    public String toString() {
-        """County[
-					id=$id, 
-					version=$version, 
-					code=$code, 
-					description=$description, 
-					lastModified=$lastModified, 
-					lastModifiedBy=$lastModifiedBy, 
-					dataOrigin=$dataOrigin]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (!(o instanceof County)) return false
-        County that = (County) o
-        if (id != that.id) return false
-        if (version != that.version) return false
-        if (code != that.code) return false
-        if (description != that.description) return false
-        if (lastModified != that.lastModified) return false
-        if (lastModifiedBy != that.lastModifiedBy) return false
-        if (dataOrigin != that.dataOrigin) return false
-        return true
-    }
-
-
-    int hashCode() {
-        int result
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (version != null ? version.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        return result
-    }
-
     static constraints = {
         code(nullable: false, maxSize: 5)
         description(nullable: true, maxSize: 30)
@@ -122,5 +95,17 @@ class County implements Serializable {
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
+
+
+    public static fetchByCode(String code) {
+        def county
+
+        County.withSession { session ->
+            county = session.getNamedQuery(
+                    'County.fetchByCode')
+                    .setString('code', code).list()[0]
+        }
+        return county
+    }
 
 }

@@ -160,6 +160,13 @@ class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
         assertErrorsFor emailType, 'maxSize', ['description']
     }
 
+    @Test
+    void testFetchByCodeAndWebDisplayable() {
+        def emailType  = EmailType.fetchByCodeAndWebDisplayable('BUSI')[0];
+
+        assertEquals 'Business E-Mail', emailType.description
+    }
+
 
 
 

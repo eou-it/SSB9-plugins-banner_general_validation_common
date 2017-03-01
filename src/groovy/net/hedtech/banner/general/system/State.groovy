@@ -1,7 +1,10 @@
 /** *****************************************************************************
- Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -25,14 +28,11 @@ import org.hibernate.annotations.Type
 @Table(name = "STVSTAT")
 @NamedQueries(value = [
         @NamedQuery(name = "State.fetchByCode",
-                query = """FROM  State a
-		   WHERE a.code = :code
-	"""),
-        @NamedQuery(name = "State.fetchByDescription",
-                query = """FROM  State a
-		   WHERE upper(a.description) = upper(:description)
-	""")
+                query = """ FROM State a WHERE a.code = :code """)
 ])
+
+@ToString(includeNames = true, ignoreNulls = false)
+@EqualsAndHashCode(includeFields = true)
 class State implements Serializable {
 
     /**
@@ -100,57 +100,6 @@ class State implements Serializable {
     @Column(name = "STVSTAT_DATA_ORIGIN", length = 30)
     String dataOrigin
 
-
-
-    public String toString() {
-        """State[
-					id=$id, 
-					code=$code, 
-					description=$description, 
-					lastModified=$lastModified, 
-					ediEquiv=$ediEquiv, 
-					statscan=$statscan, 
-					ipeds=$ipeds, 
-					version=$version, 
-					lastModifiedBy=$lastModifiedBy, 
-					dataOrigin=$dataOrigin, ]"""
-    }
-
-
-    boolean equals(o) {
-        if (this.is(o)) return true;
-        if (!(o instanceof State)) return false;
-        State that = (State) o;
-        if (id != that.id) return false;
-        if (code != that.code) return false;
-        if (description != that.description) return false;
-        if (lastModified != that.lastModified) return false;
-        if (ediEquiv != that.ediEquiv) return false;
-        if (statscan != that.statscan) return false;
-        if (ipeds != that.ipeds) return false;
-        if (version != that.version) return false;
-        if (lastModifiedBy != that.lastModifiedBy) return false;
-        if (dataOrigin != that.dataOrigin) return false;
-        return true;
-    }
-
-
-    int hashCode() {
-        int result;
-        result = (id != null ? id.hashCode() : 0);
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (code != null ? code.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
-        result = 31 * result + (ediEquiv != null ? ediEquiv.hashCode() : 0);
-        result = 31 * result + (statscan != null ? statscan.hashCode() : 0);
-        result = 31 * result + (ipeds != null ? ipeds.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0);
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0);
-        return result;
-    }
-
     static constraints = {
         code(nullable: false, maxSize: 3)
         description(nullable: false, maxSize: 30)
@@ -162,5 +111,15 @@ class State implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
+    public static fetchByCode(String code) {
+        def state
+
+        State.withSession { session ->
+            state = session.getNamedQuery(
+                    'State.fetchByCode')
+                    .setString('code', code).list()[0]
+        }
+        return state
+    }
 
 }

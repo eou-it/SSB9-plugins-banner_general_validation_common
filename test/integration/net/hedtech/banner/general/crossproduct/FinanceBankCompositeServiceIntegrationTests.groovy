@@ -51,7 +51,7 @@ class FinanceBankCompositeServiceIntegrationTests extends BaseIntegrationTestCas
     @Test
     void testFetchByBankCodeListWithNullSearch() {
         try{
-            Bank getBankDetails = financeBankCompositeService.findBankCodeListByEffectiveDateAndBankCode([effectiveDate:new Date() , searchParam: null] , [max:10, offset:0])
+            Bank getBankDetails = financeBankCompositeService.findBankCodeListByEffectiveDateAndBankCode([effectiveDate:new Date() , searchParam: null, coaCode:'B'] , [max:10, offset:0])
            fail 'should fail this' + GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE
         }catch (ApplicationException ae) {
             assertApplicationException ae, GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE
@@ -66,14 +66,14 @@ class FinanceBankCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         bank.refresh()
         assertNotNull bank.id
 
-        Bank getBankDetails = financeBankCompositeService.findBankCodeListByEffectiveDateAndBankCode([effectiveDate: new Date(), searchParam: i_success_bank] , [max:10, offset:0])
+        Bank getBankDetails = financeBankCompositeService.findBankCodeListByEffectiveDateAndBankCode([effectiveDate: new Date(), searchParam: i_success_bank, coaCode:'B'] , [max:10, offset:0])
         assertNotNull getBankDetails
     }
 
     @Test
     void testFetchByBankCodeByInvalidSearch() {
         try{
-            Bank getBankDetails = financeBankCompositeService.findBankCodeListByEffectiveDateAndBankCode([effectiveDate: new Date() , searchParam:'XYZC'] , [max:10, offset:0])
+            Bank getBankDetails = financeBankCompositeService.findBankCodeListByEffectiveDateAndBankCode([effectiveDate: new Date() , searchParam:'XYZC', coaCode:'B'] , [max:10, offset:0])
             fail 'should fail this' + GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE
         }catch (ApplicationException ae) {
             assertApplicationException ae, GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE

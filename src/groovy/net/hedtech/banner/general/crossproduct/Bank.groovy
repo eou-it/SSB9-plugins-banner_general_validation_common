@@ -18,6 +18,7 @@ import javax.persistence.*
             AND a.statusIndicator ='A' """),
         @NamedQuery(name = "fetchByBankCodeList",
                 query = """FROM Bank a  WHERE  (UPPER(a.bank) LIKE :searchParam OR UPPER(a.bankAccountName) LIKE :searchParam OR UPPER(a.chartOfAccounts) LIKE :searchParam OR UPPER(a.currencyConversion) LIKE :searchParam)
+            AND (UPPER(a.chartOfAccounts) LIKE :caoCode OR  a.chartOfAccounts is null)
             AND TRUNC(a.effectiveDate) <= TRUNC(:effectiveDate)
             AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
             AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate) AND a.statusIndicator ='A' 
@@ -360,10 +361,11 @@ class Bank implements Serializable {
      * @param bankCode
      * @return Bank
      */
-    static fetchByBankCodeList(def effectiveDate, def searchParam, def pagingParams ) {
+    static fetchByBankCodeList(def effectiveDate, def searchParam, def pagingParams, def caoCode ) {
        def codeList= Bank.withSession {session ->
             session.getNamedQuery( 'fetchByBankCodeList' )
                     .setString( "searchParam", searchParam )
+                    .setString( "caoCode", caoCode )
                     .setDate( "effectiveDate", effectiveDate )
                     .setMaxResults( pagingParams.max )
                     .setFirstResult( pagingParams.offset )

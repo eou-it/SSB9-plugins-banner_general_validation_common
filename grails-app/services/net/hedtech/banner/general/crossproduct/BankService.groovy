@@ -24,8 +24,8 @@ class BankService extends ServiceBase {
      * @param pagingParams pagination parameters
      * @return list of Bank.
      */
-    def findBankListByEffectiveDateAndBankCode(effectiveDate, searchParam, pagingParams ) {
-        def bankList = Bank.fetchByBankCodeList( effectiveDate, getLikeFormattedFilter(searchParam?.toUpperCase()), pagingParams ).list
+    def findBankListByEffectiveDateAndBankCode(effectiveDate, searchParam, pagingParams, coaCode ) {
+        def bankList = Bank.fetchByBankCodeList( effectiveDate, getLikeFormattedFilter(searchParam?.toUpperCase()), pagingParams, getLikeFormattedFilter(coaCode?.toUpperCase()) ).list
         return bankList
     }
 

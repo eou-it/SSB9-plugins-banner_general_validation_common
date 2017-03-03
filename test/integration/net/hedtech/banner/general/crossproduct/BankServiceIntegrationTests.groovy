@@ -1,9 +1,8 @@
 /*******************************************************************************
- Copyright 2016-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
-import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -86,7 +85,7 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
         bank.save(failOnError: true, flush: true)
         bank.refresh()
         assertNotNull bank.id
-        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), i_success_bank,[max:10 , offset:0] )
+        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), i_success_bank,[max:10 , offset:0], 'B' )
         assertNotNull getBankDetails
 
     }
@@ -97,13 +96,13 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
         bank.save(failOnError: true, flush: true)
         bank.refresh()
         assertNotNull bank.id
-        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), '',[max:10 , offset:0] )
+        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), '',[max:10 , offset:0] , 'B')
         assertNotNull getBankDetails
 
     }
     @Test
     void testFetchByBankCodeListWithInvalidSearch() {
-        Bank getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0] )
+        Bank getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0], 'B' )
         assertNull getBankDetails
     }
     private Bank newValidForCreateBank() {

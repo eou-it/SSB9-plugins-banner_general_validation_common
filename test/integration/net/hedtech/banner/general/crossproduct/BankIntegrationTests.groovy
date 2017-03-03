@@ -480,7 +480,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         bank.refresh()
         assertNotNull bank.id
 
-        def getBankDetails = Bank.fetchByBankCodeList(new Date(), i_success_bank, [max:10 , offset:0] ).list
+        def getBankDetails = Bank.fetchByBankCodeList(new Date(), i_success_bank, [max:10 , offset:0], 'B' ).list
         assertNotNull getBankDetails
     }
 

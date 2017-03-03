@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.crossproduct
 
@@ -21,9 +21,8 @@ class FinanceBankCompositeService {
      * @return list of Bank.
      */
     def findBankCodeListByEffectiveDateAndBankCode( Map attrs, Map pagingParams ) {
-        def inputMap = [searchParam: attrs?.searchParam?.toUpperCase()]
         List<Bank> bankList = []
-        bankList = bankService.findBankListByEffectiveDateAndBankCode( attrs?.effectiveDate, attrs?.searchParam, pagingParams )
+        bankList = bankService.findBankListByEffectiveDateAndBankCode( attrs?.effectiveDate, attrs?.searchParam, pagingParams, attrs?.coaCode )
         if (!bankList) {
             throw new ApplicationException( BankService, new BusinessLogicValidationException( GeneralValidationCommonConstants.ERROR_MSG_MISSING_BANK_CODE, [] ) )
         }

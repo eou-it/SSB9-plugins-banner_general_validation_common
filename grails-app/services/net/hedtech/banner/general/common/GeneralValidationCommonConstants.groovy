@@ -45,6 +45,7 @@ class GeneralValidationCommonConstants {
     /** Common constants for Financial Aid Fund Classification*/
 
     final static String FINANCIAL_AID_FUND_CLASSIFICATIONS = 'financialaidfundClassification'
+    final static String INSTITUTIONPOSITIONID = 'institutionpositionid'
     final static String EMPLOYMENT_CLASSIFICATIONS = 'employmentClassification'
 
     final static String FINANCIAL_AID_FUND_CATEGORY = 'financialaidfundCategory'

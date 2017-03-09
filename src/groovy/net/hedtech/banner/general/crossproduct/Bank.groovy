@@ -22,7 +22,13 @@ import javax.persistence.*
             AND TRUNC(a.effectiveDate) <= TRUNC(:effectiveDate)
             AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
             AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate) AND a.statusIndicator ='A' 
-            """)
+            """),
+        @NamedQuery(name = "getBankTitle",
+                query = """FROM Bank a
+            WHERE a.bank = :bankCode
+            AND a.effectiveDate <= :effectiveDate
+            AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
+            AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate) """)
 ])
 @Entity
 @Table(name = "GXVBANK")
@@ -373,6 +379,20 @@ class Bank implements Serializable {
                     .list()
         }
         return [list: codeList]
+    }
+
+    /**
+     * Get Bank Title
+     * @param bankCode
+     * @return
+     */
+    def static getBankTitle(String bankCode, Date effectiveDate) {
+        def bank = Bank.withSession { session ->
+            session.getNamedQuery('getBankTitle')
+                    .setString("bankCode", bankCode)
+                    .setDate("effectiveDate", effectiveDate).list()[0]?.bankAccountName
+        }
+        return bank
     }
 
 }

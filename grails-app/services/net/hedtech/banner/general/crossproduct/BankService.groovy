@@ -46,4 +46,13 @@ class BankService extends ServiceBase {
 
         return filterText
     }
+    /**
+     * Get bank name
+     * @param code
+     * @param effectiveDate
+     * @return
+     */
+    def getBankTitle(code, effectiveDate){
+        return Bank.getBankTitle(code, effectiveDate);
+    }
 }

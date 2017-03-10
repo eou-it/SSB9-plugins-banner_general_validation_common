@@ -483,6 +483,12 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         def getBankDetails = Bank.fetchByBankCodeList(new Date(), i_success_bank, [max:10 , offset:0], 'B' ).list
         assertNotNull getBankDetails
     }
+	
+	@Test
+    void testGetBankTittle(){
+        def title = Bank.getBankTitle('TT', new Date())
+        assertNotNull title
+    }
 
     private def newValidForCreateBank() {
         def bank = new Bank(

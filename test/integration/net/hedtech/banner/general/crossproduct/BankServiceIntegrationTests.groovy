@@ -105,6 +105,13 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
         Bank getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0], 'B' )
         assertNull getBankDetails
     }
+	
+	@Test
+    void testGetBankTittle(){
+        def title = bankService.getBankTitle('TT', new Date())
+        assertNotNull title
+    }
+	
     private Bank newValidForCreateBank() {
         Bank bank = new Bank(
                 bank: i_success_bank,

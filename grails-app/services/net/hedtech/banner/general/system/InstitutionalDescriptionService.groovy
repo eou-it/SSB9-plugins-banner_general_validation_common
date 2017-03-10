@@ -35,6 +35,7 @@ class InstitutionalDescriptionService extends ServiceBase {
         if (!isoCurrencyCode || !isoCodeService.isValidISO4217CurrencyCode(isoCurrencyCode)) {
             throw new ApplicationException(this.class, new BusinessLogicValidationException("currency.not.mapped", null))
         }
+        return isoCurrencyCode
     }
 
 }

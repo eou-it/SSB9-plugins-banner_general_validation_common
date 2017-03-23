@@ -21,6 +21,7 @@ class GeneralValidationCommonConstants {
     final static String ERROR_MSG_EXISTS_MESSAGE = 'exists.message'
     final static String ERROR_MSG_CODE_REQUIRED = 'code.required.message'
     final static String ERROR_MSG_DESCRIPTION_REQUIRED = 'description.required.message'
+    final static String ERROR_MSG_CIPC_NOT_EXISTS_MESSAGE = 'cip.code.not.found.message'
     final static String ERROR_MSG_CODE_EXISTS = 'code.exists.message'
     final static String DEFAULT_ORDER_TYPE = 'ASC'
     final static String DEFAULT_SORT_FIELD_ABBREVIATION = 'abbreviation'

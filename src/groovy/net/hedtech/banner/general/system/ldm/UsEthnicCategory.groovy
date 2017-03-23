@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -8,7 +8,6 @@ package net.hedtech.banner.general.system.ldm
  *
  */
 enum UsEthnicCategory {
-
 
     HISPANIC([v1: "Hispanic", v4: "hispanic"], "2"),
     NON_HISPANIC([v1: "Non-Hispanic", v4: "nonHispanic"], "1")

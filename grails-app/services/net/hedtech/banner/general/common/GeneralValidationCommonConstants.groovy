@@ -15,6 +15,9 @@ class GeneralValidationCommonConstants {
 
     static final String NIL_GUID = "00000000-0000-0000-0000-000000000000"
 
+    //Regex for GUID v4
+    public static String GUID_REGEX=/^[0-9A-F]{8}-?[0-9A-F]{4}-?[4][0-9A-F]{3}-?[89AB][0-9A-F]{3}-?[0-9A-F]{12}$/
+
     /** Common constants */
     final static String TYPE = 'type'
     final static String CODE = 'code'

@@ -4,6 +4,7 @@
 package net.hedtech.banner.restfulapi
 
 import grails.util.Holders
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.Term
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -214,6 +215,37 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
     @Test
     void testGetRequestParams() {
         assertNull RestfulApiValidationUtility.getRequestParams()
+    }
+
+    @Test
+    void testValidGuid() {
+        def errMsg01 = shouldFail(ApplicationException, {
+            RestfulApiValidationUtility.validateGUID(null)
+        })
+        assertEquals("guid.error.invalid.null", errMsg01)
+
+        def errMsg02 = shouldFail(ApplicationException, {
+            RestfulApiValidationUtility.validateGUID("00000000-0000-0000-0000-000000000000")
+        })
+        assertEquals("guid.error.invalid.nilGUID", errMsg02)
+
+        def errMsg03 = shouldFail(ApplicationException, {
+            RestfulApiValidationUtility.validateGUID("not a guid")
+        })
+        assertEquals("guid.error.invalid", errMsg03)
+
+        //verson != 4
+        def errMsg04 = shouldFail(ApplicationException, {
+            RestfulApiValidationUtility.validateGUID("C56A4180-65AA-12EC-A945-5FD21DEC0538")
+        })
+        assertEquals("guid.error.invalid", errMsg04)
+
+        assertTrue RestfulApiValidationUtility.validateGUID("00000000-0000-0000-0000-000000000000", true)
+
+        assertTrue RestfulApiValidationUtility.validateGUID("C56A4180-65AA-42EC-A945-5FD21DEC0538")
+        assertTrue RestfulApiValidationUtility.validateGUID("C56A4180-65AA-42EC-A945-5FD21DEC0538".toLowerCase())
+        assertTrue RestfulApiValidationUtility.validateGUID("C56A418065AA42ECA9455FD21DEC0538".toLowerCase()) //still a guid
+        assertTrue RestfulApiValidationUtility.validateGUID("C56A4180-65AA42ECA945-5FD21DEC0538".toLowerCase()) //still a guid :)
     }
 
 }

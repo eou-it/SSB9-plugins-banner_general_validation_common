@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright 2013 Ellucian Company L.P. and its affiliates.
+Copyright 2017 Ellucian Company L.P. and its affiliates.
 *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -15,5 +15,16 @@ import net.hedtech.banner.service.ServiceBase
 
 class CurrencyConversionService extends ServiceBase {
 
+    boolean transactional = true
+
+    CurrencyConversion findByCurrencyConversion(String currencyConversion) {
+        def entity
+        if(currencyConversion) {
+            entity = CurrencyConversion.withSession { session ->
+                session.getNamedQuery('CurrencyConversion.findByCurrencyConversion').setString('currencyConversion', currencyConversion).uniqueResult()
+            }
+        }
+        return entity
+    }
 
 }

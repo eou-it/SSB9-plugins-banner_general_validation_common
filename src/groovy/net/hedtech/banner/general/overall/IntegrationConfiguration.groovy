@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall
 
@@ -191,8 +191,8 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCode')
-                    .setString('processCode', processCode).setCacheMode(CacheMode.IGNORE).list()
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCode').setCacheMode(CacheMode.GET)
+                    .setString('processCode', processCode).setCacheable(true).setCacheRegion("ldmEnumeration").list()
         }
         return integrationList
 
@@ -203,8 +203,8 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue')
-                    .setString('processCode', processCode).setString('settingName', settingName).setString('translationValue', translationValue).setCacheable(true).list()
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndTranslationValue').setCacheMode(CacheMode.GET)
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('translationValue', translationValue).setCacheable(true).setCacheRegion("ldmEnumeration").list()
 
 
         }
@@ -220,8 +220,8 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
-                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).list()
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue').setCacheMode(CacheMode.GET)
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion("ldmEnumeration").list()
 
 
         }
@@ -234,8 +234,8 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue')
-                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).list()
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValue').setCacheMode(CacheMode.GET)
+                    .setString('processCode', processCode).setString('settingName', settingName).setString('value', value).setCacheable(true).setCacheRegion("ldmEnumeration").list()
         }
         return integrationList?.size() > 0 ? integrationList?.get(0) : null
 
@@ -246,8 +246,8 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValues')
-                    .setString('processCode', processCode).setString('settingName', settingName).setParameterList('values', values).setCacheable(true).list()
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValues').setCacheMode(CacheMode.GET)
+                    .setString('processCode', processCode).setString('settingName', settingName).setParameterList('values', values).setCacheable(true).setCacheRegion("ldmEnumeration").list()
         }
         return integrationList
 
@@ -258,8 +258,8 @@ class IntegrationConfiguration implements Serializable {
         IntegrationConfiguration integrationConfiguration = null
         if (processCode && settingName) {
             integrationConfiguration = IntegrationConfiguration.withSession { session ->
-                session.getNamedQuery('IntegrationConfiguration.fetchByProcessCodeAndSettingName')
-                        .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).uniqueResult()
+                session.getNamedQuery('IntegrationConfiguration.fetchByProcessCodeAndSettingName').setCacheMode(CacheMode.GET)
+                        .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).setCacheRegion("ldmEnumeration").uniqueResult()
             }
         }
         return integrationConfiguration
@@ -270,8 +270,8 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingName')
-                    .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).list()
+            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingName').setCacheMode(CacheMode.GET)
+                    .setString('processCode', processCode).setString('settingName', settingName).setCacheable(true).setCacheRegion("ldmEnumeration").list()
         }
         return integrationList
     }

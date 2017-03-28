@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -19,5 +19,16 @@ import net.hedtech.banner.service.ServiceBase
 class CIPCodeService extends ServiceBase{
 
     boolean transactional = true
+
+    def fetchByCode(code) {
+        if (code) {
+            CIPCode.withSession { session ->
+                List<CIPCode> CIPCodes = session.getNamedQuery('CIPCode.fetchByCode').setString('code', code).list()
+                return CIPCodes
+            }
+        } else {
+            return null
+        }
+    }
 
 }

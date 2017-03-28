@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
@@ -53,6 +56,41 @@ class CitizenTypeService extends ServiceBase {
 
     public def fetchByCitizenIndicator(Boolean CitizenIndicator) {
         return CitizenType.findByCitizenIndicator(CitizenIndicator)
+    }
+
+
+    def fetchAllWithGuidByCodeInList(Collection<String> citizenTypeCodes, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
+        def rows = []
+        if (citizenTypeCodes) {
+            List entities = []
+            CitizenType.withSession { session ->
+                def namedQuery = session.getNamedQuery('CitizenType.fetchAllWithGuidByCodeInList')
+                String hql = namedQuery.getQueryString()
+                String orderBy
+                if (sortField) {
+                    orderBy = " order by a.$sortField ${sortOrder ?: ''} , a.id asc"
+                } else {
+                    orderBy = " order by a.id ${sortOrder ?: ''}"
+                }
+                hql += orderBy
+                namedQuery = session.createQuery(hql)
+                namedQuery.with {
+                    setString('ldmName', GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_LDM_NAME)
+                    setParameterList('codes', citizenTypeCodes)
+                    if (max > 0) {
+                        setMaxResults(max)
+                    }
+                    if (offset > -1) {
+                        setFirstResult(offset)
+                    }
+                    entities = list()
+                }
+            }
+            entities?.each {
+                rows << [citizenType: it[0], globalUniqueIdentifier: it[1]]
+            }
+        }
+        return rows
     }
 
 

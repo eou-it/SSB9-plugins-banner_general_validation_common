@@ -23,6 +23,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
     def personNameTypeCompositeService
     NameTypeService nameTypeService
 
+
     @Before
     public void setUp() {
         formContext = ['GUAGMNU']
@@ -53,13 +54,13 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
 
         while (it1.hasNext() && it2.hasNext()) {
             NameTypeDecorator nameTypeDecorator = it1.next()
-            List actualEntities =  it2.next()
-                NameType nameType = actualEntities.getAt(0)
-                assertEquals nameType.code, nameTypeDecorator.code
-                assertEquals nameType.description, nameTypeDecorator.title
-                GlobalUniqueIdentifier globalUniqueIdentifier = actualEntities.getAt(1)
-                assertEquals globalUniqueIdentifier.guid, nameTypeDecorator.id
-                assertEquals nameTypeDecorator.category, bannerNameTypeToHedmNameTypeMap.get(nameType.code)
+            List actualEntities = it2.next()
+            NameType nameType = actualEntities.getAt(0)
+            assertEquals nameType.code, nameTypeDecorator.code
+            assertEquals nameType.description, nameTypeDecorator.title
+            GlobalUniqueIdentifier globalUniqueIdentifier = actualEntities.getAt(1)
+            assertEquals globalUniqueIdentifier.guid, nameTypeDecorator.id
+            assertEquals nameTypeDecorator.category, bannerNameTypeToHedmNameTypeMap.get(nameType.code)
         }
     }
 
@@ -83,7 +84,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
 
         while (it1.hasNext() && it2.hasNext()) {
             NameTypeDecorator nameTypeDecorator = it1.next()
-            List actualEntities =  it2.next()
+            List actualEntities = it2.next()
             NameType nameType = actualEntities.getAt(0)
             assertEquals nameType.code, nameTypeDecorator.code
             assertEquals nameType.description, nameTypeDecorator.title
@@ -135,6 +136,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         }
     }
 
+
     @Test
     void testGetWithNullGuid() {
         try {
@@ -143,6 +145,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
             assertApplicationException ae, "NotFoundException"
         }
     }
+
 
     @Test
     void testGetInValidMappedGuid() {
@@ -171,6 +174,7 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
 
     }
 
+
     @Test
     void testGetBannerNameTypeToHedmV3NameTypeMap() {
         NameType nameType = NameType.findByCode("BRTH")
@@ -184,17 +188,6 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
 
     }
 
-    @Test
-    void testGetNameTypeCodeToGuidMap() {
-        NameType nameType = save newNameType()
-        assertNotNull nameType
-        GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.PERSON_NAME_TYPES_LDM_NAME, nameType.id)
-        assertNotNull globalUniqueIdentifier
-        Map<String,String> nameTypeCodeToGuidMap = personNameTypeCompositeService.getNameTypeCodeToGuidMap([nameType.code])
-        assertFalse nameTypeCodeToGuidMap.isEmpty()
-        assertTrue nameTypeCodeToGuidMap.containsKey(nameType.code)
-        assertEquals globalUniqueIdentifier.guid, nameTypeCodeToGuidMap.get(nameType.code)
-    }
 
     private def newNameType() {
         def nameType = new NameType(
@@ -206,4 +199,5 @@ class PersonNameTypeCompositeServiceIntegrationTests extends BaseIntegrationTest
         )
         return nameType
     }
+
 }

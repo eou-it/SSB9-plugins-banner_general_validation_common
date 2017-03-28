@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -23,7 +23,7 @@ enum HedmEmailType {
     MATCHINGGIFTS([v6: 'matchingGifts']),
     OTHER([v6: 'other'])
 
-    private final Map<String, String> versionToEnumMap
+    final Map<String, String> versionToEnumMap
 
 
     HedmEmailType(Map<String, String> versionToEnumMap) {
@@ -31,18 +31,7 @@ enum HedmEmailType {
     }
 
 
-    public Map<String, String> getVersionToEnumMap() {
-        return versionToEnumMap
-    }
-
-    /**
-     * This is useful in "create" and "update" operations to validate the input string.
-     *
-     * @param value
-     * @param version
-     * @return
-     */
-    public static HedmEmailType getByString(String value, String version) {
+    public static HedmEmailType getByDataModelValue(String value, String version) {
         if (value) {
             Iterator itr = HedmEmailType.values().iterator()
             while (itr.hasNext()) {

@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -52,9 +52,11 @@ class CitizenshipStatusCompositeService extends LdmService {
         return citizenshipStatuses
     }
 
+
     protected void setPagingParams(Map requestParams) {
         RestfulApiValidationUtility.correctMaxAndOffset(requestParams, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
     }
+
 
     protected void setSortingParams(Map requestParams) {
         if (requestParams.containsKey("sort")) {
@@ -115,30 +117,10 @@ class CitizenshipStatusCompositeService extends LdmService {
         return new CitizenshipStatus(citizenType, guid, getCitizenshipStatusCategory(citizenType.citizenIndicator ?: null))
     }
 
-    public Map fetchGUIDs(List<String> citizenCodes){
-        Map content=[:]
-        def result
-        String hql='''select a.code, b.guid from CitizenType a, GlobalUniqueIdentifier b WHERE a.code in :citizenCodes and b.ldmName = :ldmName and a.code = b.domainKey'''
-        CitizenType.withSession { session ->
-            def query = session.createQuery(hql).setString('ldmName', 'citizenship-statuses')
-            query.setParameterList('citizenCodes', citizenCodes)
-            result = query.list()
-        }
-        result.each { citizenType ->
-            content.put(citizenType[0], citizenType[1])
-        }
-        return content
-    }
 
-
-    public String getCitizenshipStatusCategory(Boolean citizenIndicator) {
-        String category
-        if (citizenIndicator) {
-            category = GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_CATEGORY_CITIZEN
-        } else {
-            category = GeneralValidationCommonConstants.CITIZENSHIP_STATUSES_CATEGORY_NON_CITIZEN
-        }
-        return category
+    protected String getCitizenshipStatusCategory(Boolean citizenIndicator) {
+        CitizenshipStatusCategory citizenshipStatusCategory = CitizenshipStatusCategory.getByCitizenIndicator(citizenIndicator)
+        return citizenshipStatusCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
     }
 
 }

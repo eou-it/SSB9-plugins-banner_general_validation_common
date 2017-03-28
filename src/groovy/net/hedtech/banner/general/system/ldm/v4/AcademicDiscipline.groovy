@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm.v4
 /**
@@ -10,6 +10,8 @@ class AcademicDiscipline {
     String guid
     String description
     String code
+    String cipCode
+
 
     //used by the genericBasicValidationService/genericComlexValidationService
     AcademicDiscipline(){}
@@ -19,6 +21,17 @@ class AcademicDiscipline {
         this.type = type
         this.code = code
         this.description = description
+
+    }
+
+    def getReporting(){
+            List reporting = []
+            Map country = [code:"USA"]
+           if(cipCode){
+               country.put("cipCode",cipCode)
+           }
+           reporting.add([country:country])
+           return reporting
     }
 
     @Override

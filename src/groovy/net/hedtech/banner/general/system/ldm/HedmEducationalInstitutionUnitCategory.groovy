@@ -8,13 +8,13 @@ enum HedmEducationalInstitutionUnitCategory {
 
     FACULTY([v1: 'Faculty']),
     UNIVERSITY([v1: 'University']),
-    COLLEGE([v1: 'College', v6: 'college']),
-    SCHOOL([v1: 'School', v6: 'school']),
-    DIVISION([v1: 'Division', v6: 'division']),
-    DEPARTMENT([v1: 'Department', v6: 'department']),
-    INSTITUTE([v6: 'institute']),
-    FACILITY([v6: 'facility']),
-    OFFICE([v6: 'office'])
+    COLLEGE([v1: 'College', v6: 'college',v7: 'college']),
+    SCHOOL([v1: 'School', v6: 'school',v7: 'school']),
+    DIVISION([v1: 'Division', v6: 'division',v7: 'division']),
+    DEPARTMENT([v1: 'Department', v6: 'department',v7: 'department']),
+    INSTITUTE([v6: 'institute',v7: 'institute']),
+    FACILITY([v6: 'facility',v7: 'facility']),
+    OFFICE([v6: 'office',v7: 'office'])
 
     private final Map<String, String> versionToEnumMap
 

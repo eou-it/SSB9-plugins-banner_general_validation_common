@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -248,19 +248,6 @@ class RaceCompositeService extends LdmService {
         return new RaceDetail(race, guid, racialCategory, new Metadata(race.dataOrigin));
     }
 
-    def getRaceCodeToGuidMap(Collection<String> codes) {
-        Map<String, String> codeToGuidMap = [:]
-        if (codes) {
-            List entities = raceService.fetchAllWithGuidByRaceInList(codes)
-            entities.each {
-                Race race = it.getAt(0)
-                GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
-                codeToGuidMap.put(race.race, globalUniqueIdentifier.guid)
-            }
-        }
-        return codeToGuidMap
-    }
-
 
     def getBannerRaceCodHedmV1RacialCategoryMap() {
         return getBannerRaceCodHedmRacialCategoryMap(GeneralValidationCommonConstants.RACE_PARENT_CATEGORY, GeneralValidationCommonConstants.VERSION_V1)
@@ -271,9 +258,11 @@ class RaceCompositeService extends LdmService {
         return getBannerRaceCodHedmRacialCategoryMap(GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY, GeneralValidationCommonConstants.VERSION_V4)
     }
 
+
     def getBannerRaceCodHedmV6RacialCategoryMap() {
         return getBannerRaceCodHedmRacialCategoryMap(GeneralValidationCommonConstants.RACE_RACIAL_CATEGORY_V6, GeneralValidationCommonConstants.VERSION_V6)
     }
+
 
     private def getBannerRaceCodHedmRacialCategoryMap(String settingName, String version) {
         Map<String, String> bannerRaceCodHedmRacialCategoryMap = [:]
@@ -287,11 +276,12 @@ class RaceCompositeService extends LdmService {
                 }
             }
         }
-        if(bannerRaceCodHedmRacialCategoryMap.isEmpty()){
+        if (bannerRaceCodHedmRacialCategoryMap.isEmpty()) {
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerRaceCodHedmRacialCategoryMap
     }
+
 
     private def createDecorators(Map<String, String> bannerRaceCodeHedmRacialCategoryMap, def entities) {
         def decorators = []
@@ -312,15 +302,6 @@ class RaceCompositeService extends LdmService {
             }
         }
         return decorators
-    }
-
-    public def fetchByGuid(String raceGuid){
-        Race race
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RACE_LDM_NAME, raceGuid?.toLowerCase()?.trim())
-        if(globalUniqueIdentifier){
-            race = raceService.get(globalUniqueIdentifier.domainId)
-        }
-        return race
     }
 
 }

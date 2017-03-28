@@ -92,21 +92,7 @@ class PersonNameTypeCompositeService extends LdmService {
 
 
     def getBannerNameTypeToHedmV6NameTypeMap() {
-       return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V6)
-    }
-
-
-    def getNameTypeCodeToGuidMap(Collection<String> codes) {
-        Map<String, String> codeToGuidMap = [:]
-        if (codes) {
-            List entities = nameTypeService.fetchAllWithGuidByCodeInList(codes)
-            entities.each {
-                NameType nameType = it.getAt(0)
-                GlobalUniqueIdentifier globalUniqueIdentifier = it.getAt(1)
-                codeToGuidMap.put(nameType.code, globalUniqueIdentifier.guid)
-            }
-        }
-        return codeToGuidMap
+        return getBannerNameTypeToHedmNameTypeMap(GeneralValidationCommonConstants.PERSON_NAME_TYPE_SETTING, GeneralValidationCommonConstants.VERSION_V6)
     }
 
 
@@ -124,7 +110,7 @@ class PersonNameTypeCompositeService extends LdmService {
                 }
             }
         }
-        if(bannerNameTypeToHedmNameTypeMap.isEmpty()){
+        if (bannerNameTypeToHedmNameTypeMap.isEmpty()) {
             throw new ApplicationException(this.class, new BusinessLogicValidationException("goriccr.not.found.message", [settingName]))
         }
         return bannerNameTypeToHedmNameTypeMap

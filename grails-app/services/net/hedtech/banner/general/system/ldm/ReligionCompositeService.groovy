@@ -1,5 +1,5 @@
 /** *******************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm
 
@@ -23,7 +23,6 @@ class ReligionCompositeService extends LdmService {
     def religionService
     private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
 
-
     /**
      * GET /api/religions
      *
@@ -36,7 +35,7 @@ class ReligionCompositeService extends LdmService {
 
         List religionsList = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        params.offset = params?.offset?:0
+        params.offset = params?.offset ?: 0
         List<ReligionDecorator> religionList = religionService.list(params)
         religionList.each { religion ->
             religionsList << getDecorator(religion)
@@ -50,25 +49,26 @@ class ReligionCompositeService extends LdmService {
  * */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     Long count() {
-      return  religionService.count()
+        return religionService.count()
     }
 
-    private ReligionDecorator getDecorator(Religion religion, String religionGuid =null) {
-            if (!religionGuid) {
-                religionGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RELIGION_LDM_NAME, religion.id)?.guid
-            }
-           return new ReligionDecorator(religionGuid, religion.code,religion.description)
+
+    private ReligionDecorator getDecorator(Religion religion, String religionGuid = null) {
+        if (!religionGuid) {
+            religionGuid = globalUniqueIdentifierService.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.RELIGION_LDM_NAME, religion.id)?.guid
+        }
+        return new ReligionDecorator(religionGuid, religion.code, religion.description)
     }
 
     /**
      * GET /api/religions/<GUID>
      *
-     * @return  religion for the provided GUID
+     * @return religion for the provided GUID
      */
     @Transactional(readOnly = true)
     ReligionDecorator get(String guid) {
         String acceptVersion = getAcceptVersion(VERSIONS)
-        
+
         GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RELIGION_LDM_NAME, guid?.toLowerCase()?.trim())
         if (!globalUniqueIdentifier) {
             throw new ApplicationException(ReligionCompositeService.class, new NotFoundException())
@@ -77,34 +77,7 @@ class ReligionCompositeService extends LdmService {
         if (!religionObj) {
             throw new ApplicationException(ReligionCompositeService.class, new NotFoundException())
         }
-        return getDecorator(religionObj,globalUniqueIdentifier.guid)
-    }
-    /**
-     * @return  religion guids for the provided religion codes
-     */
-    public Map fetchGUIDs(List<String> religionCodes){
-        Map content=[:]
-        def result
-        String hql='''select a.code, b.guid from Religion a, GlobalUniqueIdentifier b WHERE a.code in :religionCodes and b.ldmName = :ldmName and a.code = b.domainKey'''
-        Religion.withSession { session ->
-            def query = session.createQuery(hql).setString('ldmName', 'religions')
-            query.setParameterList('religionCodes', religionCodes)
-            result = query.list()
-        }
-        result.each { religionType ->
-            content.put(religionType[0], religionType[1])
-        }
-        return content
-    }
-
-
-    public def fetchByGuid(String religionGuid){
-        Religion religionObj
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RELIGION_LDM_NAME, religionGuid?.toLowerCase()?.trim())
-        if(globalUniqueIdentifier){
-            religionObj = religionService.get(globalUniqueIdentifier.domainId)
-        }
-       return religionObj
+        return getDecorator(religionObj, globalUniqueIdentifier.guid)
     }
 
 }

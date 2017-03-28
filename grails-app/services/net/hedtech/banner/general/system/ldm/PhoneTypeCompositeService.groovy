@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -16,7 +16,7 @@ import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import org.springframework.transaction.annotation.Transactional
 
 /**
- * <p> REST End point for Phone Type Composite Service.It will return phone types of person and organization. 
+ * <p> REST End point for Phone Type Composite Service.It will return phone types of person and organization.
  * If phone type code was configure for both person and organization, then we are considering person as a 1st preference.</p>
  */
 @Transactional
@@ -175,7 +175,7 @@ class PhoneTypeCompositeService extends LdmService {
         if (intConfs) {
             List<TelephoneType> entities = telephoneTypeService.fetchAllByCodeInList(intConfs.value)
             intConfs.each {
-                HedmPhoneType hedmPhoneType = HedmPhoneType.getByString(it.translationValue, version)
+                HedmPhoneType hedmPhoneType = HedmPhoneType.getByDataModelValue(it.translationValue, version)
                 if (entities.code.contains(it.value) && hedmPhoneType) {
                     bannerPhoneTypeToHedmPhoneTypeMap.put(it.value, hedmPhoneType.versionToEnumMap[version])
                 }

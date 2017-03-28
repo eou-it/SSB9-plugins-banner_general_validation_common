@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -10,16 +10,19 @@ import javax.persistence.*
 /**
  * Currency conversion validation table.
  */
-@NamedQueries(value = [
+@Entity
+@Table(name = "GTVCURR")
+@NamedQueries([
+        @NamedQuery(name = "CurrencyConversion.findByCurrencyConversion",
+                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion = :currencyConversion """),
         @NamedQuery(name = "CurrencyConversion.fetchCurrentCurrencyConversion",
                 query = """FROM CurrencyConversion a
                    WHERE a.rateEffectiveDate <= sysdate
                    AND a.rateNextChangeDate > sysdate
                    AND (a.rateTerminationDate > sysdate OR a.rateTerminationDate IS NULL)
                    AND a.statusIndicator = 'A'
-                   AND a.currencyConversion = :currencyConversion""")])
-@Entity
-@Table(name = "GTVCURR")
+                   AND a.currencyConversion = :currencyConversion""")
+])
 class CurrencyConversion implements Serializable {
 
     /**

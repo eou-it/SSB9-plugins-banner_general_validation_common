@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -188,7 +188,7 @@ class AddressTypeCompositeService extends LdmService {
         if (integrationConfigurationList) {
             List<AddressType> addressTypeList = addressTypeService.fetchAllByCodeInList(integrationConfigurationList.value)
             integrationConfigurationList.each {
-                HedmAddressType hedmAddressType = HedmAddressType.getByString(it.translationValue, version)
+                HedmAddressType hedmAddressType = HedmAddressType.getByDataModelValue(it.translationValue, version)
                 if (addressTypeList.code.contains(it.value) && hedmAddressType) {
                     bannerAddressTypeToHedmAddressTypeMap.put(it.value, hedmAddressType.versionToEnumMap[version])
                 }

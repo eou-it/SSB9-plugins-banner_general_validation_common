@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 
 package net.hedtech.banner.general.common
@@ -21,6 +21,7 @@ class GeneralValidationCommonConstants {
     final static String ERROR_MSG_EXISTS_MESSAGE = 'exists.message'
     final static String ERROR_MSG_CODE_REQUIRED = 'code.required.message'
     final static String ERROR_MSG_DESCRIPTION_REQUIRED = 'description.required.message'
+    final static String ERROR_MSG_CIPC_NOT_EXISTS_MESSAGE = 'cip.code.not.found.message'
     final static String ERROR_MSG_CODE_EXISTS = 'code.exists.message'
     final static String DEFAULT_ORDER_TYPE = 'ASC'
     final static String DEFAULT_SORT_FIELD_ABBREVIATION = 'abbreviation'
@@ -33,8 +34,7 @@ class GeneralValidationCommonConstants {
     final static String VERSION_V6 = 'v6'
     final static String VERSION_V7 = 'v7'
     final static String VERSION_V8 = 'v8'
-    final static String NON_HISPANIC = 'nonHispanic'
-    final static String HISPANIC = 'hispanic'
+    final static String VERSION_V9 = 'v9'
     final static String ABBREVIATION = 'abbreviation'
     final static String TITLE = 'title'
     final static String RACE = 'race'
@@ -42,6 +42,14 @@ class GeneralValidationCommonConstants {
 
     /** Common constants for AcademicDiscipline*/
     final static String ACADEMIC_DISCIPLINE = 'academicDiscipline'
+
+    /** Common constants for Financial Aid Fund Classification*/
+
+    final static String FINANCIAL_AID_FUND_CLASSIFICATIONS = 'financialaidfundClassification'
+    final static String INSTITUTIONPOSITIONID = 'institutionpositionid'
+    final static String EMPLOYMENT_CLASSIFICATIONS = 'employmentClassification'
+
+    final static String FINANCIAL_AID_FUND_CATEGORY = 'financialaidfundCategory'
 
     //Ethnicity constants
     static final String ETHNICITY_LDM_NAME = 'ethnicities'
@@ -52,6 +60,7 @@ class GeneralValidationCommonConstants {
 
     final static String ORGANIZATION = 'organization'
     final static String PERSON = 'person'
+
 
     /** Common constants for EmailType*/
     final static String PERSONAL = 'personal'
@@ -70,12 +79,15 @@ class GeneralValidationCommonConstants {
     final static String MATCHINGGIFTS = 'matchingGifts'
     final static String EMAIL_TYPE = 'emailType'
 
-    //common constants for  MaritalStatus
+    //common constants for MaritalStatus
     static final String PROCESS_CODE = 'HEDM'
     static final String MARITAL_STATUS_LDM_NAME = 'marital-status'
     static final String MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
     static final String MARITAL_STATUS_MARTIAL_CATEGORY = "MARITALSTATUS.MARITALCATEGORY"
     static final String MARITAL_STATUS = 'maritalStatus'
+
+    //common constants for financial-aid-funds
+    static final String FINANCIAL_AID_FUNDS_PRIVACY="FINANCIAL.AID.FUNDS.PRIVACY"
 
     //common constants for academic credentials
     final static String ACADEMIC_CREDENTIAL = 'academicCredential'
@@ -131,6 +143,7 @@ class GeneralValidationCommonConstants {
     static final String GEOGRAPHIC_AREA_GUID_KEY = 'guid'
 
     static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
+    static final String UTC_DATE_FORMAT_WITHOUT_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss"
     static final String UTC_TIME_ZONE = "UTC"
     //Religions constants
     static final String DATETIME_WITHOUT_TIMEZONE = "yyyy-MM-dd HH:mm:ss"
@@ -178,9 +191,9 @@ class GeneralValidationCommonConstants {
     //Phone Type V6 constants
     public static final String PHONE_TYPE_SETTING_NAME_V6 = 'PHONES.PHONETYPE'
     public static final String PHONE_TYPE_SETTING_NAME_V3 = 'PERSON.PHONES.PHONETYPE'
-    public static final String PHONE_TYPE_LDM_NAME ='phone-types'
+    public static final String PHONE_TYPE_LDM_NAME = 'phone-types'
     public static final String PHONE_ENTITY_TYPE = 'phoneType'
-   // Interest constants
+    // Interest constants
     public static final String INTEREST_LDM_NAME = 'interest-codes'
 
     //Address Type V6 constants
@@ -213,7 +226,6 @@ class GeneralValidationCommonConstants {
     static final String INSTRUCTIONAL_METHOD_LDM_NAME = 'instructional-methods'
 
     public static final String STUDENT_ACADEMICLOAD_CODE = "STUDENT.ACADEMICLOAD.CODE"
-
 
 }
 

@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -11,7 +11,6 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.LdmService
 import net.hedtech.banner.general.system.Ethnicity
 import net.hedtech.banner.general.system.ldm.v1.EthnicityDetail
-import net.hedtech.banner.general.system.ldm.v1.EthnicityParentCategory
 import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v6.EthnicityDecorator
 import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
@@ -50,7 +49,7 @@ class EthnicityCompositeService extends LdmService {
         } else {
             getUnitedStatesEthnicCodes().each { ethnicity ->
                 EthnicityDecorator ethnicityDecorator = getEthnicityUSDecorator(ethnicity)
-                if(ethnicityDecorator) ethnicityDetailList << ethnicityDecorator
+                if (ethnicityDecorator) ethnicityDetailList << ethnicityDecorator
             }
         }
 
@@ -70,7 +69,7 @@ class EthnicityCompositeService extends LdmService {
         } else if (GeneralValidationCommonConstants.VERSION_V3.equals(getAcceptVersion(VERSIONS))) {
             total = GlobalUniqueIdentifier.countByLdmName(GeneralValidationCommonConstants.ETHNICITIES_US)
         } else if (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS)) || GeneralValidationCommonConstants.VERSION_V6.equals(getAcceptVersion(VERSIONS))) {
-            total = GlobalUniqueIdentifier.countByLdmNameAndDomainIdGreaterThan(GeneralValidationCommonConstants.ETHNICITIES_US,0L)
+            total = GlobalUniqueIdentifier.countByLdmNameAndDomainIdGreaterThan(GeneralValidationCommonConstants.ETHNICITIES_US, 0L)
         }
 
         log.debug "count:End:$total"
@@ -95,8 +94,9 @@ class EthnicityCompositeService extends LdmService {
             }
 
             result = getDecorator(ethnicity, globalUniqueIdentifier.guid)
-        } else { GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, guid?.trim()?.toLowerCase())
-            if (!globalUniqueIdentifier || ( globalUniqueIdentifier.domainId == 0 && getAcceptVersion(VERSIONS) > GeneralValidationCommonConstants.VERSION_V3 )) {
+        } else {
+            GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, guid?.trim()?.toLowerCase())
+            if (!globalUniqueIdentifier || (globalUniqueIdentifier.domainId == 0 && getAcceptVersion(VERSIONS) > GeneralValidationCommonConstants.VERSION_V3)) {
                 throw new ApplicationException(GeneralValidationCommonConstants.ETHNICITY, new NotFoundException())
             }
             result = getEthnicityUSDecorator(globalUniqueIdentifier)
@@ -196,17 +196,6 @@ class EthnicityCompositeService extends LdmService {
         return ethnicityDetail
     }
 
-
-    Map<String, String> fetchGUIDsForUnitedStatesEthnicCodes() {
-        Map<String, String> usEthnicCodeToGuidMap = [:]
-        getUnitedStatesEthnicCodes().each {
-            if (it.domainId > 0) {
-                usEthnicCodeToGuidMap.put(String.valueOf(it.domainId), it.guid)
-            }
-        }
-        return usEthnicCodeToGuidMap
-    }
-
     /**
      * STVETHN_ETHN_CDE -> HeDM enumeration (Mapping)(in LIST/GET operations)
      *
@@ -214,39 +203,11 @@ class EthnicityCompositeService extends LdmService {
      */
     String getHeDMEnumeration(String ethnicCode) {
         String hedmEnum
-        switch (ethnicCode) {
-            case "1":
-                hedmEnum = EthnicityParentCategory.NON_HISPANIC.value
-                break
-            case "2":
-                hedmEnum = EthnicityParentCategory.HISPANIC.value
-                break
-            default:
-                break
+        UsEthnicCategory usEthnicCategory = UsEthnicCategory.getByBannerValue(ethnicCode)
+        if (usEthnicCategory) {
+            hedmEnum = usEthnicCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V1]
         }
         return hedmEnum
-    }
-
-
-    /**
-     * HeDM enumeration -> STVETHN_ETHN_CDE (Default)(in POST/PUT operations)
-     *
-     * @param hedmEnum
-     * @return
-     */
-    private String getEthnicCode(String hedmEnum) {
-        String ethnicCode
-        switch (hedmEnum) {
-            case EthnicityParentCategory.NON_HISPANIC.value:
-                ethnicCode = "1"
-                break
-            case EthnicityParentCategory.HISPANIC.value:
-                ethnicCode = "2"
-                break
-            default:
-                break
-        }
-        return ethnicCode
     }
 
 
@@ -268,10 +229,11 @@ class EthnicityCompositeService extends LdmService {
         if (content.containsKey("parentCategory")) {
             String parentCategory = content.get("parentCategory")
             if (parentCategory) {
-                if (!EthnicityParentCategory.contains(parentCategory)) {
+                UsEthnicCategory usEthnicCategory = UsEthnicCategory.getByDataModelValue(parentCategory, GeneralValidationCommonConstants.VERSION_V1)
+                if (!usEthnicCategory) {
                     throw new ApplicationException("ethnicity", new BusinessLogicValidationException("parentCategory.invalid", null))
                 }
-                ethnicity.ethnic = getEthnicCode(content.parentCategory)
+                ethnicity.ethnic = usEthnicCategory.bannerValue
             } else {
                 ethnicity.ethnic = null
             }
@@ -282,6 +244,7 @@ class EthnicityCompositeService extends LdmService {
             throwBusinessLogicValidationException(ae)
         }
     }
+
 
     private void validateRequest(Map content) {
         if (!content?.code) {
@@ -316,23 +279,13 @@ class EthnicityCompositeService extends LdmService {
         EthnicityDecorator decorator
         if (guid) {
             String ethnicCategory
-            if (usEthnicCode == "1") {
-                ethnicCategory = GeneralValidationCommonConstants.NON_HISPANIC
-            } else if (usEthnicCode == "2") {
-                ethnicCategory = GeneralValidationCommonConstants.HISPANIC
+            UsEthnicCategory usEthnicCategory = UsEthnicCategory.getByBannerValue(usEthnicCode)
+            if (usEthnicCategory) {
+                ethnicCategory = usEthnicCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
             }
             decorator = new EthnicityDecorator(guid, title, ethnicCategory)
         }
         return decorator
-    }
-
-    public def fetchByGuid(String ethnicityGuid){
-        Ethnicity ethnicity
-        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.ETHNICITIES_US, ethnicityGuid?.toLowerCase()?.trim())
-        if(globalUniqueIdentifier){
-            ethnicity = ethnicityService.get(globalUniqueIdentifier.domainId)
-        }
-        return ethnicity
     }
 
 }

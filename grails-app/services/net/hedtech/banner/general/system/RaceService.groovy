@@ -1,26 +1,32 @@
 /** *******************************************************************************
- Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2017 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
+import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.service.ServiceBase
 
 /**
  * A transactional service supporting persistence of the Race model.
  * */
-class RaceService extends ServiceBase{
+class RaceService extends ServiceBase {
 
     boolean transactional = true
 
-    Race fetchByRace(String racialCode){
-        Race race = Race.withSession{ session ->
-            session.getNamedQuery('Race.fetchByRace').setString('race',racialCode).uniqueResult()
+    GlobalUniqueIdentifierService globalUniqueIdentifierService
+
+
+    Race fetchByRace(String racialCode) {
+        Race race = Race.withSession { session ->
+            session.getNamedQuery('Race.fetchByRace').setString('race', racialCode).uniqueResult()
         }
         return race
     }
 
-    List fetchAllWithGuidByRaceInList(Collection<String> raceCodes, String sortField=null, String sortOrder=null, int max = 0, int offset = -1) {
+
+    List fetchAllWithGuidByRaceInList(Collection<String> raceCodes, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
         List entities = []
         if (raceCodes) {
             entities = Race.withSession { session ->
@@ -53,6 +59,7 @@ class RaceService extends ServiceBase{
         return entities
     }
 
+
     def fetchAllByRaceInList(Collection<String> raceCodes) {
         List entities = []
         if (raceCodes) {
@@ -65,11 +72,12 @@ class RaceService extends ServiceBase{
         return entities
     }
 
+
     List fetchAllWithGuid(String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
         return Race.withSession { session ->
             def namedQuery = session.getNamedQuery('Race.fetchAllWithGuid')
             if (sortField) {
-               def orderBy = " order by a." + sortField
+                def orderBy = " order by a." + sortField
                 if (["asc", "desc"].contains(sortOrder?.trim()?.toLowerCase())) {
                     orderBy += " $sortOrder"
                 }
@@ -90,6 +98,16 @@ class RaceService extends ServiceBase{
                 list()
             }
         }
+    }
+
+
+    Race fetchByGuid(String raceGuid) {
+        Race race
+        GlobalUniqueIdentifier globalUniqueIdentifier = globalUniqueIdentifierService.fetchByLdmNameAndGuid(GeneralValidationCommonConstants.RACE_LDM_NAME, raceGuid?.toLowerCase()?.trim())
+        if (globalUniqueIdentifier) {
+            race = get(globalUniqueIdentifier.domainId)
+        }
+        return race
     }
 
 }

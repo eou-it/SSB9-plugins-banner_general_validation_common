@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.overall
 
@@ -12,10 +12,8 @@ import org.junit.Test
 
 class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTestCase {
 
-    static final String PROCESS_CODE = "HEDM"
-    static final String NATION_ISO = "NATION.ISOCODE"
-    static final String ADDRESSES_DEFAULT_ADDRESSTYPE = "ADDRESSES.DEFAULT.ADDRESSTYPE"
     IntegrationConfigurationService integrationConfigurationService
+
 
     @Before
     public void setUp() {
@@ -23,9 +21,10 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
         super.setUp()
     }
 
+
     @Test
     void testIsInstitutionUsingISO2CountryCodesTrue() {
-        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, NATION_ISO)[0]
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(IntegrationConfigurationService.PROCESS_CODE, IntegrationConfigurationService.NATION_ISO)[0]
         if (!intConfig) {
             shouldFail(ApplicationException) {
                 integrationConfigurationService.isInstitutionUsingISO2CountryCodes()
@@ -38,9 +37,10 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
         }
     }
 
+
     @Test
     void testIsInstitutionUsingISO2CountryCodesFalse() {
-        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, NATION_ISO)[0]
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(IntegrationConfigurationService.PROCESS_CODE, IntegrationConfigurationService.NATION_ISO)[0]
         if (!intConfig) {
             shouldFail(ApplicationException) {
                 integrationConfigurationService.isInstitutionUsingISO2CountryCodes()
@@ -53,9 +53,10 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
         }
     }
 
+
     @Test
     void testIsInstitutionUsingISO2CountryCodesInvalid() {
-        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, NATION_ISO)[0]
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(IntegrationConfigurationService.PROCESS_CODE, IntegrationConfigurationService.NATION_ISO)[0]
         if (!intConfig) {
             shouldFail(ApplicationException) {
                 integrationConfigurationService.isInstitutionUsingISO2CountryCodes()
@@ -69,24 +70,25 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
         }
     }
 
+
     @Test
     void testGetDefaultAddressTypeV6() {
-        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(PROCESS_CODE, ADDRESSES_DEFAULT_ADDRESSTYPE)[0]
+        IntegrationConfiguration intConfig = IntegrationConfiguration.fetchAllByProcessCodeAndSettingName(IntegrationConfigurationService.PROCESS_CODE, IntegrationConfigurationService.ADDRESSES_DEFAULT_ADDRESSTYPE)[0]
         if (!intConfig) {
             shouldFail(ApplicationException) {
                 integrationConfigurationService.getDefaultAddressTypeV6()
             }
         } else {
-            HedmAddressType hedmAddressType = HedmAddressType.getByString(intConfig.translationValue, GeneralValidationCommonConstants.VERSION_V6)
-            if(!hedmAddressType) {
+            HedmAddressType hedmAddressType = HedmAddressType.getByDataModelValue(intConfig.translationValue, GeneralValidationCommonConstants.VERSION_V6)
+            if (!hedmAddressType) {
                 shouldFail(ApplicationException) {
                     integrationConfigurationService.getDefaultAddressTypeV6()
                 }
-            }
-            else {
+            } else {
                 String translationValue = integrationConfigurationService.getDefaultAddressTypeV6()
                 assertTrue hedmAddressType.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6].equals(translationValue)
             }
         }
     }
+
 }

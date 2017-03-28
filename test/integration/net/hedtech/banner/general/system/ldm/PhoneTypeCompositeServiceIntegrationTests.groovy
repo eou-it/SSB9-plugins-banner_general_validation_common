@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -288,7 +288,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         def map = phoneTypeCompositeService.getBannerPhoneTypeToHedmV6PhoneTypeMap()
         assertNotNull map
         assertTrue map.containsKey(telephoneType.code)
-        assertEquals map.get(telephoneType.code), HedmPhoneType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
+        assertEquals map.get(telephoneType.code), HedmPhoneType.getByDataModelValue(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V6).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
     }
 
     @Test
@@ -300,7 +300,7 @@ class PhoneTypeCompositeServiceIntegrationTests extends  BaseIntegrationTestCase
         def map = phoneTypeCompositeService.getBannerPhoneTypeToHedmV3PhoneTypeMap()
         assertNotNull map
         assertTrue map.containsKey(telephoneType.code)
-        assertEquals map.get(telephoneType.code), HedmPhoneType.getByString(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
+        assertEquals map.get(telephoneType.code), HedmPhoneType.getByDataModelValue(intConf.translationValue, GeneralValidationCommonConstants.VERSION_V3).versionToEnumMap[GeneralValidationCommonConstants.VERSION_V3]
     }
 
 }

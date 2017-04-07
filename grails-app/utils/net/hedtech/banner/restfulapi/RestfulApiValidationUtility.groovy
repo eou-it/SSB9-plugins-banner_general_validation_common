@@ -6,6 +6,7 @@ package net.hedtech.banner.restfulapi
 import grails.util.Holders
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 
 /**
  * Helper class for RESTful APIs
@@ -229,6 +230,42 @@ class RestfulApiValidationUtility {
         if (encodedInputField != inputField) {
             throw new ApplicationException('RestfulApiValidationUtility', new BusinessLogicValidationException("possible.XSS.attack", null))
         }
+    }
+
+    /**
+     * Validates a guid with a regex.
+     * Allows  version 4 of Guid
+     * @param guid
+     * @param allowNilGuid False by default. Nil guids should be identified and ignored and areal guid should be retrieved from a db process instead.
+     * @return true if the guid is valid
+     * @throws BusinessLogicValidationException if guid is not valid
+     * @see https://confluence.ellucian.com/pages/viewpage.action?spaceKey=PS&title=HEDM+GUID+architecture
+     * @see https://www.ietf.org/rfc/rfc4122.txt
+     * @see http://guid.us/Test/GUID
+     */
+    public static boolean validateGUID(String guid, boolean allowNilGuid = false) {
+
+        if (guid == null) {
+            throw new ApplicationException('RestfulApiValidationUtility', new BusinessLogicValidationException("guid.error.invalid.null", null))
+        }
+
+        if (guid.equals(GeneralValidationCommonConstants.NIL_GUID)) {
+            //nill guids are not allowed by default
+            if (!allowNilGuid) {
+                throw new ApplicationException('RestfulApiValidationUtility', new BusinessLogicValidationException("guid.error.invalid.nilGUID", null))
+            }
+            //nil guids are allowed
+            else {
+                return true
+            }
+        }
+
+        //guid should match regex
+        if ( !( guid.toUpperCase() ==~ GeneralValidationCommonConstants.GUID_REGEX)) {
+            throw new ApplicationException('RestfulApiValidationUtility', new BusinessLogicValidationException("guid.error.invalid", null))
+        }
+
+        return true
     }
 
 }

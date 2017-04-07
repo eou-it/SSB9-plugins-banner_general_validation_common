@@ -8,6 +8,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.NotFoundException
 import net.hedtech.banner.general.overall.IntegrationConfiguration
+import net.hedtech.banner.restfulapi.RestfulApiValidationUtility
 import net.hedtech.banner.utility.MessageResolver
 import org.grails.databinding.SimpleMapDataBindingSource
 import org.springframework.web.context.request.RequestAttributes
@@ -429,6 +430,9 @@ class LdmService {
      * calls create.
      */
     public GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
+
+        RestfulApiValidationUtility.validateGUID(guid)
+
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ldmName, id)
         if (!newEntity) {
@@ -444,6 +448,8 @@ class LdmService {
      *  This is only used when there is no single master table for the GUID or no single record for the GUID.
      */
     public GlobalUniqueIdentifier updateGuidValueByDomainKey(String domainKey, String guid, String ldmName) {
+        RestfulApiValidationUtility.validateGUID(guid)
+
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ldmName, domainKey)
         if (!newEntity) {

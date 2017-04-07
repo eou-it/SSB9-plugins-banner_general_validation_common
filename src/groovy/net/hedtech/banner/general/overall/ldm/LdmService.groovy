@@ -431,8 +431,6 @@ class LdmService {
      */
     public GlobalUniqueIdentifier updateGuidValue(def id, def guid, def ldmName) {
 
-        RestfulApiValidationUtility.validateGUID(guid)
-
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainId(ldmName, id)
         if (!newEntity) {
@@ -448,8 +446,6 @@ class LdmService {
      *  This is only used when there is no single master table for the GUID or no single record for the GUID.
      */
     public GlobalUniqueIdentifier updateGuidValueByDomainKey(String domainKey, String guid, String ldmName) {
-        RestfulApiValidationUtility.validateGUID(guid)
-
         // Update the GUID to the one we received.
         GlobalUniqueIdentifier newEntity = GlobalUniqueIdentifier.findByLdmNameAndDomainKey(ldmName, domainKey)
         if (!newEntity) {

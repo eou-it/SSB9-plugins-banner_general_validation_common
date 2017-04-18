@@ -6,11 +6,11 @@ package net.hedtech.banner.general.system.ldm
 
 enum MaritalStatusCategory {
 
-    SINGLE([v1: "Single", v4: "single"]),
-    MARRIED([v1: "Married", v4: "married"]),
-    DIVORCED([v1: "Divorced", v4: "divorced"]),
-    WIDOWED([v1: "Widowed", v4: "widowed"]),
-    SEPARATED([v1: "Separated", v4: "separated"])
+    SINGLE([v1: "Single", v6: "single"]),
+    MARRIED([v1: "Married", v6: "married"]),
+    DIVORCED([v1: "Divorced", v6: "divorced"]),
+    WIDOWED([v1: "Widowed", v6: "widowed"]),
+    SEPARATED([v1: "Separated", v6: "separated"])
 
     final Map<String, String> versionToEnumMap
 

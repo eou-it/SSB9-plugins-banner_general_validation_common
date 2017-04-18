@@ -15,10 +15,10 @@ import org.springframework.transaction.annotation.Transactional
 class MaritalStatusDataModelFacadeService {
 
     private static
-    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V4]
+    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V6]
 
     MaritalStatusV1CompositeService maritalStatusV1CompositeService
-    MaritalStatusV4CompositeService maritalStatusV4CompositeService
+    MaritalStatusV6CompositeService maritalStatusV6CompositeService
 
     /**
      * GET /api/marital-statuses
@@ -101,8 +101,8 @@ class MaritalStatusDataModelFacadeService {
             case 'v1':
                 abstractMaritalStatusCompositeService = maritalStatusV1CompositeService
                 break
-            case 'v4':
-                abstractMaritalStatusCompositeService = maritalStatusV4CompositeService
+            case 'v6':
+                abstractMaritalStatusCompositeService = maritalStatusV6CompositeService
                 break
         }
         return abstractMaritalStatusCompositeService

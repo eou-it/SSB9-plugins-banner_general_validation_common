@@ -26,7 +26,7 @@ class AcademicLevelCompositeService extends LdmService {
     def levelService
 
     private static
-    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V4]
+    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V6]
 
     /**
      * GET /api/academic-levels
@@ -38,7 +38,7 @@ class AcademicLevelCompositeService extends LdmService {
     List<AcademicLevel> list(Map params) {
         List academicLevels = []
         RestfulApiValidationUtility.correctMaxAndOffset(params, RestfulApiValidationUtility.MAX_DEFAULT, RestfulApiValidationUtility.MAX_UPPER_LIMIT)
-        List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V4.equals(getAcceptVersion(VERSIONS)) ? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE] : [GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
+        List allowedSortFields = (GeneralValidationCommonConstants.VERSION_V6.equals(getAcceptVersion(VERSIONS)) ? [GeneralValidationCommonConstants.CODE, GeneralValidationCommonConstants.TITLE] : [GeneralValidationCommonConstants.ABBREVIATION, GeneralValidationCommonConstants.TITLE])
         if (params.containsKey("sort")) {
             RestfulApiValidationUtility.validateSortField(params.sort, allowedSortFields)
             params.sort = fetchBannerDomainPropertyForLdmField(params.sort)
@@ -104,7 +104,7 @@ class AcademicLevelCompositeService extends LdmService {
     AcademicLevel create(Map content) {
         Level level = levelService.fetchByCode(content.code)
         if (level) {
-            def parameterValue = GeneralValidationCommonConstants.VERSION_V4.equals(LdmService.getAcceptVersion(VERSIONS)) ? GeneralValidationCommonConstants.CODE : GeneralValidationCommonConstants.ABBREVIATION
+            def parameterValue = GeneralValidationCommonConstants.VERSION_V6.equals(LdmService.getAcceptVersion(VERSIONS)) ? GeneralValidationCommonConstants.CODE : GeneralValidationCommonConstants.ABBREVIATION
             throw new ApplicationException(GeneralValidationCommonConstants.ACADEMIC_LEVEL, new BusinessLogicValidationException(GeneralValidationCommonConstants.ERROR_MSG_CODE_EXISTS, [parameterValue]))
         }
         level = bindLevel(new Level(), content)

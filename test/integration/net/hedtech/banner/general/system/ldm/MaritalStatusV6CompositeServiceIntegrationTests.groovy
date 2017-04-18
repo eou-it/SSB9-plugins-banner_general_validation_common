@@ -13,9 +13,9 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
 
-class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTestCase {
+class MaritalStatusV6CompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
-    MaritalStatusV4CompositeService maritalStatusV4CompositeService
+    MaritalStatusV6CompositeService maritalStatusV6CompositeService
     def globalUniqueIdentifierService
 
     MaritalStatus i_success_maritalStatus
@@ -41,7 +41,7 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
 
     @Test
     void testList_WithoutPagination() {
-        def decorators = maritalStatusV4CompositeService.list([:])
+        def decorators = maritalStatusV6CompositeService.list([:])
         assertNotNull decorators
         assertFalse decorators.isEmpty()
         assertTrue decorators.size() > 0
@@ -52,19 +52,19 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
     void testCount() {
         assertNotNull i_success_maritalStatus
 
-        def translationValues = MaritalStatusCategory.values().versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
+        def translationValues = MaritalStatusCategory.values().versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
         int totalCount = IntegrationConfiguration.countByTranslationValueInListAndSettingNameAndValueInList(translationValues,
                 GeneralValidationCommonConstants.MARITAL_STATUS_MARTIAL_CATEGORY,
                 MaritalStatus.findAll().code)
 
-        assertEquals totalCount, maritalStatusV4CompositeService.count([max: 500, offset: 0])
+        assertEquals totalCount, maritalStatusV6CompositeService.count([max: 500, offset: 0])
     }
 
 
     @Test
     void testGet_InvalidGuid() {
         try {
-            maritalStatusV4CompositeService.get('Invalid-guid')
+            maritalStatusV6CompositeService.get('Invalid-guid')
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
@@ -78,7 +78,7 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
                                               domainId : 99999999999,
                                               domainKey: 'Y'])
         try {
-            maritalStatusV4CompositeService.get(i_creation_guid)
+            maritalStatusV6CompositeService.get(i_creation_guid)
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
@@ -88,7 +88,7 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
     @Test
     void testGet_NullGuid() {
         try {
-            maritalStatusV4CompositeService.get(null)
+            maritalStatusV6CompositeService.get(null)
         } catch (ApplicationException ae) {
             assertApplicationException ae, "NotFoundException"
         }
@@ -99,8 +99,8 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
     void testCreate() {
         i_success_input_content.put('maritalCategory', 'divorced')
 
-        def dataMapForSingle = maritalStatusV4CompositeService.create(i_success_input_content)
-        MaritalStatusDetail maritalStatusDetail = maritalStatusV4CompositeService.createMaritalStatusDataModel(dataMapForSingle)
+        def dataMapForSingle = maritalStatusV6CompositeService.create(i_success_input_content)
+        MaritalStatusDetail maritalStatusDetail = maritalStatusV6CompositeService.createMaritalStatusDataModel(dataMapForSingle)
 
         assertNotNull maritalStatusDetail
         assertEquals i_success_input_content.code, maritalStatusDetail.code
@@ -113,7 +113,7 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
     void testCreate_NoCode() {
         i_success_input_content.remove('code')
         try {
-            maritalStatusV4CompositeService.create(i_success_input_content)
+            maritalStatusV6CompositeService.create(i_success_input_content)
         } catch (Exception ae) {
             assertApplicationException ae, "code.required"
         }
@@ -124,7 +124,7 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
     void testCreate_NoDesc() {
         i_success_input_content.remove('description')
         try {
-            maritalStatusV4CompositeService.create(i_success_input_content)
+            maritalStatusV6CompositeService.create(i_success_input_content)
         } catch (Exception ae) {
             assertApplicationException ae, "description.required"
         }
@@ -137,7 +137,7 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
         i_success_input_content?.code = i_success_maritalStatus?.code
 
         try {
-            maritalStatusV4CompositeService.create(i_success_input_content)
+            maritalStatusV6CompositeService.create(i_success_input_content)
         } catch (Exception ae) {
             assertApplicationException ae, "exists"
         }
@@ -148,8 +148,8 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
     void testUpdate() {
         i_success_input_content.put('id', GlobalUniqueIdentifier.findByDomainKeyAndLdmName(i_success_maritalStatus?.code, GeneralValidationCommonConstants.MARITAL_STATUS_LDM_NAME)?.guid)
 
-        def dataMapForSingle = maritalStatusV4CompositeService.update(i_success_input_content)
-        def maritalStatusDetail = maritalStatusV4CompositeService.createMaritalStatusDataModel(dataMapForSingle)
+        def dataMapForSingle = maritalStatusV6CompositeService.update(i_success_input_content)
+        def maritalStatusDetail = maritalStatusV6CompositeService.createMaritalStatusDataModel(dataMapForSingle)
 
         assertEquals i_success_maritalStatus?.code, maritalStatusDetail.code
         assertEquals i_success_maritalStatus?.description, maritalStatusDetail.description
@@ -162,8 +162,8 @@ class MaritalStatusV4CompositeServiceIntegrationTests extends BaseIntegrationTes
         i_success_input_content.put('maritalCategory', 'divorced')
         i_success_input_content.put('id', i_creation_guid)
 
-        def dataMapForSingle = maritalStatusV4CompositeService.update(i_success_input_content)
-        MaritalStatusDetail maritalStatusDetail = maritalStatusV4CompositeService.createMaritalStatusDataModel(dataMapForSingle)
+        def dataMapForSingle = maritalStatusV6CompositeService.update(i_success_input_content)
+        MaritalStatusDetail maritalStatusDetail = maritalStatusV6CompositeService.createMaritalStatusDataModel(dataMapForSingle)
 
         assertNotNull maritalStatusDetail
         assertEquals i_creation_guid, maritalStatusDetail.guid

@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class GeographicAreaCompositeService extends LdmService {
     def geographicRegionRuleService
 
-    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
     /**
      *GET /api/geographic-areas/
      * @param params

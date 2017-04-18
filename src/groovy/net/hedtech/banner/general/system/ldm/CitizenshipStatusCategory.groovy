@@ -6,8 +6,8 @@ package net.hedtech.banner.general.system.ldm
 
 enum CitizenshipStatusCategory {
 
-    CITIZEN([v4: "citizen"]),
-    NON_CITIZEN([v4: "nonCitizen"])
+    CITIZEN([v6: "citizen"]),
+    NON_CITIZEN([v6: "nonCitizen"])
 
     final Map<String, String> versionToEnumMap
 

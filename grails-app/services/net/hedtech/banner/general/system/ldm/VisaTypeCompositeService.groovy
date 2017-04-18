@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class VisaTypeCompositeService extends LdmService {
 
     def visaTypeService
-    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
 
     /**
      * GET /api/visa-types

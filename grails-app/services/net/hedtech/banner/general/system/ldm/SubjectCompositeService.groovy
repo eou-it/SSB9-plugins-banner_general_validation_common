@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 class SubjectCompositeService extends LdmService {
 
     private static
-    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V4]
+    final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V1, GeneralValidationCommonConstants.VERSION_V6]
     private static final String LDM_NAME = "subjects"
 
     def subjectService

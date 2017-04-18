@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class CitizenshipStatusCompositeService extends LdmService {
 
-    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
 
     def citizenTypeService
 
@@ -120,7 +120,7 @@ class CitizenshipStatusCompositeService extends LdmService {
 
     protected String getCitizenshipStatusCategory(Boolean citizenIndicator) {
         CitizenshipStatusCategory citizenshipStatusCategory = CitizenshipStatusCategory.getByCitizenIndicator(citizenIndicator)
-        return citizenshipStatusCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V4]
+        return citizenshipStatusCategory.versionToEnumMap[GeneralValidationCommonConstants.VERSION_V6]
     }
 
 }

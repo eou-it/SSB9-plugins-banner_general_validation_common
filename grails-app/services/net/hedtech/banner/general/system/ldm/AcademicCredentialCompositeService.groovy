@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AcademicCredentialCompositeService extends LdmService {
 
-    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V4]
+    private static final List<String> VERSIONS = [GeneralValidationCommonConstants.VERSION_V6]
 
     //Injection of transactional service
     def degreeService

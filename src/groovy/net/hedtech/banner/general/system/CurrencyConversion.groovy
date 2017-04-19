@@ -21,7 +21,9 @@ import javax.persistence.*
                    AND a.rateNextChangeDate > sysdate
                    AND (a.rateTerminationDate > sysdate OR a.rateTerminationDate IS NULL)
                    AND a.statusIndicator = 'A'
-                   AND a.currencyConversion = :currencyConversion""")
+                   AND a.currencyConversion = :currencyConversion"""),
+        @NamedQuery(name = "CurrencyConversion.findByCurrencyConversionInList",
+                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion in :currencyConversions """)
 ])
 class CurrencyConversion implements Serializable {
 

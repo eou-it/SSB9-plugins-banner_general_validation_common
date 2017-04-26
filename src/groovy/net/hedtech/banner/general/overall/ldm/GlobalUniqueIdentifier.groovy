@@ -247,6 +247,7 @@ class GlobalUniqueIdentifier implements Serializable {
         }
     }
 
+    @Deprecated
     public static List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyInList(String ldmName, List<String> domainKeys){
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = []
         GlobalUniqueIdentifier.withSession{session ->

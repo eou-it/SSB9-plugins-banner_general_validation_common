@@ -7,8 +7,8 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
 grails.plugin.location.'banner-seeddata-catalog' = "../banner_seeddata_catalog.git"
-grails.plugin.location.'banner-core'="../banner_core.git"
-grails.plugin.location.'banner-general-utility' = "../banner_general_utility.git"
+
+
 grails.plugin.location.'banner-spring-security-cas'   = "../banner_spring_security_cas.git"
 grails.plugin.location.'banner-spring-security-saml'   = "../banner_spring_security_saml.git"
 
@@ -26,7 +26,7 @@ grails.project.dependency.resolution = {
     repositories {
         if (System.properties['PROXY_SERVER_NAME']) {
             mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
-        } 
+        }
         grailsCentral()
         mavenCentral()
         mavenRepo "http://repository.jboss.org/maven2/"
@@ -36,7 +36,7 @@ grails.project.dependency.resolution = {
     plugins {
 
     }
-	
+
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 

@@ -146,7 +146,7 @@ class GeneralValidationCommonConstants {
     static final String GEOGRAPHIC_AREA_KEY = 'gAreaLdmName'
     static final String GEOGRAPHIC_AREA_GUID_KEY = 'guid'
 
-    static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
+    static final String PATTERN_DATE_TIME_ISO8601TIMEZONE = "yyyy-MM-dd'T'HH:mm:ssXXX"
     static final String UTC_DATE_FORMAT_WITHOUT_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss"
     static final String UTC_TIME_ZONE = "UTC"
     //Religions constants

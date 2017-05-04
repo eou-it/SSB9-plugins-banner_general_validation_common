@@ -27,4 +27,13 @@ class CurrencyConversionService extends ServiceBase {
         return entity
     }
 
+    Collection<CurrencyConversion> findByCurrencyConversionInList(Collection<String> currencyConversions) {
+        Collection<CurrencyConversion> entities = []
+        if(currencyConversions) {
+            entities = CurrencyConversion.withSession { session ->
+                session.getNamedQuery('CurrencyConversion.findByCurrencyConversionInList').setParameterList('currencyConversions', currencyConversions).list()
+            }
+        }
+        return entities
+    }
 }

@@ -179,7 +179,7 @@ class GeneralValidationCommonConstants {
 
     //Person Hold Constants
     public static final def PERSON_HOLD_SEARCH_FIELD = 'person'
-    static final String PERSON_HOLS_LDM_NAME = 'person-holds'
+    static final String PERSON_HOLDS_LDM_NAME = 'person-holds'
     static final String PERSON_HOLDS_KEY = 'gPersonHolds'
     static final String PERSONS_KEY = 'gPerson'
     static final String PERSON_HOLDS_TYPE_KEY = 'gPersonHoldsType'

@@ -24,6 +24,11 @@ import javax.persistence.*
                    AND a.currencyConversion = :currencyConversion"""),
         @NamedQuery(name = "CurrencyConversion.findByCurrencyConversionInList",
                 query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion in :currencyConversions """)
+
+,
+        @NamedQuery(name = "CurrencyConversion.findByStandardCodeIso",
+                query = """  FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and standardCodeIso = :standardCodeIso  """)
+
 ])
 class CurrencyConversion implements Serializable {
 

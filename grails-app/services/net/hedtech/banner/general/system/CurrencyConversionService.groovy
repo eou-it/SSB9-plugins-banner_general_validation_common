@@ -36,4 +36,16 @@ class CurrencyConversionService extends ServiceBase {
         }
         return entities
     }
+
+
+    CurrencyConversion findByStandardCodeIso(String standardCodeIso) {
+        def entity
+        if(standardCodeIso) {
+            entity = CurrencyConversion.withSession { session ->
+                session.getNamedQuery('CurrencyConversion.findByStandardCodeIso').setString('standardCodeIso', standardCodeIso).uniqueResult()
+            }
+        }
+        return entity
+    }
+
 }

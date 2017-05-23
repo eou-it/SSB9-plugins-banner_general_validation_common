@@ -100,4 +100,30 @@ class IntegrationConfigurationIntegrationTest extends BaseIntegrationTestCase {
         assertNotNull integrationConfiguration
         assertEquals "Y", integrationConfiguration.value
     }
+
+    @Test
+    public void testFetchByProcessCodeAndSettingNameAndValues_1000PlusValues(){
+
+        List<String> values = generateRecords(10000)
+        values.addAll([VALUE_D,VALUE_M])
+
+        List<IntegrationConfiguration> integrationConfigurationList = IntegrationConfiguration.
+                fetchByProcessCodeAndSettingNameAndValues(PROCESS_CODE_HEDM,SETTING_NAME_MARITAL_STATUS_PARENT_CATEGORY,values)
+        assertNotNull integrationConfigurationList
+        assertEquals 2, integrationConfigurationList.size()
+
+        assertEquals integrationConfigurationList[0].value==VALUE_D?TRANSLATION_VALUE_DIVORCED:TRANSLATION_VALUE_MARRIED, integrationConfigurationList[0].translationValue
+        assertEquals integrationConfigurationList[1].value==VALUE_M?TRANSLATION_VALUE_MARRIED:TRANSLATION_VALUE_DIVORCED, integrationConfigurationList[1].translationValue
+    }
+
+    public List<String> generateRecords(Integer records){
+        List<String> strRecords = new ArrayList<String>()
+        for(int i=0; i< records;i++){
+            strRecords.add(i.toString())
+        }
+        return strRecords
+    }
+
+
+
 }

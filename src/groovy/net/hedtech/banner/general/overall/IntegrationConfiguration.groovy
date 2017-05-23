@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.general.overall
 
+import org.apache.commons.lang3.StringUtils
 import org.hibernate.CacheMode
 import org.hibernate.annotations.CacheConcurrencyStrategy
 
@@ -246,13 +247,51 @@ class IntegrationConfiguration implements Serializable {
         List<IntegrationConfiguration> integrationList = null
         if (!processCode) return integrationList
         integrationList = IntegrationConfiguration.withSession { session ->
-            integrationList = session.getNamedQuery('IntegrationConfiguration.fetchAllByProcessCodeAndSettingNameAndValues').setCacheMode(CacheMode.GET)
-                    .setString('processCode', processCode).setString('settingName', settingName).setParameterList('values', values).setCacheable(true).setCacheRegion("ldmEnumeration").list()
+
+            String queryStr = """FROM IntegrationConfiguration a WHERE a.processCode = :processCode and a.settingName = :settingName and (a.value in (:values)"""
+            //call to the method that builds the query dinamically for list of values that are bigger than 1000.
+            //Implemented this method as a fix to the error that Hibernate throws:
+            // ORA-01795: maximum number of expressions in a list is 1000 .
+            def queryParams = getQueryParamsForValues(queryStr, values)
+            queryParams.queryStr += """)"""
+            integrationList = session.createQuery(queryParams.queryStr).setCacheMode(CacheMode.GET).setString('processCode', processCode)
+                    .setString('settingName', settingName).setParameterList("values", queryParams.values).setCacheable(true).setCacheRegion("ldmEnumeration").list()
         }
         return integrationList
+    }
+
+    /**
+     * Method that dynamically builds the queryString and the lists of values. Hibernate can handle only sets of 1000
+     * expressions per parameter so if the list is bigger, this will handle it in batches of 1000.
+     * @param queryStr
+     * @param values
+     * @return
+     */
+    private static def getQueryParamsForValues(String queryStr, List<String> values) {
+
+        int count = 1
+        if (values.size() > 1000) {
+            List valuesTemp = values.subList(1000, values.size())
+            values = values.subList(0, 1000)
+            //if the values list had more than 1000 records set the rest of values.
+            while (valuesTemp.size() > 0) {
+                int toIndex = valuesTemp.size() > 1000 ? 1000 : valuesTemp.size()
+                //setting the values directly into the queryString because using parameterList multiple times was
+                // having some issues with thousands of records.
+                queryStr += """ OR a.value in ('""" + StringUtils.join(valuesTemp.subList(0, toIndex), "','") + """')"""
+                valuesTemp = valuesTemp.subList(toIndex, valuesTemp.size())
+                count++
+            }
+
+        }
+        return [queryStr: queryStr, values: values]
+
 
     }
 
+    private static def getStringList(List values){
+
+    }
 
     static IntegrationConfiguration fetchByProcessCodeAndSettingName(String processCode, String settingName) {
         IntegrationConfiguration integrationConfiguration = null

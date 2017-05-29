@@ -158,14 +158,8 @@ class CurrencyConversion implements Serializable {
     @Column(name = "GTVCURR_DATA_ORIGIN")
     String dataOrigin
 
-    /**
-     * Foreign Key : FKV_GTVCURR_INV_GXVBANK_CODE
-     */
-    @ManyToOne
-    @JoinColumns([
-    @JoinColumn(name = "GTVCURR_BANK_CODE", referencedColumnName = "GXVBANK_BANK_CODE")
-    ])
-    Bank bank
+    @Column(name = "GTVCURR_BANK_CODE")
+    String bank
 
 
     public String toString() {

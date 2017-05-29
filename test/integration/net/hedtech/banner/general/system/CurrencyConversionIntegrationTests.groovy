@@ -376,7 +376,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
                 accountsPayableAccount2: i_success_accountsPayableAcct2,
                 exchangeAccount2: i_success_exchAcct2,
                 standardCodeIso: i_success_standardCodeIso,
-                bank: newBank
+                bank: newBank.bank
         )
         return currencyConversion
     }

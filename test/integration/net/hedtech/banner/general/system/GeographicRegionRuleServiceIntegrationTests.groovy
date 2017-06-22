@@ -82,9 +82,10 @@ class GeographicRegionRuleServiceIntegrationTests extends BaseIntegrationTestCas
     void testFetchAllByGuidInList(){
        List guid = GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME)?.guid
        List data = geographicRegionRuleService.fetchAllByGuidInList(guid)
+        assertNotNull data
+        def rule = data[0].get("geographicRegionRule")
+        assertNotNull(rule)
 
-        println guid.size()
-        println data.size()
     }
 
     private GeographicRegionRule newGeographicRegionRule(Map content) {

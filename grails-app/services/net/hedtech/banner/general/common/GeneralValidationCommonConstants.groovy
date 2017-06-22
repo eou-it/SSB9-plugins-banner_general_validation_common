@@ -231,6 +231,8 @@ class GeneralValidationCommonConstants {
 
     public static final String STUDENT_ACADEMICLOAD_CODE = "STUDENT.ACADEMICLOAD.CODE"
 
+    public static final String ACADEMIC_DISCIPLINE_HEDM = 'academic-disciplines'
+
 }
 
 

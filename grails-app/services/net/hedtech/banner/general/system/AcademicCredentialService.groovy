@@ -3,6 +3,8 @@
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import net.hedtech.banner.query.DynamicFinder
+import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.service.ServiceBase
 
 
@@ -48,5 +50,60 @@ class AcademicCredentialService extends ServiceBase {
     def  fetchSearch(filterData, pagingAndSortParams) {
         return AcademicCredential.fetchSearch(filterData, pagingAndSortParams)
 
+    }
+
+
+
+    List<AcademicCredential> fetchAllByCriteria(Map content, String sortField = null, String sortDirection = null, int max = 0, int offset = -1) {
+        Map params = [:]
+        List criteria = []
+        Map pagingAndSortingParams = [:]
+
+        buildCriteria(content, params, criteria)
+
+        if (max > 0) {
+            pagingAndSortingParams.max = max
+        }
+
+        if (offset > -1) {
+            pagingAndSortingParams.offset = offset
+        }
+
+        sortDirection = sortDirection ?: 'asc'
+
+        if (sortField) {
+            pagingAndSortingParams.sortCriteria = [
+                    ["sortColumn": sortField, "sortDirection": sortDirection],
+                    ["sortColumn": 'id', "sortDirection": 'asc']
+            ]
+        } else {
+            pagingAndSortingParams.sortCriteria = [
+                    ["sortColumn": 'id', "sortDirection": 'asc']
+            ]
+        }
+
+        return getDynamicFinderForFetchAllByCriteria().find([params: params, criteria: criteria], pagingAndSortingParams)
+    }
+
+    long countByCriteria(Map content) {
+        Map params = [:]
+        List criteria = []
+        buildCriteria(content, params, criteria)
+        return getDynamicFinderForFetchAllByCriteria().count([params: params, criteria: criteria])
+    }
+
+
+    private void buildCriteria(Map content, Map params, List criteria) {
+        //add custom filter criteria here
+        if (content?.containsKey("type")) {
+            params.put("type", content.type)
+            criteria.add([key: "type", binding: "type", operator: Operators.EQUALS])
+        }
+    }
+
+
+    private DynamicFinder getDynamicFinderForFetchAllByCriteria() {
+        String query = """FROM AcademicCredential a"""
+        return new DynamicFinder(AcademicCredential.class, query, "a")
     }
 }

@@ -4,10 +4,8 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
-import net.hedtech.banner.general.system.ldm.AcademicDisciplineCompositeService
 import net.hedtech.banner.general.system.ldm.v4.AcademicDisciplineType
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.hibernate.sql.ordering.antlr.GeneratedOrderByLexer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

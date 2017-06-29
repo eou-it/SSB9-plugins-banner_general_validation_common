@@ -41,8 +41,8 @@ import javax.persistence.Version
                               where s.division.code = s1.code and s.region.code = s2.code and g.ldmName = :gAreaLdmName and g.domainKey = concat(s.region.code, '-^' , s.division.code) order by gaCODE
                                """),
         @NamedQuery(name = "GeographicRegionRule.countAllGeographicRegionArea",
-                query = """select  COUNT(s) FROM GeographicRegionRule s
-                           where EXISTS(select s1.region.code,s1.division.code from GeographicRegionRule s1 group by s1.region.code,s1.division.code  having min(s1.id) = s.id)
+                query = """select  COUNT(s.id) FROM GeographicRegionRule s
+                           where s.id in (select min(s1.id) from GeographicRegionRule s1 group by s1.region.code,s1.division.code)
                         """),
         @NamedQuery(name = "GeographicRegionRule.fetchByGeographicRegionAreaGuid",
                 query = """SELECT distinct CONCAT(s2.code,'-',s1.code) AS CODE,CONCAT(s2.description,'-',s1.description) AS TITLE, g.guid AS GAGUID,

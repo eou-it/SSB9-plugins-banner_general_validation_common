@@ -126,7 +126,7 @@ there is no concept of an 'entity manager' within this project.
         <mapping class="net.hedtech.banner.general.system.SqlProcessParameter"/>
         <mapping class="net.hedtech.banner.general.system.State"/>
         <mapping class="net.hedtech.banner.general.system.StudentActivity"/>
-
+        <mapping class="net.hedtech.banner.general.system.Subject"/>
         <mapping class="net.hedtech.banner.general.system.SubjectIndex"/>
         <mapping class="net.hedtech.banner.general.system.SystemIndicator"/>
         <mapping class="net.hedtech.banner.general.system.TargetAudience"/>

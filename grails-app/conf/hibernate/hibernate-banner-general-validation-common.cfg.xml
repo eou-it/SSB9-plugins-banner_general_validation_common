@@ -92,7 +92,6 @@ there is no concept of an 'entity manager' within this project.
         <mapping class="net.hedtech.banner.general.system.LearnerFieldStudy"/>
         <mapping class="net.hedtech.banner.general.system.Legacy"/>
         <mapping class="net.hedtech.banner.general.system.LetterProcessLetter"/>
-        <mapping class="net.hedtech.banner.general.system.Level"/>
         <mapping class="net.hedtech.banner.general.system.MailType"/>
         <mapping class="net.hedtech.banner.general.system.MajorMinorConcentration"/>
         <mapping class="net.hedtech.banner.general.system.MaritalStatus"/>
@@ -145,7 +144,7 @@ there is no concept of an 'entity manager' within this project.
         <mapping class="net.hedtech.banner.general.system.GeographicRegion"/>
         <mapping class="net.hedtech.banner.general.system.GeographicDivision"/>
         <mapping class="net.hedtech.banner.general.system.GeographicAreaType"/>
-
+        <mapping class="net.hedtech.banner.general.system.Level"/>
         <mapping class="net.hedtech.banner.general.system.DepartmentalHonor"/>
         <mapping class="net.hedtech.banner.general.system.EducationalInstitutionView"/>
 

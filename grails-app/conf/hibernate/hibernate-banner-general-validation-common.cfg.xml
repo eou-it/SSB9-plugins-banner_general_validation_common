@@ -143,7 +143,6 @@ there is no concept of an 'entity manager' within this project.
         <mapping class="net.hedtech.banner.general.system.GeographicRegionRule"/>
         <mapping class="net.hedtech.banner.general.system.GeographicRegion"/>
         <mapping class="net.hedtech.banner.general.system.GeographicDivision"/>
-        <mapping class="net.hedtech.banner.general.system.GeographicAreaType"/>
         <mapping class="net.hedtech.banner.general.system.Level"/>
         <mapping class="net.hedtech.banner.general.system.DepartmentalHonor"/>
 

@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 class DateConvertHelperService {
 
     def static sessionFactory
-    private static final log = Logger.getLogger(getClass())
+    private static final log = Logger.getLogger(DateConvertHelperService.class)
 
     /**
      * converting date into utc date time format 'yyyy-MM-dd'T'HH:mm:ssXXX'

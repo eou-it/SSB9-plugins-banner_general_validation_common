@@ -71,7 +71,7 @@ class DisabilityServiceTests extends BaseIntegrationTestCase {
     void testInvalidDisability(){
         try{
             disabilityService.fetchDisability('DJD')
-            fail("I should have received an error but it passed; @@r1:invalidDisability@@ ")
+            fail("I should have received an error but it passed; @@r1:invalidDisabilty@@ ")
         }
         catch (ApplicationException ae) {
             assertApplicationException ae, "@@r1:invalidDisabilty@@"

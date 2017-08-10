@@ -203,7 +203,6 @@ class GeneralValidationCommonConstants {
 
     //Address Type V6 constants
     public static final String ADDRESS_TYPE_SETTING_NAME_V6 = 'ADDRESSES.ADDRESSTYPE'
-    public static final String ADDRESS_TYPE_SETTING_NAME_V3 = 'PERSON.ADDRESSES.ADDRESSTYPE'
     public static final String ADDRESS_TYPE_LDM_NAME = 'address-types'
     public static final String ADDRESS_TYPE = 'addressType'
 

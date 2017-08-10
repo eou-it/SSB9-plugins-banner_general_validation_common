@@ -12,11 +12,11 @@ class IntegrationConfigurationIntegrationTest extends BaseIntegrationTestCase {
 
     private final static PROCESS_CODE_HEDM = "HEDM"
     private final static SETTING_NAME_SECTION_GRADABLE = "SECTIONDETAIL.CE_GRADABLE"
-    private final static SETTING_NAME_MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.PARENTCATEGORY"
+    private final static SETTING_NAME_MARITAL_STATUS_PARENT_CATEGORY = "MARITALSTATUS.MARITALCATEGORY"
     private final static VALUE_D = "D"
-    private final static TRANSLATION_VALUE_DIVORCED = "Divorced"
+    private final static TRANSLATION_VALUE_DIVORCED = "divorced"
     private final static VALUE_M = "M"
-    private final static TRANSLATION_VALUE_MARRIED = "Married"
+    private final static TRANSLATION_VALUE_MARRIED = "married"
 
     @Before
     public void setUp() {

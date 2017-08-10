@@ -191,7 +191,6 @@ class GeneralValidationCommonConstants {
     //Email Type V6 constants
     public static final String EMAIL_TYPE_SETTING_NAME_V6 = 'EMAILS.EMAILTYPE'
     public static final String EAMIL_TYPE_LDM_NAME = 'email-types'
-    public static final String EMAIL_TYPE_SETTING_NAME_V3 = 'PERSON.EMAILS.EMAILTYPE'
 
     //Phone Type V6 constants
     public static final String PHONE_TYPE_SETTING_NAME_V6 = 'PHONES.PHONETYPE'

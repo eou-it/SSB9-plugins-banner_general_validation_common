@@ -107,8 +107,6 @@ class GeneralValidationCommonConstants {
 
     //common constants for Races
     static final String RACE_LDM_NAME = 'races'
-    static final String RACE_PARENT_CATEGORY = "RACE.PARENTCATEGORY"
-    static final String RACE_RACIAL_CATEGORY = "RACE.RACIALCATEGORY"
     static final String RACE_RACIAL_CATEGORY_V6 = "RACE.RACIALCATEGORY.V6"
     static final String SETTING_NAME = 'settingName'
     static final String PROCESS_CODE_NAME = 'processCode'
@@ -194,7 +192,6 @@ class GeneralValidationCommonConstants {
 
     //Phone Type V6 constants
     public static final String PHONE_TYPE_SETTING_NAME_V6 = 'PHONES.PHONETYPE'
-    public static final String PHONE_TYPE_SETTING_NAME_V3 = 'PERSON.PHONES.PHONETYPE'
     public static final String PHONE_TYPE_LDM_NAME = 'phone-types'
     public static final String PHONE_ENTITY_TYPE = 'phoneType'
     // Interest constants

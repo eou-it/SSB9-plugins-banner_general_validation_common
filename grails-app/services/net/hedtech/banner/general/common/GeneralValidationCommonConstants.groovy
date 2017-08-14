@@ -210,7 +210,6 @@ class GeneralValidationCommonConstants {
     //Section V4 Status Settings Name
     public static final String SECTION_STATUS_SETTING_NAME_V4 = 'SECTIONDETAIL.STATUS.V4'
     public static final String SECTION_STATUS_SETTING_NAME_V1 = 'SECTIONDETAIL.STATUS'
-    public static final String SECTION_DURATION_UNIT_SETTING_NAME_V1 = 'SECTIONDETAIL.DURATION.UNIT'
     public static final String SECTION_DURATION_UNIT_SETTING_NAME_V4 = 'SECTIONDETAIL.DURATION.UNIT.V4'
 
     public final static String COLLEGE_LDM_NAME = "colleges"

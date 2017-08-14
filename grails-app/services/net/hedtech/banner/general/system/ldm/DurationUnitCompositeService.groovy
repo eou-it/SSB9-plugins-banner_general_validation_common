@@ -19,10 +19,6 @@ class DurationUnitCompositeService extends LdmService{
 
     DurationUnitService durationUnitService
 
-    def getBannerDurationUnitCodeToHedmV1DurationUnitCode() {
-        return getBannerDurationUnitCodeToHedmDurationUnitCode(GeneralValidationCommonConstants.SECTION_DURATION_UNIT_SETTING_NAME_V1, GeneralValidationCommonConstants.VERSION_V1)
-    }
-
 
     def getBannerDurationUnitCodeToHedmV4DurationUnitCode() {
         return getBannerDurationUnitCodeToHedmDurationUnitCode(GeneralValidationCommonConstants.SECTION_DURATION_UNIT_SETTING_NAME_V4, GeneralValidationCommonConstants.VERSION_V4)

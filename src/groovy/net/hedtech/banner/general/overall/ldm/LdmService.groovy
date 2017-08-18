@@ -130,7 +130,16 @@ class LdmService {
         }
     }
 
-
+    /**
+     *
+     *
+     * @param strDate
+     * @param format
+     * @return
+     *
+     * @deprecated Please use DateConvertHelperService.convertString2Date
+     */
+    @Deprecated
     static Date convertString2Date(String strDate, String format = "yyyy-MM-dd") {
         DateFormat dateFormat = new SimpleDateFormat(format)
         dateFormat.lenient = false

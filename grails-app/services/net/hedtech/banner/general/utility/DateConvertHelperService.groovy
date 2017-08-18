@@ -3,7 +3,6 @@
  ***************************************************************************** */
 package net.hedtech.banner.general.utility
 
-import groovy.sql.Sql
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
@@ -18,7 +17,6 @@ import java.text.SimpleDateFormat
  */
 class DateConvertHelperService {
 
-    def static sessionFactory
     private static final log = Logger.getLogger(DateConvertHelperService.class)
 
     /**
@@ -28,7 +26,7 @@ class DateConvertHelperService {
      * @return
      */
     def static convertDateIntoUTCFormat(Date date) {
-        if(!date){
+        if (!date) {
             return null
         }
         //we are not doing proper date conversion using dateformatter as banner does not have timezone
@@ -37,7 +35,7 @@ class DateConvertHelperService {
         //we only convert the date part and simply attach T00:00:00+00:00 to denote UTC
         DateFormat dateFormat = new SimpleDateFormat(GeneralValidationCommonConstants.UTC_DATE_FORMAT_WITHOUT_TIMEZONE);
         //dateFormat.setTimeZone(TimeZone.getTimeZone(GeneralValidationCommonConstants.UTC_TIME_ZONE));
-        return dateFormat.format(date)+"+00:00";
+        return dateFormat.format(date) + "+00:00";
     }
 
     /**
@@ -50,73 +48,74 @@ class DateConvertHelperService {
      * @return
      */
 
-    static String convertDateIntoUTCFormat(Date date,String time) {
-        if(!date){
+    static String convertDateIntoUTCFormat(Date date, String time) {
+        if (!date) {
             return null
         }
-        if(!time){
+        if (!time) {
             return convertDateIntoUTCFormat(date);
         }
-        time = time ? time.substring( 0, 2 ) + ':' + time.substring( 2, 4 ) + ':' + '00' : null
-        return convertDateIntoUTCFormat(Date.parse(GeneralValidationCommonConstants.DATETIME_WITHOUT_TIMEZONE,date.format(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE)+" "+time))
-    }
-
-    /**
-     * fetching time zone from database
-     * @return
-     */
-    def static getDBTimeZone() {
-        def conn
-        def rows
-        try {
-            String query = 'select DBTIMEZONE from dual'
-            conn = sessionFactory.currentSession.connection()
-            Sql sql = new Sql(conn)
-            rows = sql.rows(query)
-            log.debug "Database timezone : ${rows}"
-        }
-        finally {
-            conn?.close()
-        }
-        return rows
+        time = time ? time.substring(0, 2) + ':' + time.substring(2, 4) + ':' + '00' : null
+        return convertDateIntoUTCFormat(Date.parse(GeneralValidationCommonConstants.DATETIME_WITHOUT_TIMEZONE, date.format(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE) + " " + time))
     }
 
     /**
      * converting UTC date in String to the date of server running it.
      * @return date object of server running it
      */
-      static Date convertUTCStringToServerDate(String utc) {
-          Date utcDate
-        if(!utc){
+    static Date convertUTCStringToServerDate(String utc) {
+        Date utcDate
+        if (!utc) {
             return null
         }
-          try{
-              //we are not doing proper date conversion using dateformatter as banner does not have timezone
-              //storage capability due to which we loose the timezone info
-              //and dates change between what is saved and what is read
-              //we only parse the date component from the given object
-              return new SimpleDateFormat(GeneralValidationCommonConstants.UTC_DATE_FORMAT_WITHOUT_TIMEZONE).parse(utc)
-          }catch (ParseException pe){
-              throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
-          }
+        try {
+            //we are not doing proper date conversion using dateformatter as banner does not have timezone
+            //storage capability due to which we loose the timezone info
+            //and dates change between what is saved and what is read
+            //we only parse the date component from the given object
+            return new SimpleDateFormat(GeneralValidationCommonConstants.UTC_DATE_FORMAT_WITHOUT_TIMEZONE).parse(utc)
+        } catch (ParseException pe) {
+            throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
+        }
     }
+
 
     static Date convertDateStringToServerDate(String date) {
         Date serverDate
-        if(!date){
+        if (!date) {
             return null
         }
-        if (!date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})")){
+        if (!date.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})")) {
             throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
         }
 
-        try{
+        try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(GeneralValidationCommonConstants.DATE_WITHOUT_TIMEZONE)
             dateFormat.setLenient(false)
             serverDate = dateFormat.parse(date)
-        }catch (ParseException pe){
+        } catch (ParseException pe) {
             throw new ApplicationException(this.class.simpleName, new BusinessLogicValidationException("invalid.date.format", []))
         }
         return serverDate
     }
+
+
+    static Date convertString2Date(String strDate, String pattern, boolean allowBeforeEpoch = false) {
+        Date date
+        if (strDate && pattern) {
+            DateFormat dateFormat = new SimpleDateFormat(pattern)
+            dateFormat.lenient = false
+            try {
+                date = dateFormat.parse(strDate)
+                if (!allowBeforeEpoch && date.time < 0) {
+                    date = null
+                }
+            } catch (ParseException pe) {
+                log.error pe
+                date = null
+            }
+        }
+        return date
+    }
+
 }

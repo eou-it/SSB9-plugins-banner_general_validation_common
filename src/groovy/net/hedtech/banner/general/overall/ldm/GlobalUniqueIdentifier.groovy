@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
@@ -247,6 +247,7 @@ class GlobalUniqueIdentifier implements Serializable {
         }
     }
 
+    @Deprecated
     public static List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyInList(String ldmName, List<String> domainKeys){
         List<GlobalUniqueIdentifier> globalUniqueIdentifierList = []
         GlobalUniqueIdentifier.withSession{session ->

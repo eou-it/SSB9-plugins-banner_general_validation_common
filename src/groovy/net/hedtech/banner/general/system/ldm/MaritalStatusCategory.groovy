@@ -1,18 +1,18 @@
 /*******************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
 
 enum MaritalStatusCategory {
 
-    SINGLE([v1: "Single", v4: "single"]),
-    MARRIED([v1: "Married", v4: "married"]),
-    DIVORCED([v1: "Divorced", v4: "divorced"]),
-    WIDOWED([v1: "Widowed", v4: "widowed"]),
-    SEPARATED([v1: "Separated", v4: "separated"])
+    SINGLE([v1: "Single", v6: "single"]),
+    MARRIED([v1: "Married", v6: "married"]),
+    DIVORCED([v1: "Divorced", v6: "divorced"]),
+    WIDOWED([v1: "Widowed", v6: "widowed"]),
+    SEPARATED([v1: "Separated", v6: "separated"])
 
-    private final Map<String, String> versionToEnumMap
+    final Map<String, String> versionToEnumMap
 
 
     MaritalStatusCategory(Map<String, String> versionToEnumMap) {
@@ -20,12 +20,7 @@ enum MaritalStatusCategory {
     }
 
 
-    public Map<String, String> getVersionToEnumMap() {
-        return versionToEnumMap
-    }
-
-
-    public static MaritalStatusCategory getByString(String value, String version) {
+    public static MaritalStatusCategory getByDataModelValue(String value, String version) {
         if (value) {
             Iterator itr = MaritalStatusCategory.values().iterator()
             while (itr.hasNext()) {

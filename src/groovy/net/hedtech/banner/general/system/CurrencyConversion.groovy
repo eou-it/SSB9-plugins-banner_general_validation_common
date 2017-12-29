@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -10,16 +10,26 @@ import javax.persistence.*
 /**
  * Currency conversion validation table.
  */
-@NamedQueries(value = [
+@Entity
+@Table(name = "GTVCURR")
+@NamedQueries([
+        @NamedQuery(name = "CurrencyConversion.findByCurrencyConversion",
+                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion = :currencyConversion """),
         @NamedQuery(name = "CurrencyConversion.fetchCurrentCurrencyConversion",
                 query = """FROM CurrencyConversion a
                    WHERE a.rateEffectiveDate <= sysdate
                    AND a.rateNextChangeDate > sysdate
                    AND (a.rateTerminationDate > sysdate OR a.rateTerminationDate IS NULL)
                    AND a.statusIndicator = 'A'
-                   AND a.currencyConversion = :currencyConversion""")])
-@Entity
-@Table(name = "GTVCURR")
+                   AND a.currencyConversion = :currencyConversion"""),
+        @NamedQuery(name = "CurrencyConversion.findByCurrencyConversionInList",
+                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion in :currencyConversions """)
+
+,
+        @NamedQuery(name = "CurrencyConversion.findByStandardCodeIso",
+                query = """  FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and standardCodeIso = :standardCodeIso  """)
+
+])
 class CurrencyConversion implements Serializable {
 
     /**
@@ -148,14 +158,8 @@ class CurrencyConversion implements Serializable {
     @Column(name = "GTVCURR_DATA_ORIGIN")
     String dataOrigin
 
-    /**
-     * Foreign Key : FKV_GTVCURR_INV_GXVBANK_CODE
-     */
-    @ManyToOne
-    @JoinColumns([
-    @JoinColumn(name = "GTVCURR_BANK_CODE", referencedColumnName = "GXVBANK_BANK_CODE")
-    ])
-    Bank bank
+    @Column(name = "GTVCURR_BANK_CODE")
+    String bank
 
 
     public String toString() {

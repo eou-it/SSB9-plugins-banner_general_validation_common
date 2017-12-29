@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 package net.hedtech.banner.general.system
@@ -10,6 +10,10 @@ import javax.persistence.*
 /**
  * CIP Code Validation Table
  */
+@NamedQueries(value = [
+        @NamedQuery(name = "CIPCode.fetchByCode",
+                query = """FROM  CIPCode a
+	  	        WHERE a.code = :code""")])
 @Entity
 @Table(name = "STVCIPC")
 class CIPCode implements Serializable {

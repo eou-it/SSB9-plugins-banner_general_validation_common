@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system;
 
@@ -7,6 +7,8 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
 import javax.persistence.Table
 import javax.persistence.Version
 import javax.persistence.GenerationType
@@ -21,6 +23,10 @@ import org.hibernate.annotations.Type
  */
 @Entity
 @Table(name = "STVDISA")
+@NamedQueries(value = [
+        @NamedQuery(name = "Disability.fetchByCode",
+                query = """ FROM Disability a WHERE a.code = :code """)
+])
 class Disability implements Serializable {
 
     /**

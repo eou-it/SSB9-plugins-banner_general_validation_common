@@ -10,18 +10,13 @@ enum Gender {
     FEMALE([v1: "Female", v6: "female"], "F"),
     UNKNOWN([v1: "Unknown", v6: "unknown"], "N"),
 
-    private final Map<String, String> versionToEnumMap
-    private String bannerValue
+    final Map<String, String> versionToEnumMap
+    final String bannerValue
 
 
     Gender(Map<String, String> versionToEnumMap, String bannerValue) {
         this.versionToEnumMap = versionToEnumMap
         this.bannerValue = bannerValue
-    }
-
-
-    public Map<String, String> getVersionToEnumMap() {
-        return versionToEnumMap
     }
 
 
@@ -37,6 +32,7 @@ enum Gender {
         }
         return null
     }
+
 
     public static Gender getByBannerValue(String value) {
         if (value) {

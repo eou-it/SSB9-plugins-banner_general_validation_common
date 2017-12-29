@@ -1,8 +1,9 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
@@ -58,7 +59,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
         def id = level.id
         def version = level.version
         assertNotNull(id)
-        assertEquals(0L, version)
+        Assert.assertEquals(0L, version)
 
         level.description = "updated"
 
@@ -69,7 +70,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
 
         assertNotNull("found must not be null", level)
         assertEquals("updated", level.description)
-        assertEquals(1, level.version)
+        Assert.assertEquals(1, level.version)
     }
 
     @Test

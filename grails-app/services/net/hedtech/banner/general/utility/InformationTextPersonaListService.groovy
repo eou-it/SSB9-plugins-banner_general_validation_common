@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2017 Ellucian Company L.P. and its affiliates.
  ***************************************************************************** */
 package net.hedtech.banner.general.utility
 
@@ -18,7 +18,7 @@ class InformationTextPersonaListService {
     def static webTailorRoleList = []
     static final String PERSONA_DEFAULT = "DEFAULT"
 
-    static Logger staticLog = Logger.getLogger( "net.hedtech.banner.general.utility.InformationTextPersonaListService" )
+    private static final log = Logger.getLogger(InformationTextPersonaListService.class)
 
     static {
         if (Holders?.config?.webTailorRoleList?.size() > 0) {
@@ -117,7 +117,7 @@ class InformationTextPersonaListService {
             return sdf.parse(dateString)
         } catch (ParseException e) {
             // Ignore because its not the right format.
-            staticLog.warn(" Date was not in the $format format")
+            log.warn(" Date was not in the $format format")
         }
         return null
     }

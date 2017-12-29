@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- *******************************************************************************
-     Copyright 2012-2016 Ellucian Company L.P. and its affiliates.
+     Copyright 2012-2017 Ellucian Company L.P. and its affiliates.
      *********************************************************************************
  -->
 <!--
@@ -92,7 +92,6 @@ there is no concept of an 'entity manager' within this project.
         <mapping class="net.hedtech.banner.general.system.LearnerFieldStudy"/>
         <mapping class="net.hedtech.banner.general.system.Legacy"/>
         <mapping class="net.hedtech.banner.general.system.LetterProcessLetter"/>
-        <mapping class="net.hedtech.banner.general.system.Level"/>
         <mapping class="net.hedtech.banner.general.system.MailType"/>
         <mapping class="net.hedtech.banner.general.system.MajorMinorConcentration"/>
         <mapping class="net.hedtech.banner.general.system.MaritalStatus"/>
@@ -141,15 +140,12 @@ there is no concept of an 'entity manager' within this project.
         <mapping class="net.hedtech.banner.general.system.VisaType"/>
         <mapping class="net.hedtech.banner.general.system.Zip"/>
         <mapping class="net.hedtech.banner.general.utility.InformationText"/>
-        <mapping class="net.hedtech.banner.general.system.AcademicDisciplineView"/>
-        <mapping class="net.hedtech.banner.general.system.AcademicCredential"/>
         <mapping class="net.hedtech.banner.general.system.GeographicRegionRule"/>
         <mapping class="net.hedtech.banner.general.system.GeographicRegion"/>
         <mapping class="net.hedtech.banner.general.system.GeographicDivision"/>
-        <mapping class="net.hedtech.banner.general.system.GeographicAreaType"/>
-        <mapping class="net.hedtech.banner.general.system.AcademicHonorView"/>
+        <mapping class="net.hedtech.banner.general.system.Level"/>
         <mapping class="net.hedtech.banner.general.system.DepartmentalHonor"/>
-        <mapping class="net.hedtech.banner.general.system.EducationalInstitutionView"/>
+
 
    </session-factory>
    </hibernate-configuration>

@@ -1,13 +1,13 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
+
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
 
-import net.hedtech.banner.exceptions.*
-
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 
 /**
@@ -23,6 +23,10 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
         super.setUp()
     }
 
+    @After
+    public void tearDown() {
+        super.tearDown()
+    }
 
     @Test
     void testCreate() {
@@ -66,6 +70,23 @@ public class MedicalConditionServiceIntegrationTests extends BaseIntegrationTest
         assertNotNull medicalCondition.id
 
         medicalConditionService.delete(medicalCondition.id)
+    }
+
+    @Test
+    void testInvalidMedicalCondition(){
+        try{
+            medicalConditionService.fetchMedicalCondition('DJD')
+            fail("I should have received an error but it passed; @@r1:invalidMedicalCondition@@ ")
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, "@@r1:invalidMedicalCondition@@"
+        }
+    }
+
+    @Test
+    void testValidMedicalCondition(){
+        def result = medicalConditionService.fetchMedicalCondition('DISABSURV')
+        assertEquals 'Disability Survey', result.description
     }
 
 }

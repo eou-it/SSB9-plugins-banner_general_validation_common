@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -376,7 +376,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
                 accountsPayableAccount2: i_success_accountsPayableAcct2,
                 exchangeAccount2: i_success_exchAcct2,
                 standardCodeIso: i_success_standardCodeIso,
-                bank: newBank
+                bank: newBank.bank
         )
         return currencyConversion
     }

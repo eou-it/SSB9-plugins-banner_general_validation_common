@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -26,7 +26,7 @@ enum HedmPhoneType {
     OTHER([v6: 'other'])
 
 
-    private final Map<String, String> versionToEnumMap
+    final Map<String, String> versionToEnumMap
 
 
     HedmPhoneType(Map<String, String> versionToEnumMap) {
@@ -34,11 +34,7 @@ enum HedmPhoneType {
     }
 
 
-    public Map<String, String> getVersionToEnumMap() {
-        return versionToEnumMap
-    }
-
-    public static HedmPhoneType getByString(String value, String version) {
+    public static HedmPhoneType getByDataModelValue(String value, String version) {
         if (value) {
             Iterator itr = HedmPhoneType.values().iterator()
             while (itr.hasNext()) {
@@ -50,6 +46,5 @@ enum HedmPhoneType {
         }
         return null
     }
-
 
 }

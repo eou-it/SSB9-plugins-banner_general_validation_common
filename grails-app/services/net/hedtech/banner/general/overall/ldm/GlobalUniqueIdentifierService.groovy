@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2014-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.overall.ldm
 
@@ -83,8 +83,31 @@ class GlobalUniqueIdentifierService extends ServiceBase {
     }
 
 
-    public List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyInList(String ldmName, List<String> domainKeys) {
-        return GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyInList(ldmName, domainKeys)
+    public List<GlobalUniqueIdentifier> fetchAllByLdmNameAndDomainKeyInList(String ldmName, List<String> domainKeys, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
+        List<GlobalUniqueIdentifier> entities = []
+
+        GlobalUniqueIdentifier.withSession { session ->
+            def query = session.getNamedQuery('GlobalUniqueIdentifier.fetchAllByLdmNameAndDomainKeyInList')
+            String hql = query.getQueryString()
+            sortOrder = sortOrder ?: 'asc'
+            if (sortField) {
+                hql += " order by $sortField $sortOrder" + ", id $sortOrder"
+            } else {
+                hql += " order by id $sortOrder"
+            }
+
+            query = session.createQuery(hql)
+            query.setString('ldmName', ldmName)
+            query.setParameterList('domainKeys', domainKeys)
+            if (max > 0) {
+                query.setMaxResults(max)
+            }
+            if (offset > -1) {
+                query.setFirstResult(offset)
+            }
+            entities = query.list()
+        }
+        return entities
     }
 
 

@@ -1,20 +1,15 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
-import net.hedtech.banner.general.overall.ldm.LdmService
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.system.ldm.v1.Metadata
 import net.hedtech.banner.general.system.ldm.v1.RestrictionType
-import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
-import org.junit.Before
-import org.junit.Test
-import org.junit.After
-
-import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.junit.Ignore
+import org.junit.Before
+import org.junit.Test
 
 /**
  * Service Integration  test for the 'holdType' model.

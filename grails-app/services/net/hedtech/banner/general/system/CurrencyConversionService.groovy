@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright 2013 Ellucian Company L.P. and its affiliates.
+Copyright 2017 Ellucian Company L.P. and its affiliates.
 *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -15,5 +15,37 @@ import net.hedtech.banner.service.ServiceBase
 
 class CurrencyConversionService extends ServiceBase {
 
+    boolean transactional = true
+
+    CurrencyConversion findByCurrencyConversion(String currencyConversion) {
+        def entity
+        if(currencyConversion) {
+            entity = CurrencyConversion.withSession { session ->
+                session.getNamedQuery('CurrencyConversion.findByCurrencyConversion').setString('currencyConversion', currencyConversion).uniqueResult()
+            }
+        }
+        return entity
+    }
+
+    Collection<CurrencyConversion> findByCurrencyConversionInList(Collection<String> currencyConversions) {
+        Collection<CurrencyConversion> entities = []
+        if(currencyConversions) {
+            entities = CurrencyConversion.withSession { session ->
+                session.getNamedQuery('CurrencyConversion.findByCurrencyConversionInList').setParameterList('currencyConversions', currencyConversions).list()
+            }
+        }
+        return entities
+    }
+
+
+    CurrencyConversion findByStandardCodeIso(String standardCodeIso) {
+        def entity
+        if(standardCodeIso) {
+            entity = CurrencyConversion.withSession { session ->
+                session.getNamedQuery('CurrencyConversion.findByStandardCodeIso').setString('standardCodeIso', standardCodeIso).uniqueResult()
+            }
+        }
+        return entity
+    }
 
 }

@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 package net.hedtech.banner.general.system.ldm
 
@@ -24,7 +24,7 @@ enum HedmAddressType {
     MATCHINGGIFTS([v6: 'matchingGifts']),
     OTHER([v6: 'other'])
 
-    private final Map<String, String> versionToEnumMap
+    final Map<String, String> versionToEnumMap
 
 
     HedmAddressType(Map<String, String> versionToEnumMap) {
@@ -32,18 +32,7 @@ enum HedmAddressType {
     }
 
 
-    public Map<String, String> getVersionToEnumMap() {
-        return versionToEnumMap
-    }
-
-    /**
-     * This is useful in "create" and "update" operations to validate the input string.
-     *
-     * @param value
-     * @param version
-     * @return
-     */
-    public static HedmAddressType getByString(String value, String version) {
+    public static HedmAddressType getByDataModelValue(String value, String version) {
         if (value) {
             Iterator itr = HedmAddressType.values().iterator()
             while (itr.hasNext()) {

@@ -7,8 +7,8 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
 grails.plugin.location.'banner-seeddata-catalog' = "../banner_seeddata_catalog.git"
-
-
+grails.plugin.location.'banner-core'="../banner_core.git"
+grails.plugin.location.'banner-general-utility' = "../banner_general_utility.git"
 grails.plugin.location.'banner-spring-security-cas'   = "../banner_spring_security_cas.git"
 grails.plugin.location.'banner-spring-security-saml'   = "../banner_spring_security_saml.git"
 

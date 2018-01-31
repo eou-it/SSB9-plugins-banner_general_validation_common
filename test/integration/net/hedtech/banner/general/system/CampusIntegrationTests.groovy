@@ -64,6 +64,27 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 1L, found.version
     }
 
+    @Test
+    void testUpdateUtcCampus() {
+        def campus = newValidForCreateCampus()
+
+        save campus
+        def id = campus.id
+        def version = campus.version
+        assertNotNull id
+        assertEquals 0L, version
+        assertEquals "+09:00", campus.utcOffset
+
+        campus.utcOffset = "-04:00"
+        save campus
+
+        def found = Campus.get(id)
+        assertNotNull "found must not be null", found
+        assertEquals "-04:00", found.utcOffset
+        assertEquals 1L, found.version
+    }
+
+
 
     @Test
     void testDeleteCampus() {
@@ -195,7 +216,8 @@ class CampusIntegrationTests extends BaseIntegrationTestCase {
                 description: i_success_description,
                 lastModified: new Date(),
                 lastModifiedBy: "test",
-                dataOrigin: "Banner"
+                dataOrigin: "Banner",
+                utcOffset: "+09:00"
         )
         return campus
     }

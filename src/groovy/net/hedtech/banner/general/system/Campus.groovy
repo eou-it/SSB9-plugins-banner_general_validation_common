@@ -75,15 +75,27 @@ class Campus implements Serializable {
     @Column(name = "STVCAMP_DATA_ORIGIN", length = 30)
     String dataOrigin
 
+    /**
+     * UTC Offset for campus
+     */
+    @Column(name = "STVCAMP_UTC_OFFSET", length=6)
+    String utcOffset
 
     public String toString() {
-        "Campus[id=$id, code=$code, description=$description, lastModified=$lastModified, districtIdentifierCode=$districtIdentifierCode, lastModifiedBy=$lastModifiedBy, version=$version, dataOrigin=$dataOrigin]"
+        "Campus[id=$id, code=$code, description=$description, " +
+                "lastModified=$lastModified, " +
+                "districtIdentifierCode=$districtIdentifierCode, " +
+                "lastModifiedBy=$lastModifiedBy, " +
+                "version=$version, " +
+                "dataOrigin=$dataOrigin, " +
+                "utcOffset=$utcOffset]"
     }
 
     static constraints = {
         code(nullable: false, maxSize: 3)
         description(nullable: true, maxSize: 30)
         districtIdentifierCode(nullable: true)
+        utcOffset(nullable: true)
     }
 
 
@@ -102,6 +114,7 @@ class Campus implements Serializable {
         if (lastModified != campus.lastModified) return false
         if (lastModifiedBy != campus.lastModifiedBy) return false
         if (version != campus.version) return false
+        if (utcOffset != campus.utcOffset) return false
 
         return true
     }
@@ -118,6 +131,7 @@ class Campus implements Serializable {
         result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
         result = 31 * result + (version != null ? version.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
+        result = 31 * result + (utcOffset != null ? utcOffset.hashCode() : 0)
         return result
     }
 

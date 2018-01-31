@@ -344,6 +344,12 @@ class InstitutionalDescription implements Serializable {
     @Column(name = "GUBINST_DATA_ORIGIN", length = 30)
     String dataOrigin
 
+    /**
+     * UTC Offset
+     */
+    @Column(name = "GUBINST_UTC_OFFSET", length=6)
+    String utcOffset
+
 
     public static InstitutionalDescription fetchByKey() {
         return InstitutionalDescription.withSession {session ->
@@ -404,7 +410,8 @@ class InstitutionalDescription implements Serializable {
                 "ssnMaximumLength=$ssnMaximumLength, " +
                 "version=$version, " +
                 "lastModifiedBy=$lastModifiedBy, " +
-                "dataOrigin=$dataOrigin]"
+                "dataOrigin=$dataOrigin," +
+                "UTC Offset=$utcOffset ]"
     }
 
 
@@ -456,6 +463,7 @@ class InstitutionalDescription implements Serializable {
         streetLine4(nullable: true, maxSize: 75)
         ssnMaximumLength(nullable: true)
         dataOrigin(nullable: true, maxSize: 30)
+        utcOffset(nullable: true, maxSize: 6)
     }
 
 
@@ -517,6 +525,7 @@ class InstitutionalDescription implements Serializable {
         if (wfEnabledIndicator != that.wfEnabledIndicator) return false;
         if (zip != that.zip) return false;
         if (zipDefaultLength != that.zipDefaultLength) return false;
+        if (utcOffset != that.utcOffset) return false;
 
         return true;
     }
@@ -577,6 +586,7 @@ class InstitutionalDescription implements Serializable {
         result = 31 * result + (wfEnabledIndicator != null ? wfEnabledIndicator.hashCode() : 0)
         result = 31 * result + (zip != null ? zip.hashCode() : 0)
         result = 31 * result + (zipDefaultLength != null ? zipDefaultLength.hashCode() : 0)
+        result = 31 * result + (utcOffset != null ? utcOffset.hashCode() : 0)
         return result
     }
 

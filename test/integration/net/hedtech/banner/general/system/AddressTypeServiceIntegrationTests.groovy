@@ -15,7 +15,7 @@ class AddressTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     GlobalUniqueIdentifier i_success_globalUniqueIdentifier
 
     AddressType i_success_address_type
-    Collection<String> i_success_address_type_codes = ['MA', 'BI', 'BU']
+    Collection<String> i_success_address_type_codes = ['FI', 'BI', 'BU']
 
 
     @Before
@@ -26,8 +26,8 @@ class AddressTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void initializeTestDataForReferences() {
-        i_success_address_type = AddressType.findByCode("MA")
-        i_success_globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName('MA', 'address-types')
+        i_success_address_type = AddressType.findByCode("FI")
+        i_success_globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName('FI', 'address-types')
     }
 
 

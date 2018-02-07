@@ -16,7 +16,7 @@ import org.junit.Test
 class ActivityTypeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def activityTypeService
-    final String I_SUCCESS_CODE = "SPRTS"
+    final String I_SUCCESS_CODE = "CADV"
 
 
     @Before

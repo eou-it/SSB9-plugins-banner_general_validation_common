@@ -139,8 +139,9 @@ class CollegeServiceTests extends BaseIntegrationTestCase {
         List<College> colleges = collegeService.list(params)
         assertNotNull colleges
         assertFalse colleges.isEmpty()
+        assertTrue colleges.size() > 14
 
-        College college = colleges[0]
+        College college = colleges[14]
         assertNotNull college.id
 
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.COLLEGE_LDM_NAME, college.id)

@@ -94,7 +94,7 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchAllWithGuidByCodeInList() {
-        def maritalStatusCodes = ['S', 'M']
+        def maritalStatusCodes = ['S', 'M', 'R']
 
         // sortColumn=Default (id), sortOrder=Database default
         List<MaritalStatus> entities = maritalStatusService.fetchAllWithGuidByCodeInList(maritalStatusCodes)

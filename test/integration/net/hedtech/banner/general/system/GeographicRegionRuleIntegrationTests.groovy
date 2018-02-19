@@ -35,7 +35,7 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
     }
 
     void initializeTestDataForReferences() {
-        insertContent = [region:  GeographicRegion.findByCode('BALT/WASH'), division: GeographicDivision.findByCode('ALUM'), regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
+        insertContent = [region:  GeographicRegion.findByCode('HOUSTON'), division: GeographicDivision.findByCode('FINAID'), regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
         updateContent = [region: GeographicRegion.findByCode('BALT/WASH'),  division: GeographicDivision.findByCode('ALUM'), regionType: 'u_test', startTypeRange: '21', endTypeRange: '57']
     }
 
@@ -159,7 +159,7 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
         assertEquals geographicArea.getAt(0), geographicRegionRule.region.code + '-' + geographicRegionRule.division.code
         GeographicRegion geographicRegion = GeographicRegion.findByCode(geographicRegionRule.region.code)
         assertNotNull geographicRegion
-       assertEquals geographicArea.getAt(4),GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicRegion.code,GeneralValidationCommonConstants.GEOGRAPHIC_REGION_LDM_NAME).guid
+        assertEquals geographicArea.getAt(4),GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicRegion.code,GeneralValidationCommonConstants.GEOGRAPHIC_REGION_LDM_NAME).guid
         GeographicDivision geographicDivision = GeographicDivision.findByCode(geographicRegionRule.division.code)
         assertNotNull geographicDivision
         assertEquals geographicArea.getAt(3),GlobalUniqueIdentifier.fetchByDomainKeyAndLdmName(geographicDivision.code,GeneralValidationCommonConstants.GEOGRAPHIC_DIVISION_LDM_NAME).guid

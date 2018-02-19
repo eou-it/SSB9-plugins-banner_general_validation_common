@@ -34,7 +34,7 @@ class GeographicRegionRuleServiceIntegrationTests extends BaseIntegrationTestCas
     }
 
     void initializeTestDataForReferences() {
-        insertContent = [region:  GeographicRegion.findByCode('BALT/WASH'), division: GeographicDivision.findByCode('ALUM'), regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
+        insertContent = [region:  GeographicRegion.findByCode('HOUSTON'), division: GeographicDivision.findByCode('FINAID'), regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
     }
 
     @Test

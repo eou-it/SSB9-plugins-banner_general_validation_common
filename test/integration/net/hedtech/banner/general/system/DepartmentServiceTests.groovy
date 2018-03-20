@@ -113,7 +113,7 @@ class DepartmentServiceTests extends BaseIntegrationTestCase {
         assertNotNull departments
         assertFalse departments.isEmpty()
 
-        Department department = departments[27]
+        Department department = departments[0]
         assertNotNull department.id
 
         GlobalUniqueIdentifier globalUniqueIdentifier = GlobalUniqueIdentifier.fetchByLdmNameAndDomainId(GeneralValidationCommonConstants.DEPARTMENT_LDM_NAME, department.id)

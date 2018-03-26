@@ -57,9 +57,9 @@ class State implements Serializable {
     String description
 
     /**
-     * This field identifies the three character International Standards Organization (ISO) Code associated with the user defined nation code
+     * This field identifies the three character International Standards Organization (ISO) Code associated with the user defined state code
      */
-    @Column(name = "STVSTAT_SCOD_CODE_ISO", length = 3)
+    @Column(name = "STVSTAT_SCOD_CODE_ISO")
     String isoCode
 
     /**

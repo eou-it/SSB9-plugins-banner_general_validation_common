@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2018 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -41,6 +41,12 @@ class Language implements Serializable {
     String description
 
     /**
+     * This field identifies the three character International Standards Organization (ISO) Code associated with the user defined nation code
+     */
+    @Column(name = "STVLANG_SCOD_CODE_ISO", length = 3)
+    String isoCode
+
+    /**
      * This field identifies the most recent date a record was created or updated.
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -66,7 +72,8 @@ class Language implements Serializable {
 					id=$id, 
 					version=$version, 
 					code=$code, 
-					description=$description, 
+					description=$description,
+                    isoCode=$isoCode,
 					lastModified=$lastModified, 
 					lastModifiedBy=$lastModifiedBy, 
 					dataOrigin=$dataOrigin]"""
@@ -81,6 +88,7 @@ class Language implements Serializable {
         if (version != that.version) return false
         if (code != that.code) return false
         if (description != that.description) return false
+        if (isoCode != that.isoCode) return false
         if (lastModified != that.lastModified) return false
         if (lastModifiedBy != that.lastModifiedBy) return false
         if (dataOrigin != that.dataOrigin) return false
@@ -94,6 +102,7 @@ class Language implements Serializable {
         result = 31 * result + (version != null ? version.hashCode() : 0)
         result = 31 * result + (code != null ? code.hashCode() : 0)
         result = 31 * result + (description != null ? description.hashCode() : 0)
+        result = 31 * result + (isoCode != null ? isoCode.hashCode() : 0)
         result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
         result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
@@ -104,6 +113,7 @@ class Language implements Serializable {
     static constraints = {
         code(nullable: false, maxSize: 3)
         description(nullable: false, maxSize: 30)
+        isoCode(nullable: true, maxSize: 3)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)

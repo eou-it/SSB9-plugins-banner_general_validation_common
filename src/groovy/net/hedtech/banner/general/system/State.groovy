@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2018 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -57,6 +57,12 @@ class State implements Serializable {
     String description
 
     /**
+     * This field identifies the three character International Standards Organization (ISO) Code associated with the user defined nation code
+     */
+    @Column(name = "STVSTAT_SCOD_CODE_ISO", length = 3)
+    String isoCode
+
+    /**
      * This field identifies the most recent date a record was created or deleted.
      */
     @Column(name = "STVSTAT_ACTIVITY_DATE")
@@ -103,6 +109,7 @@ class State implements Serializable {
     static constraints = {
         code(nullable: false, maxSize: 3)
         description(nullable: false, maxSize: 30)
+        isoCode(nullable: true, maxSize: 3)
         lastModified(nullable: true)
         ediEquiv(nullable: true, maxSize: 2)
         statscan(nullable: true, maxSize: 5)

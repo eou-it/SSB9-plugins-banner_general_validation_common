@@ -1,10 +1,11 @@
 /*********************************************************************************
- Copyright 2010-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2010-2018 Ellucian Company L.P. and its affiliates.
  ********************************************************************************* */
 package net.hedtech.banner.restfulapi
 
 import grails.util.Holders
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.system.Term
 import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -217,6 +218,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         assertNull RestfulApiValidationUtility.getRequestParams()
     }
 
+
     @Test
     void testValidGuid() {
         def errMsg01 = shouldFail(ApplicationException, {
@@ -244,8 +246,20 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
 
         assertTrue RestfulApiValidationUtility.validateGUID("C56A4180-65AA-42EC-A945-5FD21DEC0538")
         assertTrue RestfulApiValidationUtility.validateGUID("C56A4180-65AA-42EC-A945-5FD21DEC0538".toLowerCase())
-        assertTrue RestfulApiValidationUtility.validateGUID("C56A418065AA42ECA9455FD21DEC0538".toLowerCase()) //still a guid
-        assertTrue RestfulApiValidationUtility.validateGUID("C56A4180-65AA42ECA945-5FD21DEC0538".toLowerCase()) //still a guid :)
+        assertTrue RestfulApiValidationUtility.validateGUID("C56A418065AA42ECA9455FD21DEC0538".toLowerCase())
+        //still a guid
+        assertTrue RestfulApiValidationUtility.validateGUID("C56A4180-65AA42ECA945-5FD21DEC0538".toLowerCase())
+        //still a guid :)
+    }
+
+
+    @Test
+    void testIsValidVersion4UUID() {
+        assertFalse RestfulApiValidationUtility.isValidVersion4UUID(null)
+        assertFalse RestfulApiValidationUtility.isValidVersion4UUID("    ")
+        assertFalse RestfulApiValidationUtility.isValidVersion4UUID(GeneralValidationCommonConstants.NIL_GUID)
+        assertTrue RestfulApiValidationUtility.isValidVersion4UUID("2052f903-595a-43d8-b9ce-4ec407e86a59")
+        assertTrue RestfulApiValidationUtility.isValidVersion4UUID("2052F903-595A-43D8-B9CE-4EC407E86A59")
     }
 
 }

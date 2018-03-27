@@ -38,4 +38,24 @@ class InstitutionalDescriptionService extends ServiceBase {
         return isoCurrencyCode
     }
 
+
+    String getDatabaseUtcOffset() {
+        String utcOffset
+        InstitutionalDescription.withSession { session ->
+            String sql = "select dbtimezone from dual"
+            utcOffset = session.createSQLQuery(sql).uniqueResult()
+        }
+        return utcOffset
+    }
+
+
+    String getSessionTimeZone() {
+        String timeZoneId
+        InstitutionalDescription.withSession { session ->
+            String sql = "select sessiontimezone from dual"
+            timeZoneId = session.createSQLQuery(sql).uniqueResult()
+        }
+        return timeZoneId
+    }
+
 }

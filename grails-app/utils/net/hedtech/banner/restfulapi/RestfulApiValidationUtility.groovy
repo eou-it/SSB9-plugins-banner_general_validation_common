@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2018 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.restfulapi
 
@@ -261,11 +261,25 @@ class RestfulApiValidationUtility {
         }
 
         //guid should match regex
-        if ( !( guid.toUpperCase() ==~ GeneralValidationCommonConstants.GUID_REGEX)) {
+        if (!isValidVersion4UUID(guid)) {
             throw new ApplicationException('RestfulApiValidationUtility', new BusinessLogicValidationException("guid.error.invalid", null))
         }
 
         return true
+    }
+
+    /**
+     * A Version 4 UUID is a universally unique identifier that is generated using random numbers.
+     *
+     * @param guid
+     * @return
+     */
+    static boolean isValidVersion4UUID(String guid) {
+        boolean valid = false
+        if (guid && (guid.toUpperCase() ==~ GeneralValidationCommonConstants.GUID_REGEX)) {
+            valid = true
+        }
+        return valid
     }
 
 }

@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2017-2018 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -13,11 +13,13 @@ class InstitutionalDescriptionServiceIntegrationTests extends BaseIntegrationTes
     InstitutionalDescriptionService institutionalDescriptionService
     IsoCodeService isoCodeService
 
+
     @Before
     public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
         super.setUp()
     }
+
 
     @Test
     void testGetISO4217CurrencyCodeForInstitutionBaseCurrency() {
@@ -26,4 +28,13 @@ class InstitutionalDescriptionServiceIntegrationTests extends BaseIntegrationTes
         assertNotNull isoCurrencyCode
         assertTrue(isoCodeService.isValidISO4217CurrencyCode(isoCurrencyCode))
     }
+
+
+    @Test
+    void testGetDatabaseUtcOffset() {
+        String utcOffset = institutionalDescriptionService.getDatabaseUtcOffset()
+        assertNotNull utcOffset
+        assertNotNull institutionalDescriptionService.getSessionTimeZone()
+    }
+
 }

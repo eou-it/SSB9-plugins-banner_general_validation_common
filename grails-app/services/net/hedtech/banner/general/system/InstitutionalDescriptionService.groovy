@@ -49,7 +49,7 @@ class InstitutionalDescriptionService extends ServiceBase {
     }
 
 
-    String getSessionTimeZone() {
+    String getDatabaseSessionTimeZone() {
         String timeZoneId
         InstitutionalDescription.withSession { session ->
             String sql = "select sessiontimezone from dual"

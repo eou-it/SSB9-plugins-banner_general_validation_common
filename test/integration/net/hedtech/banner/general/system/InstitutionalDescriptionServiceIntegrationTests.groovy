@@ -34,7 +34,8 @@ class InstitutionalDescriptionServiceIntegrationTests extends BaseIntegrationTes
     void testGetDatabaseUtcOffset() {
         String utcOffset = institutionalDescriptionService.getDatabaseUtcOffset()
         assertNotNull utcOffset
-        assertNotNull institutionalDescriptionService.getSessionTimeZone()
+        assertNotNull institutionalDescriptionService.getDatabaseSessionTimeZone()
+        assertEquals TimeZone.getDefault().getID(), institutionalDescriptionService.getDatabaseSessionTimeZone()
     }
 
 }

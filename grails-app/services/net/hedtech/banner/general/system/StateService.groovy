@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2016-2018 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.exceptions.ApplicationException
@@ -25,4 +28,17 @@ class StateService extends ServiceBase {
 
         state
     }
+
+    public def fetchAllByCodeInList(Collection<String> codes) {
+        def states = []
+        if (codes) {
+            states = State.withSession { session ->
+                def query = session.getNamedQuery('State.fetchAllByCodeInList')
+                query.setParameterList('codes', codes)
+                query.list()
+            }
+        }
+        return states
+    }
+
 }

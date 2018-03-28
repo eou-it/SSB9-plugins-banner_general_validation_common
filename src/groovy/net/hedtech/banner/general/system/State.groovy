@@ -28,7 +28,11 @@ import org.hibernate.annotations.Type
 @Table(name = "STVSTAT")
 @NamedQueries(value = [
         @NamedQuery(name = "State.fetchByCode",
-                query = """ FROM State a WHERE a.code = :code """)
+                query = """ FROM State a WHERE a.code = :code """
+        ),
+        @NamedQuery(name = "State.fetchAllByCodeInList",
+                query = """ FROM State a WHERE a.code IN :codes """
+        )
 ])
 
 @ToString(includeNames = true, ignoreNulls = false)

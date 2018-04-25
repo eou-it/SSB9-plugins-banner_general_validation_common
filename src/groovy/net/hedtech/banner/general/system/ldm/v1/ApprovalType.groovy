@@ -8,10 +8,10 @@ package net.hedtech.banner.general.system.ldm.v1
  */
 public enum ApprovalType {
 
-    INSTRUCTOR_AVAILABILITY( 'Instructor Availability' ),
-    INSTRUCTOR_CAPACITY( 'Instructor Capacity' ),
-    ROOM_AVAILABILITY( 'Room Availability' ),
-    ROOM_CAPACITY( 'Room Capacity' )
+    INSTRUCTOR_AVAILABILITY( 'instructorAvailability' ),
+    INSTRUCTOR_CAPACITY( 'instructorCapacity' ),
+    ROOM_AVAILABILITY( 'roomAvailability' ),
+    ROOM_CAPACITY( 'roomCapacity' )
 
 
     ApprovalType( String value ) {

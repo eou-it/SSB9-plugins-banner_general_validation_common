@@ -8,8 +8,8 @@ package net.hedtech.banner.general.system.ldm.v1
  */
 public enum ApprovalEntity {
 
-    User( 'User' ),
-    System( 'System' )
+    User( 'user' ),
+    System( 'system' )
 
 
     ApprovalEntity( String value ) {

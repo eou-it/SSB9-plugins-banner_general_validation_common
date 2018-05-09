@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2018 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -46,7 +46,7 @@ class EmailTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     void testListEmailTypes() {
         def emailTypeList = EmailType.list()
 
-        assertEquals 29, emailTypeList.size()
+        assertTrue 30 <= emailTypeList.size()
     }
 
     @Test
@@ -57,12 +57,12 @@ class EmailTypeServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void testFetchEmailTypeListFifty() {
-        def emailTypeList = emailTypeService.fetchEmailTypeList(50)
+    void testFetchEmailTypeListMany() {
+        def emailTypeList = emailTypeService.fetchEmailTypeList(25)
 
-        assertEquals 28, emailTypeList.size()
+        assertEquals 25, emailTypeList.size()
         assertEquals 'AOL Email', emailTypeList[0].description
-        assertEquals 'Support E-Mail', emailTypeList[27].description
+        assertEquals 'Personal Email', emailTypeList[24].description
     }
 
     @Test
@@ -70,7 +70,7 @@ class EmailTypeServiceIntegrationTests extends BaseIntegrationTestCase {
         def emailTypeList = emailTypeService.fetchEmailTypeList(12, 15)
 
         assertEquals 12, emailTypeList.size()
-        assertEquals 'Legal E-Mail', emailTypeList[0].description
+        assertEquals 'Home E-Mail', emailTypeList[0].description
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2018 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.system
 
@@ -64,7 +64,7 @@ class TelephoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
 
         assertEquals 20, telephoneTypeList.size()
         assertEquals 'AMCAS Phone type', telephoneTypeList[1].description
-        assertEquals 'Home', telephoneTypeList[19].description
+        assertEquals 'Graduation', telephoneTypeList[19].description
     }
 
     @Test
@@ -77,10 +77,10 @@ class TelephoneTypeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchUpdateableTelephoneTypeListEndOfList() {
-        def telephoneTypeList = telephoneTypeService.fetchUpdateableTelephoneTypeList(10, 40)
+        def telephoneTypeList = telephoneTypeService.fetchUpdateableTelephoneTypeList(10, 45)
 
-        assertEquals 8, telephoneTypeList.size()
-        assertEquals 'Temporary', telephoneTypeList[0].description
+        assertTrue 9 >= telephoneTypeList.size()
+        assertEquals 'Term', telephoneTypeList[0].description
     }
 
     @Test

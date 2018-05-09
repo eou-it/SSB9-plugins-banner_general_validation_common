@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2018 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -191,11 +191,11 @@ class NationIntegrationTests extends BaseIntegrationTestCase {
         assertTrue nationList.list.size() > 5
 
         nationList = Nation.fetchBySomeNation("157")
-        assertEquals nationList.list.size(), 1
+        assertEquals 1, nationList.list.size()
         assertEquals "157", nationList.list[0].code
 
         nationList = Nation.fetchBySomeNation("Panama")
-        assertEquals nationList.list.size(), 1
+        assertTrue 1 <= nationList.list.size()
         assertEquals "Panama", nationList.list[0].nation
     }
 

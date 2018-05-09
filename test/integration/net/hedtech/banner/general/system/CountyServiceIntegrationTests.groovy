@@ -1,3 +1,7 @@
+/** *****************************************************************************
+ Copyright 2016-2018 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
+
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.exceptions.ApplicationException
@@ -43,8 +47,8 @@ class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
         def countyList = countyService.fetchCountyList(50)
 
         assertEquals 50, countyList.size()
-        assertEquals 'Ada County', countyList[0].description
-        assertEquals 'Clay County', countyList[49].description
+        assertEquals 'Abbeville, SC', countyList[0].description
+        assertEquals 'Allamakee, IA', countyList[49].description
     }
 
     @Test
@@ -52,7 +56,7 @@ class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
         def countyList = countyService.fetchCountyList(12, 20)
 
         assertEquals 12, countyList.size()
-        assertEquals 'Boulder County', countyList[0].description
+        assertEquals 'Addison, VT', countyList[0].description
     }
 
     @Test
@@ -60,7 +64,7 @@ class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
         def countyList = countyService.fetchCountyList(10, 0, 'Ea')
 
         assertEquals 10, countyList.size()
-        assertEquals 'Cape Girardeau County', countyList[0].description
+        assertEquals 'Aleutians East, AK', countyList[0].description
     }
 
     @Test
@@ -68,7 +72,7 @@ class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
         def countyList = countyService.fetchCountyList(5, 2, 'Ea')
 
         assertEquals 5, countyList.size()
-        assertEquals 'Eau Claire County', countyList[0].description
+        assertEquals 'Bear Lake, ID', countyList[0].description
     }
 
 

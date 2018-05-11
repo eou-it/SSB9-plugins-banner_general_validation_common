@@ -159,7 +159,7 @@ class MaritalStatusServiceIntegrationTests extends BaseIntegrationTestCase {
     private void assertListIsSortedOnField(def list, String field, String sortOrder = "ASC") {
         def prevListItemVal
         list.each {
-            String curListItemVal = it[field]
+            def curListItemVal = it[field]
             if (!prevListItemVal) {
                 prevListItemVal = curListItemVal
             }

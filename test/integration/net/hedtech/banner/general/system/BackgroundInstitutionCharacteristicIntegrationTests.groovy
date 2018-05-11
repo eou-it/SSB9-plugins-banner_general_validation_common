@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat
 
 class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegrationTestCase {
 
+    private static final String validUpdateCharacteristicCode = "Z"
+
     @Before
     public void setUp() {
         formContext = ['GUAGMNU'] // Since we are not testing a controller, we need to explicitly set this
@@ -47,7 +49,7 @@ class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegratio
         assertEquals("TTTTT", backgroundInstitutionCharacteristic.description)
 
         //Update the entity
-        backgroundInstitutionCharacteristic.code = "U"
+        backgroundInstitutionCharacteristic.code = validUpdateCharacteristicCode
         backgroundInstitutionCharacteristic.description = "UUUUU"
         backgroundInstitutionCharacteristic.lastModified = new Date()
         backgroundInstitutionCharacteristic.lastModifiedBy = "test"
@@ -57,7 +59,7 @@ class BackgroundInstitutionCharacteristicIntegrationTests extends BaseIntegratio
 
         backgroundInstitutionCharacteristic = BackgroundInstitutionCharacteristic.get(backgroundInstitutionCharacteristic.id)
         groovy.util.GroovyTestCase.assertEquals new Long(1), backgroundInstitutionCharacteristic?.version
-        assertEquals("U", backgroundInstitutionCharacteristic.code)
+        assertEquals(validUpdateCharacteristicCode, backgroundInstitutionCharacteristic.code)
         assertEquals("UUUUU", backgroundInstitutionCharacteristic.description)
 
     }

@@ -34,7 +34,7 @@ class GeographicRegionRuleServiceIntegrationTests extends BaseIntegrationTestCas
     }
 
     void initializeTestDataForReferences() {
-        insertContent = [region:  GeographicRegion.findByCode('HOUSTON'), division: GeographicDivision.findByCode('FINAID'), regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
+        insertContent = [region:  GeographicRegion.findByCode('BALT/WASH'), division: GeographicDivision.findByCode('ALUM'), regionType: 'i_test', startTypeRange: '12', endTypeRange: '34']
     }
 
     @Test
@@ -80,8 +80,10 @@ class GeographicRegionRuleServiceIntegrationTests extends BaseIntegrationTestCas
 
     @Test
     void testFetchAllByGuidInList(){
-       List guid = GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME)?.guid
-       List data = geographicRegionRuleService.fetchAllByGuidInList(guid)
+        geographicRegionRuleService.createOrUpdate(newGeographicRegionRule(insertContent))
+        List guid = GlobalUniqueIdentifier.fetchByLdmName(GeneralValidationCommonConstants.GEOGRAPHIC_AREA_LDM_NAME)?.guid
+        List data = geographicRegionRuleService.fetchAllByGuidInList(guid)
+
         assertNotNull data
         def rule = data[0].get("geographicRegionRule")
         assertNotNull(rule)

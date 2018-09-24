@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2016-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
@@ -79,7 +79,39 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals getBankDetails.bankOriginatingRoutingNumber, bank.bankOriginatingRoutingNumber
         assertEquals getBankDetails.achFileNumber, bank.achFileNumber
     }
+    @Test
+    void testFetchByBankCodeList() {
+        Bank bank = newValidForCreateBank()
+        bank.save(failOnError: true, flush: true)
+        bank.refresh()
+        assertNotNull bank.id
+        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), i_success_bank,[max:10 , offset:0], 'B' )
+        assertNotNull getBankDetails
 
+    }
+
+    @Test
+    void testFetchByBankCodeListWithEmpteySearch() {
+        Bank bank = newValidForCreateBank()
+        bank.save(failOnError: true, flush: true)
+        bank.refresh()
+        assertNotNull bank.id
+        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), '',[max:10 , offset:0] , 'B')
+        assertNotNull getBankDetails
+
+    }
+    @Test
+    void testFetchByBankCodeListWithInvalidSearch() {
+        Bank getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0], 'B' )
+        assertNull getBankDetails
+    }
+	
+	@Test
+    void testGetBankTittle(){
+        def title = bankService.getBankTitle('TT', new Date())
+        assertNotNull title
+    }
+	
     private Bank newValidForCreateBank() {
         Bank bank = new Bank(
                 bank: i_success_bank,

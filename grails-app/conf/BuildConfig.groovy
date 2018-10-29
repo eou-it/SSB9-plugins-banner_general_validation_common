@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2014-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2014-2018 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 grails.project.class.dir = "target/classes"
@@ -26,7 +26,7 @@ grails.project.dependency.resolution = {
     repositories {
         if (System.properties['PROXY_SERVER_NAME']) {
             mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
-        } 
+        }
         grailsCentral()
         mavenCentral()
         mavenRepo "http://repository.jboss.org/maven2/"
@@ -36,7 +36,7 @@ grails.project.dependency.resolution = {
     plugins {
 
     }
-	
+
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 

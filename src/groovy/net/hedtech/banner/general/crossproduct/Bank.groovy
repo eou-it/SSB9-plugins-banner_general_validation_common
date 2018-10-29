@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2018 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.crossproduct
 
@@ -15,7 +15,20 @@ import javax.persistence.*
             AND a.effectiveDate <= :effectiveDate
             AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
             AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate)
-            AND a.statusIndicator ='A' """)
+            AND a.statusIndicator ='A' """),
+        @NamedQuery(name = "fetchByBankCodeList",
+                query = """FROM Bank a  WHERE  (UPPER(a.bank) LIKE :searchParam OR UPPER(a.bankAccountName) LIKE :searchParam OR UPPER(a.chartOfAccounts) LIKE :searchParam OR UPPER(a.currencyConversion) LIKE :searchParam)
+            AND (UPPER(a.chartOfAccounts) LIKE :caoCode OR  a.chartOfAccounts is null)
+            AND TRUNC(a.effectiveDate) <= TRUNC(:effectiveDate)
+            AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
+            AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate) AND a.statusIndicator ='A' 
+            """),
+        @NamedQuery(name = "getBankTitle",
+                query = """FROM Bank a
+            WHERE a.bank = :bankCode
+            AND a.effectiveDate <= :effectiveDate
+            AND (a.nextChangeDate IS NULL OR a.nextChangeDate > :effectiveDate)
+            AND (a.terminationDate IS NULL OR a.terminationDate > :effectiveDate) """)
 ])
 @Entity
 @Table(name = "GXVBANK")
@@ -345,6 +358,40 @@ class Bank implements Serializable {
             session.getNamedQuery('fetchByBankCode').setString("bankCode", bankCode).setDate("effectiveDate", effectiveDate).list()[0]
         }
 
+        return bank
+    }
+
+
+    /**
+     * Provide Bank object for specified bank code
+     * @param bankCode
+     * @return Bank
+     */
+    static fetchByBankCodeList(def effectiveDate, def searchParam, def pagingParams, def caoCode ) {
+       def codeList= Bank.withSession {session ->
+            session.getNamedQuery( 'fetchByBankCodeList' )
+                    .setString( "searchParam", searchParam )
+                    .setString( "caoCode", caoCode )
+                    .setDate( "effectiveDate", effectiveDate )
+                    .setMaxResults( pagingParams.max )
+                    .setFirstResult( pagingParams.offset )
+                    .setCacheable( true )
+                    .list()
+        }
+        return [list: codeList]
+    }
+
+    /**
+     * Get Bank Title
+     * @param bankCode
+     * @return
+     */
+    def static getBankTitle(String bankCode, Date effectiveDate) {
+        def bank = Bank.withSession { session ->
+            session.getNamedQuery('getBankTitle')
+                    .setString("bankCode", bankCode)
+                    .setDate("effectiveDate", effectiveDate).list()[0]?.bankAccountName
+        }
         return bank
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2018 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
@@ -466,6 +466,28 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
         assertEquals getBankDetails.achOriginatingName, bank.achOriginatingName
         assertEquals getBankDetails.bankOriginatingRoutingNumber, bank.bankOriginatingRoutingNumber
         assertEquals getBankDetails.achFileNumber, bank.achFileNumber
+    }
+
+
+    @Test
+    void testFetchByBankCodeList() {
+        Bank bank = newValidForCreateBank()
+        bank.effectiveDate = new Date() - 10
+        bank.nextChangeDate = new Date() + 10
+        bank.terminationDate = new Date() + 10
+        bank.save(failOnError: true, flush: true)
+        //Test if the generated entity now has an id assigned
+        bank.refresh()
+        assertNotNull bank.id
+
+        def getBankDetails = Bank.fetchByBankCodeList(new Date(), i_success_bank, [max:10 , offset:0], 'B' ).list
+        assertNotNull getBankDetails
+    }
+	
+	@Test
+    void testGetBankTittle(){
+        def title = Bank.getBankTitle('TT', new Date())
+        assertNotNull title
     }
 
     private def newValidForCreateBank() {

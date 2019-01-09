@@ -15,13 +15,13 @@ class StateServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def stateService
 
-    final String NEW_YORK = 'NY'
+    final String STATE_CODE_NY = 'NY'
     final String NEW_YORK_ISO = 'US-NY'
 
-    final String TEXAS = 'TX'
+    final String STATE_CODE_TEXAS = 'TX'
     final String TEXAS_ISO = 'US-TX'
 
-    final String UTAH = 'UT'
+    final String STATE_CODE_UTAH = 'UT'
     final String UTAH_ISO = 'US-UT'
 
 
@@ -104,9 +104,9 @@ class StateServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 'New Jersey', state.description
     }
 
-    @Ignore
+    @Test
     void test_FetchAllByCodeInList(){
-        def stateCodes = [NEW_YORK, TEXAS, UTAH]
+        def stateCodes = [STATE_CODE_NY, STATE_CODE_TEXAS, STATE_CODE_UTAH]
 
         updateStateWithIsoCodeInList(stateCodes)
 
@@ -114,29 +114,57 @@ class StateServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull states
         assertTrue states.size() > 0
 
-        def new_york_state = states.find {state -> state.code == NEW_YORK}
+        def new_york_state = states.find {state -> state.code == STATE_CODE_NY}
         assertNotNull new_york_state
 
-        def texas_state = states.find {state -> state.code == TEXAS}
+        def texas_state = states.find {state -> state.code == STATE_CODE_TEXAS}
         assertNotNull texas_state
 
-        def utah_state = states.find {state -> state.code == UTAH}
+        def utah_state = states.find {state -> state.code == STATE_CODE_UTAH}
         assertNotNull utah_state
+    }
+
+    @Test
+    void test_fetchIsoCodeToStateCodeMap() {
+        def stateCodes = [STATE_CODE_NY, STATE_CODE_TEXAS, STATE_CODE_UTAH]
+
+        updateStateWithIsoCodeInList(stateCodes)
+
+        def states = stateService.fetchAllByCodeInList(stateCodes)
+        assertNotNull states
+        assertTrue states.size() > 0
+
+        Map statesMap = stateService.fetchIsoCodeToStateCodeMap([STATE_CODE_NY, STATE_CODE_TEXAS])
+        assertNotNull statesMap
+        assertTrue statesMap.size() == 2
+
+        State stateNewNY = statesMap.get(STATE_CODE_NY)
+        assertNotNull stateNewNY
+        assertNotNull stateNewNY.id
+        assertNotNull stateNewNY.isoCode
+        assertTrue NEW_YORK_ISO.equalsIgnoreCase(stateNewNY.isoCode)
+
+        State stateNewTX = statesMap.get(STATE_CODE_TEXAS)
+        assertNotNull stateNewTX
+        assertNotNull stateNewTX.id
+        assertNotNull stateNewTX.isoCode
+        assertTrue TEXAS_ISO.equalsIgnoreCase(stateNewTX.isoCode)
+
     }
 
     private updateStateWithIsoCodeInList(Collection<String> stateCodes) {
         Session session = sessionFactory.getCurrentSession()
 
-        if(stateCodes && stateCodes.contains(NEW_YORK)) {
-            session.createSQLQuery( "UPDATE STVSTAT set STVSTAT_SCOD_CODE_ISO = '" + NEW_YORK_ISO + "' WHERE STVSTAT_CODE='" + NEW_YORK + "' ").executeUpdate()
+        if(stateCodes && stateCodes.contains(STATE_CODE_NY)) {
+            session.createSQLQuery( "UPDATE STVSTAT set STVSTAT_SCOD_CODE_ISO = '" + NEW_YORK_ISO + "' WHERE STVSTAT_CODE='" + STATE_CODE_NY + "' ").executeUpdate()
         }
 
-        if(stateCodes && stateCodes.contains(TEXAS)) {
-            session.createSQLQuery( "UPDATE STVSTAT set STVSTAT_SCOD_CODE_ISO = '" + TEXAS_ISO + "' WHERE STVSTAT_CODE='" + TEXAS + "' ").executeUpdate()
+        if(stateCodes && stateCodes.contains(STATE_CODE_TEXAS)) {
+            session.createSQLQuery( "UPDATE STVSTAT set STVSTAT_SCOD_CODE_ISO = '" + TEXAS_ISO + "' WHERE STVSTAT_CODE='" + STATE_CODE_TEXAS + "' ").executeUpdate()
         }
 
-        if(stateCodes && stateCodes.contains(UTAH)) {
-            session.createSQLQuery( "UPDATE STVSTAT set STVSTAT_SCOD_CODE_ISO = '" + UTAH_ISO + "' WHERE STVSTAT_CODE='" + UTAH + "' ").executeUpdate()
+        if(stateCodes && stateCodes.contains(STATE_CODE_UTAH)) {
+            session.createSQLQuery( "UPDATE STVSTAT set STVSTAT_SCOD_CODE_ISO = '" + UTAH_ISO + "' WHERE STVSTAT_CODE='" + STATE_CODE_UTAH + "' ").executeUpdate()
         }
     }
 }

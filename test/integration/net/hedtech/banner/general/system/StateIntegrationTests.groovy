@@ -12,8 +12,8 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 
 class StateIntegrationTests extends BaseIntegrationTestCase {
 
-    def stateService
-
+    final String STATE_ISO_CODE_US_PA = "US-PA"
+    final String STATE_ISO_CODE_US_CA = "US-CA"
 
     @Before
     public void setUp() {
@@ -33,7 +33,10 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
         def state = newState()
         save state
         //Test if the generated entity now has an id assigned
+        assertNotNull state
         assertNotNull state.id
+        assertNotNull state.isoCode
+        assertTrue STATE_ISO_CODE_US_PA.equalsIgnoreCase(state.isoCode)
     }
 
 
@@ -41,7 +44,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
     void testUpdateState() {
         def state = newState()
         save state
-
+        assertNotNull state
         assertNotNull state.id
         assertEquals 0L, state.version
         assertEquals "TTT", state.code
@@ -60,7 +63,10 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
         state.lastModified = testDate
         state.lastModifiedBy = "test"
         state.dataOrigin = "Banner"
+        state.isoCode = STATE_ISO_CODE_US_CA
         save state
+        assertNotNull state
+        assertNotNull state.id
 
         state = State.get(state.id)
         assertEquals 1L, state?.version
@@ -69,6 +75,8 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
         assertEquals "UU", state.ediEquiv
         assertEquals "UUUUU", state.statscan
         assertEquals "UUUUU", state.ipeds
+        assertNotNull state.isoCode
+        assertTrue STATE_ISO_CODE_US_CA.equalsIgnoreCase(state.isoCode)
     }
 
 
@@ -155,6 +163,7 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
                 ediEquiv: "TT",
                 statscan: "TTTTT",
                 ipeds: "TTTTT",
+                isoCode: STATE_ISO_CODE_US_PA,
                 lastModified: new Date(),
                 lastModifiedBy: "test",
                 dataOrigin: "Banner"

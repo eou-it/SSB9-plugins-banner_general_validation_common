@@ -113,7 +113,7 @@ class State implements Serializable {
     static constraints = {
         code(nullable: false, maxSize: 3)
         description(nullable: false, maxSize: 30)
-        isoCode(nullable: true, maxSize: 3)
+        isoCode(nullable: true, maxSize: 8)
         lastModified(nullable: true)
         ediEquiv(nullable: true, maxSize: 2)
         statscan(nullable: true, maxSize: 5)

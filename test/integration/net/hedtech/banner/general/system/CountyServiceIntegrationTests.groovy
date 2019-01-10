@@ -1,12 +1,12 @@
 /** *****************************************************************************
- Copyright 2016-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.service.ServiceBase
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -14,6 +14,14 @@ import org.junit.Test
 class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def countyService
+
+    final String COUNTY_CODE_HARRI = 'HARRI'
+    final String COUNTY_CODE_TARRA = 'TARRA'
+    final String COUNTY_CODE_001 = '001'
+
+    final String ISO_COUNTY_HARRI_GB_CHE = 'GB-CHE'
+    final String ISO_COUNTY_TARRA_GB_DAL = 'GB-DAL'
+    final String ISO_COUNTY_001_GB_ESS = 'GB-ESS'
 
     @Before
     public void setUp() {
@@ -91,5 +99,69 @@ class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
     void testValidCounty(){
         def county = countyService.fetchCounty('118')
         assertEquals 'Layfayette County', county.description
+    }
+
+    @Test
+    void test_fetchAllByCodeInList(){
+        def countyCodes = [COUNTY_CODE_HARRI, COUNTY_CODE_TARRA, COUNTY_CODE_001]
+
+        updateCountyWithIsoCodeInList(countyCodes)
+
+        def counties = countyService.fetchAllByCodeInList(countyCodes)
+        assertNotNull counties
+        assertTrue counties.size() > 0
+
+        def county_harri = counties.find { county -> county.code == COUNTY_CODE_HARRI}
+        assertNotNull county_harri
+
+        def county_tarra = counties.find { county -> county.code == COUNTY_CODE_TARRA}
+        assertNotNull county_tarra
+
+        def county_001 = counties.find { county -> county.code == COUNTY_CODE_001}
+        assertNotNull county_001
+    }
+
+    @Test
+    void test_fetchIsoCodeToCountyCodeMap() {
+        def countyCodes = [COUNTY_CODE_HARRI, COUNTY_CODE_TARRA, COUNTY_CODE_001]
+
+        updateCountyWithIsoCodeInList(countyCodes)
+
+        def counties = countyService.fetchAllByCodeInList(countyCodes)
+        assertNotNull counties
+        assertTrue counties.size() > 0
+
+        Map countiesMap = countyService.fetchIsoCodeToCountyCodeMap([COUNTY_CODE_HARRI, COUNTY_CODE_TARRA])
+        assertNotNull countiesMap
+        assertTrue countiesMap.size() == 2
+
+        County countyNewHarri = countiesMap.get(COUNTY_CODE_HARRI)
+        assertNotNull countyNewHarri
+        assertNotNull countyNewHarri.id
+        assertNotNull countyNewHarri.isoCode
+        assertTrue ISO_COUNTY_HARRI_GB_CHE.equalsIgnoreCase(countyNewHarri.isoCode)
+
+        County countyNewTarra = countiesMap.get(COUNTY_CODE_TARRA)
+        assertNotNull countyNewTarra
+        assertNotNull countyNewTarra.id
+        assertNotNull countyNewTarra.isoCode
+        assertTrue ISO_COUNTY_TARRA_GB_DAL.equalsIgnoreCase(countyNewTarra.isoCode)
+
+    }
+
+    private updateCountyWithIsoCodeInList(Collection<String> countyCodes) {
+        Session session = sessionFactory.getCurrentSession()
+
+        if(countyCodes && countyCodes.contains(COUNTY_CODE_HARRI)) {
+            session.createSQLQuery( "UPDATE STVCNTY set STVCNTY_SCOD_CODE_ISO = '" + ISO_COUNTY_HARRI_GB_CHE + "' WHERE STVCNTY_CODE ='" + COUNTY_CODE_HARRI + "' ").executeUpdate()
+        }
+
+        if(countyCodes && countyCodes.contains(COUNTY_CODE_TARRA)) {
+            session.createSQLQuery( "UPDATE STVCNTY set STVCNTY_SCOD_CODE_ISO = '" + ISO_COUNTY_TARRA_GB_DAL + "' WHERE STVCNTY_CODE ='" + COUNTY_CODE_TARRA + "' ").executeUpdate()
+        }
+
+        if(countyCodes && countyCodes.contains(COUNTY_CODE_001)) {
+            session.createSQLQuery( "UPDATE STVCNTY set STVCNTY_SCOD_CODE_ISO = '" + ISO_COUNTY_001_GB_ESS + "' WHERE STVCNTY_CODE ='" + COUNTY_CODE_001 + "' ").executeUpdate()
+        }
     }
 }

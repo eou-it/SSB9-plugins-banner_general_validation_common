@@ -1,3 +1,6 @@
+/** *****************************************************************************
+ Copyright 2016-2019 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.exceptions.ApplicationException
@@ -24,5 +27,29 @@ class CountyService extends ServiceBase {
         }
 
         county
+    }
+
+
+    public def fetchAllByCodeInList(Collection<String> codes) {
+        def counties = []
+        if (codes) {
+            counties = County.withSession { session ->
+                def query = session.getNamedQuery('County.fetchAllByCodeInList')
+                query.setParameterList('codes', codes)
+                query.list()
+            }
+        }
+        return counties
+    }
+
+
+    public Map fetchIsoCodeToCountyCodeMap(Collection<String> countyCodeList) {
+
+        Map<String, String> countyToIsoMap = [:]
+        List<County> isoCodeList = this.fetchAllByCodeInList(countyCodeList)
+        isoCodeList?.each {
+            countyToIsoMap.put(it.code, it)
+        }
+        return countyToIsoMap
     }
 }

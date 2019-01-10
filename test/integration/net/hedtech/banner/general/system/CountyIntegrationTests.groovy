@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -32,6 +32,9 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
     def u_failure_code = "270"
     def u_failure_description = "Otsego County Description Too Long for Field"
 
+    final String COUNTY_ISO_CODE_GB_BAS = 'GB-BAS'
+    final String COUNTY_ISO_CODE_GB_CAM = 'GB-CAM'
+
 
     @Before
     public void setUp() {
@@ -56,6 +59,17 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
 
 
     @Test
+    void testCreateValidCountyWithIsoCode() {
+        def county = newValidForCreateCounty()
+        county.save(failOnError: true, flush: true)
+        //Test if the generated entity now has an id assigned
+        assertNotNull county.id
+        assertNotNull county.isoCode
+        assertTrue COUNTY_ISO_CODE_GB_BAS.equalsIgnoreCase(county.isoCode)
+    }
+
+
+    @Test
     void testCreateInvalidCounty() {
         def county = newInvalidForCreateCounty()
         shouldFail {
@@ -72,14 +86,19 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
         assertEquals 0L, county.version
         assertEquals i_success_code, county.code
         assertEquals i_success_description, county.description
+        assertNotNull county.isoCode
+        assertTrue COUNTY_ISO_CODE_GB_BAS.equalsIgnoreCase(county.isoCode)
 
         //Update the entity
         county.description = u_success_description
+        county.isoCode = COUNTY_ISO_CODE_GB_CAM
         county.save(failOnError: true, flush: true)
         //Assert for successful update
         county = County.get(county.id)
         assertEquals 1L, county?.version
         assertEquals u_success_description, county.description
+        assertNotNull county.isoCode
+        assertTrue COUNTY_ISO_CODE_GB_CAM.equalsIgnoreCase(county.isoCode)
     }
 
 
@@ -168,6 +187,7 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
         def county = new County(
                 code: i_success_code,
                 description: i_success_description,
+                isoCode: COUNTY_ISO_CODE_GB_BAS,
                 lastModified: new Date(),
                 lastModifiedBy: "test",
                 dataOrigin: "Banner"

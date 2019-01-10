@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 
 package net.hedtech.banner.general.system
@@ -29,7 +29,11 @@ import org.hibernate.annotations.Type
 @Table(name = "STVCNTY")
 @NamedQueries(value = [
         @NamedQuery(name = "County.fetchByCode",
-                query = """ FROM County a WHERE a.code = :code """)
+                query = """ FROM County a WHERE a.code = :code """
+        ),
+        @NamedQuery(name = "County.fetchAllByCodeInList",
+                query = """ FROM County a WHERE a.code IN :codes """
+        )
 ])
 
 @ToString(includeNames = true, ignoreNulls = false)
@@ -94,7 +98,7 @@ class County implements Serializable {
     static constraints = {
         code(nullable: false, maxSize: 5)
         description(nullable: true, maxSize: 30)
-        isoCode(nullable: true, maxSize: 3)
+        isoCode(nullable: true, maxSize: 8)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)

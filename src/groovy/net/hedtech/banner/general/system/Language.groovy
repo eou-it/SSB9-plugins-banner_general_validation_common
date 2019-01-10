@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -10,6 +10,15 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "STVLANG")
+@NamedQueries(value = [
+        @NamedQuery(name = "Language.fetchByCode",
+                query = """ FROM Language a WHERE a.code = :code """
+        ),
+        @NamedQuery(name = "Language.fetchAllByCodeInList",
+                query = """ FROM Language a WHERE a.code IN :codes """
+        )
+])
+
 class Language implements Serializable {
 
     /**
@@ -113,7 +122,7 @@ class Language implements Serializable {
     static constraints = {
         code(nullable: false, maxSize: 3)
         description(nullable: false, maxSize: 30)
-        isoCode(nullable: true, maxSize: 3)
+        isoCode(nullable: true, maxSize: 8)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -13,6 +13,10 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
 import java.text.SimpleDateFormat
 
 class LanguageIntegrationTests extends BaseIntegrationTestCase {
+
+    final String LANG_ISO_CODE_ENG = 'eng'
+    final String LANG_ISO_CODE_kAN = 'kan'
+
 
     @Before
     public void setUp() {
@@ -37,6 +41,19 @@ class LanguageIntegrationTests extends BaseIntegrationTestCase {
 
 
     @Test
+    void testCreateValidLanguageWithISO() {
+        def language = newValidForCreateLanguageWithIsoCode()
+        language.save(failOnError: true, flush: true)
+        //Test if the generated entity now has an id assigned
+        assertNotNull language
+        assertNotNull language.id
+
+        assertNotNull language.isoCode
+        assertTrue LANG_ISO_CODE_ENG.equalsIgnoreCase(language.isoCode)
+    }
+
+
+    @Test
     void testUpdateValidLanguage() {
         def language = newValidForCreateLanguage()
         language.save(failOnError: true, flush: true)
@@ -47,11 +64,17 @@ class LanguageIntegrationTests extends BaseIntegrationTestCase {
 
         //Update the entity
         language.description = "TTTTTTTTTTTTTTTTTTTTTTTTUPDATE"
+        language.isoCode = LANG_ISO_CODE_kAN
         language.save(failOnError: true, flush: true)
         //Assert for sucessful update
         language = Language.get(language.id)
         assertEquals 1L, language?.version
         assertEquals "TTTTTTTTTTTTTTTTTTTTTTTTUPDATE", language.description
+        assertNotNull language
+        assertNotNull language.id
+
+        assertNotNull language.isoCode
+        assertTrue LANG_ISO_CODE_kAN.equalsIgnoreCase(language.isoCode)
     }
 
 
@@ -128,6 +151,16 @@ class LanguageIntegrationTests extends BaseIntegrationTestCase {
         def language = new Language(
                 code: "TTT",
                 description: "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+        )
+        return language
+    }
+
+
+    private def newValidForCreateLanguageWithIsoCode() {
+        def language = new Language(
+                code: "TTT",
+                description: "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+                isoCode: LANG_ISO_CODE_ENG
         )
         return language
     }

@@ -125,6 +125,33 @@ class StateServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
+    void test_FetchAllByIsoCodeInList(){
+        def stateCodes = [STATE_CODE_NY, STATE_CODE_TEXAS, STATE_CODE_UTAH]
+
+        updateStateWithIsoCodeInList(stateCodes)
+
+        def stateIsoCodes = [NEW_YORK_ISO, TEXAS_ISO, UTAH_ISO]
+        def states = stateService.fetchAllByIsoCodeInList(stateIsoCodes)
+        assertNotNull states
+        assertTrue states.size() > 0
+
+        def new_york_state = states.find {state -> state.code == STATE_CODE_NY}
+        assertNotNull new_york_state
+        assertNotNull new_york_state.isoCode
+        assertTrue new_york_state.isoCode.equalsIgnoreCase(NEW_YORK_ISO)
+
+        def texas_state = states.find {state -> state.code == STATE_CODE_TEXAS}
+        assertNotNull texas_state
+        assertNotNull texas_state.isoCode
+        assertTrue texas_state.isoCode.equalsIgnoreCase(TEXAS_ISO)
+
+        def utah_state = states.find {state -> state.code == STATE_CODE_UTAH}
+        assertNotNull utah_state
+        assertNotNull utah_state.isoCode
+        assertTrue utah_state.isoCode.equalsIgnoreCase(UTAH_ISO)
+    }
+
+    @Test
     void test_fetchIsoCodeToStateCodeMap() {
         def stateCodes = [STATE_CODE_NY, STATE_CODE_TEXAS, STATE_CODE_UTAH]
 

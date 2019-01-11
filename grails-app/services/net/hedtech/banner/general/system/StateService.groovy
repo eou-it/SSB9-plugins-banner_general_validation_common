@@ -51,4 +51,15 @@ class StateService extends ServiceBase {
         }
         return stateToIsoMap
     }
+
+
+    public def fetchAllByIsoCodeInList(Collection<String> isoCodes) {
+        Collection<State> entities
+        if (isoCodes) {
+            entities = State.withSession { session ->
+                session.getNamedQuery('State.fetchAllByIsoCodeInList').setParameterList('isoCodes', isoCodes).list()
+            }
+        }
+        return entities
+    }
 }

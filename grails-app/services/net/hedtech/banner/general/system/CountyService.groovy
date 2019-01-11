@@ -52,4 +52,16 @@ class CountyService extends ServiceBase {
         }
         return countyToIsoMap
     }
+
+
+    public def fetchAllByIsoCodeInList(Collection<String> isoCodes) {
+        Collection<County> entities
+        if (isoCodes) {
+            entities = County.withSession { session ->
+                session.getNamedQuery('County.fetchAllByIsoCodeInList').setParameterList('isoCodes', isoCodes).list()
+            }
+        }
+        return entities
+    }
+
 }

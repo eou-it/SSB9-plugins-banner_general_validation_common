@@ -122,6 +122,33 @@ class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
+    void test_fetchAllByIsoCodeInList(){
+        def countyCodes = [COUNTY_CODE_HARRI, COUNTY_CODE_TARRA, COUNTY_CODE_001]
+
+        updateCountyWithIsoCodeInList(countyCodes)
+
+        def countyIsoCodes = [ISO_COUNTY_HARRI_GB_CHE, ISO_COUNTY_TARRA_GB_DAL, ISO_COUNTY_001_GB_ESS]
+        def counties = countyService.fetchAllByIsoCodeInList(countyIsoCodes)
+        assertNotNull counties
+        assertTrue counties.size() > 0
+
+        def county_harri = counties.find { county -> county.code == COUNTY_CODE_HARRI}
+        assertNotNull county_harri
+        assertNotNull county_harri.isoCode
+        assertTrue county_harri.isoCode.equalsIgnoreCase(ISO_COUNTY_HARRI_GB_CHE)
+
+        def county_tarra = counties.find { county -> county.code == COUNTY_CODE_TARRA}
+        assertNotNull county_tarra
+        assertNotNull county_tarra.isoCode
+        assertTrue county_tarra.isoCode.equalsIgnoreCase(ISO_COUNTY_TARRA_GB_DAL)
+
+        def county_001 = counties.find { county -> county.code == COUNTY_CODE_001}
+        assertNotNull county_001
+        assertNotNull county_001.isoCode
+        assertTrue county_001.isoCode.equalsIgnoreCase(ISO_COUNTY_001_GB_ESS)
+    }
+
+    @Test
     void test_fetchIsoCodeToCountyCodeMap() {
         def countyCodes = [COUNTY_CODE_HARRI, COUNTY_CODE_TARRA, COUNTY_CODE_001]
 

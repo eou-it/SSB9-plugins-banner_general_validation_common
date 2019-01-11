@@ -33,6 +33,9 @@ import org.hibernate.annotations.Type
         ),
         @NamedQuery(name = "County.fetchAllByCodeInList",
                 query = """ FROM County a WHERE a.code IN :codes """
+        ),
+        @NamedQuery(name = "County.fetchAllByIsoCodeInList",
+                query = """ FROM County a WHERE a.isoCode IN :isoCodes """
         )
 ])
 

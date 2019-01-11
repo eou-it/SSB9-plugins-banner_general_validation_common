@@ -130,6 +130,33 @@ class LanguageServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
+    void test_fetchAllByIsoCodeInList(){
+        def languageCodes = [LANG_CODE_ENG, LANG_CODE_RUS, LANG_CODE_ARA]
+        updateLanguageWithIsoCodeInList(languageCodes)
+
+        def languageIsoCodes = [LANG_ISO_CODE_ENG, LANG_ISO_CODE_RUS, LANG_ISO_CODE_AAR]
+
+        def languages = languageService.fetchAllByIsoCodeInList(languageIsoCodes)
+        assertNotNull languages
+        assertTrue languages.size() > 0
+
+        def language_eng = languages.find { language -> language.code == LANG_CODE_ENG}
+        assertNotNull language_eng
+        assertNotNull language_eng.isoCode
+        assertTrue language_eng.isoCode.equalsIgnoreCase(LANG_ISO_CODE_ENG)
+
+        def language_rus = languages.find { language -> language.code == LANG_CODE_RUS}
+        assertNotNull language_rus
+        assertNotNull language_rus.isoCode
+        assertTrue language_rus.isoCode.equalsIgnoreCase(LANG_ISO_CODE_RUS)
+
+        def language_ara = languages.find { language -> language.code == LANG_CODE_ARA}
+        assertNotNull language_ara
+        assertNotNull language_ara.isoCode
+        assertTrue language_ara.isoCode.equalsIgnoreCase(LANG_ISO_CODE_AAR)
+    }
+
+    @Test
     void test_fetchIsoCodeToLanguageCodeMap() {
         def languageCodes = [LANG_CODE_ENG, LANG_CODE_RUS, LANG_CODE_ARA]
 

@@ -170,17 +170,13 @@ class LanguageServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull  languagesMap
         assertTrue  languagesMap.size() == 2
 
-        Language langNewEng = languagesMap.get(LANG_CODE_ENG)
+        String langNewEng = languagesMap.get(LANG_CODE_ENG)
         assertNotNull langNewEng
-        assertNotNull langNewEng.id
-        assertNotNull langNewEng.isoCode
-        assertTrue LANG_ISO_CODE_ENG.equalsIgnoreCase(langNewEng.isoCode)
+        assertTrue LANG_ISO_CODE_ENG.equalsIgnoreCase(langNewEng)
 
-        Language langNewRus = languagesMap.get(LANG_CODE_RUS)
+        String langNewRus = languagesMap.get(LANG_CODE_RUS)
         assertNotNull langNewRus
-        assertNotNull langNewRus.id
-        assertNotNull langNewRus.isoCode
-        assertTrue LANG_ISO_CODE_RUS.equalsIgnoreCase(langNewRus.isoCode)
+        assertTrue LANG_ISO_CODE_RUS.equalsIgnoreCase(langNewRus)
 
     }
 

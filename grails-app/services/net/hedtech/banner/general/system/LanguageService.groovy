@@ -40,13 +40,13 @@ class LanguageService extends ServiceBase {
         Map<String, String> languageToIsoMap = [:]
         List<State> isoCodeList = this.fetchAllByCodeInList(languageCodeList)
         isoCodeList?.each {
-            languageToIsoMap.put(it.code, it)
+            languageToIsoMap.put(it.code, it.isoCode.toLowerCase())
         }
         return languageToIsoMap
     }
 
 
-    public def fetchAllByIsoCodeInList(Collection<String> isoCodes) {
+    public Collection<Language> fetchAllByIsoCodeInList(Collection<String> isoCodes) {
         Collection<Language> entities
         if (isoCodes) {
             entities = Language.withSession { session ->

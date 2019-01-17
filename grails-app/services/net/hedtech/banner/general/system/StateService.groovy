@@ -53,7 +53,7 @@ class StateService extends ServiceBase {
     }
 
 
-    public def fetchAllByIsoCodeInList(Collection<String> isoCodes) {
+    public Collection<State> fetchAllByIsoCodeInList(Collection<String> isoCodes) {
         Collection<State> entities
         if (isoCodes) {
             entities = State.withSession { session ->

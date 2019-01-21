@@ -1,10 +1,12 @@
+/** *****************************************************************************
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
 package net.hedtech.banner.general.system
-import org.junit.Before
-import org.junit.Test
-import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 class CampusServiceTests extends BaseIntegrationTestCase {
 
@@ -26,7 +28,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testCreateCampus() {
-        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
+        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin: "banner", lastModifiedBy: "banner")
         campus = campusService.create([domainModel: campus])
         assertNotNull campus
     }
@@ -34,7 +36,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testUpdateCampus() {
-        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
+        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin: "banner", lastModifiedBy: "banner")
         campus = campusService.create([domainModel: campus])
 
         Campus campusUpdate = Campus.findWhere(code: "TT")
@@ -48,7 +50,7 @@ class CampusServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testDeleteCampus() {
-        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin:"banner", lastModifiedBy:"banner")
+        def campus = new Campus(code: "TT", description: "TT", lastModified: new Date(), dataOrigin: "banner", lastModifiedBy: "banner")
         campus = campusService.create([domainModel: campus])
         assertNotNull campus
         def id = campus.id
@@ -63,4 +65,14 @@ class CampusServiceTests extends BaseIntegrationTestCase {
         def campus = campusService.list()
         assertTrue campus.size() > 0
     }
+
+
+    @Test
+    void testGetCodeToTimeZoneIDMap() {
+        def list = campusService.list()
+        def map = campusService.getCodeToTimeZoneIDMap()
+        assertEquals list.size(), map.size()
+        assertTrue map.keySet().containsAll(list.collect { it.code })
+    }
+
 }

@@ -1,16 +1,30 @@
 /** *****************************************************************************
- Copyright 2009-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
-
 package net.hedtech.banner.general.system
 
-import org.hibernate.annotations.Type
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.JoinColumns
+import javax.persistence.ManyToOne
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
+import javax.persistence.SequenceGenerator
+import javax.persistence.Table
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
+import javax.persistence.Version
 
 @NamedQueries(value = [
         @NamedQuery(name = "Campus.fetchCampusCodeNotInList",
                 query = """Select code FROM Campus a
-        WHERE a.code not in (:campCodeList)""")
+        WHERE a.code not in (:campCodeList)"""),
+        @NamedQuery(name = "Campus.fetchAllCodeTimeZoneID",
+                query = """select code, timeZoneID from Campus a""")
 ])
 /**
  * Campus Validation Table
@@ -52,7 +66,7 @@ class Campus implements Serializable {
      */
     @ManyToOne
     @JoinColumns([
-    @JoinColumn(name = "STVCAMP_DICD_CODE", referencedColumnName = "GTVDICD_CODE")
+            @JoinColumn(name = "STVCAMP_DICD_CODE", referencedColumnName = "GTVDICD_CODE")
     ])
     GeographicRegionAsCostCenterInformationByDisctirctOrDivision districtIdentifierCode
 
@@ -78,8 +92,16 @@ class Campus implements Serializable {
     /**
      * UTC Offset for campus
      */
-    @Column(name = "STVCAMP_UTC_OFFSET", length=6)
+    @Column(name = "STVCAMP_UTC_OFFSET", length = 6)
     String utcOffset
+
+    /**
+     * TIMEZONE NAME: This field identifies the time zone in which campus resides.
+     * @see java.util.TimeZone#getTimeZone(String)
+     */
+    @Column(name = "STVCAMP_TIMEZONE_NAME")
+    String timeZoneID
+
 
     public String toString() {
         "Campus[id=$id, code=$code, description=$description, " +
@@ -88,7 +110,8 @@ class Campus implements Serializable {
                 "lastModifiedBy=$lastModifiedBy, " +
                 "version=$version, " +
                 "dataOrigin=$dataOrigin, " +
-                "utcOffset=$utcOffset]"
+                "utcOffset=$utcOffset, " +
+                "timeZoneID=$timeZoneID ]"
     }
 
     static constraints = {
@@ -96,6 +119,7 @@ class Campus implements Serializable {
         description(nullable: true, maxSize: 30)
         districtIdentifierCode(nullable: true)
         utcOffset(nullable: true)
+        timeZoneID(nullable: true)
     }
 
 
@@ -115,6 +139,7 @@ class Campus implements Serializable {
         if (lastModifiedBy != campus.lastModifiedBy) return false
         if (version != campus.version) return false
         if (utcOffset != campus.utcOffset) return false
+        if (timeZoneID != campus.timeZoneID) return false
 
         return true
     }
@@ -132,16 +157,18 @@ class Campus implements Serializable {
         result = 31 * result + (version != null ? version.hashCode() : 0)
         result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
         result = 31 * result + (utcOffset != null ? utcOffset.hashCode() : 0)
+        result = 31 * result + (timeZoneID != null ? timeZoneID.hashCode() : 0)
         return result
     }
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
+
     public static List fetchCampusCodesNotInList(List campCodes) {
 
         def result = Campus.withSession { session ->
-            session.getNamedQuery('Campus.fetchCampusCodeNotInList').setParameterList("campCodeList",campCodes).list()
+            session.getNamedQuery('Campus.fetchCampusCodeNotInList').setParameterList("campCodeList", campCodes).list()
         }
         return result
     }

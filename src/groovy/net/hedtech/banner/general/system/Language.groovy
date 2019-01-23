@@ -17,8 +17,8 @@ import javax.persistence.*
         @NamedQuery(name = "Language.fetchAllByCodeInList",
                 query = """ FROM Language a WHERE a.code IN :codes """
         ),
-        @NamedQuery(name = "Language.fetchAllByIsoCodeInList",
-                query = """ FROM Language a WHERE a.isoCode IN :isoCodes """
+        @NamedQuery(name = "Language.fetchAllByIsoCode",
+                query = """ FROM Language a WHERE a.isoCode = :isoCode """
         )
 ])
 

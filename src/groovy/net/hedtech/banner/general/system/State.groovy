@@ -18,7 +18,6 @@ import javax.persistence.GenerationType
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.SequenceGenerator
-import org.hibernate.annotations.Type
 
 /**
  * State Code Validation Table
@@ -33,8 +32,8 @@ import org.hibernate.annotations.Type
         @NamedQuery(name = "State.fetchAllByCodeInList",
                 query = """ FROM State a WHERE a.code IN :codes """
         ),
-        @NamedQuery(name = "State.fetchAllByIsoCodeInList",
-                query = """ FROM State a WHERE a.isoCode IN :isoCodes """
+        @NamedQuery(name = "State.fetchAllByIsoCode",
+                query = """ FROM State a WHERE a.isoCode = :isoCode """
         )
 ])
 

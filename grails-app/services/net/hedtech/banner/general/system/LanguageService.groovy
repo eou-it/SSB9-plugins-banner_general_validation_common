@@ -46,11 +46,11 @@ class LanguageService extends ServiceBase {
     }
 
 
-    public Collection<Language> fetchAllByIsoCodeInList(Collection<String> isoCodes) {
-        Collection<Language> entities
-        if (isoCodes) {
+    def fetchAllByIsoCode(String isoCode) {
+        Collection<Language> entities = []
+        if (isoCode) {
             entities = Language.withSession { session ->
-                session.getNamedQuery('Language.fetchAllByIsoCodeInList').setParameterList('isoCodes', isoCodes).list()
+                session.getNamedQuery('Language.fetchAllByIsoCode').setParameterList('isoCode', isoCode).list()
             }
         }
         return entities

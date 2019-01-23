@@ -42,7 +42,7 @@ class StateService extends ServiceBase {
     }
 
 
-    public Map fetchIsoCodeToStateCodeMap(Collection<String> stateCodeList) {
+    def fetchIsoCodeToStateCodeMap(Collection<String> stateCodeList) {
 
         Map<String, String> stateToIsoMap = [:]
         List<State> isoCodeList = this.fetchAllByCodeInList(stateCodeList)
@@ -53,11 +53,11 @@ class StateService extends ServiceBase {
     }
 
 
-    public Collection<State> fetchAllByIsoCodeInList(Collection<String> isoCodes) {
-        Collection<State> entities
-        if (isoCodes) {
+    def fetchAllByIsoCode(String isoCode) {
+        Collection<State> entities = []
+        if (isoCode) {
             entities = State.withSession { session ->
-                session.getNamedQuery('State.fetchAllByIsoCodeInList').setParameterList('isoCodes', isoCodes).list()
+                session.getNamedQuery('State.fetchAllByIsoCode').setString('isoCode', isoCode).list()
             }
         }
         return entities

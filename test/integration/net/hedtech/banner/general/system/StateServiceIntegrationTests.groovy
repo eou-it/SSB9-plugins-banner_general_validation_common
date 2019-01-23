@@ -8,7 +8,6 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 
 class StateServiceIntegrationTests extends BaseIntegrationTestCase {
@@ -125,13 +124,12 @@ class StateServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void test_FetchAllByIsoCodeInList(){
+    void test_FetchAllByIsoCode(){
         def stateCodes = [STATE_CODE_NY, STATE_CODE_TEXAS, STATE_CODE_UTAH]
 
         updateStateWithIsoCodeInList(stateCodes)
 
-        def stateIsoCodes = [NEW_YORK_ISO, TEXAS_ISO, UTAH_ISO]
-        def states = stateService.fetchAllByIsoCodeInList(stateIsoCodes)
+        def states = stateService.fetchAllByIsoCode(NEW_YORK_ISO)
         assertNotNull states
         assertTrue states.size() > 0
 
@@ -139,16 +137,6 @@ class StateServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull new_york_state
         assertNotNull new_york_state.isoCode
         assertTrue new_york_state.isoCode.equalsIgnoreCase(NEW_YORK_ISO)
-
-        def texas_state = states.find {state -> state.code == STATE_CODE_TEXAS}
-        assertNotNull texas_state
-        assertNotNull texas_state.isoCode
-        assertTrue texas_state.isoCode.equalsIgnoreCase(TEXAS_ISO)
-
-        def utah_state = states.find {state -> state.code == STATE_CODE_UTAH}
-        assertNotNull utah_state
-        assertNotNull utah_state.isoCode
-        assertTrue utah_state.isoCode.equalsIgnoreCase(UTAH_ISO)
     }
 
     @Test

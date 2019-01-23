@@ -43,7 +43,7 @@ class CountyService extends ServiceBase {
     }
 
 
-    public Map fetchIsoCodeToCountyCodeMap(Collection<String> countyCodeList) {
+    def fetchIsoCodeToCountyCodeMap(Collection<String> countyCodeList) {
 
         Map<String, String> countyToIsoMap = [:]
         List<County> isoCodeList = this.fetchAllByCodeInList(countyCodeList)
@@ -54,11 +54,11 @@ class CountyService extends ServiceBase {
     }
 
 
-    public def fetchAllByIsoCodeInList(Collection<String> isoCodes) {
-        Collection<County> entities
-        if (isoCodes) {
+    def fetchAllByIsoCode(String isoCode) {
+        Collection<County> entities = []
+        if (isoCode) {
             entities = County.withSession { session ->
-                session.getNamedQuery('County.fetchAllByIsoCodeInList').setParameterList('isoCodes', isoCodes).list()
+                session.getNamedQuery('County.fetchAllByIsoCode').setString('isoCode', isoCode).list()
             }
         }
         return entities

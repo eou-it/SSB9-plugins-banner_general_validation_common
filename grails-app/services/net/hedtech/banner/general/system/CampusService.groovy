@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -14,9 +14,22 @@ class CampusService extends ServiceBase {
      * @param campusCode
      * @return Campus - Entity
      */
-    Campus fetchByCode(campusCode){
+    Campus fetchByCode(campusCode) {
         Campus.findByCode(campusCode)
 
+    }
+
+
+    def getCodeToTimeZoneIDMap() {
+        return fetchAllCodeTimeZoneID().collectEntries { [it[0], it[1]] }
+    }
+
+
+    private def fetchAllCodeTimeZoneID() {
+        def entities = Campus.withSession { session ->
+            session.getNamedQuery('Campus.fetchAllCodeTimeZoneID').list()
+        }
+        return entities
     }
 
 }

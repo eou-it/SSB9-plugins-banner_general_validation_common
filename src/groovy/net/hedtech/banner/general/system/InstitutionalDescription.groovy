@@ -1,10 +1,22 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import org.hibernate.annotations.Type
-import javax.persistence.*
+
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.NamedQueries
+import javax.persistence.NamedQuery
+import javax.persistence.SequenceGenerator
+import javax.persistence.Table
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
+import javax.persistence.Version
 
 /**
  * Institutional Description Table
@@ -12,8 +24,8 @@ import javax.persistence.*
 @Entity
 @Table(name = "GUBINST")
 @NamedQueries(value = [
-@NamedQuery(name = "InstitutionalDescription.findForKey",
-query = """FROM  InstitutionalDescription a
+        @NamedQuery(name = "InstitutionalDescription.findForKey",
+                query = """FROM  InstitutionalDescription a
 		   WHERE a.key = 'INST'
 	""")
 ])
@@ -347,12 +359,19 @@ class InstitutionalDescription implements Serializable {
     /**
      * UTC Offset
      */
-    @Column(name = "GUBINST_UTC_OFFSET", length=6)
+    @Column(name = "GUBINST_UTC_OFFSET", length = 6)
     String utcOffset
+
+    /**
+     * TIMEZONE NAME: This field identifies the time zone in which institution resides.
+     * @see java.util.TimeZone#getTimeZone(String)
+     */
+    @Column(name = "GUBINST_TIMEZONE_NAME")
+    String timeZoneID
 
 
     public static InstitutionalDescription fetchByKey() {
-        return InstitutionalDescription.withSession {session ->
+        return InstitutionalDescription.withSession { session ->
             session.getNamedQuery('InstitutionalDescription.findForKey').list()[0]
         }
     }
@@ -411,7 +430,8 @@ class InstitutionalDescription implements Serializable {
                 "version=$version, " +
                 "lastModifiedBy=$lastModifiedBy, " +
                 "dataOrigin=$dataOrigin," +
-                "UTC Offset=$utcOffset ]"
+                "UTC Offset=$utcOffset, " +
+                "timeZoneID=$timeZoneID ]"
     }
 
 
@@ -464,6 +484,7 @@ class InstitutionalDescription implements Serializable {
         ssnMaximumLength(nullable: true)
         dataOrigin(nullable: true, maxSize: 30)
         utcOffset(nullable: true, maxSize: 6)
+        timeZoneID(nullable: true)
     }
 
 
@@ -526,6 +547,7 @@ class InstitutionalDescription implements Serializable {
         if (zip != that.zip) return false;
         if (zipDefaultLength != that.zipDefaultLength) return false;
         if (utcOffset != that.utcOffset) return false;
+        if (timeZoneID != that.timeZoneID) return false;
 
         return true;
     }
@@ -587,6 +609,7 @@ class InstitutionalDescription implements Serializable {
         result = 31 * result + (zip != null ? zip.hashCode() : 0)
         result = 31 * result + (zipDefaultLength != null ? zipDefaultLength.hashCode() : 0)
         result = 31 * result + (utcOffset != null ? utcOffset.hashCode() : 0)
+        result = 31 * result + (timeZoneID != null ? timeZoneID.hashCode() : 0)
         return result
     }
 

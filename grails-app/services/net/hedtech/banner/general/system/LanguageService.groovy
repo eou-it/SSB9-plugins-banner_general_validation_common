@@ -50,7 +50,7 @@ class LanguageService extends ServiceBase {
         Collection<Language> entities = []
         if (isoCode) {
             entities = Language.withSession { session ->
-                session.getNamedQuery('Language.fetchAllByIsoCode').setParameterList('isoCode', isoCode).list()
+                session.getNamedQuery('Language.fetchAllByIsoCode').setString('isoCode', isoCode).list()
             }
         }
         return entities

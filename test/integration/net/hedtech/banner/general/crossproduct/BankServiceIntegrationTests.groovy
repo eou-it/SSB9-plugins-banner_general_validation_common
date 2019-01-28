@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2016-2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
@@ -79,6 +79,7 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
         assertEquals getBankDetails.bankOriginatingRoutingNumber, bank.bankOriginatingRoutingNumber
         assertEquals getBankDetails.achFileNumber, bank.achFileNumber
     }
+
     @Test
     void testFetchByBankCodeList() {
         Bank bank = newValidForCreateBank()
@@ -100,15 +101,21 @@ class BankServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull getBankDetails
 
     }
+
     @Test
     void testFetchByBankCodeListWithInvalidSearch() {
-        Bank getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0], 'B' )
-        assertNull getBankDetails
+        def getBankDetails = bankService.findBankListByEffectiveDateAndBankCode(new Date(), 'XYZX',[max:10 , offset:0], i_success_chartOfAccounts )
+        assertTrue getBankDetails.isEmpty()
     }
 	
 	@Test
-    void testGetBankTittle(){
-        def title = bankService.getBankTitle('TT', new Date())
+    void testGetBankTitle(){
+        Bank bank = newValidForCreateBank()
+        bank.effectiveDate = new Date() - 10
+        bank.save(failOnError: true, flush: true)
+
+        //TODO Ensure effective date is working as expected
+        def title = bankService.getBankTitle(i_success_bank, new Date())
         assertNotNull title
     }
 	

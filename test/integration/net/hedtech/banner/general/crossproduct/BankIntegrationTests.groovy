@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2013-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2013-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
@@ -485,8 +485,13 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
     }
 	
 	@Test
-    void testGetBankTittle(){
-        def title = Bank.getBankTitle('TT', new Date())
+    void testGetBankTitle(){
+        Bank bank = newValidForCreateBank()
+        bank.effectiveDate = new Date() - 10
+        bank.save(failOnError: true, flush: true)
+
+        //TODO Ensure effective date is working as expected
+        def title = Bank.getBankTitle(i_success_bank, new Date())
         assertNotNull title
     }
 

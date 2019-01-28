@@ -147,21 +147,17 @@ class CountyServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull counties
         assertTrue counties.size() > 0
 
-        Map countiesMap = countyService.fetchIsoCodeToCountyCodeMap([COUNTY_CODE_HARRI, COUNTY_CODE_TARRA])
+        Map countiesMap = countyService.getCodeToIsoCodeMap([COUNTY_CODE_HARRI, COUNTY_CODE_TARRA])
         assertNotNull countiesMap
         assertTrue countiesMap.size() == 2
 
-        County countyNewHarri = countiesMap.get(COUNTY_CODE_HARRI)
+        String countyNewHarri = countiesMap.get(COUNTY_CODE_HARRI)
         assertNotNull countyNewHarri
-        assertNotNull countyNewHarri.id
-        assertNotNull countyNewHarri.isoCode
-        assertTrue ISO_COUNTY_HARRI_GB_CHE.equalsIgnoreCase(countyNewHarri.isoCode)
+        assertTrue ISO_COUNTY_HARRI_GB_CHE.equalsIgnoreCase(countyNewHarri)
 
-        County countyNewTarra = countiesMap.get(COUNTY_CODE_TARRA)
+        String countyNewTarra = countiesMap.get(COUNTY_CODE_TARRA)
         assertNotNull countyNewTarra
-        assertNotNull countyNewTarra.id
-        assertNotNull countyNewTarra.isoCode
-        assertTrue ISO_COUNTY_TARRA_GB_DAL.equalsIgnoreCase(countyNewTarra.isoCode)
+        assertTrue ISO_COUNTY_TARRA_GB_DAL.equalsIgnoreCase(countyNewTarra)
 
     }
 

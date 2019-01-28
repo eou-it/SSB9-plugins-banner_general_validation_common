@@ -42,12 +42,12 @@ class StateService extends ServiceBase {
     }
 
 
-    def fetchIsoCodeToStateCodeMap(Collection<String> stateCodeList) {
+    def getCodeToIsoCodeMap(Collection<String> stateCodeList) {
 
         Map<String, String> stateToIsoMap = [:]
         List<State> isoCodeList = this.fetchAllByCodeInList(stateCodeList)
         isoCodeList?.each {
-            stateToIsoMap.put(it.code, it)
+            stateToIsoMap.put(it.code, it.isoCode)
         }
         return stateToIsoMap
     }

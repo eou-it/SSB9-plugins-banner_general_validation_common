@@ -35,12 +35,12 @@ class LanguageService extends ServiceBase {
     }
 
 
-    public Map fetchIsoCodeToLanguageCodeMap(Collection<String> languageCodeList) {
+    def getCodeToIsoCodeMap(Collection<String> languageCodeList) {
 
         Map<String, String> languageToIsoMap = [:]
         List<State> isoCodeList = this.fetchAllByCodeInList(languageCodeList)
         isoCodeList?.each {
-            languageToIsoMap.put(it.code, it.isoCode?.toLowerCase())
+            languageToIsoMap.put(it.code, it.isoCode)
         }
         return languageToIsoMap
     }

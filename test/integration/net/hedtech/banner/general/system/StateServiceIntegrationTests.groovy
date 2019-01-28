@@ -140,7 +140,7 @@ class StateServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     @Test
-    void test_fetchIsoCodeToStateCodeMap() {
+    void test_getCodeToIsoCodeMap() {
         def stateCodes = [STATE_CODE_NY, STATE_CODE_TEXAS, STATE_CODE_UTAH]
 
         updateStateWithIsoCodeInList(stateCodes)
@@ -149,21 +149,17 @@ class StateServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull states
         assertTrue states.size() > 0
 
-        Map statesMap = stateService.fetchIsoCodeToStateCodeMap([STATE_CODE_NY, STATE_CODE_TEXAS])
+        Map statesMap = stateService.getCodeToIsoCodeMap([STATE_CODE_NY, STATE_CODE_TEXAS])
         assertNotNull statesMap
         assertTrue statesMap.size() == 2
 
-        State stateNewNY = statesMap.get(STATE_CODE_NY)
+        String stateNewNY = statesMap.get(STATE_CODE_NY)
         assertNotNull stateNewNY
-        assertNotNull stateNewNY.id
-        assertNotNull stateNewNY.isoCode
-        assertTrue NEW_YORK_ISO.equalsIgnoreCase(stateNewNY.isoCode)
+        assertTrue NEW_YORK_ISO.equalsIgnoreCase(stateNewNY)
 
-        State stateNewTX = statesMap.get(STATE_CODE_TEXAS)
+        String stateNewTX = statesMap.get(STATE_CODE_TEXAS)
         assertNotNull stateNewTX
-        assertNotNull stateNewTX.id
-        assertNotNull stateNewTX.isoCode
-        assertTrue TEXAS_ISO.equalsIgnoreCase(stateNewTX.isoCode)
+        assertTrue TEXAS_ISO.equalsIgnoreCase(stateNewTX)
 
     }
 

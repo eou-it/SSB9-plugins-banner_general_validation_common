@@ -43,12 +43,12 @@ class CountyService extends ServiceBase {
     }
 
 
-    def fetchIsoCodeToCountyCodeMap(Collection<String> countyCodeList) {
+    def getCodeToIsoCodeMap(Collection<String> countyCodeList) {
 
         Map<String, String> countyToIsoMap = [:]
         List<County> isoCodeList = this.fetchAllByCodeInList(countyCodeList)
         isoCodeList?.each {
-            countyToIsoMap.put(it.code, it)
+            countyToIsoMap.put(it.code, it.isoCode)
         }
         return countyToIsoMap
     }

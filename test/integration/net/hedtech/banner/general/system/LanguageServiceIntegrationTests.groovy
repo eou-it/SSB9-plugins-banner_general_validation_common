@@ -155,7 +155,7 @@ class LanguageServiceIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull languages
         assertTrue languages.size() > 0
 
-        Map languagesMap = languageService.fetchIsoCodeToLanguageCodeMap([LANG_CODE_ENG, LANG_CODE_RUS])
+        Map languagesMap = languageService.getCodeToIsoCodeMap([LANG_CODE_ENG, LANG_CODE_RUS])
         assertNotNull  languagesMap
         assertTrue  languagesMap.size() == 2
 

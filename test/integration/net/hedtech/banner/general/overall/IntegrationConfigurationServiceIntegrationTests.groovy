@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2017-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.overall
 
@@ -62,10 +62,10 @@ class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTes
                 integrationConfigurationService.isInstitutionUsingISO2CountryCodes()
             }
         } else {
-            intConfig.value = 'In-valid'
-            boolean result
-            shouldFail(ApplicationException) {
-                result = integrationConfigurationService.isInstitutionUsingISO2CountryCodes()
+            shouldFail(Exception) {
+                // only 2 and 3 is valid
+                intConfig.value = 'In-valid'
+                integrationConfigurationService.isInstitutionUsingISO2CountryCodes()
             }
         }
     }

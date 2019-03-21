@@ -5,10 +5,10 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
+import grails.gorm.transactions.Transactional
 
+@Transactional
 class ActivityTypeService extends ServiceBase {
-
-    boolean transactional = true
 
 
     List fetchAllWithGuidByCodeInList(Collection<String> codes, int max = 0, int offset = -1) {

@@ -6,12 +6,12 @@ package net.hedtech.banner.general.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 /**
  * A transactional service supporting persistence of the TelephoneTypeService model.
  **/
+@Transactional
 class TelephoneTypeService extends ServiceBase {
-    boolean transactional = true
 
 /**
      * fetching TelephoneType details based on code

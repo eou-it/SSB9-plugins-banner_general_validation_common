@@ -5,7 +5,7 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.service.ServiceBase
 import net.hedtech.banner.query.DynamicFinder
-
+import grails.gorm.transactions.Transactional
 // NOTE:
 // This service is injected with create, update, and delete methods that may throw runtime exceptions (listed below).  
 // These exceptions must be caught and handled by the controller using this service.
@@ -17,9 +17,8 @@ import net.hedtech.banner.query.DynamicFinder
 /**
  * A transactional service supporting persistence of the Subject model. 
  * */
+@Transactional
 class SubjectService extends ServiceBase{
-
-    boolean transactional = true
 
     def fetchAllByCriteria(Map content, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
 

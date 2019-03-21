@@ -4,12 +4,12 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 /**
  * A transactional service supporting persistence of the MajorMinorConcentration model.
  **/
+@Transactional
 class MajorMinorConcentrationService extends ServiceBase {
-    boolean transactional = true
 
     /**
      * fetch MajorMinorConcentration based on code

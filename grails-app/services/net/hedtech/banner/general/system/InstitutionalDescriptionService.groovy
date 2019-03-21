@@ -7,13 +7,12 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.general.utility.IsoCodeService
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 /**
  * A transactional service supporting persistence of the InstitutionalDescriptionService model.
  * */
+@Transactional
 class InstitutionalDescriptionService extends ServiceBase {
-
-    boolean transactional = true
 
     CurrencyConversionService currencyConversionService
     IsoCodeService isoCodeService

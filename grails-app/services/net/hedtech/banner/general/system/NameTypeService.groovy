@@ -5,14 +5,13 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 /**
  * A transactional service supporting persistence of the Name Type model.
  * Providing restriction on create , update and delete on Name Type model.
  * */
+@Transactional
 class NameTypeService extends ServiceBase {
-
-    boolean transactional = true
 
     List fetchAllWithGuidByCodeInList(Collection<String> nameTypeCodes, int max = 0, int offset = -1) {
         List entities = []

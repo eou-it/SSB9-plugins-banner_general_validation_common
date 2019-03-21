@@ -4,7 +4,7 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 
 // NOTE:
 // This service is injected with create, update, and delete methods that may throw runtime exceptions (listed below).
@@ -18,6 +18,7 @@ import net.hedtech.banner.service.ServiceBase
 /**
  *<p> A transactional service supporting persistence of the Departmental Honor.</p>
  */
+@Transactional
 class DepartmentalHonorService extends ServiceBase{
-    boolean transactional = true
+
 }

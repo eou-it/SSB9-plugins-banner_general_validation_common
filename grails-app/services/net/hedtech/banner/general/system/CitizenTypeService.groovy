@@ -8,12 +8,12 @@ import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.service.ServiceBase
 import net.hedtech.banner.query.DynamicFinder
+import grails.gorm.transactions.Transactional
 
+@Transactional
 class CitizenTypeService extends ServiceBase {
 
     GlobalUniqueIdentifierService globalUniqueIdentifierService
-
-    boolean transactional = true
 
     def fetchAllByCriteria(Map content, String sortField = null, String sortOrder = null, int max = 0, int offset = -1) {
 

@@ -5,9 +5,10 @@ package net.hedtech.banner.general.crossproduct
 
 import net.hedtech.banner.service.ServiceBase
 import org.apache.commons.lang.StringUtils
+import grails.gorm.transactions.Transactional
 
+@Transactional
 class BankService extends ServiceBase {
-    boolean transactional = true
 
     /**
      * Provide Bank object for specified ruleClassCode

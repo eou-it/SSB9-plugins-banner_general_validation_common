@@ -2,10 +2,10 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
+import grails.gorm.transactions.Transactional
 
+@Transactional
 class VisaTypeService extends ServiceBase {
-
-    boolean transactional = true
 
     def fetchAllWithGuid(int max = 0, int offset = -1) {
         def rows = []

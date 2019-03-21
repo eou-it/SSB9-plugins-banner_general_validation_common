@@ -9,7 +9,9 @@ import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.system.ldm.HedmAddressType
 import net.hedtech.banner.general.utility.IsoCodeService
 import net.hedtech.banner.service.ServiceBase
+import grails.gorm.transactions.Transactional
 
+@Transactional
 class IntegrationConfigurationService extends ServiceBase {
 
     static final String PROCESS_CODE = "HEDM"
@@ -18,8 +20,6 @@ class IntegrationConfigurationService extends ServiceBase {
     static final String COUNTRY_DEFAULT_ISO = "ADDRESS.COUNTRY.DEFAULT"
     static final String BASE_ISO_CURRENCY_CODE = "ISO.BASE.CURRENCY.CODE"
     static final String DEFAULT_ISO_CURRENCY_CODE = 'USD.ISO.CURRENCY.CODE'
-
-    boolean transactional = true
 
     IsoCodeService isoCodeService
 

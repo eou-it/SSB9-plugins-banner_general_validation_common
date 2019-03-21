@@ -4,10 +4,10 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.service.ServiceBase
+import grails.gorm.transactions.Transactional
 
+@Transactional
 class LanguageService extends ServiceBase {
-
-    boolean transactional = true
 
 
     public Language fetchByCode(String code) {

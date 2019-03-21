@@ -3,7 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.general.system
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 
 // NOTE:
 // This service is injected with create, update, and delete methods that may throw runtime exceptions (listed below).
@@ -16,9 +16,8 @@ import net.hedtech.banner.service.ServiceBase
 /**
  * A transactional service supporting persistence of the Academic Year model.
  * */
+@Transactional
 class DegreeService extends ServiceBase {
-
-    boolean transactional = true
 
     /**
      * fetching Degree details based on code

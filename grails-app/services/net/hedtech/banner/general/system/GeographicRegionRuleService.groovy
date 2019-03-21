@@ -6,14 +6,13 @@ package net.hedtech.banner.general.system
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 /**
  * GeographicRegionRuleService.
  * A transactional service supporting persistence of the GeographicRegionRule model.
  */
+@Transactional
 class GeographicRegionRuleService extends ServiceBase {
-
-    boolean transactional = true
 
     /**
      * return the distinct list of geographic areas

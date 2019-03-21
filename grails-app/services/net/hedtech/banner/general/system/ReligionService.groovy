@@ -7,10 +7,10 @@ import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifier
 import net.hedtech.banner.general.overall.ldm.GlobalUniqueIdentifierService
 import net.hedtech.banner.service.ServiceBase
+import grails.gorm.transactions.Transactional
 
+@Transactional
 class ReligionService extends ServiceBase {
-
-    boolean transactional = true
 
     GlobalUniqueIdentifierService globalUniqueIdentifierService
 

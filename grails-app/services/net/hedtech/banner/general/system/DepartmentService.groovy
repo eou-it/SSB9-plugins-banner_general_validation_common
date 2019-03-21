@@ -5,7 +5,7 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 // NOTE:
 // This service is injected with create, update, and delete methods that may throw runtime exceptions (listed below).  
 // These exceptions must be caught and handled by the controller using this service.
@@ -17,9 +17,8 @@ import net.hedtech.banner.service.ServiceBase
 /**
  * A transactional service supporting persistence of the Department model. 
  * */
+@Transactional
 class DepartmentService extends ServiceBase{
-
-    boolean transactional = true
 
     /**
      * Finds Department for a give departmentCode

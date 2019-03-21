@@ -5,13 +5,12 @@ package net.hedtech.banner.general.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.service.ServiceBase
-
+import grails.gorm.transactions.Transactional
 /**
  * A transactional service supporting persistence of the Disability model. 
  * */
+@Transactional
 class DisabilityService extends ServiceBase{
-
-    boolean transactional = true
 
     def fetchDisability(def code) {
         def disability

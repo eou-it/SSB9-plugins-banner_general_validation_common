@@ -12,13 +12,14 @@ import net.hedtech.banner.general.system.HoldType
 /**
  * CDM decorator for restriction-types resource
  */
-@EqualsAndHashCode(includeFields = true)
-@ToString(includeNames = true, includeFields = true)
+
 class RestrictionType {
 
     @Delegate
     private final HoldType holdType
     Metadata metadata
+
+
     String guid
     // Version 6 Schema support -PERSON-HOLD-TYPES
     String category
@@ -44,5 +45,40 @@ class RestrictionType {
     // persons-holds API
     Map getDetail(){
         return [id:guid]
+    }
+
+    boolean equals(object) {
+        if (this.is(object)) return true
+        if (getClass() != object.class) return false
+        if (!super.equals(object)) return false
+
+        RestrictionType that = (RestrictionType) object
+
+        if (category != that.category) return false
+        if (guid != that.guid) return false
+        if (holdType != that.holdType) return false
+        if (metadata != that.metadata) return false
+
+        return true
+    }
+
+    int hashCode() {
+        int result = super.hashCode()
+        result = 31 * result + holdType.hashCode()
+        result = 31 * result + metadata.hashCode()
+        result = 31 * result + guid.hashCode()
+        result = 31 * result + category.hashCode()
+        return result
+    }
+
+
+    @java.lang.Override
+    public java.lang.String toString() {
+        return "RestrictionType{" +
+                "holdType=" + holdType +
+                ", metadata=" + metadata +
+                ", guid='" + guid + '\'' +
+                ", category='" + category + '\'' +
+                '}';
     }
 }

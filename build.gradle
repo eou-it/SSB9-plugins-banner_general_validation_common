@@ -77,3 +77,10 @@ grailsPublish {
 assets {
     packagePlugin = true
 }
+
+grails {
+    plugins {
+        compile project(":banner-core")
+        compile project(":banner-general-utility")
+    }
+}

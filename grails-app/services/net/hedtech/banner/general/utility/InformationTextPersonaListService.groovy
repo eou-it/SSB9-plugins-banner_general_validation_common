@@ -4,21 +4,21 @@
 package net.hedtech.banner.general.utility
 
 import grails.util.Holders
+import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
-import org.apache.log4j.Logger
 import grails.util.Holders
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-
+@Slf4j
 class InformationTextPersonaListService {
     def sessionFactory
     def static webTailorRoleList = []
     static final String PERSONA_DEFAULT = "DEFAULT"
 
-    private static final log = Logger.getLogger(InformationTextPersonaListService.class)
+
 
     static {
         if (Holders?.config?.webTailorRoleList?.size() > 0) {

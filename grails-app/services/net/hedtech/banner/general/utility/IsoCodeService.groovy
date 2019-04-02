@@ -20,7 +20,7 @@ package net.hedtech.banner.general.utility
  */
 class IsoCodeService {
 
-    static transactional = false
+//    static transactional = false
 
     private Map<String, String> iso3ToIso2CountryCodeMap = [:]
     private Map<String, String> iso2ToIso3CountryCodeMap = [:]

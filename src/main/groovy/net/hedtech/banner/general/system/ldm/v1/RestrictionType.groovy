@@ -7,13 +7,18 @@ import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import net.hedtech.banner.general.common.GeneralValidationCommonConstants
 import net.hedtech.banner.general.system.HoldType
+import java.util.Map
+
+import org.grails.datastore.gorm.GormValidateable
+import grails.validation.Validateable
+import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
 
 
 /**
  * CDM decorator for restriction-types resource
  */
 
-class RestrictionType {
+class RestrictionType implements GormValidateable, DirtyCheckable, Validateable {
 
     @Delegate
     private final HoldType holdType
@@ -56,7 +61,7 @@ class RestrictionType {
 
         if (category != that.category) return false
         if (guid != that.guid) return false
-        if (holdType != that.holdType) return false
+//        if (holdType != that.holdType) return false
         if (metadata != that.metadata) return false
 
         return true

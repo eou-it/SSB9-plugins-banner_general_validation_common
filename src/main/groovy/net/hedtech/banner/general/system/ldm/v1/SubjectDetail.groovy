@@ -3,14 +3,16 @@
  ********************************************************************************* */
 package net.hedtech.banner.general.system.ldm.v1
 
+import grails.validation.Validateable
 import net.hedtech.banner.general.system.Subject
-
+import org.grails.datastore.mapping.dirty.checking.DirtyCheckable
+import org.grails.datastore.gorm.GormValidateable
 
 /**
  * LDM decorator for Subject  resource
  * which is sent back to the consumer
  */
-class SubjectDetail {
+class SubjectDetail implements GormValidateable, DirtyCheckable, Validateable {
 
 
     @Delegate

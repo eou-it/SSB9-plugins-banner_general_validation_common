@@ -9,7 +9,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import net.hedtech.banner.exceptions.ApplicationException
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class FinanceBankCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     FinanceBankCompositeService financeBankCompositeService
 

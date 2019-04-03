@@ -9,7 +9,12 @@ import net.hedtech.banner.general.system.ldm.HedmAddressType
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class IntegrationConfigurationServiceIntegrationTests extends BaseIntegrationTestCase {
 
     IntegrationConfigurationService integrationConfigurationService

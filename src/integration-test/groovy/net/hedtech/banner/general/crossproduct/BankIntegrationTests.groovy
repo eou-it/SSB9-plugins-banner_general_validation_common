@@ -3,12 +3,12 @@
  *******************************************************************************/
 package net.hedtech.banner.general.crossproduct
 
-import grails.testing.mixin.integration.Integration
-import grails.gorm.transactions.Rollback
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
 import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
 import grails.validation.ValidationException
 import groovy.sql.Sql

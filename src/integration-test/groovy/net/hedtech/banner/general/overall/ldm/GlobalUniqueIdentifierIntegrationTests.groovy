@@ -8,8 +8,13 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class GlobalUniqueIdentifierIntegrationTests extends BaseIntegrationTestCase {
 
     String i_success_guid = 'ABC12-DEF34-GHI56-JKL78'

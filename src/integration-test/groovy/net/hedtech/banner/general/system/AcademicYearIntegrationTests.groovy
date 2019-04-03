@@ -5,14 +5,19 @@ package net.hedtech.banner.general.system
 import org.junit.Before
 import org.junit.Test
 import org.junit.After
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException
 
 /**
  * Integration test for academic year model.
  * */
+@Integration
+@Rollback
 class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
 
     //Test data for creating new domain instance
@@ -83,7 +88,7 @@ class AcademicYearIntegrationTests extends BaseIntegrationTestCase {
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             sql.executeUpdate("update STVACYR set STVACYR_VERSION = 999 where STVACYR_SURROGATE_ID = ?", [academicYear.id])
         } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
+//            sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
         //Update the entity

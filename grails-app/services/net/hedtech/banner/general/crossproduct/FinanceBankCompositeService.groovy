@@ -29,7 +29,7 @@ class FinanceBankCompositeService {
         bankList.collect() {
             [   id                  : it.id,
                 version             : it.version,
-                    bankCode            : it.bank,
+                    bank           : it.bank,
                     bankAccountName     : it.bankAccountName,
                     chartOfAccounts     : it.chartOfAccounts ? it.chartOfAccounts : '',
                     currencyConversion : it.currencyConversion ? it.currencyConversion : ''

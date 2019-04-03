@@ -8,8 +8,12 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
-
+@Integration
+@Rollback
 class RestrictionTypeIntegrationTests extends BaseIntegrationTestCase {
 
     HoldType i_success_hold_type
@@ -22,7 +26,6 @@ class RestrictionTypeIntegrationTests extends BaseIntegrationTestCase {
     public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        initializeTestDataForReferences()
     }
 
 
@@ -51,6 +54,7 @@ class RestrictionTypeIntegrationTests extends BaseIntegrationTestCase {
 
 
     private def validRestrictionType() {
+        initializeTestDataForReferences()
         def newRestrictionType = new RestrictionType(i_success_hold_type, i_success_guid, i_success_metadata)
         return newRestrictionType
     }

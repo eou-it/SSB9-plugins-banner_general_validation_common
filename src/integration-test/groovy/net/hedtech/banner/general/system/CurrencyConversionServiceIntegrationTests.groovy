@@ -9,7 +9,12 @@ import org.junit.After
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.general.crossproduct.Bank
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def currencyConversionService

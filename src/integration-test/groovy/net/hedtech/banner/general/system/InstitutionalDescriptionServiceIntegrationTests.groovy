@@ -7,7 +7,12 @@ import net.hedtech.banner.general.utility.IsoCodeService
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class InstitutionalDescriptionServiceIntegrationTests extends BaseIntegrationTestCase {
 
     InstitutionalDescriptionService institutionalDescriptionService

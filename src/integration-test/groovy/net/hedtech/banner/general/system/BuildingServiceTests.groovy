@@ -4,7 +4,12 @@ import org.junit.Test
 import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class BuildingServiceTests extends BaseIntegrationTestCase {
 
     def buildingService

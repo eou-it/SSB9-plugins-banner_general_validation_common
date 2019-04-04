@@ -8,8 +8,13 @@ import org.junit.After
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class FunctionIntegrationTests extends BaseIntegrationTestCase {
 
     def functionService
@@ -76,7 +81,7 @@ class FunctionIntegrationTests extends BaseIntegrationTestCase {
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             sql.executeUpdate("update GTVFUNC set GTVFUNC_VERSION = 999 where GTVFUNC_SURROGATE_ID = ?", [function.id])
         } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
+//            sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
         function.code = "UUUUU"

@@ -8,7 +8,12 @@ import org.junit.After
 
 import grails.validation.ValidationException
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class EmailTypeIntegrationTests extends BaseIntegrationTestCase {
 
     //Test data for creating new domain instance

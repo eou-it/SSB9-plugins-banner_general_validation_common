@@ -8,9 +8,14 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException
 
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 /**
  * Integration Tests for the GeographicDivision Domain.
  */
@@ -122,7 +127,7 @@ class GeographicDivisionIntegrationTests extends BaseIntegrationTestCase{
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             sql.executeUpdate("update STVGEOD set STVGEOD_VERSION = 999 where STVGEOD_SURROGATE_ID = ?", [geographicDivision.id])
         } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
+//            sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
         //Update the entity

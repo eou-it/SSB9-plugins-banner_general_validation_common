@@ -9,10 +9,15 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException
 
 import java.text.SimpleDateFormat
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 /**
  * <p> Integration Tests for DepartmentalHonor </p>
  */
@@ -145,7 +150,7 @@ class DepartmentalHonorIntegrationTests extends BaseIntegrationTestCase{
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             sql.executeUpdate("update STVHOND set STVHOND_VERSION = 999 where STVHOND_SURROGATE_ID = ?", [departmentHonor.id])
         } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
+//            sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
         //Update the entity

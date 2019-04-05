@@ -13,7 +13,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCase {
 
     @Before

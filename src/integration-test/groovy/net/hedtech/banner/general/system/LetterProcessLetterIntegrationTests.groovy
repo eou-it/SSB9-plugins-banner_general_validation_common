@@ -6,11 +6,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.After
 
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException as OptimisticLock
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException as OptimisticLock
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import groovy.sql.Sql
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
 
     @Before
@@ -80,7 +85,7 @@ class LetterProcessLetterIntegrationTests extends BaseIntegrationTestCase {
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             sql.executeUpdate("update GTVLETR set GTVLETR_VERSION = 999 where GTVLETR_SURROGATE_ID = ?", [letterProcessLetter.id])
         } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
+//            sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
         letterProcessLetter.code = "UUUUU"

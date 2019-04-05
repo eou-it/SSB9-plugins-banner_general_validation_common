@@ -81,7 +81,7 @@ class CommitteeAndServiceTypeIntegrationTests extends BaseIntegrationTestCase {
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             sql.executeUpdate("update STVCOMT set STVCOMT_VERSION = 999 where STVCOMT_SURROGATE_ID = ?", [committeeAndServiceType.id])
         } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
+//            sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
         committeeAndServiceType.code = "UUUUU"

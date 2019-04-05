@@ -8,8 +8,13 @@ import org.junit.After
 
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
 
     //Test data for creating new domain instance
@@ -105,7 +110,7 @@ class MajorMinorConcentrationIntegrationTests extends BaseIntegrationTestCase {
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             sql.executeUpdate("update STVMAJR set STVMAJR_VERSION = 999 where STVMAJR_SURROGATE_ID = ?", [majorMinorConcentration.id])
         } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
+//            sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         //Try to update the entity
         //Update the entity

@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.general.overall
 
+import net.hedtech.banner.general.overall.UserRole
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before

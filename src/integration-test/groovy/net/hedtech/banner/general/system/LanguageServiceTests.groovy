@@ -30,8 +30,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testCreateLanguage() {
-        def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
-                                    voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
+        def language = new Language(code: "T", description: "TT")
         language = languageService.create([domainModel: language])
         assertNotNull language
     }
@@ -39,8 +38,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testUpdateLanguage() {
-        def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
-                                    voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
+        def language = new Language(code: "T", description: "TT")
         language = languageService.create([domainModel: language])
 
         Language languageUpdate = Language.findWhere(code: "T")
@@ -54,8 +52,7 @@ class LanguageServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testDeleteLanguage() {
-        def language = new Language(code: "T", description: "TT", nonResIndicator: "T",
-                                    voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
+        def language = new Language(code: "T", description: "TT")
         language = languageService.create([domainModel: language])
         assertNotNull language
         def id = language.id

@@ -30,8 +30,8 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testCreateBuilding() {
-        def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
-                                    voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
+        def building = new Building(code: "T", description: "TT",
+                                    voiceResponseMsgNumber: 1)
         building = buildingService.create([domainModel: building])
         assertNotNull building
     }
@@ -39,8 +39,8 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testUpdateBuilding() {
-        def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
-                                    voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
+        def building = new Building(code: "T", description: "TT",
+                                    voiceResponseMsgNumber: 1)
         building = buildingService.create([domainModel: building])
 
         Building buildingUpdate = Building.findWhere(code: "T")
@@ -54,8 +54,8 @@ class BuildingServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testDeleteBuilding() {
-        def building = new Building(code: "T", description: "TT", nonResIndicator: "T",
-                                    voiceResponseMsgNumber: 1, statscanCde2: 1, sevisEquiv: "T")
+        def building = new Building(code: "T", description: "TT",
+                                    voiceResponseMsgNumber: 1)
         building = buildingService.create([domainModel: building])
         assertNotNull building
         def id = building.id

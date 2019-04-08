@@ -10,7 +10,12 @@ import net.hedtech.banner.query.operators.Operators
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.Before
 import org.junit.Test
+import static groovy.test.GroovyAssert.*
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+@Integration
+@Rollback
 /**
  * Service Integration  test for the 'holdType' model.
  * */

@@ -30,7 +30,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testCreateCitizenType() {
-        def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
+        def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchangeEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
         assertNotNull citizenType
     }
@@ -38,7 +38,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testUpdateCitizenType() {
-        def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
+        def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchangeEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
 
         CitizenType citizenTypeUpdate = CitizenType.findWhere(code: "TT")
@@ -52,7 +52,7 @@ class CitizenTypeServiceTests extends BaseIntegrationTestCase {
 
     @Test
     void testDeleteCitizenType() {
-        def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchnageEquivalent: "T")
+        def citizenType = new CitizenType(code: "TT", description: "TT", citizenIndicator: true, electronicDataInterchangeEquivalent: "T")
         citizenType = citizenTypeService.create([domainModel: citizenType])
         assertNotNull citizenType
         def id = citizenType.id

@@ -356,16 +356,6 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
 
     private def newValidForCreateCurrencyConversion() {
 
-        def newBank = new Bank(bank: "##",
-                effectiveDate: new Date() - 100,
-                bankPidm: 1,
-                bankAccountName: '#####',
-                bankAccountNumber: '#####',
-                achStatus: "A",
-                statusIndicator: "A",
-                nextChangeDate: new Date() + 100)
-        save newBank
-
         def currencyConversion = new CurrencyConversion(
                 currencyConversion: i_success_currencyConversion,
                 rateEffectiveDate: i_success_rateEffectiveDate,
@@ -381,7 +371,7 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
                 accountsPayableAccount2: i_success_accountsPayableAcct2,
                 exchangeAccount2: i_success_exchAcct2,
                 standardCodeIso: i_success_standardCodeIso,
-                bank: newBank.bank
+                bank: "##"
         )
         return currencyConversion
     }

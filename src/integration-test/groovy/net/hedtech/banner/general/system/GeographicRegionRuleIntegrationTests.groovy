@@ -139,7 +139,7 @@ class GeographicRegionRuleIntegrationTests extends BaseIntegrationTestCase {
             sql = new Sql(sessionFactory.getCurrentSession().connection())
             expectedCount = sql.firstRow("SELECT count(DISTINCT SORGEOR_GEOR_CODE||SORGEOR_GEOD_CODE) as gaCount from SORGEOR").gaCount.toInteger()
         } finally {
-            sql?.close() // note that the test will close the connection, since it's our current session's connection
+//            sql?.close() // note that the test will close the connection, since it's our current session's connection
         }
         def actualCount = GeographicRegionRule.countAll().toInteger()
         assertEquals expectedCount, actualCount

@@ -76,7 +76,7 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testValidationFail() {
         def partition = new Partition(code: "exceeds_length", description: "unit-test", schedulerNumber: 1,
-                lastModifiedBy: "test", lastModified: new Date(), campusCode: "any", dataOrigin: "Horizon")
+                lastModifiedBy: "test", lastModified: new Date(), dataOrigin: "Horizon")
         assertFalse "Partition information should have failed validation since code exceeds constraint length", partition.validate()
     }
 
@@ -84,14 +84,14 @@ class PartitionIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testValidationSuccess() {
         def partition = new Partition(code: "1111", description: "unit-test", schedulerNumber: 1,
-                lastModifiedBy: "test", lastModified: new Date(), campusCode: "any", dataOrigin: "Horizon")
+                lastModifiedBy: "test", lastModified: new Date(), dataOrigin: "Horizon")
         assertTrue "Partition validation failed due to ${partition.errors}", partition.validate()
     }
 
 
     private Partition newPartition() {
         new Partition(code: "1111", description: "unit-test", schedulerNumber: 1,
-                lastModifiedBy: "test", lastModified: new Date(), campusCode: "any", dataOrigin: "Horizon")
+                lastModifiedBy: "test", lastModified: new Date(), dataOrigin: "Horizon")
     }
 
 

@@ -85,7 +85,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         params = [pluralizedResourceName: pluralizedResourceName]
         def propApi = [:]
         propApi.put(pluralizedResourceName, ["page": ["maxUpperLimit": 234]])
-        Holders.config.setProperty("api", propApi)
+        Holders.config.put("api", propApi)
         RestfulApiValidationUtility.correctMaxAndOffset(params, 0, 30)
         Holders.config.remove("api")
         assertEquals "234", params.max
@@ -93,7 +93,7 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
         // Override setting with zero value will not impact
         params = [pluralizedResourceName: pluralizedResourceName]
         propApi.put(pluralizedResourceName, ["page": ["maxUpperLimit": 0]])
-        Holders.config.setProperty("api", propApi)
+        Holders.config.put("api", propApi)
         RestfulApiValidationUtility.correctMaxAndOffset(params, 0, 30)
         Holders.config.remove("api")
         assertEquals "30", params.max
@@ -226,26 +226,26 @@ class RestfulApiValidationUtilityIntegrationTests extends BaseIntegrationTestCas
 
     @Test
     void testValidGuid() {
-        def errMsg01 = shouldFail(ApplicationException, {
+        ApplicationException exception01 = shouldFail(ApplicationException, {
             RestfulApiValidationUtility.validateGUID(null)
         })
-        assertEquals("guid.error.invalid.null", errMsg01)
+        assertEquals("guid.error.invalid.null", exception01.wrappedException.message)
 
-        def errMsg02 = shouldFail(ApplicationException, {
+        ApplicationException exception02 = shouldFail(ApplicationException, {
             RestfulApiValidationUtility.validateGUID("00000000-0000-0000-0000-000000000000")
         })
-        assertEquals("guid.error.invalid.nilGUID", errMsg02)
+        assertEquals("guid.error.invalid.nilGUID", exception02.wrappedException.message)
 
-        def errMsg03 = shouldFail(ApplicationException, {
+        ApplicationException exception03 = shouldFail(ApplicationException, {
             RestfulApiValidationUtility.validateGUID("not a guid")
         })
-        assertEquals("guid.error.invalid", errMsg03)
+        assertEquals("guid.error.invalid", exception03.wrappedException.message)
 
         //verson != 4
-        def errMsg04 = shouldFail(ApplicationException, {
+        ApplicationException exception04 = shouldFail(ApplicationException, {
             RestfulApiValidationUtility.validateGUID("C56A4180-65AA-12EC-A945-5FD21DEC0538")
         })
-        assertEquals("guid.error.invalid", errMsg04)
+        assertEquals("guid.error.invalid", exception04.wrappedException.message)
 
         assertTrue RestfulApiValidationUtility.validateGUID("00000000-0000-0000-0000-000000000000", true)
 

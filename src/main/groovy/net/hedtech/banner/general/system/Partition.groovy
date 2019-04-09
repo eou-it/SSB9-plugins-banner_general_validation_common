@@ -126,7 +126,7 @@ class Partition implements Serializable {
 
 
     public String toString() {
-        """PartitionCode[id=$id,code=$code, description=$description, schedulerNumber=$schedulerNumber, lastModifiedBy=$lastModifiedBy, lastModified=$lastModified, campusCode=$campus, version=$version, dataOrigin=$dataOrigin]"""
+        """PartitionCode[id=$id,code=$code, description=$description, schedulerNumber=$schedulerNumber, lastModifiedBy=$lastModifiedBy, lastModified=$lastModified, campus=$campus, version=$version, dataOrigin=$dataOrigin]"""
     }
 
 }

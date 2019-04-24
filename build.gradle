@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-version "0.1"
+version "1.0.6"
 group "banner.general.validation.common"
 
 apply plugin:"eclipse"
@@ -22,6 +22,13 @@ apply plugin:"org.grails.grails-gsp"
 repositories {
     mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
+    //added for Spring Security SAML plugin
+    maven { url "http://central.maven.org/maven2/"}
+    maven { url "https://build.shibboleth.net/nexus/content/repositories/releases"}
+    maven { url "https://build.shibboleth.net/nexus/content/groups/public/"}
+    maven { url "https://code.lds.org/nexus/content/groups/main-repo"}
+    maven { url "http://repository.jboss.org/maven2/"}
+    maven { url "http://repo.spring.io/milestone/" }
 }
 
 dependencies {
@@ -83,7 +90,6 @@ assets {
 
 grails {
     plugins {
-        compile project(":banner-core")
         compile project(":banner-general-utility")
     }
 }

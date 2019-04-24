@@ -1,16 +1,3 @@
-//include ':banner-general-person'
-//project(':banner-general-person').projectDir = new File('../banner_general_person.git')
-//
-//include ':banner-general-validation-common'
-//project(':banner-general-validation-common').projectDir = new File('../banner_general_validation_common.git')
-
-
-
-// Added these plugins due to Banner-Core plugin is dependent on these plugins.
-
-include ':banner-seeddata-catalog'
-project(':banner-seeddata-catalog').projectDir = new File('../banner_seeddata_catalog.git')
-
 include ':banner-core'
 project(':banner-core').projectDir = new File('../banner_core.git')
 

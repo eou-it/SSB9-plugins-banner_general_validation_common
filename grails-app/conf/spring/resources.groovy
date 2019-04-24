@@ -8,5 +8,12 @@
  */
 beans = {
 
+    // Wiring for plugin integration tests only.
+    ldmService(LdmService) {
+        grailsWebDataBinder = ref('grailsWebDataBinder')
+        sessionFactory = ref('sessionFactory')
+        globalUniqueIdentifierService = ref('globalUniqueIdentifierService')
+    }
+    
 }
 

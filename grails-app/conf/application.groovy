@@ -96,16 +96,17 @@ dataSource {
 }
 
 hibernate {
-    dialect = "org.hibernate.dialect.Oracle10gDialect"
-    show_sql = false
     cache.use_second_level_cache = true
     cache.use_query_cache = true
-    cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
-    hbm2ddl.auto = null
+    cache.region.factory_class = 'org.hibernate.cache.SingletonEhCacheRegionFactory'
+    show_sql = false
+    flush.mode = AUTO
     packagesToScan="net.hedtech.**.*"
+    dialect = "org.hibernate.dialect.Oracle10gDialect"
     config.location = [
             "classpath:hibernate-banner-core.cfg.xml",
-            "classpath:hibernate-banner-general-validation-common.cfg.xml"
+            "classpath:hibernate-banner-general-utility.cfg.xml",
+            "classpath:hibernate-banner-general-validation-common.cfg.xml",
     ]
 }
 

@@ -19,6 +19,11 @@ import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.Version
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
+@EqualsAndHashCode(includeFields = true)
+@ToString(includeNames = true, includeFields = true)
 @NamedQueries(value = [
         @NamedQuery(name = "Campus.fetchCampusCodeNotInList",
                 query = """Select code FROM Campus a
@@ -103,63 +108,17 @@ class Campus implements Serializable {
     String timeZoneID
 
 
-    public String toString() {
-        "Campus[id=$id, code=$code, description=$description, " +
-                "lastModified=$lastModified, " +
-                "districtIdentifierCode=$districtIdentifierCode, " +
-                "lastModifiedBy=$lastModifiedBy, " +
-                "version=$version, " +
-                "dataOrigin=$dataOrigin, " +
-                "utcOffset=$utcOffset, " +
-                "timeZoneID=$timeZoneID ]"
-    }
-
     static constraints = {
         code(nullable: false, maxSize: 3)
         description(nullable: true, maxSize: 30)
         districtIdentifierCode(nullable: true)
         utcOffset(nullable: true)
         timeZoneID(nullable: true)
+                lastModified( nullable: true )
+        lastModifiedBy( nullable: true, maxSize: 30 )
+        dataOrigin( nullable: true, maxSize: 30 )
     }
 
-
-    boolean equals(o) {
-        if (this.is(o)) return true
-
-        if (!(o instanceof Campus)) return false
-
-        Campus campus = (Campus) o
-
-        if (code != campus.code) return false
-        if (dataOrigin != campus.dataOrigin) return false
-        if (description != campus.description) return false
-        if (districtIdentifierCode != campus.districtIdentifierCode) return false
-        if (id != campus.id) return false
-        if (lastModified != campus.lastModified) return false
-        if (lastModifiedBy != campus.lastModifiedBy) return false
-        if (version != campus.version) return false
-        if (utcOffset != campus.utcOffset) return false
-        if (timeZoneID != campus.timeZoneID) return false
-
-        return true
-    }
-
-
-    int hashCode() {
-        int result
-
-        result = (id != null ? id.hashCode() : 0)
-        result = 31 * result + (code != null ? code.hashCode() : 0)
-        result = 31 * result + (description != null ? description.hashCode() : 0)
-        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0)
-        result = 31 * result + (districtIdentifierCode != null ? districtIdentifierCode.hashCode() : 0)
-        result = 31 * result + (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0)
-        result = 31 * result + (version != null ? version.hashCode() : 0)
-        result = 31 * result + (dataOrigin != null ? dataOrigin.hashCode() : 0)
-        result = 31 * result + (utcOffset != null ? utcOffset.hashCode() : 0)
-        result = 31 * result + (timeZoneID != null ? timeZoneID.hashCode() : 0)
-        return result
-    }
 
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']

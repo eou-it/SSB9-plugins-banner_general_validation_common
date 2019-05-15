@@ -27,6 +27,14 @@ import javax.persistence.*
                                    AND a.locale IN (:locale)
                                    AND a.label = :labelText
                                    AND trunc(sysdate) BETWEEN trunc(NVL( a.startDate, (sysdate - 1) ) ) AND trunc( NVL( a.endDate, (sysdate + 1) ))
+                                   ORDER BY a.label, a.sequenceNumber """),
+        @NamedQuery(name = "InformationText.fetchInfoTextByRoleAndLabels",
+                query = """ FROM InformationText a
+                                   WHERE a.pageName = :pageName
+                                   AND a.persona IN (:roleCode)
+                                   AND a.locale IN (:locale)
+                                   AND a.label IN (:labelText)
+                                   AND trunc(sysdate) BETWEEN trunc(NVL( a.startDate, (sysdate - 1) ) ) AND trunc( NVL( a.endDate, (sysdate + 1) ))
                                    ORDER BY a.label, a.sequenceNumber """)
 
 ])
@@ -286,6 +294,32 @@ class InformationText implements Serializable {
                         .setParameterList(ROLECODE, miniRoleCode)
                         .setParameterList(LOCALE, locale)
                         .setString(LABEL_TEXT, label)
+                        .list()
+                infoTextResponse << infoText
+            }
+        }
+        infoTextResponse.flatten().unique()
+    }
+
+
+    /**
+     * fetchInfoTextByRolesAndLabels method returns Tool tip and help text info for the given roles and
+     * specific label provided.
+     * @param pageName
+     * @param roleCode
+     * @param locale
+     * @param label
+     * @return
+     */
+    public static List<InformationText> fetchInfoTextByRoleAndLabels(String pageName, List<String> roleCode, List<String> locale, List<String> label) {
+        def infoTextResponse = []
+        roleCode.collate(1000).each { miniRoleCode ->
+            InformationText.withSession { session ->
+                def infoText = session.getNamedQuery('InformationText.fetchInfoTextByRoleAndLabels')
+                        .setString(PAGENAME, pageName)
+                        .setParameterList(ROLECODE, miniRoleCode)
+                        .setParameterList(LOCALE, locale)
+                        .setParameterList(LABEL_TEXT, label)
                         .list()
                 infoTextResponse << infoText
             }

@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -77,7 +77,7 @@ class LearnerFieldStudy implements Serializable {
         code(nullable: false, maxSize: 15)
         description(nullable: false, maxSize: 30)
         systemRequiredIndicator(nullable: false)
-        dataOrigin(nullable: false, maxSize: 30)
+        dataOrigin(nullable: true, maxSize: 30)
     }
 
 

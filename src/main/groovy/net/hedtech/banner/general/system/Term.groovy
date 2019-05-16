@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -170,6 +170,7 @@ class Term implements Serializable {
         startDate( nullable: false )
         endDate( nullable: false )
         acyr_code( nullable: false )
+        trmt_code(nullable: true)
         financialAidProcessingYear( nullable: true, maxSize: 4 )
         financialAidTerm( nullable: true, maxSize: 1 )
         financialAidPeriod( nullable: true )

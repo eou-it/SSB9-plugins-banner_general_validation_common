@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -79,8 +79,8 @@ class ProxyAccessSystem implements Serializable{
 
     static constraints = {
         code(nullable: false, maxSize: 30)
-        description(nullable: false, maxSize: 60)
-        systemReqInd(nullable: false, maxSize: 1)
+        description(nullable: true, maxSize: 60)
+        systemReqInd(nullable: true, maxSize: 1)
         lastModified(nullable: true)
         lastModifiedBy(nullable: true, maxSize: 30)
         dataOrigin(nullable: true, maxSize: 30)

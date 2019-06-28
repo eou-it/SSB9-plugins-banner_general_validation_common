@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 - 2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -51,7 +51,9 @@ class LevelServiceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchByCodeInList() {
-        newValidForCreateLevel().save()
+        def newLevel = newValidForCreateLevel()
+        newLevel.save(failOnError: true, flush: true)
+
         List<Level> levelList = levelService.fetchAllByCodeInList([i_success_code])
         assertEquals(1, levelList.size())
         assertEquals([i_success_code], levelList.code)

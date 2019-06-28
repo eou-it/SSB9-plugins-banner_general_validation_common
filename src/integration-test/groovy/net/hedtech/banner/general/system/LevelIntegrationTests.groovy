@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2017 - 2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
@@ -49,7 +49,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
     void testCreateLevel() {
         def level = newValidForCreateLevel()
 
-        if (!level.save()) {
+        if (!level.save(failOnError: true, flush: true)) {
             fail("Could not save Level; LEVEL ERRORS = " + level.errors);
         }
         assertNotNull(level.id)
@@ -95,7 +95,7 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testOptimisticLock() {
         def level = newValidForCreateLevel()
-        save level
+        level.save(failOnError: true, flush: true)
 
         def sql
         try {
@@ -172,7 +172,8 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchByCodeInList() {
-        newValidForCreateLevel().save()
+        def newLevel = newValidForCreateLevel()
+        newLevel.save(failOnError: true, flush: true)
         List<Level> levelList = Level.fetchAllByCodeInList([i_success_code])
         assertEquals(1, levelList.size())
         assertEquals([i_success_code], levelList.code)
@@ -185,7 +186,8 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchByCode() {
-        newValidForCreateLevel().save()
+        def newLevel = newValidForCreateLevel()
+        newLevel.save(failOnError: true, flush: true)
         Level level = Level.fetchByCode(i_success_code)
         assertNotNull(level)
         assertEquals(i_success_code, level.code)
@@ -193,7 +195,8 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchLevelForCEUNoParams() {
-        newValidForCreateLevel().save()
+        def newLevel = newValidForCreateLevel()
+        newLevel.save(failOnError: true, flush: true)
         Level level = Level.fetchLevelForCEU(i_success_code)
         assertNotNull(level)
         assertEquals(i_success_code, level.code)
@@ -201,7 +204,8 @@ class LevelIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchLevelForCEUWithParamCEUTrue() {
-        newValidForCreateLevel().save()
+        def newLevel = newValidForCreateLevel()
+        newLevel.save(failOnError: true, flush: true)
         Level level = Level.fetchLevelForCEU(i_success_code, [ceu: i_success_continuingEducationIndicator])
         assertNotNull(level)
         assertEquals(i_success_code, level.code)

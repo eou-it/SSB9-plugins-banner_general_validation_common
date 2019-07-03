@@ -11,6 +11,11 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "GTVLETR")
+@NamedQueries(value = [
+        @NamedQuery(name = "LetterProcessLetter.fetchByCode",
+                query = """FROM LetterProcessLetter a
+        WHERE a.code = :lettercode""")
+])
 class LetterProcessLetter implements Serializable {
 
     /**
@@ -142,5 +147,11 @@ class LetterProcessLetter implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
+    public static LetterProcessLetter fetchByCode (String lettercode) {
 
+        def result = LetterProcessLetter.withSession { session ->
+            session.getNamedQuery('LetterProcessLetter.fetchByCode').setParameterList("lettercode", lettercode).list()[0]
+        }
+        return result
+    }
 }

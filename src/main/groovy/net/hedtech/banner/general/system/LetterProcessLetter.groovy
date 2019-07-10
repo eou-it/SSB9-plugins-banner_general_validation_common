@@ -4,6 +4,8 @@
 package net.hedtech.banner.general.system
 
 import org.hibernate.annotations.Type
+import org.hibernate.criterion.Order
+
 import javax.persistence.*
 
 /**
@@ -153,5 +155,14 @@ class LetterProcessLetter implements Serializable {
             session.getNamedQuery('LetterProcessLetter.fetchByCode').setParameterList("lettercode", lettercode).list()[0]
         }
         return result
+    }
+
+    public static fetchAllSortedByDescriptionAsc() {
+
+        def queryCriteria = LetterProcessLetter.createCriteria()
+        def results = queryCriteria.list() {
+            order((Order.asc("code")).ignoreCase())
+        }
+        return results
     }
 }

@@ -19,6 +19,10 @@ import javax.persistence.*
                 query = """FROM  ProxyAccessSystemOptionType a
                 WHERE a.code = :code
                 AND a.systemCode = :systemCode
+            """),
+        @NamedQuery(name = "ProxyAccessSystemOptionType.fetchBySystemCode",
+                query = """FROM  ProxyAccessSystemOptionType a
+                WHERE a.systemCode = :systemCode
             """)
 ])
 class ProxyAccessSystemOptionType implements Serializable {
@@ -207,6 +211,14 @@ class ProxyAccessSystemOptionType implements Serializable {
         def proxyAccessSystemOptionType = ProxyAccessSystemOptionType.withSession { session ->
             session.getNamedQuery(
                     'ProxyAccessSystemOptionType.fetchByCodeAndSystemCode' ).setString( 'code', code ).setString( 'systemCode', systemCode ).list()[0]
+        }
+        return proxyAccessSystemOptionType
+    }
+
+    public static List fetchBySystemCode( String systemCode ) {
+        def proxyAccessSystemOptionType = ProxyAccessSystemOptionType.withSession { session ->
+            session.getNamedQuery(
+                    'ProxyAccessSystemOptionType.fetchBySystemCode' ).setString( 'systemCode', systemCode ).list()
         }
         return proxyAccessSystemOptionType
     }

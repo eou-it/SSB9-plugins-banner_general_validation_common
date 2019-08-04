@@ -137,8 +137,7 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
                         'endDate',
                         'housingStartDate',
                         'housingEndDate',
-                        'acyr_code',
-                        'trmt_code'
+                        'acyr_code'
                 ]
         assertNoErrorsFor term,
                 [
@@ -147,7 +146,8 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
                         'financeAidPeriod',
                         'financeAidEndPeriod',
                         'systemReqInd',
-                        'financeSummerIndicator'
+                        'financeSummerIndicator',
+                        'trmt_code'
                 ]
     }
 

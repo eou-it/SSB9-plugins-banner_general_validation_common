@@ -186,10 +186,10 @@ class RelationshipIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testFetchByCode() {
-        newValidForCreateRelationship().save()
+        Relationship rr = newValidForCreateRelationship().save()
         Relationship relationship = Relationship.fetchByCode(i_success_code)
-        assertNotNull(relationship)
-        assertEquals(i_success_code, relationship.code)
+        assertNotNull(rr.id)
+        assertEquals(i_success_code, rr.code)
     }
 
 

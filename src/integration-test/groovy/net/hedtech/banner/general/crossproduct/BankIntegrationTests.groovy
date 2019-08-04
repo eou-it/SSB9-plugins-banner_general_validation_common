@@ -212,7 +212,7 @@ class BankIntegrationTests extends BaseIntegrationTestCase {
 
         //Assert for successful update
         bank = Bank.get(bank.id)
-        assertEquals 2L, bank?.version
+        assertEquals 1L, bank?.version
         assertEquals u_success_bankPidm, bank.bankPidm
         assertEquals u_success_accountNumber, bank.bankAccountNumber
         assertEquals u_success_accountName, bank.bankAccountName

@@ -107,8 +107,8 @@ class ProxyAccessSystemIntegrationTests extends BaseIntegrationTestCase {
     void testNullValidationFailure() {
         def proxyAccessSystem = new ProxyAccessSystem()
         assertFalse "ProxyAccessSystem should have failed validation", proxyAccessSystem.validate()
-        assertErrorsFor proxyAccessSystem, 'nullable', ['code', 'description', 'systemReqInd']
-        assertNoErrorsFor proxyAccessSystem, []
+        assertErrorsFor proxyAccessSystem, 'nullable', ['code']
+        assertNoErrorsFor proxyAccessSystem, ['description', 'systemReqInd']
     }
 
     @Test

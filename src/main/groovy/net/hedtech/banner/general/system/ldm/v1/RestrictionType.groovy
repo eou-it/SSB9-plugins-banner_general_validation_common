@@ -52,30 +52,34 @@ class RestrictionType implements GormValidateable, DirtyCheckable, Validateable 
         return [id:guid]
     }
 
-    boolean equals(object) {
-        if (this.is(object)) return true
-        if (getClass() != object.class) return false
-        if (!super.equals(object)) return false
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (getClass() != o.class) return false
 
-        RestrictionType that = (RestrictionType) object
+        RestrictionType that = (RestrictionType) o
 
-        if (category != that.category) return false
+        if (org_grails_datastore_gorm_GormValidateable__skipValidate != that.org_grails_datastore_gorm_GormValidateable__skipValidate) return false
+        if (this.getCategory() != that.getCategory()) return false
         if (guid != that.guid) return false
-//        if (holdType != that.holdType) return false
+        if (holdType != that.holdType) return false
         if (metadata != that.metadata) return false
+        if (org_grails_datastore_gorm_GormValidateable__errors != that.org_grails_datastore_gorm_GormValidateable__errors) return false
+        if (org_grails_datastore_mapping_dirty_checking_DirtyCheckable__$changedProperties != that.org_grails_datastore_mapping_dirty_checking_DirtyCheckable__$changedProperties) return false
 
         return true
     }
 
     int hashCode() {
-        int result = super.hashCode()
-        result = 31 * result + holdType.hashCode()
-        result = 31 * result + metadata.hashCode()
-        result = 31 * result + guid.hashCode()
-        result = 31 * result + category.hashCode()
+        int result
+        result = (holdType != null ? holdType.hashCode() : 0)
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0)
+        result = 31 * result + (guid != null ? guid.hashCode() : 0)
+        result = 31 * result + (category != null ? category.hashCode() : 0)
+        result = 31 * result + (org_grails_datastore_mapping_dirty_checking_DirtyCheckable__$changedProperties != null ? org_grails_datastore_mapping_dirty_checking_DirtyCheckable__$changedProperties.hashCode() : 0)
+        result = 31 * result + (org_grails_datastore_gorm_GormValidateable__skipValidate ? 1 : 0)
+        result = 31 * result + (org_grails_datastore_gorm_GormValidateable__errors != null ? org_grails_datastore_gorm_GormValidateable__errors.hashCode() : 0)
         return result
     }
-
 
     @java.lang.Override
     public java.lang.String toString() {

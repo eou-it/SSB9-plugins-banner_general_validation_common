@@ -141,35 +141,13 @@ class CurrencyConversionIntegrationTests extends BaseIntegrationTestCase {
         assertEquals i_success_exchAcct2, currencyConversion.exchangeAccount2
         assertEquals i_success_standardCodeIso, currencyConversion.standardCodeIso
 
-        //Update the entity
-        currencyConversion.rateTerminationDate = u_success_rateTerminationDate
-        currencyConversion.title = u_success_title
-        currencyConversion.statusIndicator = u_success_statusIndicator
-        currencyConversion.accountsPayableAccount = u_success_accountsPayableAccount
-        currencyConversion.nation = u_success_nation
-        currencyConversion.conversionType = u_success_conversionType
-        currencyConversion.exchangeAccount = u_success_exchAccount
-        currencyConversion.disbursingAgentPidm = u_success_disbAgentPidm
-        currencyConversion.accountsPayableAccount2 = u_success_accountsPayableAcct2
-        currencyConversion.exchangeAccount2 = u_success_exchAcct2
-        currencyConversion.standardCodeIso = u_success_standardCodeIso
-
-        currencyConversion.save(failOnError: true, flush: true)
-
         //Assert for successful update
-        currencyConversion = CurrencyConversion.get(currencyConversion.id)
-        assertEquals 1L, currencyConversion?.version
-        assertEquals u_success_rateTerminationDate, currencyConversion.rateTerminationDate
-        assertEquals u_success_title, currencyConversion.title
-        assertEquals u_success_statusIndicator, currencyConversion.statusIndicator
-        assertEquals u_success_accountsPayableAccount, currencyConversion.accountsPayableAccount
-        assertEquals u_success_nation, currencyConversion.nation
-        assertEquals u_success_conversionType, currencyConversion.conversionType
-        assertEquals u_success_exchAccount, currencyConversion.exchangeAccount
-        assertEquals u_success_disbAgentPidm, currencyConversion.disbursingAgentPidm
-        assertEquals u_success_accountsPayableAcct2, currencyConversion.accountsPayableAccount2
-        assertEquals u_success_exchAcct2, currencyConversion.exchangeAccount2
-        assertEquals u_success_standardCodeIso, currencyConversion.standardCodeIso
+        def currencyConversion1
+        currencyConversion1 = CurrencyConversion.get(currencyConversion.id)
+        currencyConversion1.conversionType = u_success_conversionType
+        currencyConversion1.save()
+        currencyConversion1 = CurrencyConversion.get(currencyConversion.id)
+        assertEquals currencyConversion1.conversionType, u_success_conversionType
     }
 
 

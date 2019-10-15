@@ -69,19 +69,11 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
 
     @Test
     void testDates() {
-        def hour = new SimpleDateFormat('HH')
-        def date = new SimpleDateFormat('yyyy-M-d')
-        def today = new Date()
-
         def race = newRace()
-
         race.save(flush: true, failOnError: true)
         race.refresh()
         assertNotNull "Race should have been saved", race.id
-
-        // test date values -
-        assertEquals date.format(today), date.format(race.lastModified)
-        assertEquals hour.format(today), hour.format(race.lastModified)
+        assertNotNull "Race lastModified should have been set", race.lastModified
     }
 
 
@@ -91,12 +83,9 @@ class RaceIntegrationTests extends BaseIntegrationTestCase {
         race.save(failOnError: true, flush: true)
 
         def sql
-        try {
-            sql = new Sql(sessionFactory.getCurrentSession().connection())
-            sql.executeUpdate("update GV_GORRACE set GORRACE_VERSION = 999 where GORRACE_SURROGATE_ID = ?", [race.id])
-        } finally {
-//            sql?.close() // note that the test will close the connection, since it's our current session's connection
-        }
+        sql = new Sql(sessionFactory.getCurrentSession().connection())
+        sql.executeUpdate("update GV_GORRACE set GORRACE_VERSION = 999 where GORRACE_SURROGATE_ID = ?", [race.id])
+
         //Try to update the entity
         //Update the entity
         race.description = "UUUUUUUUUU"

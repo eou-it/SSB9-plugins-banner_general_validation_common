@@ -63,8 +63,8 @@ dependencies {
     testCompile "org.grails:grails-test-mixins:3.3.0"
 	
     compile "org.grails.plugins:hibernate5"
-    compile "org.hibernate:hibernate-core:5.1.5.Final"
-    compile "org.hibernate:hibernate-ehcache:5.1.5.Final"
+    compile "org.hibernate:hibernate-core:5.1.17.Final"
+    compile "org.hibernate:hibernate-ehcache:5.1.17.Final"
 }
 
 bootRun {

@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.crossproduct.Bank
+import org.hibernate.Session
 
 import javax.persistence.*
 
@@ -14,7 +15,9 @@ import javax.persistence.*
 @Table(name = "GTVCURR")
 @NamedQueries([
         @NamedQuery(name = "CurrencyConversion.findByCurrencyConversion",
-                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion = :currencyConversion """),
+                query = """ FROM CurrencyConversion 
+                    where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion ) 
+                    and currencyConversion = :currencyConversion """),
         @NamedQuery(name = "CurrencyConversion.fetchCurrentCurrencyConversion",
                 query = """FROM CurrencyConversion a
                    WHERE a.rateEffectiveDate <= sysdate
@@ -23,12 +26,19 @@ import javax.persistence.*
                    AND a.statusIndicator = 'A'
                    AND a.currencyConversion = :currencyConversion"""),
         @NamedQuery(name = "CurrencyConversion.findByCurrencyConversionInList",
-                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion in :currencyConversions """)
-
-,
+                query = """ FROM CurrencyConversion 
+                    where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion ) 
+                    and currencyConversion in :currencyConversions """),
         @NamedQuery(name = "CurrencyConversion.findByStandardCodeIso",
-                query = """  FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and standardCodeIso = :standardCodeIso  """)
-
+                query = """  FROM CurrencyConversion 
+                    where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion ) 
+                    and standardCodeIso = :standardCodeIso  """),
+        @NamedQuery(name = "CurrencyConversion.listValidCurrencies",
+                query = """FROM CurrencyConversion a
+                   WHERE a.rateEffectiveDate <= sysdate
+                   AND a.rateNextChangeDate > sysdate
+                   AND (a.rateTerminationDate > sysdate OR a.rateTerminationDate IS NULL)
+                   AND a.statusIndicator = 'A'""")
 ])
 class CurrencyConversion implements Serializable {
 
@@ -263,6 +273,10 @@ class CurrencyConversion implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
+    public boolean isBase() {
+        return ( this.currencyConversion.equalsIgnoreCase(InstitutionalDescription.fetchByKey().baseCurrCode) )
+    }
+
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['currencyConversion', 'rateEffectiveDate', 'rateNextChangeDate']
 
@@ -272,6 +286,23 @@ class CurrencyConversion implements Serializable {
         CurrencyConversion.withSession {session ->
             currencyConversionList = session.getNamedQuery( 'CurrencyConversion.fetchCurrentCurrencyConversion' ).setString( 'currencyConversion', currencyConversion ).list()
             return currencyConversionList[0]
+        }
+    }
+
+    public static List<CurrencyConversion> listValidCurrencies() {
+        CurrencyConversion.withSession { Session session ->
+            def list = session.getNamedQuery('CurrencyConversion.listValidCurrencies').list()
+            return list
+        }
+    }
+
+    public static List<CurrencyConversion> getBaseCurrencyAsList() {
+        InstitutionalDescription defaultConfig = InstitutionalDescription.fetchByKey()
+        CurrencyConversion.withSession {  Session session ->
+            def list = session.getNamedQuery('CurrencyConversion.findByCurrencyConversion')
+                .setString('currencyConversion', InstitutionalDescription.fetchByKey().baseCurrCode)
+                .list()
+            return list
         }
     }
 

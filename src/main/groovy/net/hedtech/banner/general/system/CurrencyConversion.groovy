@@ -4,6 +4,7 @@
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.crossproduct.Bank
+import org.hibernate.SQLQuery
 import org.hibernate.Session
 
 import javax.persistence.*
@@ -38,7 +39,8 @@ import javax.persistence.*
                    WHERE a.rateEffectiveDate <= sysdate
                    AND a.rateNextChangeDate > sysdate
                    AND (a.rateTerminationDate > sysdate OR a.rateTerminationDate IS NULL)
-                   AND a.statusIndicator = 'A'""")
+                   AND a.statusIndicator = 'A' 
+                   ORDER BY a.currencyConversion ASC""")
 ])
 class CurrencyConversion implements Serializable {
 
@@ -273,8 +275,43 @@ class CurrencyConversion implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
+    /**
+     * Get the currency ISO Code (ISO 4217)
+     * @return String The GTVCURR_SCOD_CODE_ISO field if it is a 3 letter String,
+     *          if not returns the GTVCURR_CURR_CODE field.
+     */
+    public String determineISO() {
+        if ( this.standardCodeIso
+             && this.standardCodeIso.toUpperCase().matches("^[A-Z]{3}\$") ) {
+            return this.standardCodeIso.toUpperCase()
+        } else {
+            return this.currencyConversion.toUpperCase()
+        }
+    }
+
+    /**
+     * Checks if the currency is the base currency
+     * @return boolean true, if the currency is the base currency else false.
+     */
     public boolean isBase() {
         return ( this.currencyConversion.equalsIgnoreCase(InstitutionalDescription.fetchByKey().baseCurrCode) )
+    }
+
+    public boolean hasTransactionsForPidm(int pidm) {
+        CurrencyConversion.withSession { Session session ->
+            SQLQuery query = session.createSQLQuery(
+            """SELECT COUNT(TBRACCD_SURROGATE_ID) as counter FROM TBRACCD 
+                            WHERE TBRACCD_PIDM = :pidm 
+                            AND TBRACCD_DETAIL_CODE IN
+                            (SELECT TBRDCUR_DETAIL_CODE
+                                FROM TBRDCUR
+                                WHERE TBRDCUR_CURR_CODE = :currencyCode
+                            )""")
+            query.setInteger('pidm', pidm)
+            query.setString('currencyCode', this.currencyConversion)
+            def result = query.uniqueResult()
+            return (result > 0)
+        }
     }
 
     //Read Only fields that should be protected against update
@@ -289,6 +326,10 @@ class CurrencyConversion implements Serializable {
         }
     }
 
+    /**
+     * List all the up to date and active currencies.
+     * @return List<CurrencyConversion> List with all the up to date and active currencies
+     */
     public static List<CurrencyConversion> listValidCurrencies() {
         CurrencyConversion.withSession { Session session ->
             def list = session.getNamedQuery('CurrencyConversion.listValidCurrencies').list()
@@ -296,6 +337,10 @@ class CurrencyConversion implements Serializable {
         }
     }
 
+    /**
+     * List with the base currency as the only element.
+     * @return List<CurrencyConversion> List with the base currency as the only element.
+     */
     public static List<CurrencyConversion> getBaseCurrencyAsList() {
         InstitutionalDescription defaultConfig = InstitutionalDescription.fetchByKey()
         CurrencyConversion.withSession {  Session session ->

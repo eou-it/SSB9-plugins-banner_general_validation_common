@@ -342,7 +342,6 @@ class CurrencyConversion implements Serializable {
      * @return List<CurrencyConversion> List with the base currency as the only element.
      */
     public static List<CurrencyConversion> getBaseCurrencyAsList() {
-        InstitutionalDescription defaultConfig = InstitutionalDescription.fetchByKey()
         CurrencyConversion.withSession {  Session session ->
             def list = session.getNamedQuery('CurrencyConversion.findByCurrencyConversion')
                 .setString('currencyConversion', InstitutionalDescription.fetchByKey().baseCurrCode)

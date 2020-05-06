@@ -57,7 +57,6 @@ class CurrencyConversionService extends ServiceBase {
             int counter = (int) multiCurrencyQuery.uniqueResult()
             return (counter > 0)
         }
-        isMultiCurrencyEnabled = false
         return isMultiCurrencyEnabled
     }
 

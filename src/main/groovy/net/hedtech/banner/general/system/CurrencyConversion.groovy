@@ -350,4 +350,46 @@ class CurrencyConversion implements Serializable {
         }
     }
 
+    /**
+     * Search for a valid currency for which the student has transactions
+     * @param currencyCode
+     * @param pidm
+     * @return CurrencyCode The method may return:
+     * - CurrencyCode object for which the currencyCode has been provided
+     * - CurrencyCode object for which the student has transactions
+     * - CurrencyCode object representing the base currency
+     */
+    public static CurrencyConversion getValidCurrencyWithTransactionsForStudent(String currencyCode, int pidm) {
+        boolean isMultiCurrencyEnabled = CurrencyConversionService.isMultiCurrencyEnabled()
+        if (!isMultiCurrencyEnabled) {
+            //If multicurrency is not enabled return the base currency
+            return CurrencyConversion.fetchCurrentCurrencyConversion(InstitutionalDescription.fetchByKey().baseCurrCode)
+        }
+        CurrencyConversion currency
+        if (currencyCode && !currencyCode.isEmpty()) {
+            //Check if the student has transactions for the given currencyCode
+            currency = CurrencyConversion.fetchCurrentCurrencyConversion(currencyCode)
+            if ( currency && currency.hasTransactionsForPidm(pidm) ) {
+                return currency
+            }
+        }
+        //If the student doesn't have any transactions for the given currencyCode
+        // look for a currencyCode for which the student has transactions
+        CurrencyConversion baseCurrency
+        ArrayList<CurrencyConversion> validCurrencies = CurrencyConversion.listValidCurrencies()
+        Iterator<CurrencyConversion> validCurrenciesIterator = validCurrencies.iterator()
+        while (validCurrenciesIterator.hasNext()) {
+            currency = validCurrenciesIterator.next()
+            if (currency.hasTransactionsForPidm(pidm)) {
+                return currency
+            }
+            if (currency.isBase()) {
+                baseCurrency = currency
+            }
+        }
+        //If the student doesn't have any transactions for any valid currencyCode
+        // return the base currency
+        return baseCurrency
+    }
+
 }

@@ -46,4 +46,18 @@ class CurrencyConversionService extends ServiceBase {
         return entity
     }
 
+    /**
+     * Check the multi-currency feature enabled status
+     * @return true, if the multi-currency feature is enabled. false, if the multi-currency feature is disabled
+     */
+    static boolean isMultiCurrencyEnabled() {
+        boolean isMultiCurrencyEnabled = false
+        isMultiCurrencyEnabled = CurrencyConversion.withSession { org.hibernate.Session session ->
+            org.hibernate.SQLQuery multiCurrencyQuery = session.createSQLQuery("SELECT COUNT(TBBCTRL_MCTX_IND) FROM TBBCTRL WHERE TBBCTRL_MCTX_IND = 'Y'")
+            int counter = (int) multiCurrencyQuery.uniqueResult()
+            return (counter > 0)
+        }
+        return isMultiCurrencyEnabled
+    }
+
 }

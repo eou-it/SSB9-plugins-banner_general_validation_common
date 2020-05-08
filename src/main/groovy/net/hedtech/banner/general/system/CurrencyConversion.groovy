@@ -374,17 +374,19 @@ class CurrencyConversion implements Serializable {
             }
         }
         //If the student doesn't have any transactions for the given currencyCode
+        // check if there is any transactions for the base currencyCode
+        CurrencyConversion baseCurrency = CurrencyConversion.fetchCurrentCurrencyConversion(InstitutionalDescription.fetchByKey().baseCurrCode)
+        if ( baseCurrency.hasTransactionsForPidm(pidm) ) {
+            return baseCurrency
+        }
+        //If the student doesn't have any transactions for the base curency
         // look for a currencyCode for which the student has transactions
-        CurrencyConversion baseCurrency
         ArrayList<CurrencyConversion> validCurrencies = CurrencyConversion.listValidCurrencies()
         Iterator<CurrencyConversion> validCurrenciesIterator = validCurrencies.iterator()
         while (validCurrenciesIterator.hasNext()) {
             currency = validCurrenciesIterator.next()
             if (currency.hasTransactionsForPidm(pidm)) {
                 return currency
-            }
-            if (currency.isBase()) {
-                baseCurrency = currency
             }
         }
         //If the student doesn't have any transactions for any valid currencyCode

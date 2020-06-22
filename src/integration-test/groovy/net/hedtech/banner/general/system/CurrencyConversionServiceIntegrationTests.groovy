@@ -7,7 +7,6 @@ import org.junit.Test
 import org.junit.After
 
 import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.general.crossproduct.Bank
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import static groovy.test.GroovyAssert.*
 import grails.testing.mixin.integration.Integration
@@ -148,7 +147,7 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
         currencyConversion.exchangeAccount2 = u_success_exchAcct2
         currencyConversion.standardCodeIso = u_success_standardCodeIso
 
-        currencyConversionService.update(currencyConversion)
+        currencyConversionService.update(currencyConversion, false)
 
         //test the values
         assertEquals u_success_rateTermDate, currencyConversion.rateTerminationDate
@@ -201,17 +200,15 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
         currencyConversionService.create(currencyConversion)
         assertNotNull "CurrencyConversion ID is null in CurrencyConversion Service Tests Create", currencyConversion.id
         def id = currencyConversion.id
-        currencyConversionService.delete(currencyConversion)
+        currencyConversionService.delete(currencyConversion, false)
         assertNull "CurrencyConversion should have been deleted", currencyConversion.get(id)
     }
 
 
     @Test
     void testReadOnly() {
-        def currencyConversion = newValidForCreateCurrencyConversion()
-        currencyConversionService.create(currencyConversion)
+        def currencyConversion = currencyConversionService.findByCurrencyConversion("USD")
         assertNotNull "CurrencyConversion ID is null in CurrencyConversion Service Tests Create", currencyConversion.id
-
         currencyConversion.currencyConversion = u_success_currencyConversion
         currencyConversion.rateEffectiveDate = u_success_rateEffectiveDate
         currencyConversion.rateNextChangeDate = u_success_rateNextChangeDate
@@ -242,6 +239,9 @@ class CurrencyConversionServiceIntegrationTests extends BaseIntegrationTestCase 
                 accountsPayableAccount2: i_success_accountsPayableAcct2,
                 exchangeAccount2: i_success_exchAcct2,
                 standardCodeIso: i_success_standardCodeIso,
+                lastModified: new Date(),
+                lastModifiedBy: "test",
+                dataOrigin: "test",
                 bank: "##"
         )
         return currencyConversion

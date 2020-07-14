@@ -1,9 +1,11 @@
 /** *****************************************************************************
- Copyright 2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2020 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 
 import net.hedtech.banner.general.crossproduct.Bank
+import org.hibernate.SQLQuery
+import org.hibernate.Session
 
 import javax.persistence.*
 
@@ -14,7 +16,9 @@ import javax.persistence.*
 @Table(name = "GTVCURR")
 @NamedQueries([
         @NamedQuery(name = "CurrencyConversion.findByCurrencyConversion",
-                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion = :currencyConversion """),
+                query = """ FROM CurrencyConversion
+                    where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion )
+                    and currencyConversion = :currencyConversion """),
         @NamedQuery(name = "CurrencyConversion.fetchCurrentCurrencyConversion",
                 query = """FROM CurrencyConversion a
                    WHERE a.rateEffectiveDate <= sysdate
@@ -23,12 +27,20 @@ import javax.persistence.*
                    AND a.statusIndicator = 'A'
                    AND a.currencyConversion = :currencyConversion"""),
         @NamedQuery(name = "CurrencyConversion.findByCurrencyConversionInList",
-                query = """ FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and currencyConversion in :currencyConversions """)
-
-,
+                query = """ FROM CurrencyConversion
+                    where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion )
+                    and currencyConversion in :currencyConversions """),
         @NamedQuery(name = "CurrencyConversion.findByStandardCodeIso",
-                query = """  FROM CurrencyConversion where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion) and standardCodeIso = :standardCodeIso  """)
-
+                query = """  FROM CurrencyConversion
+                    where (currencyConversion, rateEffectiveDate) in ( select currencyConversion, max(rateEffectiveDate) from CurrencyConversion group by currencyConversion )
+                    and standardCodeIso = :standardCodeIso  """),
+        @NamedQuery(name = "CurrencyConversion.listValidCurrencies",
+                query = """FROM CurrencyConversion a
+                   WHERE a.rateEffectiveDate <= sysdate
+                   AND a.rateNextChangeDate > sysdate
+                   AND (a.rateTerminationDate > sysdate OR a.rateTerminationDate IS NULL)
+                   AND a.statusIndicator = 'A'
+                   ORDER BY a.currencyConversion ASC""")
 ])
 class CurrencyConversion implements Serializable {
 
@@ -164,25 +176,25 @@ class CurrencyConversion implements Serializable {
 
     public String toString() {
         """CurrencyConversion[
-					id=$id, 
+					id=$id,
 					version=$version,
 					currencyConversion=$currencyConversion,
-					rateEffectiveDate=$rateEffectiveDate, 
-					rateNextChangeDate=$rateNextChangeDate, 
+					rateEffectiveDate=$rateEffectiveDate,
+					rateNextChangeDate=$rateNextChangeDate,
 					rateTerminationDate=$rateTerminationDate,
-					title=$title, 
-					statusIndicator=$statusIndicator, 
-					accountsPayableAccount=$accountsPayableAccount, 
-					nation=$nation, 
-					conversionType=$conversionType, 
+					title=$title,
+					statusIndicator=$statusIndicator,
+					accountsPayableAccount=$accountsPayableAccount,
+					nation=$nation,
+					conversionType=$conversionType,
 					exchangeAccount=$exchangeAccount,
 					bank=$bank,
 					disbursingAgentPidm=$disbursingAgentPidm,
 					accountsPayableAccount2=$accountsPayableAccount2,
 					exchangeAccount2=$exchangeAccount2,
-					standardCodeIso=$standardCodeIso, 
-					lastModified=$lastModified, 
-					lastModifiedBy=$lastModifiedBy, 
+					standardCodeIso=$standardCodeIso,
+					lastModified=$lastModified,
+					lastModifiedBy=$lastModifiedBy,
 					dataOrigin=$dataOrigin
 					]"""
     }
@@ -263,6 +275,45 @@ class CurrencyConversion implements Serializable {
         dataOrigin(nullable: true, maxSize: 30)
     }
 
+    /**
+     * Get the currency ISO Code (ISO 4217)
+     * @return String The GTVCURR_SCOD_CODE_ISO field if it is a 3 letter String,
+     *          if not returns the GTVCURR_CURR_CODE field.
+     */
+    public String determineISO() {
+        if ( this.standardCodeIso
+             && this.standardCodeIso.toUpperCase().matches("^[A-Z]{3}\$") ) {
+            return this.standardCodeIso.toUpperCase()
+        } else {
+            return this.currencyConversion.toUpperCase()
+        }
+    }
+
+    /**
+     * Checks if the currency is the base currency
+     * @return boolean true, if the currency is the base currency else false.
+     */
+    public boolean isBase() {
+        return ( this.currencyConversion.equalsIgnoreCase(InstitutionalDescription.fetchByKey().baseCurrCode) )
+    }
+
+    public boolean hasTransactionsForPidm(int pidm) {
+        CurrencyConversion.withSession { Session session ->
+            SQLQuery query = session.createSQLQuery(
+            """SELECT COUNT(TBRACCD_SURROGATE_ID) as counter FROM TBRACCD
+                            WHERE TBRACCD_PIDM = :pidm
+                            AND TBRACCD_DETAIL_CODE IN
+                            (SELECT TBRDCUR_DETAIL_CODE
+                                FROM TBRDCUR
+                                WHERE TBRDCUR_CURR_CODE = :currencyCode
+                            )""")
+            query.setInteger('pidm', pidm)
+            query.setString('currencyCode', this.currencyConversion)
+            def result = query.uniqueResult()
+            return (result > 0)
+        }
+    }
+
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['currencyConversion', 'rateEffectiveDate', 'rateNextChangeDate']
 
@@ -273,6 +324,74 @@ class CurrencyConversion implements Serializable {
             currencyConversionList = session.getNamedQuery( 'CurrencyConversion.fetchCurrentCurrencyConversion' ).setString( 'currencyConversion', currencyConversion ).list()
             return currencyConversionList[0]
         }
+    }
+
+    /**
+     * List all the up to date and active currencies.
+     * @return List<CurrencyConversion> List with all the up to date and active currencies
+     */
+    public static List<CurrencyConversion> listValidCurrencies() {
+        CurrencyConversion.withSession { Session session ->
+            def list = session.getNamedQuery('CurrencyConversion.listValidCurrencies').list()
+            return list
+        }
+    }
+
+    /**
+     * List with the base currency as the only element.
+     * @return List<CurrencyConversion> List with the base currency as the only element.
+     */
+    public static List<CurrencyConversion> getBaseCurrencyAsList() {
+        CurrencyConversion.withSession {  Session session ->
+            def list = session.getNamedQuery('CurrencyConversion.findByCurrencyConversion')
+                .setString('currencyConversion', InstitutionalDescription.fetchByKey().baseCurrCode)
+                .list()
+            return list
+        }
+    }
+
+    /**
+     * Search for a valid currency for which the student has transactions
+     * @param currencyCode
+     * @param pidm
+     * @return CurrencyCode The method may return:
+     * - CurrencyCode object for which the currencyCode has been provided
+     * - CurrencyCode object for which the student has transactions
+     * - CurrencyCode object representing the base currency
+     */
+    public static CurrencyConversion getValidCurrencyWithTransactionsForStudent(String currencyCode, int pidm) {
+        boolean isMultiCurrencyEnabled = CurrencyConversionService.isMultiCurrencyEnabled()
+        if (!isMultiCurrencyEnabled) {
+            //If multicurrency is not enabled return the base currency
+            return CurrencyConversion.fetchCurrentCurrencyConversion(InstitutionalDescription.fetchByKey().baseCurrCode)
+        }
+        CurrencyConversion currency
+        if (currencyCode && !currencyCode.isEmpty()) {
+            //Check if the student has transactions for the given currencyCode
+            currency = CurrencyConversion.fetchCurrentCurrencyConversion(currencyCode)
+            if ( currency && currency.hasTransactionsForPidm(pidm) ) {
+                return currency
+            }
+        }
+        //If the student doesn't have any transactions for the given currencyCode
+        // check if there is any transactions for the base currencyCode
+        CurrencyConversion baseCurrency = CurrencyConversion.fetchCurrentCurrencyConversion(InstitutionalDescription.fetchByKey().baseCurrCode)
+        if ( baseCurrency.hasTransactionsForPidm(pidm) ) {
+            return baseCurrency
+        }
+        //If the student doesn't have any transactions for the base currency
+        // look for a currencyCode for which the student has transactions
+        ArrayList<CurrencyConversion> validCurrencies = CurrencyConversion.listValidCurrencies()
+        Iterator<CurrencyConversion> validCurrenciesIterator = validCurrencies.iterator()
+        while (validCurrenciesIterator.hasNext()) {
+            currency = validCurrenciesIterator.next()
+            if (currency.hasTransactionsForPidm(pidm)) {
+                return currency
+            }
+        }
+        //If the student doesn't have any transactions for any valid currencyCode
+        // return the base currency
+        return baseCurrency
     }
 
 }

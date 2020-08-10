@@ -25,7 +25,7 @@ import javax.persistence.*
         @NamedQuery(name = "Term.fetchAllByTermCodes",
                 query = """FROM Term a WHERE a.code IN (:termCodes)"""),
         @NamedQuery(name = "Term.fetchValidTermCodes",
-                query = """select a.code, a.description FROM Term a WHERE a.startDate <= trunc(sysdate) and a.endDate >= trunc(sysdate) and a.code IN (:termCodes) ORDER BY a.code desc""")
+                query = """select a.code, a.description FROM Term a WHERE a.endDate >= trunc(sysdate) and a.code IN (:termCodes) ORDER BY a.code desc""")
         ])
 class Term implements Serializable {
 

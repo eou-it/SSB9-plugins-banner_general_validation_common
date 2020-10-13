@@ -240,6 +240,13 @@ class TermIntegrationTests extends BaseIntegrationTestCase {
         assertNotNull terms.find{ it.code == TERM_CODE_TWO}
     }
 
+    @Test
+    void testFetchValidTermCodes(){
+        String TERM_CODE_ONE = "202002"
+        List<Term> terms = Term.fetchValidTermCodes( [TERM_CODE_ONE] )
+        assertTrue terms.size() == 1
+
+    }
     private Term createValidTerm(Map p) {
         def academicYear = new AcademicYear(code: "TT", description: "TT", sysreqInd: true, lastModified: new Date(),
                 lastModifiedBy: "test", dataOrigin: "Banner")

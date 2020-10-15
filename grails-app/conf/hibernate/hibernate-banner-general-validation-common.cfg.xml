@@ -145,6 +145,7 @@ there is no concept of an 'entity manager' within this project.
         <mapping class="net.hedtech.banner.general.system.GeographicDivision"/>
         <mapping class="net.hedtech.banner.general.system.Level"/>
         <mapping class="net.hedtech.banner.general.system.DepartmentalHonor"/>
+        <mapping class="net.hedtech.banner.general.system.CommentTypeValidation"/>
 
 
    </session-factory>

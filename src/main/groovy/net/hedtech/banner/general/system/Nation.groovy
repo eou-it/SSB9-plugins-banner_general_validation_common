@@ -28,7 +28,9 @@ import org.hibernate.annotations.Type
 @Table(name = "STVNATN")
 @NamedQueries(value = [
         @NamedQuery(name = "Nation.fetchByCode",
-                query = """ FROM Nation a WHERE a.code = :code """)
+                query = """ FROM Nation a WHERE a.code = :code """),
+        @NamedQuery(name = "Nation.fetchAllCodes",
+                query = """ FROM Nation""")
 ])
 
 @ToString(includeNames = true, ignoreNulls = false)
@@ -188,6 +190,16 @@ class Nation implements Serializable {
             nation = session.getNamedQuery(
                     'Nation.fetchByCode')
                     .setString('code', code).list()[0]
+        }
+        return nation
+    }
+
+    public static fetchAllCodes() {
+        def nation
+
+        Nation.withSession { session ->
+            nation = session.getNamedQuery(
+                    'Nation.fetchAllCodes').list()
         }
         return nation
     }

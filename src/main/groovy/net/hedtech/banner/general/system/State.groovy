@@ -34,6 +34,9 @@ import javax.persistence.SequenceGenerator
         ),
         @NamedQuery(name = "State.fetchAllByIsoCode",
                 query = """ FROM State a WHERE a.isoCode = :isoCode """
+        ),
+        @NamedQuery(name = "State.fetchAllCodes",
+                query = """ FROM State"""
         )
 ])
 
@@ -131,6 +134,16 @@ class State implements Serializable {
             state = session.getNamedQuery(
                     'State.fetchByCode')
                     .setString('code', code).list()[0]
+        }
+        return state
+    }
+
+    public static fetchAllCodes() {
+        def state
+
+        State.withSession { session ->
+            state = session.getNamedQuery(
+                    'State.fetchAllCodes').list()
         }
         return state
     }

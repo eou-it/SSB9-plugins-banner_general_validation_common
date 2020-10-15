@@ -103,4 +103,17 @@ class AddressType implements Serializable {
     //Read Only fields that should be protected against update
     public static readonlyProperties = ['code']
 
+    /**
+     * fetching AddressType details based on code
+     * @param code
+     * @return
+     */
+    public static AddressType fetchByCode(String code){
+        AddressType addressType = AddressType.withSession{ session ->
+            session.getNamedQuery('AddressType.fetchByCode').setString('code',code).uniqueResult()
+        }
+        return addressType
+
+    }
+
 }

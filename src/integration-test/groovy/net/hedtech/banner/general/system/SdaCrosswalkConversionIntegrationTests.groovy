@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2020 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -318,6 +318,53 @@ class SdaCrosswalkConversionIntegrationTests extends BaseIntegrationTestCase {
         assertEquals("Y", piGroup.external)
     }
 
+    //Fetch Internal Code group by passing GRDSATTEND params
+    @Test
+    void testFetchByInternalGroupAndOrderByExternal() {
+        def internalGroup = 'GRDSATTEND'
+        def sdaxList = SdaCrosswalkConversion.fetchByInternalGroupAndOrderByExternal(internalGroup)
+
+        assertNotNull(sdaxList)
+        assertTrue sdaxList.size() == 5
+
+        assertEquals('1',sdaxList[0].external)
+        assertEquals('Y', sdaxList[0].internal)
+        assertTrue(sdaxList[0].description.contains('Yes - I will attend'))
+
+        assertEquals('2',sdaxList[1].external)
+        assertEquals('N', sdaxList[1].internal)
+        assertTrue(sdaxList[1].description.contains('No - will not attend'))
+
+        assertEquals('3',sdaxList[2].external)
+        assertEquals('O', sdaxList[2].internal)
+        assertTrue(sdaxList[2].description.contains('No, but ordering items'))
+
+        assertEquals('4',sdaxList[3].external)
+        assertEquals('A', sdaxList[3].internal)
+        assertTrue(sdaxList[3].description.contains('In Absentia'))
+
+        assertEquals('5',sdaxList[4].external)
+        assertEquals('U', sdaxList[4].internal)
+        assertTrue(sdaxList[4].description.contains('Unknown'))
+    }
+
+    //Fetch Internal Code group by passing the Invalid params
+    @Test
+    void testFetchByInternalGroupAndOrderByExternal_InvalidParams(){
+        def internalGroupStr = 'ABC'
+        def sdaxList = SdaCrosswalkConversion.fetchByInternalGroupAndOrderByExternal(internalGroupStr)
+
+        assertTrue sdaxList.size() == 0
+    }
+
+    //Fetch Internal Code group without passing the params
+    @Test
+    void testFetchByInternalGroupAndOrderByExternal_Null(){
+        def internalGroupStr
+        def sdaxList = SdaCrosswalkConversion.fetchByInternalGroupAndOrderByExternal(internalGroupStr)
+
+        assertTrue sdaxList.size() == 0
+    }
 
     private def newValidForCreateSdaCrosswalkConversion() {
         def sdaCrosswalkConversion = new SdaCrosswalkConversion(

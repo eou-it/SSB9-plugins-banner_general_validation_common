@@ -1,5 +1,5 @@
 /** *****************************************************************************
- Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2020 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.general.system
 import org.junit.Before
@@ -158,6 +158,20 @@ class StateIntegrationTests extends BaseIntegrationTestCase {
                 ipeds: 'XXXXXXX')
         assertFalse "State should have failed validation", state.validate()
         assertErrorsFor state, 'maxSize', ['ediEquiv', 'statscan', 'ipeds']
+    }
+
+    /*Test to fetch all the State codes*/
+    @Test
+    void testFetchAllCodes() {
+        def state = new State()
+        def result = state.fetchAllCodes()
+
+        assertNotNull(result)
+        assertTrue(result[0].description.contains('Military - Americas'))
+        assertEquals('AA', result[0].code)
+
+        assertEquals('AB', result[1].code)
+        assertTrue(result[1].description.contains('Alberta'))
     }
 
 

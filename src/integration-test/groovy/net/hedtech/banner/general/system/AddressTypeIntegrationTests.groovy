@@ -203,5 +203,10 @@ class AddressTypeIntegrationTests extends BaseIntegrationTestCase {
         return addressType
     }
 
+    @Test
+    void testFetchByCode() {
+        def addrType = AddressType.fetchByCode("W2")
+        assertNotNull addrType
+    }
 
 }

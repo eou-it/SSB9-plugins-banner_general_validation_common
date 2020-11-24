@@ -23,8 +23,10 @@ import javax.persistence.*
                 query = """SELECT a.code,a.description FROM Term a WHERE UPPER(a.code) LIKE UPPER(:filter) OR UPPER(a.description) LIKE UPPER(:filter)
            ORDER BY a.code desc"""),
         @NamedQuery(name = "Term.fetchAllByTermCodes",
-                query = """FROM Term a WHERE a.code IN (:termCodes)""")
-])
+                query = """FROM Term a WHERE a.code IN (:termCodes)"""),
+        @NamedQuery(name = "Term.fetchValidTermCodes",
+                query = """select a.code, a.description FROM Term a WHERE a.endDate >= trunc(sysdate) and a.code IN (:termCodes) ORDER BY a.code desc""")
+        ])
 class Term implements Serializable {
 
     /**
@@ -313,4 +315,16 @@ class Term implements Serializable {
         return value
     }
 
+    public static List fetchValidTermCodes( List<String> termCodes ) {
+        def query
+        List termsList = []
+
+        Term.withSession { session ->
+                query = session.getNamedQuery('Term.fetchValidTermCodes').setParameterList( 'termCodes', termCodes ).list()
+            }
+           query.each { it ->
+               termsList << [code: it[0], description: it[1]]
+        }
+        return termsList
+    }
 }

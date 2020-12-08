@@ -211,5 +211,10 @@ class CountyIntegrationTests extends BaseIntegrationTestCase {
         return county
     }
 
+    @Test
+    void testfetchAllCodes() {
+        def countryList = County.fetchAllCodes()
+        assertTrue countryList.size() > 0
+    }
 
 }

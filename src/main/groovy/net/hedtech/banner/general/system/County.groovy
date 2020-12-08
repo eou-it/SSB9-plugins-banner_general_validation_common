@@ -35,6 +35,9 @@ import javax.persistence.SequenceGenerator
         ),
         @NamedQuery(name = "County.fetchAllByIsoCode",
                 query = """ FROM County a WHERE a.isoCode = :isoCode """
+        ),
+        @NamedQuery(name = "County.fetchAllCodes",
+                query = """ FROM County"""
         )
 ])
 
@@ -117,6 +120,16 @@ class County implements Serializable {
             county = session.getNamedQuery(
                     'County.fetchByCode')
                     .setString('code', code).list()[0]
+        }
+        return county
+    }
+
+    public static fetchAllCodes() {
+        def county
+
+        County.withSession { session ->
+            county = session.getNamedQuery(
+                    'County.fetchAllCodes').list()
         }
         return county
     }

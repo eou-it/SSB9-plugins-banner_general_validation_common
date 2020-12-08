@@ -22,40 +22,45 @@ import org.hibernate.annotations.Type
  */
 
 @NamedQueries(value = [
-@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalAndExternalAndInternalGroup",
-query = """FROM SdaCrosswalkConversion a
+        @NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalAndExternalAndInternalGroup",
+                query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
            and a.external = :external
            and a.internalGroup = :internalGroup
            order by a.internalSequenceNumber """),
-@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalAndLessExternalAndInternalGroup",
-query = """FROM SdaCrosswalkConversion a
+        @NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalAndLessExternalAndInternalGroup",
+                query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
            and a.external < :external
            and a.internalGroup = :internalGroup
            order by a.internalSequenceNumber """),
-@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup",
-query = """FROM SdaCrosswalkConversion a
+        @NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup",
+                query = """FROM SdaCrosswalkConversion a
            WHERE  a.internal = :internal
            and a.internalGroup = :internalGroup
            order by a.internalSequenceNumber """),
-@NamedQuery(name = "SdaCrosswalkConversion.fetchReportingDates",
-        query = """SELECT a.internal,TRUNC(a.reportingDate) as reportingDate
+        @NamedQuery(name = "SdaCrosswalkConversion.fetchReportingDates",
+                query = """SELECT a.internal,TRUNC(a.reportingDate) as reportingDate
              FROM SdaCrosswalkConversion a WHERE a.internalSequenceNumber = :internalSequenceNumber
                                         AND a.internalGroup = :internalGroup
                                         AND a.systemRequestIndicator= :systemRequestIndicator """),
-@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup",
-        query = """FROM SdaCrosswalkConversion a
+        @NamedQuery(name = "SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup",
+                query = """FROM SdaCrosswalkConversion a
            WHERE  UPPER(a.description) LIKE UPPER(:description)
            AND a.internalGroup = :internalGroup
            ORDER BY a.internal,a.internalSequenceNumber """),
-@NamedQuery(name = "SdaCrosswalkConversion.fetchAllForRegistrationSession",
-        query = """FROM SdaCrosswalkConversion a
+        @NamedQuery(name = "SdaCrosswalkConversion.fetchAllForRegistrationSession",
+                query = """FROM SdaCrosswalkConversion a
            WHERE a.internalGroup in :internalGroups """),
-@NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalGroup",
-        query = """FROM SdaCrosswalkConversion a
+        @NamedQuery(name = "SdaCrosswalkConversion.fetchAllByInternalGroup",
+                query = """FROM SdaCrosswalkConversion a
            WHERE  a.internalGroup = :internalGroup
-           ORDER BY a.internal,a.internalSequenceNumber """)
+           ORDER BY a.internal,a.internalSequenceNumber """),
+        @NamedQuery(name = "SdaCrosswalkConversion.fetchByInternalGroupAndOrderByExternal",
+                query = """FROM SdaCrosswalkConversion a
+               WHERE  a.internalGroup = :internalGroup
+               ORDER BY a.external""")
+
 ])
 
 @Entity
@@ -153,7 +158,6 @@ class SdaCrosswalkConversion implements Serializable {
     String dataOrigin
 
 
-
     public String toString() {
         """SdaCrosswalkConversion[
 					id=$id, 
@@ -228,7 +232,7 @@ class SdaCrosswalkConversion implements Serializable {
 
     public static List fetchAllByInternalAndExternalAndInternalGroup(String internal, String external, String internalGroup) {
         def sdax
-        SdaCrosswalkConversion.withSession {session ->
+        SdaCrosswalkConversion.withSession { session ->
             sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndExternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).setString(EXTERNAL, external).list()
         }
         return sdax
@@ -238,7 +242,7 @@ class SdaCrosswalkConversion implements Serializable {
 
     public static List fetchAllByInternalAndLessExternalAndInternalGroup(String internal, String external, String internalGroup) {
         def sdax
-        SdaCrosswalkConversion.withSession {session ->
+        SdaCrosswalkConversion.withSession { session ->
             sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndLessExternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).setString(EXTERNAL, external).list()
         }
         return sdax
@@ -247,30 +251,30 @@ class SdaCrosswalkConversion implements Serializable {
 
     public static List fetchAllByInternalAndInternalGroup(String internal, String internalGroup) {
         def sdax
-        SdaCrosswalkConversion.withSession {session ->
+        SdaCrosswalkConversion.withSession { session ->
             sdax = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalAndInternalGroup').setString(INTERNAL, internal).setString(INTERNAL_GROUP, internalGroup).list()
         }
         return sdax
 
     }
 
-    public static Map fetchReportingDates(Integer internalSequenceNumber, String internalGroup , String systemRequestIndicator){
-        def sdaCrosswalkConversion = SdaCrosswalkConversion.withSession {session ->
-            session.getNamedQuery('SdaCrosswalkConversion.fetchReportingDates').setInteger(INTERNAL_SEQUENCE_NUMBER,internalSequenceNumber)
-                    .setString(INTERNAL_GROUP,internalGroup).setString(SYSTEM_REQUEST_INDICATOR,systemRequestIndicator).list()
+    public static Map fetchReportingDates(Integer internalSequenceNumber, String internalGroup, String systemRequestIndicator) {
+        def sdaCrosswalkConversion = SdaCrosswalkConversion.withSession { session ->
+            session.getNamedQuery('SdaCrosswalkConversion.fetchReportingDates').setInteger(INTERNAL_SEQUENCE_NUMBER, internalSequenceNumber)
+                    .setString(INTERNAL_GROUP, internalGroup).setString(SYSTEM_REQUEST_INDICATOR, systemRequestIndicator).list()
         }
         Map reportingDate = [:]
         if (sdaCrosswalkConversion) {
-            sdaCrosswalkConversion.each{
+            sdaCrosswalkConversion.each {
                 reportingDate.put(it[0], it[1])
-                }
+            }
         }
         return reportingDate
     }
 
     static List fetchAllByDescriptionLikeAndInternalGroup(String description, String internalGroup) {
         def sdaCrosswalkConversions = []
-        SdaCrosswalkConversion.withSession {session ->
+        SdaCrosswalkConversion.withSession { session ->
             sdaCrosswalkConversions = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByDescriptionLikeAndInternalGroup')
                     .setString('description', description)
                     .setString('internalGroup', internalGroup).list()
@@ -281,7 +285,7 @@ class SdaCrosswalkConversion implements Serializable {
 
     static List fetchAllForRegistrationSession(List internalGroups) {
         def sdaxs
-        SdaCrosswalkConversion.withSession {session ->
+        SdaCrosswalkConversion.withSession { session ->
             sdaxs = session.getNamedQuery('SdaCrosswalkConversion.fetchAllForRegistrationSession')
                     .setParameterList('internalGroups', internalGroups).list()
         }
@@ -290,8 +294,17 @@ class SdaCrosswalkConversion implements Serializable {
 
     static List fetchAllByInternalGroup(String internalGroup) {
         def sdaCrosswalkConversions = []
-        SdaCrosswalkConversion.withSession {session ->
+        SdaCrosswalkConversion.withSession { session ->
             sdaCrosswalkConversions = session.getNamedQuery('SdaCrosswalkConversion.fetchAllByInternalGroup')
+                    .setString('internalGroup', internalGroup).list()
+        }
+        return sdaCrosswalkConversions
+    }
+
+    static List fetchByInternalGroupAndOrderByExternal(String internalGroup) {
+        def sdaCrosswalkConversions = []
+        SdaCrosswalkConversion.withSession { session ->
+            sdaCrosswalkConversions = session.getNamedQuery('SdaCrosswalkConversion.fetchByInternalGroupAndOrderByExternal')
                     .setString('internalGroup', internalGroup).list()
         }
         return sdaCrosswalkConversions
